@@ -1,0 +1,147 @@
+.v-application .rounded-xl {
+    border-radius: 12px !important;
+}
+
+#myScroll {
+    overflow-y: scroll;
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+}
+
+.phoneprefix {
+    width: fit-content;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    text-align: center;
+    padding-left: 4px;
+    -ms-overflow-style: none;
+    cursor: pointer;
+    /* IE and Edge */
+
+}
+
+.cursor {
+    cursor: pointer;
+}
+
+#countrylist {
+    width: 216px;
+    height: 243px;
+    background-color: white;
+    position: absolute;
+    bottom: -142px;
+    left: 79px;
+    overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+    z-index: 1;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.12);
+    scrollbar-width: none;
+    overflow-y: scroll;
+
+}
+
+.ctNameIcon {
+    display: flex;
+    flex-direction: row;
+    display: flex;
+    flex-direction: row;
+    padding: 10px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.38);
+    cursor: pointer;
+}
+
+.ctimg {
+    padding-left: 5px
+}
+
+.ctname {
+    padding-left: 8px
+}
+
+.ctCode {
+    padding-left: 20px
+}
+
+.myinput {
+    border-top-style: hidden;
+    border-right-style: hidden;
+    border-left-style: hidden;
+    height: 100%;
+    width: 100%;
+    border-bottom-right-radius: 12px;
+    border-top-right-radius: 12px;
+    margin-left: 12px;
+}
+
+.countrylist {
+    max-width: 300px;
+    position: absolute;
+    bottom: -104px;
+    left: 45px;
+}
+
+.no-outline:focus {
+    outline: none;
+}
+
+.seperater {
+    width: 1px;
+    height: 27px;
+    background-color: grey;
+}
+
+.phoneNo {
+    width: 100%;
+    height: 56px;
+    border: 1px solid grey;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    text-align: center;
+    position: relative;
+}
+
+.v-stepper__header {
+    height: 72px;
+    align-items: stretch;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    box-shadow: unset
+}
+
+#circleCard {
+    position: sticky;
+    top: 0px;
+    z-index: 2;
+}
+
+#myScroll::-webkit-scrollbar {
+    display: none;
+}
+
+.centered-input>>>input {
+    text-align: center;
+}
+
+#mycard {
+    height: 90vh;
+    max-height: 800px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    background-color: white;
+}
+
+.v-list-item--link:before {
+    background-color: unset;
+
+}
