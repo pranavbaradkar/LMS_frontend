@@ -51,6 +51,7 @@ export default {
   },
   logout: function () {
     localStorage.removeItem(TOKEN_KEY)
+    
   },
   getUser: function () {
     const token = localStorage.getItem(TOKEN_KEY)

@@ -80,7 +80,7 @@
                 <v-otp-input length="6" type="number" v-model="otp"></v-otp-input>
                 <v-row justify="space-between" class="ma-0 pa-0">
                   <v-col class="ma-0 pa-0">
-                    <v-card-subtitle class="ma-0 pa-0">00:{{ i }}</v-card-subtitle>
+                    <v-card-subtitle class="ma-0 pa-0">00:{{ time }}</v-card-subtitle>
                   </v-col>
                   <v-col class="ma-0 pa-0">
                     <v-card-subtitle class="ma-0 pa-0 text-end">
@@ -90,10 +90,10 @@
               </v-col>
             </v-row>
             <v-card-text class="text-center">
-              <span class="primary--text" > RESEND OTP </span>
+              <span class="primary--text" :disabled="resendBool" @click="generateOtp"> RESEND OTP </span>
             </v-card-text>
             <v-card-title class="justify-center">
-              <v-btn color="secondary" class="black--text" rounded large width="90%" height="40"  @click="validateOTP">
+              <v-btn color="secondary" class="black--text" rounded large width="90%" height="40" @click="validateOTP">
                 VERIFY
               </v-btn>
             </v-card-title>
@@ -116,10 +116,11 @@ export default {
       isGenerateOtpClicked: false,
       otp: "",
       usingPhone: true,
+      resendBool: false,
       phoneNumber: "",
       ctList: false,
       email: "",
-      i: 60,
+      time: 60,
       emailRules: [
         (v) => !!v || "E-mail is required",
         (v) =>
@@ -134,27 +135,35 @@ export default {
       this.ctList = false;
     },
     generateOtp() {
-     
+      this.time = 60;
       const response = AuthService.generateOTP({
         "email": this.email
       });
-      
+
       console.log("opt send response", response)
       this.isGenerateOtpClicked = true;
-      
+      this.otpTimmer();
+
     },
-    // timmer(){
-    //   for(this.i = 60; this.i > 0 ; this.i--){        
-    //     setInterval(()=>{console.log(this.i)},1000)
-    // }},
-   async validateOTP() {
+    otpTimmer(){
+      this.timer = setInterval(() => {
+      if(this.time==0){
+        clearInterval(this.timer)  
+        this.resendBool = false;      
+      }
+      else{
+        this.time--;
+      }
+    }, 1000)
+    },
+    async validateOTP() {
       const res = await AuthService.validateOTP({
-          "email":  this.email,
-          "otp": this.otp,
-          "debug": false
-        });      
-        console.log(res)
-       if(res){
+        "email": this.email,
+        "otp": this.otp,
+        "debug": false
+      });
+      console.log(res)
+      if (res) {
 
         this.$router.push("/");
       }
@@ -163,10 +172,10 @@ export default {
     },
   },
   computed: {
-   
+
   },
   created() {
-  //  this.timmer();
+    
   },
 };
 </script>

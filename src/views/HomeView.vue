@@ -11,10 +11,31 @@
             <v-card-title class="font-weight-light pr-0">Hello,</v-card-title>
 
             <v-card-title class="pl-2">Diksha 👋</v-card-title>
-
-            <v-avatar>
+            <v-menu offset-y>
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn
+          color="primary"
+          dark
+          v-bind="attrs"
+          v-on="on"
+          text
+          icon
+        >
+        <v-avatar>
               <v-img src="../assets/user.png"></v-img>
-            </v-avatar>
+        </v-avatar>
+        </v-btn>
+      </template>
+      <!-- <v-list>
+        <v-list-item      
+        >
+          <v-list-item-title >Log out</v-list-item-title>
+        </v-list-item>
+
+      </v-list> -->
+      <v-btn @click="logout">logout</v-btn>
+    </v-menu>
+            
           </v-row>
         </v-list-item-action>
       </v-list-item>
@@ -185,8 +206,9 @@
           </v-card>
         </v-img>
         <div class="text-h6 py-4">Other Tests</div>
-
-        <v-sheet class="pa-0 mt-3 ml-0 mr-0" max-width="100%">
+   
+        <div class="slideparent">
+     
           <v-slide-group
             v-model="model"
             class="pa-0 ma-0 surface"
@@ -194,14 +216,12 @@
             show-arrows
           >
             <v-slide-item v-for="n in 15" :key="n">
-              <v-card
-                v-if="n == mouseHover"
-                class="mx-auto mr-3"
+         <div class="mytestcard">
+              <v-card              
+               class="mx-auto mr-3 movingcard"
                 max-width="344"
                 outlined
-                height="180"
-                @mouseover="mouseHover = n"
-                @mouseleave="mouseHover = null"
+                height="180"                
               >
                 <v-list-item three-line>
                   <v-list-item-avatar
@@ -221,7 +241,7 @@
                   </v-list-item-content>
                 </v-list-item>
                 <v-expand-transition>
-                  <v-card-actions v-if="n == mouseHover">
+                  <v-card-actions>
                     <v-btn
                       block
                       color="secondary"
@@ -233,49 +253,13 @@
                   </v-card-actions>
                 </v-expand-transition>
               </v-card>
-
-              <v-card
-                v-else
-                class="mx-auto mr-3"
-                max-width="344"
-                outlined
-                height="120"
-                @mouseover="mouseHover = n"
-                @mouseleave="mouseHover = null"
-              >
-                <v-list-item three-line>
-                  <v-list-item-avatar
-                    tile
-                    size="80"
-                    color="grey"
-                  ></v-list-item-avatar>
-                  <v-list-item-content>
-                    <v-list-item-title class="text-h7 mb-0 text-wrap">
-                      Trained Graduate Teacher Assessment (VGOS)
-                    </v-list-item-title>
-                    <v-list-item-subtitle>
-                      This course will provide you with in Depth knowledge of
-                      Child development. it will take you though all the
-                      developmental domens</v-list-item-subtitle
-                    >
-                  </v-list-item-content>
-                </v-list-item>
-                <v-expand-transition>
-                  <v-card-actions v-if="n == mouseHover">
-                    <v-btn
-                      block
-                      color="secondary"
-                      class="black--text"
-                      rounded
-                      to="/assessment"
-                      >START TEST</v-btn
-                    >
-                  </v-card-actions>
-                </v-expand-transition>
-              </v-card>
+            </div>
             </v-slide-item>
           </v-slide-group>
-        </v-sheet>
+        </div>
+
+ 
+
       </v-card>
     </v-container>
   </div>
@@ -283,6 +267,7 @@
   
 <script>
 import "../styles.css";
+import AuthService from "../services/AuthService";
 export default {
   name: "HomeView",
   data() {
@@ -312,7 +297,12 @@ export default {
     onResize() {
       this.windowHeight = window.innerHeight;
     },
+    logout(){
+    AuthService.logout();
+    this.$router.push("/login")
+  }
   },
+ 
 };
 </script>
    
