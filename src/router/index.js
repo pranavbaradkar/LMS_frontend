@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import AuthView from '../views/AuthView'
 import HomeView from '../views/HomeView'
 import RegistrationView from '../views/RegistrationView'
+import AuthService from '@/services/AuthService'
 import AssessmentView from '../views/AssessmentView'
 
 //import store from "../store";
@@ -11,24 +12,36 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/',
+    path: '/login',
     name: 'AuthView',
-    component: AuthView
+    component: AuthView,
+    meta: {
+      requiresAuth: false,
+    }
   },
   {
     path: '/register',
     name: 'RegistrationView',
-    component: RegistrationView
+    component: RegistrationView,
+    meta: {
+      requiresAuth: true,
+    }
   },
   {
-    path: '/home',
+    path: '/',
     name: 'HomeView',
-    component: HomeView
+    component: HomeView,
+    meta: {
+      requiresAuth: true,
+    }
   },
   {
     path: '/assessment',
     name: 'AssessmentView',
-    component: AssessmentView
+    component: AssessmentView,
+    meta: {
+      requiresAuth: true,
+    }
   },
 ]
 
@@ -59,4 +72,17 @@ const router = new VueRouter({
 //     next();
 //   }
 // });
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    if (!AuthService.isAuthenticated()) {
+      next({
+        path: '/login',
+      })
+    } else {
+      next()
+    }
+  } else {
+    next()
+  }
+})
 export default router
