@@ -1,14 +1,15 @@
 <template>
   <div class="surface">
-    <v-app-bar color="surface" elevation="0"   fixed>
+    <v-app-bar color="surface" elevation="0" fixed>
       <v-list-item>
         <v-list-item-icon>
           <v-img src="../assets/logo.png" contain></v-img>
         </v-list-item-icon>
       </v-list-item>
     </v-app-bar>
-    <v-card color="surface" :height="(getHeight-64) + 'px'">
-      <v-card-title class="justify-center mt-16"> Welcome </v-card-title >
+
+    <v-card color="surface" :height="getHeight - 64 + 'px'">
+      <v-card-title class="justify-center mt-16"> Welcome </v-card-title>
       <v-card-subtitle class="text-center"
         ><span
           >Let's start your profile, connect to people you know, and engage
@@ -36,222 +37,273 @@
           <v-stepper-items>
             <!------------------------------------------ STEP 1 ------------------------------------------>
             <v-stepper-content step="1">
-              <v-card elevation="0" id="myScroll">
-                <v-row>
-                  <v-col cols="2">
-                    <v-card-title class="justify-center">
-                      <image-input v-model="avatar">
-                        <div slot="activator" class="text-center">
-                          <v-icon size="100px" v-if="!avatar" color="primary">
-                            mdi-account-circle-outline
-                          </v-icon>
+              <v-form lazy-validation ref="step1">
+                <v-card elevation="0" id="myScroll">
+                  <v-row>
+                    <v-col cols="2">
+                      <v-card-title class="justify-center">
+                        <image-input v-model="avatar">
+                          <div slot="activator" class="text-center">
+                            <v-icon size="100px" v-if="!avatar" color="primary">
+                              mdi-account-circle-outline
+                            </v-icon>
 
-                          <v-avatar size="100px" v-ripple v-else>
-                            <img :src="avatar.imageURL" alt="avatar" />
-                          </v-avatar>
-                        </div>
-                      </image-input> </v-card-title
-                    ><v-card-subtitle class="text-center"
-                      >**Allowed File Types:jpeg, jpg, png**</v-card-subtitle
-                    >
-                  </v-col>
-                  <v-col cols="10">
-                    <v-card
-                      :height="getHeight - 400 + 'px'"
-                      class="pa-4"
-                      elevation="0"
-                    >
-                      <v-row class="py-0">
-                        <v-col cols="2" class="py-0"
-                          ><v-select
-                            label="Title *"
-                            :items="['Ms', 'Mrs', 'Mr']"
-                            outlined
-                            class="rounded-xl"
-                          >
-                          </v-select
-                        ></v-col>
-                        <v-col cols="4" class="py-0"
-                          ><v-text-field
-                            outlined
-                            label="First Name *"
-                            rounded
-                            class="rounded-xl"
-                          ></v-text-field></v-col
-                        ><v-col cols="3" class="py-0"
-                          ><v-text-field
-                            outlined
-                            label="Middle Name"
-                            rounded
-                            class="rounded-xl"
-                          ></v-text-field></v-col
-                        ><v-col cols="3" class="py-0"
-                          ><v-text-field
-                            outlined
-                            label="Last Name"
-                            rounded
-                            class="rounded-xl"
-                          ></v-text-field
-                        ></v-col>
-                      </v-row>
-                      <v-row class="py-0">
-                        <v-col class="py-0"
-                          ><v-text-field
-                            v-model="email"
-                            outlined
-                            label="Email Address *"
-                            rounded
-                            class="rounded-xl"
-                            required
-                            @keydown.enter.prevent="submit"
-                            @input="$v.email.$touch()"
-                            @blur="$v.email.$touch()"
-                            :error-messages="emailErrors"
-                          ></v-text-field
-                        ></v-col>
-                      </v-row>
-                      <v-row class="py-0">
-                        <v-col class="py-0"
-                          ><v-text-field
-                            suffix="Verify"
-                            label="Your 10-digit mobile no."
-                            outlined
-                            rounded
-                            class="rounded-xl"
-                            counter="10"
-                            prefix="+91"
-                            type="number"
-                          ></v-text-field
-                        ></v-col>
-                      </v-row>
-                      <v-row class="py-0">
-                        <v-col cols="4" class="py-0"
-                          ><v-text-field
-                            outlined
-                            label="Date of Birth (DDMMYY)"
-                            append-icon="mdi-calendar"
-                            rounded
-                            class="rounded-xl"
-                          ></v-text-field
-                        ></v-col>
-                        <v-col cols="2" class="py-0">
-                          <v-select
-                            label="Gender"
-                            :items="['Female', 'Male', 'Non-Binary']"
-                            outlined
-                            class="rounded-xl"
-                          >
-                          </v-select>
-                        </v-col>
-                      </v-row>
-                      <v-row class="py-0 my-0">
-                        <v-col cols="2" class="py-0" v-if="!isFetchingLocation"
-                          ><v-btn
-                            color="primary"
-                            large
-                            text
-                            @click="location"
-                          >
-                            <v-icon left> mdi-map-marker-outline </v-icon>
-                            Current Location
-                          </v-btn>
-                        </v-col>
-                        <v-col cols="1" class="py-0" v-else>
-                          <v-progress-circular
-                            indeterminate
-                            color="primary"
-                          ></v-progress-circular>
-                        </v-col>
-                      </v-row>
-                      <v-row class="py-0">
-                        <v-col cols="6" class="py-0">
-                          <v-select
-                            v-model="country"
-                            :value="country"
-                            label="Country *"
-                            :items="['India', 'Sri Lanka', 'Nepal']"
-                            outlined
-                            class="rounded-xl"
-                          >
-                          </v-select>
-                        </v-col>
-                        <v-col cols="6" class="py-0">
-                          <v-select
-                            v-model="state"
-                            :value="state"
-                            label="State *"
-                            :items="['Delhi', 'Uttar Pradesh', 'Maharashtra']"
-                            outlined
-                            class="rounded-xl"
-                          >
-                          </v-select>
-                        </v-col>
-                      </v-row>
-                      <v-row class="py-0">
-                        <v-col cols="6" class="py-0">
-                          <v-select
-                            v-model="district"
-                            :value="district"
-                            label="District *"
-                            :items="['South Delhi', 'New Delhi', 'Old Delhi']"
-                            outlined
-                            class="rounded-xl"
-                          >
-                          </v-select>
-                        </v-col>
-                        <v-col cols="6" class="py-0">
-                          <v-select
-                            v-model="talukTehsil"
-                            :value="talukTehsil"
-                            label="Taluk / Tehsil *"
-                            :items="['Koil', 'Hauz Khas Tehsil', 'Test']"
-                            outlined
-                            class="rounded-xl"
-                          >
-                          </v-select>
-                        </v-col> </v-row
-                      ><v-row class="py-0">
-                        <v-col cols="6" class="py-0">
-                          <v-select
-                            v-model="cityVillage"
-                            :value="cityVillage"
-                            label="City / Village *"
-                            :items="['Aligarh', 'City 2', 'City 3']"
-                            outlined
-                            class="rounded-xl"
-                          >
-                          </v-select>
-                        </v-col>
-                        <v-col cols="6" class="py-0">
-                          <v-text-field
-                            v-model="pinCode"
-                            :value="pinCode"
-                            outlined
-                            label="Pin Code *"
-                            rounded
-                            class="rounded-xl"
-                          ></v-text-field>
-                        </v-col>
-                        <v-col cols="12" class="py-0">
-                          <v-text-field
-                            outlined
-                            label="Address"
-                            rounded
-                            class="rounded-xl"
-                          ></v-text-field>
-                        </v-col>
-                      </v-row>
-                    </v-card>
-                  </v-col>
-                </v-row>
-              </v-card>
+                            <v-avatar size="100px" v-ripple v-else>
+                              <img :src="avatar.imageURL" alt="avatar" />
+                            </v-avatar>
+                          </div>
+                        </image-input> </v-card-title
+                      ><v-card-subtitle class="text-center"
+                        >**Allowed File Types:jpeg, jpg, png**</v-card-subtitle
+                      >
+                    </v-col>
+                    <v-col cols="10">
+                      <v-card
+                        :height="getHeight - 400 + 'px'"
+                        class="pa-4"
+                        elevation="0"
+                      >
+                        <v-row class="py-0">
+                          <v-col cols="2" class="py-0"
+                            ><v-select
+                              v-model="personalInfo.title"
+                              label="Title *"
+                              :items="['Ms', 'Mrs', 'Mr']"
+                              outlined
+                              class="rounded-xl"
+                              :rules="[rules.required]"
+                              required
+                            >
+                            </v-select
+                          ></v-col>
+                          <v-col cols="4" class="py-0"
+                            ><v-text-field
+                              v-model="personalInfo.firstName"
+                              outlined
+                              label="First Name *"
+                              rounded
+                              class="rounded-xl"
+                              :rules="[rules.required]"
+                              required
+                            ></v-text-field></v-col
+                          ><v-col cols="3" class="py-0"
+                            ><v-text-field
+                              v-model="personalInfo.middleName"
+                              outlined
+                              label="Middle Name"
+                              rounded
+                              class="rounded-xl"
+                            ></v-text-field></v-col
+                          ><v-col cols="3" class="py-0"
+                            ><v-text-field
+                              v-model="personalInfo.lastName"
+                              outlined
+                              label="Last Name"
+                              rounded
+                              class="rounded-xl"
+                              :rules="[rules.required]"
+                              required
+                            ></v-text-field
+                          ></v-col>
+                        </v-row>
+                        <v-row class="py-0">
+                          <v-col class="py-0"
+                            ><v-text-field
+                              v-model="personalInfo.email"
+                              outlined
+                              label="Email Address *"
+                              rounded
+                              class="rounded-xl"
+                              :rules="[rules.required]"
+                              required
+                              @keydown.enter.prevent="submit"
+                              @input="$v.email.$touch()"
+                              @blur="$v.email.$touch()"
+                              :error-messages="emailErrors"
+                            ></v-text-field
+                          ></v-col>
+                        </v-row>
+                        <v-row class="py-0">
+                          <v-col class="py-0"
+                            ><v-text-field
+                              v-model="personalInfo.phoneNumber"
+                              suffix="Verify"
+                              label="Your 10-digit mobile no."
+                              outlined
+                              rounded
+                              class="rounded-xl"
+                              counter="10"
+                              prefix="+91"
+                              type="number"
+                              :rules="[rules.required]"
+                              required
+                            ></v-text-field
+                          ></v-col>
+                        </v-row>
+                        <v-row class="py-0">
+                          <v-col cols="4" class="py-0"
+                            ><v-text-field
+                              v-model="personalInfo.dob"
+                              outlined
+                              label="Date of Birth (DDMMYY)"
+                              append-icon="mdi-calendar"
+                              rounded
+                              class="rounded-xl"
+                            ></v-text-field
+                          ></v-col>
+                          <v-col cols="2" class="py-0">
+                            <v-select
+                              v-model="personalInfo.gender"
+                              label="Gender"
+                              :items="['Female', 'Male', 'Non-Binary']"
+                              outlined
+                              class="rounded-xl"
+                            >
+                            </v-select>
+                          </v-col>
+                        </v-row>
+                        <v-row class="py-0 my-0">
+                          <v-col
+                            cols="2"
+                            class="py-0"
+                            v-if="!isFetchingLocation"
+                            ><v-btn
+                              color="primary"
+                              large
+                              text
+                              @click="location"
+                            >
+                              <v-icon left> mdi-map-marker-outline </v-icon>
+                              Current Location
+                            </v-btn>
+                          </v-col>
+                          <v-col cols="1" class="py-0" v-else>
+                            <v-progress-circular
+                              indeterminate
+                              color="primary"
+                            ></v-progress-circular>
+                          </v-col>
+                        </v-row>
+                        <v-row class="py-0">
+                          <v-col cols="6" class="py-0">
+                            <v-select
+                              v-model="personalInfo.countryId"
+                              :value="country"
+                              label="Country *"
+                              :items="countries"
+                              item-value="id"
+                              item-text="country_name"
+                              outlined
+                              class="rounded-xl"
+                              :rules="[rules.required]"
+                              required
+                              @change="fetchStates"
+                            >
+                            </v-select>
+                          </v-col>
+                          <v-col cols="6" class="py-0">
+                            <v-select
+                              v-model="personalInfo.stateId"
+                              :value="state"
+                              label="State *"
+                              :items="states"
+                              outlined
+                              class="rounded-xl"
+                              item-value="id"
+                              item-text="state_name"
+                              :rules="[rules.required]"
+                              required
+                              @change="fetchDistricts"
+                            >
+                            </v-select>
+                          </v-col>
+                        </v-row>
+                        <v-row class="py-0">
+                          <v-col cols="6" class="py-0">
+                            <v-select
+                              v-model="personalInfo.districtId"
+                              :value="district"
+                              label="District *"
+                              :items="districts"
+                              outlined
+                              class="rounded-xl"
+                              item-value="id"
+                              item-text="district_name"
+                              :rules="[rules.required]"
+                              required
+                              @change="fetchTalukas"
+                            >
+                            </v-select>
+                          </v-col>
+                          <v-col cols="6" class="py-0">
+                            <v-select
+                              v-model="personalInfo.talukTehsil"
+                              :value="talukTehsil"
+                              label="Taluk / Tehsil *"
+                              :items="talukas"
+                              outlined
+                              class="rounded-xl"
+                              item-value="id"
+                              item-text="taluka_name"
+                              @change="fetchCities"
+                            >
+                            </v-select>
+                          </v-col> </v-row
+                        ><v-row class="py-0">
+                          <v-col cols="6" class="py-0">
+                            <v-select
+                              v-model="personalInfo.cityVillageId"
+                              :value="cityVillage"
+                              label="City / Village *"
+                              :items="cities"
+                              outlined
+                              class="rounded-xl"
+                              :rules="[rules.required]"
+                              required
+                              item-value="id"
+                              item-text="city_name"
+                            >
+                            </v-select>
+                          </v-col>
+                          <v-col cols="6" class="py-0">
+                            <v-text-field
+                              v-model="personalInfo.pincode"
+                              :value="pinCode"
+                              outlined
+                              label="Pin Code *"
+                              rounded
+                              class="rounded-xl"
+                              :rules="[rules.required]"
+                              required
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" class="py-0">
+                            <v-text-field
+                              v-model="personalInfo.address"
+                              outlined
+                              label="Address"
+                              rounded
+                              class="rounded-xl"
+                            ></v-text-field>
+                          </v-col>
+                        </v-row>
+                      </v-card>
+                    </v-col>
+                  </v-row>
+                </v-card>
+              </v-form>
 
               <v-card elevation="0">
                 <v-row>
                   <v-col cols="2"></v-col>
                   <v-col cols="10">
                     <v-card-title
-                      ><v-btn rounded color="secondary" class="black--text" @click="e1 = 2">
+                      ><v-btn
+                        rounded
+                        color="secondary"
+                        class="black--text"
+                        @click="goToStep2"
+                      >
                         NEXT
                       </v-btn></v-card-title
                     >
@@ -260,86 +312,108 @@
               </v-card>
             </v-stepper-content>
             <!------------------------------------------ STEP 2 ------------------------------------------>
-            <v-stepper-content step="2">
-              <v-card elevation="0" id="myScroll">
-                <v-card
-                  :height="getHeight - 400 + 'px'"
-                  class="pa-4"
-                  elevation="0"
-                >
-                  <v-row class="py-0">
-                    <v-col class="py-0"
-                      ><v-text-field
-                        outlined
-                        label="School/ College/ University *"
-                        rounded
-                        class="rounded-xl"
-                      ></v-text-field
-                    ></v-col>
-                  </v-row>
-                  <v-row class="py-0">
-                    <v-col class="py-0"
-                      ><v-text-field
-                        outlined
-                        label="Degree/ Diploma/ Certification *"
-                        rounded
-                        class="rounded-xl"
-                      ></v-text-field
-                    ></v-col> </v-row
-                  ><v-row class="py-0">
-                    <v-col class="py-0"
-                      ><v-text-field
-                        outlined
-                        label="Field of Study *"
-                        rounded
-                        class="rounded-xl"
-                      ></v-text-field
-                    ></v-col>
-                  </v-row>
+            <v-stepper-content step="2" v-model="expandedPanelIndex">
+              <v-form lazy-validation ref="step2">
+                <v-card elevation="0" id="myScroll">
+                  <v-card
+                    :height="getHeight - 400 + 'px'"
+                    class="pa-4"
+                    elevation="0"
+                  >
+                    <v-row class="py-0">
+                      <v-col class="py-0"
+                        ><v-text-field
+                        v-model="academicsInfo.institution"
+                          outlined
+                          label="School/ College/ University *"
+                          rounded
+                          class="rounded-xl"
+                          :rules="[rules.required]"
+                          required
+                        ></v-text-field
+                      ></v-col>
+                    </v-row>
+                    <v-row class="py-0">
+                      <v-col class="py-0"
+                        ><v-text-field
+                        v-model="academicsInfo.programme"
+                          outlined
+                          label="Degree/ Diploma/ Certification *"
+                          rounded
+                          class="rounded-xl"
+                          :rules="[rules.required]"
+                          required
+                        ></v-text-field
+                      ></v-col> </v-row
+                    ><v-row class="py-0">
+                      <v-col class="py-0"
+                        ><v-text-field
+                        v-model="academicsInfo.fieldOfStudy"
 
-                  <v-row class="py-0">
-                    <v-col cols="6" class="py-0"
-                      ><v-text-field
-                        outlined
-                        label="Start Date"
-                        append-icon="mdi-calendar"
-                        rounded
-                        class="rounded-xl"
-                      ></v-text-field
-                    ></v-col>
-                    <v-col cols="6" class="py-0"
-                      ><v-text-field
-                        outlined
-                        label="End Date"
-                        append-icon="mdi-calendar"
-                        rounded
-                        class="rounded-xl"
-                      ></v-text-field
-                    ></v-col>
-                  </v-row>
+                          outlined
+                          label="Field of Study *"
+                          rounded
+                          class="rounded-xl"
+                          :rules="[rules.required]"
+                          required
+                        ></v-text-field
+                      ></v-col>
+                    </v-row>
 
-                  <v-row class="py-0">
-                    <v-col cols="12" class="py-0">
-                      <v-text-field
-                        outlined
-                        label="Extra Curricular Activities"
-                        rounded
-                        class="rounded-xl"
-                      ></v-text-field>
-                    </v-col>
-                  </v-row>
-                  <v-row class="py-0">
-                    <v-col cols="12" class="py-0">
-                      <v-text-field
-                        outlined
-                        label="Achievements"
-                        rounded
-                        class="rounded-xl"
-                      ></v-text-field>
-                    </v-col>
-                  </v-row>
+                    <v-row class="py-0">
+                      <v-col cols="6" class="py-0"
+                        ><v-text-field
+                        v-model="academicsInfo.startDate"
+
+                          outlined
+                          label="Start Date"
+                          append-icon="mdi-calendar"
+                          rounded
+                          class="rounded-xl"
+                        ></v-text-field
+                      ></v-col>
+                      <v-col cols="6" class="py-0"
+                        ><v-text-field
+                        v-model="academicsInfo.endDate"
+
+                          outlined
+                          label="End Date"
+                          append-icon="mdi-calendar"
+                          rounded
+                          class="rounded-xl"
+                        ></v-text-field
+                      ></v-col>
+                    </v-row>
+
+                    <v-row class="py-0">
+                      <v-col cols="12" class="py-0">
+                        <v-text-field
+                        v-model="
+                        academicsInfo.extraCarricularActivities
+                      "
+                          outlined
+                          label="Extra Curricular Activities"
+                          rounded
+                          class="rounded-xl"
+                        ></v-text-field>
+                      </v-col>
+                    </v-row>
+                    <v-row class="py-0">
+                      <v-col cols="12" class="py-0">
+                        <v-text-field
+                        v-model="academicsInfo.achievements"
+
+                          outlined
+                          label="Achievements"
+                          rounded
+                          class="rounded-xl"
+                        ></v-text-field>
+                      </v-col>
+                    </v-row>
+                  </v-card>
                 </v-card>
-              </v-card>
+              </v-form>
+
               <v-btn
                 rounded
                 outlined
@@ -349,161 +423,190 @@
               >
                 BACK
               </v-btn>
-              <v-btn rounded color="secondary" class="black--text" @click="e1 = 3"> NEXT </v-btn>
+              <v-btn
+                rounded
+                color="secondary"
+                class="black--text"
+                @click="goToStep3"
+              >
+                NEXT
+              </v-btn>
             </v-stepper-content>
             <!------------------------------------------ STEP 3 ------------------------------------------>
-            <v-stepper-content step="3">
-              <v-card elevation="0" id="myScroll">
-                <v-card
-                  :height="getHeight - 400 + 'px'"
-                  class="pa-4"
-                  elevation="0"
-                >
-                  <v-row class="py-0">
-                    <v-col cols="3" class="py-0"
-                      ><v-radio-group mandatory row v-model="experience">
-                        <v-radio label="Fresher" value="Fresher"></v-radio>
-                        <v-radio label="Experienced" value="Experienced">
-                        </v-radio> </v-radio-group
-                    ></v-col>
-                    <v-col
-                      v-if="experience == 'Experienced'"
-                      cols="9"
-                      class="py-0"
-                    >
-                      <v-select
-                        label="Experience (Years) *"
-                        :items="['1', '2', '3', '4', '5+']"
-                        outlined
-                        class="rounded-xl"
-                      >
-                      </v-select>
-                    </v-col>
-                  </v-row>
-                  <v-row class="py-0">
-                    <v-col class="py-0"
-                      ><v-text-field
-                        outlined
-                        label="Role/ Position *"
-                        rounded
-                        class="rounded-xl"
-                      ></v-text-field
-                    ></v-col> </v-row
-                  ><v-row class="py-0">
-                    <v-col class="py-0"
-                      ><v-select
-                        label="Employment Type"
-                        :items="['Permanent', 'Contract', 'Prohibition']"
-                        outlined
-                        class="rounded-xl"
-                      >
-                      </v-select
-                    ></v-col>
-                  </v-row>
-
-                  <v-row class="py-0">
-                    <v-col class="py-0"
-                      ><v-select
-                        label="School / Institute"
-                        :items="['School 1', 'School 2', 'School 3']"
-                        outlined
-                        class="rounded-xl"
-                      >
-                      </v-select
-                    ></v-col>
-                  </v-row>
-                  <v-row class="py-0">
-                    <v-col class="py-0">
-                      <v-checkbox
+            <v-stepper-content step="3" v-model="expandedPanelIndex">
+              <v-form lazy-validation ref="step3">
+                <v-card elevation="0" id="myScroll">
+                  <v-card
+                    :height="getHeight - 400 + 'px'"
+                    class="pa-4"
+                    elevation="0"
+                  >
+                    <v-row class="py-0">
+                      <v-col cols="3" class="py-0"
+                        ><v-radio-group mandatory row v-model="experience">
+                          <v-radio label="Fresher" value="Fresher"></v-radio>
+                          <v-radio label="Experienced" value="Experienced">
+                          </v-radio> </v-radio-group
+                      ></v-col>
+                      <v-col
+                        v-if="experience == 'Experienced'"
+                        cols="9"
                         class="py-0"
-                        v-model="isCurrentlyWorking"
-                        label="I am currently working on this role / position."
-                      ></v-checkbox>
-                    </v-col>
-                  </v-row>
-                  <v-row class="py-0">
-                    <v-col cols="6" class="py-0"
-                      ><v-text-field
-                        outlined
-                        label="Start Date"
-                        append-icon="mdi-calendar"
-                        rounded
-                        class="rounded-xl"
-                      ></v-text-field
-                    ></v-col>
-                    <v-col cols="6" class="py-0"
-                      ><v-text-field
-                        :disabled="isCurrentlyWorking"
-                        outlined
-                        label="End Date"
-                        append-icon="mdi-calendar"
-                        rounded
-                        class="rounded-xl"
-                      ></v-text-field
-                    ></v-col>
-                  </v-row>
-                  <v-row class="py-0">
-                    <v-col class="py-0"
-                      ><v-select
-                        label="Board"
-                        :items="['Board 1', 'Board 2', 'Board 3']"
-                        outlined
-                        class="rounded-xl"
                       >
-                      </v-select
-                    ></v-col> </v-row
-                  ><v-row class="py-0">
-                    <v-col class="py-0"
-                      ><v-select
-                        label="Level"
-                        :items="['Level 1', 'Level 2', 'Level 3']"
-                        outlined
-                        class="rounded-xl"
-                      >
-                      </v-select
-                    ></v-col> </v-row
-                  ><v-row class="py-0">
-                    <v-col class="py-0"
-                      ><v-select
-                        label="Grade"
-                        :items="['Grade 1', 'Grade 2', 'Grade 3']"
-                        outlined
-                        class="rounded-xl"
-                      >
-                      </v-select
-                    ></v-col> </v-row
-                  ><v-row class="py-0">
-                    <v-col class="py-0"
-                      ><v-select
-                        label="Subject"
-                        :items="['Subject 1', 'Subject 2', 'Subject 3']"
-                        outlined
-                        class="rounded-xl"
-                      >
-                      </v-select
-                    ></v-col>
-                  </v-row>
+                        <v-select
+                          label="Experience (Years) *"
+                          :items="['1', '2', '3', '4', '5+']"
+                          outlined
+                          class="rounded-xl"
+                          v-model="professionalInfo.experienceYear"
+
+                        >
+                        </v-select>
+                      </v-col>
+                    </v-row>
+                    <v-row class="py-0">
+                      <v-col class="py-0"
+                        ><v-text-field
+                        v-model="professionalInfo.position"
+
+                          outlined
+                          label="Role/ Position *"
+                          rounded
+                          class="rounded-xl"
+                          :rules="[rules.required]"
+                          required
+                        ></v-text-field
+                      ></v-col> </v-row
+                    ><v-row class="py-0">
+                      <v-col class="py-0"
+                        ><v-select
+                          label="Employment Type"
+                          :items="['Permanent', 'Contract', 'Prohibition']"
+                          outlined
+                          class="rounded-xl"
+                          v-model="professionalInfo.employeeTypeId"
+
+                        >
+                        </v-select
+                      ></v-col>
+                    </v-row>
+
+                    <v-row class="py-0">
+                      <v-col class="py-0"
+                        ><v-select
+                          label="School / Institute"
+                          :items="['School 1', 'School 2', 'School 3']"
+                          outlined
+                          class="rounded-xl"
+                        >
+                        </v-select
+                      ></v-col>
+                    </v-row>
+                    <v-row class="py-0">
+                      <v-col class="py-0">
+                        <v-checkbox
+                          class="py-0"
+                          v-model="isCurrentlyWorking"
+                          label="I am currently working on this role / position."
+                        ></v-checkbox>
+                      </v-col>
+                    </v-row>
+                    <v-row class="py-0">
+                      <v-col cols="6" class="py-0"
+                        ><v-text-field
+                          outlined
+                          label="Start Date"
+                          append-icon="mdi-calendar"
+                          rounded
+                          class="rounded-xl"
+                        ></v-text-field
+                      ></v-col>
+                      <v-col cols="6" class="py-0"
+                        ><v-text-field
+                          :disabled="isCurrentlyWorking"
+                          outlined
+                          label="End Date"
+                          append-icon="mdi-calendar"
+                          rounded
+                          class="rounded-xl"
+                        ></v-text-field
+                      ></v-col>
+                    </v-row>
+                    <v-row class="py-0">
+                      <v-col class="py-0"
+                        ><v-select
+                          label="Board"
+                          :items="['Board 1', 'Board 2', 'Board 3']"
+                          outlined
+                          class="rounded-xl"
+                        >
+                        </v-select
+                      ></v-col> </v-row
+                    ><v-row class="py-0">
+                      <v-col class="py-0"
+                        ><v-select
+                          label="Level"
+                          :items="['Level 1', 'Level 2', 'Level 3']"
+                          outlined
+                          class="rounded-xl"
+                        >
+                        </v-select
+                      ></v-col> </v-row
+                    ><v-row class="py-0">
+                      <v-col class="py-0"
+                        ><v-select
+                          label="Grade"
+                          :items="['Grade 1', 'Grade 2', 'Grade 3']"
+                          outlined
+                          class="rounded-xl"
+                        >
+                        </v-select
+                      ></v-col> </v-row
+                    ><v-row class="py-0">
+                      <v-col class="py-0"
+                        ><v-select
+                          label="Subject"
+                          :items="['Subject 1', 'Subject 2', 'Subject 3']"
+                          outlined
+                          class="rounded-xl"
+                        >
+                        </v-select
+                      ></v-col>
+                    </v-row>
+                  </v-card>
                 </v-card>
-              </v-card>
+              </v-form>
+
               <v-container>
                 <v-row>
-                <v-btn
-                rounded
-                outlined
-                class="ma-4"
-                color="primary"
-                @click="e1 = 2"
-              >
-                BACK
-              </v-btn>
-              <v-btn rounded depressed color="secondaryAccent" class="primary--text my-4" @click="e1 = 1" to="/home">
-                SAVE DETAILS
-              </v-btn>
-              <v-spacer></v-spacer>
-              <v-btn rounded color="secondary" class="black--text ma-4" to="/home">
-                START TEST
-              </v-btn>
-              </v-row>
+                  <v-btn
+                    rounded
+                    outlined
+                    class="ma-4"
+                    color="primary"
+                    @click="e1 = 2"
+                  >
+                    BACK
+                  </v-btn>
+                  <v-btn
+                    rounded
+                    depressed
+                    color="secondaryAccent"
+                    class="primary--text my-4"
+                    @click="createUser"
+                  >
+                    SAVE DETAILS
+                  </v-btn>
+                  <v-spacer></v-spacer>
+                  <v-btn
+                    rounded
+                    color="secondary"
+                    class="black--text ma-4"
+                    @click="startTest"
+                  >
+                    START TEST
+                  </v-btn>
+                </v-row>
               </v-container>
             </v-stepper-content>
           </v-stepper-items>
@@ -518,6 +621,9 @@ import ImageInput from "../components/ImageInput.vue";
 import { validationMixin } from "vuelidate";
 import { required, email } from "vuelidate/lib/validators";
 import "../styles.css";
+import AddressController from "@/controllers/AddressController.js";
+import UsersController from "@/controllers/UsersController.js";
+
 export default {
   name: "RegistrationView",
   mixins: [validationMixin],
@@ -546,6 +652,68 @@ export default {
       saving: false,
       saved: false,
       email: "",
+      experienceYear: 0,
+      experienceMonth: 0,
+      rolePosition: "",
+      employeeTypeId: 0,
+      boardId: 0,
+      startDate: null,
+      endDate: null,
+      expandedPanelIndex: 0,
+      countries: [],
+      states: [],
+      districts: [],
+      cities: [],
+      talukas: [],
+      isCreatingUser: false,
+      successDialog: false,
+      errorDialog: false,
+      personalInfo: {
+        title: "",
+        firstName: "",
+        middleName: "",
+        lastName: "",
+        email: "",
+        dob: "",
+        gender: "",
+        phoneNo: "",
+        countryId: 0,
+        stateId: 0,
+        cityId: 0,
+        districtId: 0,
+        address: "",
+        pincode: 0,
+        isEmailVerified: false,
+        isPhoneVerified: false,
+      },
+      academicsInfo: [
+        {
+          institution: "",
+          programme: "",
+          startDate: Date.now(),
+          endDate: Date.now(),
+          fieldOfStudy: "",
+          extraCarricularActivities: "",
+          gradeScore: 0,
+          gradeType: "",
+          achievements: "",
+          certificate_url: "",
+        },
+      ],
+      professionalInfo: [
+        {
+          experienceYear: 0,
+          experienceMonth: 0,
+          position: "",
+          employeeTypeId: 0,
+          boardId: 0,
+          startDate: Date.now(),
+          endDate: Date.now(),
+        },
+      ],
+      rules: {
+        required: (value) => !!value || "Field is required",
+      },
     };
   },
   methods: {
@@ -572,6 +740,47 @@ export default {
         }
       );
     },
+    goToStep2() {
+      if (this.$refs.step1.validate()) {
+        this.e1 = 2;
+        this.expandedPanelIndex = 0;
+      }
+    },
+    goToStep3() {
+      if (this.$refs.step2.validate()) {
+        this.e1 = 3;
+        this.expandedPanelIndex = 0;
+      }
+    },
+    async createUser() {
+      console.log("function");
+      if (this.$refs.step3.validate()) {
+        console.log("userif conditon");
+        this.isCreatingUser = true;
+        const response = await UsersController.createUser({
+          personalInfo: this.personalInfo,
+          academicsInfo: this.academicsInfo,
+          professionalInfo: this.professionalInfo,
+        });
+        console.log(response);
+        if (response.data.success) {
+          this.isCreatingUser = false;
+          this.successDialog = true;
+          this.$router.push("/home");
+          // this.dialog = false;
+        } else {
+          this.isCreatingUser = false;
+          // this.errorMessage = response.data.error;
+          // this.errorDialog = true;
+        }
+      }
+    },
+    async startTest() {
+      console.log("function");
+      if (this.$refs.step3.validate()) {
+        this.$router.push("/home");
+      }
+    },
     onResize() {
       this.windowHeight = window.innerHeight;
     },
@@ -582,6 +791,40 @@ export default {
     savedAvatar() {
       this.saving = false;
       this.saved = true;
+    },
+    async fetchCountries() {
+      const response = await AddressController.getCountries();
+      this.countries = response.data.data.rows;
+      //console.log(this.countries);
+    },
+    async fetchStates() {
+      const response = await AddressController.getStates(
+        this.personalInfo.countryId
+      );
+      this.states = response.data.data.rows;
+      //console.log(this.states);
+    },
+    async fetchDistricts() {
+      const response = await AddressController.getDistricts(
+        this.personalInfo.stateId
+      );
+      this.districts = response.data.data.rows;
+      //console.log(this.districts);
+      this.fetchCities();
+    },
+    async fetchTalukas() {
+      const response = await AddressController.getTalukas(
+        this.personalInfo.districtId
+      );
+      this.talukas = response.data.data.rows;
+      //console.log(this.talukas);
+    },
+    async fetchCities() {
+      const response = await AddressController.getCities(
+        this.personalInfo.stateId
+      );
+      this.cities = response.data.data.rows;
+      //console.log(this.cities);
     },
   },
   watch: {
@@ -612,6 +855,9 @@ export default {
 
   beforeDestroy() {
     window.removeEventListener("resize", this.onResize);
+  },
+  created() {
+    this.fetchCountries();
   },
 };
 </script>
