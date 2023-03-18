@@ -13,7 +13,7 @@
         <v-card width="426px" height="435px">
           <div class="text-center pt-3 pl-8 pr-8" v-if="!isGenerateOtpClicked">
             <img src="../assets/icon.png" width="70px" height="70px" />
-            <v-card-title class="justify-center text-h5 font-weight-bold">
+            <v-card-title class="justify-center text-h5 font-weight-bold pt-0">
               Log In
             </v-card-title>
             <v-card-text class="text-center text-body-1 font-weight-light">
@@ -21,14 +21,14 @@
               <br />
               <span>Credentials To Continue Your Journey</span>
             </v-card-text>
-            <div v-if="usingPhone" class="text--disabled text-start font-weight-regular pb-1">
+            <div v-if="usingPhone && !vibgyouBool" class="text--disabled text-start font-weight-regular pb-1">
               Phone Number
             </div>
-            <div v-else class="text--disabled text-start font-weight-regular pb-1">
+            <div v-if="!usingPhone" class="text--disabled text-start font-weight-regular pb-1">
               Email Id
             </div>
 
-            <div class="rounded-xl phoneNo mb-8" v-if="usingPhone">
+            <div class="rounded-xl phoneNo mb-8" v-if="usingPhone && !vibgyouBool">
               <div class="phoneprefix pl-4" @click="ctList = true">
                 <img src="../assets/india.png" height="16px" />
                 <div class="pa-1">+91</div>
@@ -44,22 +44,29 @@
                 </div>
               </div>
             </div>
-            <v-form v-model="valid" v-else>
-              <v-text-field label="Enter Email Id" placeholder="Enter Email Id" :rules="emailRules" solo outlined
+            <v-form v-model="valid" v-if="!usingPhone || vibgyouBool">
+              <v-text-field :label="vibgyouBool && !usingPhone ? 'Enter Your Vibgyor Email Id' :' Enter Email Id'" placeholder="Enter Email Id" :rules="emailRules" solo outlined
                 v-model="email" class="rounded-xl"></v-text-field>
             </v-form>
             <v-btn v-if="usingPhone" color="secondary" class="black--text" rounded large width="100%" @click="generateOtp"
               :disabled="phoneNumber.length != 10">
               Generate OTP
             </v-btn>
-            <v-btn v-else color="secondary" class="black--text" rounded :disabled="!valid" large width="100%"
+            <v-btn v-else color="secondary" class="black--text pt-2" rounded :disabled="!valid" large width="100%"
               @click="generateOtp" disabled:isGenerateOtpClicked>
               Generate OTP
             </v-btn>
-            <v-card-title class="justify-center primary--text cursor" @click="usingPhone = !usingPhone">
-              <h6 v-if="usingPhone">Log In Using Email Address</h6>
-              <h6 v-else>Log In Using Mobile Number</h6>
+            <v-card-title class="justify-center primary--text cursor pb-0 pt-1">
+              <h6 v-if="usingPhone" @click="()=>{usingPhone = false }">Log In Using Email Address</h6>
+              <h6 v-if="!usingPhone && !vibgyouBool" @click="()=>{ usingPhone = true}" >Log In Using Mobile Number</h6>
             </v-card-title>
+
+            <v-card-text class="text-center text-body-1 font-weight-light d-inline px-0 py-0 ">
+              <span>Are You a {{ !vibgyouBool ? 'Vibgyor Teacher' : 'Job seeker'}} ? </span>
+              <span><v-card-text class="justify-center primary--text cursor d-inline pa-0"><span class="font-weight-medium" @click="()=>{vibgyouBool = !vibgyouBool; usingPhone = false}">Yes</span>
+                </v-card-text>
+              </span>
+            </v-card-text>
           </div>
           <v-card v-else height="100%" elevation="0">
             <v-card-title>
@@ -117,6 +124,7 @@ export default {
       otp: "",
       usingPhone: true,
       resendBool: false,
+      vibgyouBool: false,
       phoneNumber: "",
       ctList: false,
       email: "",
@@ -145,16 +153,16 @@ export default {
       this.otpTimmer();
 
     },
-    otpTimmer(){
+    otpTimmer() {
       this.timer = setInterval(() => {
-      if(this.time==0){
-        clearInterval(this.timer)  
-        this.resendBool = false;      
-      }
-      else{
-        this.time--;
-      }
-    }, 1000)
+        if (this.time == 0) {
+          clearInterval(this.timer)
+          this.resendBool = false;
+        }
+        else {
+          this.time--;
+        }
+      }, 1000)
     },
     async validateOTP() {
       const res = await AuthService.validateOTP({
@@ -175,7 +183,7 @@ export default {
 
   },
   created() {
-    
+
   },
 };
 </script>
