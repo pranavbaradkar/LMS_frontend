@@ -16,6 +16,7 @@ export default new Vuetify({
                 sufaceAccent: '#fbf5f2',
                 accent: '#6c367e',
                 error: '#b71c1c',
+                textcolor: '#005B64',
             },
         },
     },
