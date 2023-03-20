@@ -6,9 +6,8 @@ const instance = axios.create({
 
 export default {
     createUserProfessionalInfo: async function (formData) {
-        
         try {
-            const response = await instance.post('users/professional-infos', formData, {
+            const response = await instance.post('users/bulk/professional-infos', formData, {
                 headers: {
                     'Authorization': AuthService.getToken()
                 }

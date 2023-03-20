@@ -201,6 +201,7 @@
                               class="rounded-xl"
                               :rules="[rules.required]"
                               required
+                              @click="fetchCountries"
                               @change="fetchStates"
                             >
                             </v-select>
@@ -359,7 +360,7 @@
                           ><v-row class="py-0">
                             <v-col class="py-0"
                               ><v-text-field
-                                v-model="qualification.fieldOfStudy"
+                                v-model="qualification.field_of_study"
                                 outlined
                                 label="Field of Study"
                                 rounded
@@ -371,7 +372,7 @@
                           <v-row class="py-0">
                             <v-col cols="6" class="py-0"
                               ><v-text-field
-                                v-model="qualification.startDate"
+                                v-model="qualification.start_date"
                                 outlined
                                 label="Start Date"
                                 rounded
@@ -382,7 +383,7 @@
                             ></v-col>
                             <v-col cols="6" class="py-0"
                               ><v-text-field
-                                v-model="qualification.endDate"
+                                v-model="qualification.end_date"
                                 outlined
                                 label="End Date"
                                 rounded
@@ -396,9 +397,7 @@
                           <v-row class="py-0">
                             <v-col cols="12" class="py-0">
                               <v-text-field
-                                v-model="
-                                  qualification.extraCarricularActivities
-                                "
+                              
                                 outlined
                                 label="Extra Curricular Activities"
                                 rounded
@@ -409,7 +408,6 @@
                           <v-row class="py-0">
                             <v-col cols="12" class="py-0">
                               <v-text-field
-                                v-model="qualification.achievements"
                                 outlined
                                 label="Achievements"
                                 rounded
@@ -612,7 +610,7 @@
                                 class="rounded-xl"
                                 :rules="[rules.required]"
                                 required
-                                v-model="professional.experienceYear"
+                                v-model="professional.experience_year"
                               >
                               </v-text-field>
                             </v-col>
@@ -626,7 +624,7 @@
                                 type="number"
                                 outlined
                                 class="rounded-xl"
-                                v-model="professional.experienceMonth"
+                                v-model="professional.experience_month"
                               >
                               </v-text-field>
                             </v-col>
@@ -649,14 +647,12 @@
                             <v-col class="py-0"
                               ><v-select
                                 label="Employment Type"
-                                :items="[
-                                  'Permanent',
-                                  'Contract',
-                                  'Prohibition',
-                                ]"
+                                :items="employeeType"
                                 outlined
+                                item-value="id"
+                                item-text="name"
                                 class="rounded-xl"
-                                v-model="professional.employeeTypeId"
+                                v-model="professional.employee_type_id"
                               >
                               </v-select
                             ></v-col>
@@ -666,9 +662,13 @@
                             <v-col class="py-0"
                               ><v-select
                                 label="School / Institute"
-                                :items="['School 1', 'School 2', 'School 3']"
+                                :items="tableData"
                                 outlined
+                                item-value="id"
+                                item-text="name"
                                 class="rounded-xl"
+                                v-model="professional.school_id"
+                                @click="getSchool"
                               >
                               </v-select
                             ></v-col>
@@ -689,7 +689,7 @@
                                 label="Start Date"
                                 rounded
                                 class="rounded-xl"
-                                v-model="professional.startDate"
+                                v-model="professional.start_date"
                                 type="date"
                                 :rules="dobRules"
                               ></v-text-field
@@ -701,7 +701,7 @@
                                 label="End Date"
                                 rounded
                                 class="rounded-xl"
-                                v-model="professional.endDate"
+                                v-model="professional.end_date"
                                 type="date"
                                 :rules="dobRules"
                               ></v-text-field
@@ -711,43 +711,69 @@
                             <v-col class="py-0"
                               ><v-select
                                 label="Board"
-                                :items="['Board 1', 'Board 2', 'Board 3']"
+                                :items="tableBoards"
+                                item-text="name"
+                                item-value="id"
                                 outlined
                                 class="rounded-xl"
-                                v-model="professional.boardId"
+                                v-model="professional.board_id"
+                                @click="getBoards"
                               >
                               </v-select
                             ></v-col> </v-row
                           ><v-row class="py-0">
-                            <v-col class="py-0"
-                              ><v-select
+                            <v-col class="py-0">
+                              <v-autocomplete
+                               
+                                clearable
+                                deletable-chips
                                 label="Level"
-                                :items="['Level 1', 'Level 2', 'Level 3']"
                                 outlined
                                 class="rounded-xl"
+                                chips
+                                :search-input.sync="searchLevels"
+                                :items="tableLevels"
+                                multiple
+                                @click="getLevel"
+                                item-text="name"
+                                item-value="id"
                               >
-                              </v-select
-                            ></v-col> </v-row
+                              </v-autocomplete>
+                            </v-col> </v-row
                           ><v-row class="py-0">
                             <v-col class="py-0"
                               ><v-select
                                 label="Grade"
-                                :items="['Grade 1', 'Grade 2', 'Grade 3']"
+                                :items="tableGrades"
                                 outlined
+                                item-text="name"
+                                item-value="id"
+                                @click="getGrades"
                                 class="rounded-xl"
+                                
                               >
                               </v-select
                             ></v-col> </v-row
                           ><v-row class="py-0">
-                            <v-col class="py-0"
-                              ><v-select
+                            <v-col class="py-0">
+                              <v-autocomplete
+                                @click="getSubjects"
+                              
+                                clearable
+                                deletable-chips
                                 label="Subject"
-                                :items="['Subject 1', 'Subject 2', 'Subject 3']"
                                 outlined
                                 class="rounded-xl"
+                                chips
+                                :search-input.sync="searchSubject"
+                                :items="subjectData"
+                                multiple
+                                item-text="name"
+                                item-value="id"
+                               
                               >
-                              </v-select
-                            ></v-col>
+                              </v-autocomplete>
+                            </v-col>
                           </v-row>
                         </v-expansion-panel-content>
                       </v-expansion-panel>
@@ -984,6 +1010,11 @@ import AddressController from "@/controllers/AddressController.js";
 import PersonalInfoController from "@/controllers/PersonalInfoController.js";
 import AcademicsController from "@/controllers/AcademicsController.js";
 import ProfessionalController from "@/controllers/ProfessionalController.js";
+import SchoolController from "@/controllers/SchoolController";
+import BoardController from "@/controllers/BoardController";
+import LevelController from "@/controllers/LevelController";
+import GradeController from "@/controllers/GradeController";
+import SubjectController from "@/controllers/SubjectController";
 
 export default {
   name: "RegistrationView",
@@ -1026,9 +1057,24 @@ export default {
       districts: [],
       cities: [],
       talukas: [],
+      schoolData: "",
+      tableData: [],
+      tableBoards: [],
+      tableLevels: [],
+      tableGrades: [],
+      subjectData: [],
+      searchSubject: "",
+      searchLevels: "",
+      boardData: "",
       isCreatingUser: false,
       successDialog: false,
       errorDialog: false,
+      dobRules: [
+        (v) => !!v || "Date of Birth is required",
+        // (v) =>
+        //   /^\d{4}-\d{2}-\d{2}$/.test(v) ||
+        //   "Date of Birth must be in YYYY-MM-DD format",
+      ],
       personalInfo: {
         title: "",
         first_name: "",
@@ -1043,32 +1089,50 @@ export default {
         city_id: 0,
         address: "",
         pincode: 0,
-        is_email_verified: false,
-        is_phone_verified: false,
+       
       },
       academicQualifications: [
         {
           institution: "",
           programme: "",
-          startDate: Date.now(),
-          endDate: Date.now(),
-          fieldOfStudy: "",
-          extraCarricularActivities: "",
-          gradeScore: 0,
-          gradeType: "",
-          achievements: "",
+          start_date: Date.now(),
+          end_date: Date.now(),
+          field_of_study: "",
+          extra_carricular_activities: [],
+          grade_score: 0,
+          grade_type: "",
+          achievements: [],
           certificate_url: "",
         },
       ],
       professionalInfos: [
         {
-          experienceYear: 0,
-          experienceMonth: 0,
+          experience_year: 0,
+          experience_month: 0,
           position: "",
-          employeeTypeId: 0,
-          boardId: 0,
-          startDate: Date.now(),
-          endDate: Date.now(),
+          employee_type_id: 0,
+          board_id: 0,
+          start_date: Date.now(),
+          end_date: Date.now(),
+          level_ids: "",
+          grade_ids: "",
+          subject_ids: "",
+          school_id: 0,
+          other_name: "",
+        },
+      ],
+      employeeType: [
+        {
+          id: 1,
+          name: "Permanent",
+        },
+        {
+          id: 2,
+          name: "Contract",
+        },
+        {
+          id: 3,
+          name: "Prohibition",
         },
       ],
       rules: {
@@ -1101,6 +1165,7 @@ export default {
       );
     },
     async goToStep2() {
+     
       if (this.$refs.step1.validate()) {
         console.log("userif conditon");
         this.isCreatingUser = true;
@@ -1119,12 +1184,13 @@ export default {
       }
     },
     async goToStep3() {
+     
       if (this.$refs.step2.validate()) {
         console.log("userif conditon");
         this.isCreatingUser = true;
-        const response = await AcademicsController.createUserAcademicsInfo({
-          academicsInfo: this.academicQualifications,
-        });
+        const response = await AcademicsController.createUserAcademicsInfo(
+          this.academicQualifications
+        );
         console.log(response);
         if (response.data.success) {
           this.isCreatingUser = false;
@@ -1141,14 +1207,15 @@ export default {
       if (this.$refs.step3.validate()) {
         console.log("userif conditon");
         this.isCreatingUser = true;
-        const response = await ProfessionalController.createUserProfessionalInfo({
-          professionalInfo: this.professionalInfos,
-        });
+        const response =
+          await ProfessionalController.createUserProfessionalInfo(
+            this.professionalInfos
+          );
         console.log(response);
         if (response.data.success) {
           this.isCreatingUser = false;
           this.successDialog = true;
-          this.$router.push("/home");
+          this.$router.push("/");
         } else {
           this.isCreatingUser = false;
         }
@@ -1157,14 +1224,15 @@ export default {
     async startTest() {
       if (this.$refs.step3.validate()) {
         this.isCreatingUser = true;
-        const response = await ProfessionalController.createUserProfessionalInfo({
-          professionalInfo: this.professionalInfos,
-        });
+        const response =
+          await ProfessionalController.createUserProfessionalInfo(
+            this.professionalInfos
+          );
         console.log(response);
         if (response.data.success) {
           this.isCreatingUser = false;
           this.successDialog = true;
-          this.$router.push("/home");
+          this.$router.push("/");
         } else {
           this.isCreatingUser = false;
         }
@@ -1215,30 +1283,63 @@ export default {
       this.cities = response.data.data.rows;
       //console.log(this.cities);
     },
+    async getSchool() {
+      const response = await SchoolController.getSchool();
+      console.log(response);
+      this.schoolData = response.data.data;
+      this.tableData = this.schoolData.rows;
+    },
+    async getBoards() {
+      const response = await BoardController.getBoards();
+      console.log(response);
+      this.boardData = response.data.data;
+      this.tableBoards = this.boardData.rows;
+    },
+    async getLevel() {
+      const response = await LevelController.getLevel();
+      this.tableLevels = response.data.data.rows;
+      console.log("table data", this.tableData);
+    },
+    async getGrades() {
+      const response = await GradeController.getAllGrades();
+      console.log(response);
+      this.gradeData = response.data.data;
+      this.tableGrades = this.gradeData.rows;
+    },
+    async getSubjects() {
+      const response = await SubjectController.getSubject();
+      this.subjectData = response.data.data.rows;
+    },
+
     addAcademicQualification() {
       this.academicQualifications.push({
         institution: "",
         programme: "",
-        startDate: "",
-        endDate: "",
-        fieldOfStudy: "",
-        extraCarricularActivities: "",
-        gradeScore: "",
-        gradeType: "",
-        achievements: "",
+        start_date: "",
+        end_date: "",
+        field_of_study: "",
+        extra_carricular_activities: [],
+        grade_score: 0,
+        grade_type: "",
+        achievements: [],
         certificate_url: "",
       });
       this.expandedPanelIndex = this.academicQualifications.length - 1;
     },
     addProfessionalInfo() {
       this.professionalInfos.push({
-        experienceYear: 0,
-        experienceMonth: 0,
+        experience_year: 0,
+        experience_month: 0,
         position: "",
-        employeeTypeId: 0,
-        boardId: 0,
-        startDate: "",
-        endDate: "",
+        employee_type_id: 0,
+        board_id: 0,
+        start_date: "",
+        end_date: "",
+        level_ids: "",
+        grade_ids: "",
+        subject_ids: "",
+        school_id: 0,
+        other_name: "",
       });
       this.expandedPanelIndex = this.professionalInfos.length - 1;
     },
@@ -1252,6 +1353,25 @@ export default {
     },
   },
   computed: {
+    filteredLevel() {
+      if (this.searchLevels) {
+        const regex = new RegExp(this.searchLevels);
+        return this.tableLevels.filter((tableLevels) =>
+          regex.test(tableLevels.name)
+        );
+      } else {
+        return this.tableLevels;
+      }
+    },
+    filteredSubject() {
+      if (this.searchSubject) {
+        const regex = new RegExp(this.searchSubject);
+        return this.subject.filter((subject) => regex.test(subject.name));
+      } else {
+        return this.subject;
+      }
+    },
+
     getHeight() {
       return this.windowHeight;
     },
@@ -1271,9 +1391,6 @@ export default {
 
   beforeDestroy() {
     window.removeEventListener("resize", this.onResize);
-  },
-  created() {
-    this.fetchCountries();
   },
 };
 </script>

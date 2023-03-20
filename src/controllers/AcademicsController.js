@@ -8,7 +8,7 @@ export default {
     createUserAcademicsInfo: async function (formData) {
         
         try {
-            const response = await instance.post('users/academics', formData, {
+            const response = await instance.post('users/bulk/academics', formData, {
                 headers: {
                     'Authorization': AuthService.getToken()
                 }
