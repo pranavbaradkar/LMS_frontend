@@ -4,7 +4,7 @@
       <v-row>
         <!-- Left Card -->
         <v-col cols="3">
-          <v-card :height="getHeight" id="myScroll" class="pa-4">
+          <v-card :height="getHeight" id="myScroll" class="pa-4 pt-0">
             <v-card height="auto" id="circleCard" elevation="0">
               <v-card-title
                 class="text-subtitle font-weight-regular accent--text"
