@@ -66,7 +66,7 @@
               @click="generateOtp" disabled:isGenerateOtpClicked>
               Generate OTP
             </v-btn>
-            <v-card-title class="justify-center primary--text cursor">
+            <v-card-title class="justify-center primary--text cursor pt-6">
               <v-btn color="#CAECEF" class="textcolor--text" rounded large v-if="!usingPhone && !vibgyouBool"
                 @click="() => { usingPhone = true }" width="auto" height="30px">Log In Using Mobile Number </v-btn>
 
@@ -76,8 +76,8 @@
 
             <v-card-text class="text-center text-body-1 font-weight-light d-inline px-0  ">
               <span> {{ !vibgyouBool ? 'Are You already a VIBGYOU School Teacher ?' : 'Seeking a Teaching Job At VIBGYOR School ? '}} </span>
-              <v-card-text class="justify-center primary--text cursor d-inlines"><span class="font-weight-medium"
-                  @click="() => { vibgyouBool = !vibgyouBool; usingPhone = false }">Click Here To Log In</span>
+              <v-card-text @click="() => { vibgyouBool = !vibgyouBool; usingPhone = false }" class="justify-center primary--text cursor d-inlines"><span class="font-weight-medium"
+                  >Click Here To Log In</span>
               </v-card-text>
             </v-card-text>
           </div>
@@ -103,7 +103,7 @@
                 <v-otp-input length="6" type="number" v-model="otp"></v-otp-input>
                 <v-row justify="space-between" class="ma-0 pa-0">
                   <v-col class="ma-0 pa-0">
-                    <v-card-subtitle class="ma-0 pa-0">00:{{ time }}</v-card-subtitle>
+                    <v-card-subtitle class="ma-0 pa-0">0{{  Math.floor(time / 60) }}: <span v-if="(time%60) < 10">0</span>{{ time%60 }}</v-card-subtitle>
                   </v-col>
                   <v-col class="ma-0 pa-0">
                     <v-card-subtitle class="ma-0 pa-0 text-end">
@@ -144,7 +144,8 @@ export default {
       phoneNumber: "",
       ctList: false,
       email: "",
-      time: 60,
+      time: 119,
+      valid: false,
       emailRules: [
         (v) => !!v || "E-mail is required",
         (v) =>
@@ -159,7 +160,7 @@ export default {
       this.ctList = false;
     },
     generateOtp() {
-      this.time = 60;
+      this.time = 119;
       const response = AuthService.generateOTP({
         "email": this.email
       });
