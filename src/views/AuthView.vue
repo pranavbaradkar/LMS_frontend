@@ -55,7 +55,7 @@
               <span height="40px">
                 
                 <v-text-field label="Email address" :suffix="vibgyouBool?'@vegs.org':''"  :rules="emailRules" class="rounded-xl"
-                   placeholder="Enter Email Id" solo outlined></v-text-field>
+                   placeholder="Enter Email Id" v-model="email" solo outlined></v-text-field>
               </span>
             </v-form>
             <v-btn v-if="usingPhone" color="secondary" class="textcolor--text" rounded large width="100%" @click="generateOtp"

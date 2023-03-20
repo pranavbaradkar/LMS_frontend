@@ -15,16 +15,11 @@ export default {
     try {
       const response = await instance.post('auth/generate-otp', data);
       console.log(response);
-      //console.log(response);
       if (response.data.success) {
-        // const token = response.data.token
-        // localStorage.setItem(TOKEN_KEY, token)
         return response.data.success;
       }
     } catch (error) {
       if (error.response.status === 404) {
-        // handle 404 error
-        //console.log('Resource not found.')
         return error.response.success;
       } else {
         // handle other errors

@@ -8,8 +8,8 @@
       </v-list-item>
     </v-app-bar>
 
-    <v-card color="surface" :height="getHeight - 64 + 'px'">
-      <v-card-title class="justify-center mt-16"> Welcome </v-card-title>
+    <v-card color="surface" :height="getHeight - 64 + 'px'" depressed elevation="0">
+      <v-card-title class="justify-center mt-10"> Welcome </v-card-title>
       <v-card-subtitle class="text-center"
         ><span
           >Let's start your profile, connect to people you know, and engage
@@ -108,7 +108,8 @@
                         </v-row>
                         <v-row class="py-0">
                           <v-col class="py-0"
-                            ><v-text-field
+                            >
+                            <!-- <v-text-field
                               v-model="personalInfo.email"
                               outlined
                               label="Email Address *"
@@ -120,8 +121,24 @@
                               @input="$v.email.$touch()"
                               @blur="$v.email.$touch()"
                               :error-messages="emailErrors"
-                            ></v-text-field
-                          ></v-col>
+                            ></v-text-field> -->
+
+
+                            <v-text-field
+                              v-model="personalInfo.email"
+                              outlined
+                              label="Email Address *"
+                              rounded
+                              class="rounded-xl"
+                              :rules="emailRules"
+                              required
+                              @keydown.enter.prevent="submit"
+                          ></v-text-field>
+                        
+                        
+                        
+                        
+                        </v-col>
                         </v-row>
                         <v-row class="py-0">
                           <v-col class="py-0"
@@ -1028,7 +1045,7 @@ export default {
   },
   data() {
     return {
-      e1: 1,
+      e1: 2,
       experience: "Fresher",
       isCurrentlyWorking: false,
       isFetchingLocation: false,
@@ -1074,6 +1091,13 @@ export default {
         // (v) =>
         //   /^\d{4}-\d{2}-\d{2}$/.test(v) ||
         //   "Date of Birth must be in YYYY-MM-DD format",
+      ],
+      emailRules: [
+        (v) => !!v || "E-mail is required",
+        (v) =>
+          /^(([^<>()[\]\\.,;:\s@']+(\.[^<>()\\[\]\\.,;:\s@']+)*)|('.+'))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
+            v
+          ) || "E-mail must be valid",
       ],
       personalInfo: {
         title: "",
