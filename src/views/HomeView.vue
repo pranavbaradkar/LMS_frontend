@@ -1,6 +1,12 @@
 <template>
   <div class="surface">
-    <v-app-bar app elevation="0" color="surface" class="justify-start">
+    <v-app-bar 
+    app elevation="0" 
+    color="surface" 
+    class="justify-start"
+   
+    
+    >
       <v-list-item>
         <v-list-item-icon>
           <v-img src="../assets/logo.png" contain height="32"></v-img>
@@ -10,7 +16,10 @@
           <v-row class="align-center">
             <v-card-title class="font-weight-light pr-0">Hello,</v-card-title>
 
-            <v-card-title class="pl-2">Diksha 👋</v-card-title>
+            <v-card-title 
+            class="pl-2"
+            
+            >{{ userInfo.first_name }} 👋</v-card-title>
             <v-menu offset-y>
       <template v-slot:activator="{ on, attrs }">
         <v-btn
@@ -268,6 +277,8 @@
 <script>
 import "../styles.css";
 import AuthService from "../services/AuthService";
+import LogedInUserInfo from "@/controllers/LogedInUserInfo";
+
 export default {
   name: "HomeView",
   data() {
@@ -277,6 +288,7 @@ export default {
       model: null,
       dialog: false,
       windowHeight: window.innerHeight,
+      userInfo:{}
     };
   },
   computed: {
@@ -300,8 +312,17 @@ export default {
     logout(){
     AuthService.logout();
     this.$router.push("/login")
-  }
   },
+  async getUserInfo() {
+      const response = await LogedInUserInfo.getUserInfo();
+      console.log("responced" ,response);
+      this.userInfo = response.data.user;
+      console.log(this.userInfo);
+    },
+  },
+  created() {
+    this.getUserInfo();
+  }
  
 };
 </script>
