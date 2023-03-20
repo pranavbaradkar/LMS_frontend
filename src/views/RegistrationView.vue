@@ -78,7 +78,7 @@
                           ></v-col>
                           <v-col cols="4" class="py-0"
                             ><v-text-field
-                              v-model="personalInfo.firstName"
+                              v-model="personalInfo.first_name"
                               outlined
                               label="First Name *"
                               rounded
@@ -88,7 +88,7 @@
                             ></v-text-field></v-col
                           ><v-col cols="3" class="py-0"
                             ><v-text-field
-                              v-model="personalInfo.middleName"
+                              v-model="personalInfo.middle_name"
                               outlined
                               label="Middle Name"
                               rounded
@@ -96,7 +96,7 @@
                             ></v-text-field></v-col
                           ><v-col cols="3" class="py-0"
                             ><v-text-field
-                              v-model="personalInfo.lastName"
+                              v-model="personalInfo.last_name"
                               outlined
                               label="Last Name"
                               rounded
@@ -126,7 +126,7 @@
                         <v-row class="py-0">
                           <v-col class="py-0"
                             ><v-text-field
-                              v-model="personalInfo.phoneNumber"
+                              v-model="personalInfo.phone_no"
                               suffix="Verify"
                               label="Your 10-digit mobile no."
                               outlined
@@ -145,19 +145,23 @@
                             ><v-text-field
                               v-model="personalInfo.dob"
                               outlined
-                              label="Date of Birth (DDMMYY)"
-                              append-icon="mdi-calendar"
+                              label="Date of Birth (DDMMYY)*"
                               rounded
+                              type="date"
                               class="rounded-xl"
+                              :rules="[rules.required]"
+                              required
                             ></v-text-field
                           ></v-col>
                           <v-col cols="2" class="py-0">
                             <v-select
                               v-model="personalInfo.gender"
-                              label="Gender"
-                              :items="['Female', 'Male', 'Non-Binary']"
+                              label="Gender*"
+                              :items="['FEMALE', 'MALE']"
                               outlined
                               class="rounded-xl"
+                              :rules="[rules.required]"
+                              required
                             >
                             </v-select>
                           </v-col>
@@ -187,7 +191,7 @@
                         <v-row class="py-0">
                           <v-col cols="6" class="py-0">
                             <v-select
-                              v-model="personalInfo.countryId"
+                              v-model="personalInfo.country_id"
                               :value="country"
                               label="Country *"
                               :items="countries"
@@ -203,7 +207,7 @@
                           </v-col>
                           <v-col cols="6" class="py-0">
                             <v-select
-                              v-model="personalInfo.stateId"
+                              v-model="personalInfo.state_id"
                               :value="state"
                               label="State *"
                               :items="states"
@@ -223,14 +227,13 @@
                             <v-select
                               v-model="personalInfo.districtId"
                               :value="district"
-                              label="District *"
+                              label="District"
                               :items="districts"
                               outlined
                               class="rounded-xl"
                               item-value="id"
                               item-text="district_name"
                               :rules="[rules.required]"
-                              required
                               @change="fetchTalukas"
                             >
                             </v-select>
@@ -239,7 +242,7 @@
                             <v-select
                               v-model="personalInfo.talukTehsil"
                               :value="talukTehsil"
-                              label="Taluk / Tehsil *"
+                              label="Taluk / Tehsil"
                               :items="talukas"
                               outlined
                               class="rounded-xl"
@@ -252,7 +255,7 @@
                         ><v-row class="py-0">
                           <v-col cols="6" class="py-0">
                             <v-select
-                              v-model="personalInfo.cityVillageId"
+                              v-model="personalInfo.city_id"
                               :value="cityVillage"
                               label="City / Village *"
                               :items="cities"
@@ -312,7 +315,142 @@
               </v-card>
             </v-stepper-content>
             <!------------------------------------------ STEP 2 ------------------------------------------>
+
             <v-stepper-content step="2" v-model="expandedPanelIndex">
+              <v-form lazy-validation ref="step2">
+                <v-card elevation="0">
+                  <v-card class="pa-4" elevation="0">
+                    <v-expansion-panels v-model="expandedPanelIndex">
+                      <v-expansion-panel
+                        v-for="(qualification, index) in academicQualifications"
+                        :key="index"
+                        elevation="0"
+                      >
+                        <v-expansion-panel-header>{{
+                          "Qualification: " + index
+                        }}</v-expansion-panel-header>
+
+                        <v-expansion-panel-content>
+                          <v-row class="py-0">
+                            <v-col class="py-0"
+                              ><v-text-field
+                                v-model="qualification.institution"
+                                outlined
+                                label="School/ College/ University *"
+                                rounded
+                                class="rounded-xl"
+                                :rules="[rules.required]"
+                                required
+                              ></v-text-field
+                            ></v-col>
+                          </v-row>
+                          <v-row class="py-0">
+                            <v-col class="py-0"
+                              ><v-text-field
+                                v-model="qualification.programme"
+                                outlined
+                                label="Degree/ Diploma/ Certification *"
+                                rounded
+                                class="rounded-xl"
+                                :rules="[rules.required]"
+                                required
+                              ></v-text-field
+                            ></v-col> </v-row
+                          ><v-row class="py-0">
+                            <v-col class="py-0"
+                              ><v-text-field
+                                v-model="qualification.fieldOfStudy"
+                                outlined
+                                label="Field of Study"
+                                rounded
+                                class="rounded-xl"
+                              ></v-text-field
+                            ></v-col>
+                          </v-row>
+
+                          <v-row class="py-0">
+                            <v-col cols="6" class="py-0"
+                              ><v-text-field
+                                v-model="qualification.startDate"
+                                outlined
+                                label="Start Date"
+                                rounded
+                                class="rounded-xl"
+                                type="date"
+                                :rules="dobRules"
+                              ></v-text-field
+                            ></v-col>
+                            <v-col cols="6" class="py-0"
+                              ><v-text-field
+                                v-model="qualification.endDate"
+                                outlined
+                                label="End Date"
+                                rounded
+                                class="rounded-xl"
+                                type="date"
+                                :rules="dobRules"
+                              ></v-text-field
+                            ></v-col>
+                          </v-row>
+
+                          <v-row class="py-0">
+                            <v-col cols="12" class="py-0">
+                              <v-text-field
+                                v-model="
+                                  qualification.extraCarricularActivities
+                                "
+                                outlined
+                                label="Extra Curricular Activities"
+                                rounded
+                                class="rounded-xl"
+                              ></v-text-field>
+                            </v-col>
+                          </v-row>
+                          <v-row class="py-0">
+                            <v-col cols="12" class="py-0">
+                              <v-text-field
+                                v-model="qualification.achievements"
+                                outlined
+                                label="Achievements"
+                                rounded
+                                class="rounded-xl"
+                              ></v-text-field>
+                            </v-col>
+                          </v-row>
+                        </v-expansion-panel-content>
+                      </v-expansion-panel>
+                    </v-expansion-panels>
+
+                    <v-row>
+                      <v-col class="mt-4">
+                        <v-btn text @click="addAcademicQualification"
+                          >Add More Qualification</v-btn
+                        >
+                      </v-col>
+                    </v-row>
+                  </v-card>
+                </v-card>
+              </v-form>
+              <v-btn
+                rounded
+                outlined
+                class="mx-4 my-4"
+                color="primary"
+                @click="e1 = 1"
+              >
+                BACK
+              </v-btn>
+              <v-btn
+                rounded
+                color="secondary"
+                class="black--text"
+                @click="goToStep3"
+              >
+                NEXT
+              </v-btn>
+            </v-stepper-content>
+
+            <!-- <v-stepper-content step="2" v-model="expandedPanelIndex">
               <v-form lazy-validation ref="step2">
                 <v-card elevation="0" id="myScroll">
                   <v-card
@@ -323,7 +461,7 @@
                     <v-row class="py-0">
                       <v-col class="py-0"
                         ><v-text-field
-                        v-model="academicsInfo.institution"
+                          v-model="academicsInfo.institution"
                           outlined
                           label="School/ College/ University *"
                           rounded
@@ -336,7 +474,7 @@
                     <v-row class="py-0">
                       <v-col class="py-0"
                         ><v-text-field
-                        v-model="academicsInfo.programme"
+                          v-model="academicsInfo.programme"
                           outlined
                           label="Degree/ Diploma/ Certification *"
                           rounded
@@ -348,8 +486,7 @@
                     ><v-row class="py-0">
                       <v-col class="py-0"
                         ><v-text-field
-                        v-model="academicsInfo.fieldOfStudy"
-
+                          v-model="academicsInfo.fieldOfStudy"
                           outlined
                           label="Field of Study *"
                           rounded
@@ -363,8 +500,7 @@
                     <v-row class="py-0">
                       <v-col cols="6" class="py-0"
                         ><v-text-field
-                        v-model="academicsInfo.startDate"
-
+                          v-model="academicsInfo.startDate"
                           outlined
                           label="Start Date"
                           append-icon="mdi-calendar"
@@ -374,8 +510,7 @@
                       ></v-col>
                       <v-col cols="6" class="py-0"
                         ><v-text-field
-                        v-model="academicsInfo.endDate"
-
+                          v-model="academicsInfo.endDate"
                           outlined
                           label="End Date"
                           append-icon="mdi-calendar"
@@ -388,9 +523,7 @@
                     <v-row class="py-0">
                       <v-col cols="12" class="py-0">
                         <v-text-field
-                        v-model="
-                        academicsInfo.extraCarricularActivities
-                      "
+                          v-model="academicsInfo.extraCarricularActivities"
                           outlined
                           label="Extra Curricular Activities"
                           rounded
@@ -401,8 +534,7 @@
                     <v-row class="py-0">
                       <v-col cols="12" class="py-0">
                         <v-text-field
-                        v-model="academicsInfo.achievements"
-
+                          v-model="academicsInfo.achievements"
                           outlined
                           label="Achievements"
                           rounded
@@ -431,9 +563,239 @@
               >
                 NEXT
               </v-btn>
-            </v-stepper-content>
+            </v-stepper-content> -->
+
             <!------------------------------------------ STEP 3 ------------------------------------------>
+
             <v-stepper-content step="3" v-model="expandedPanelIndex">
+              <v-form lazy-validation ref="step3">
+                <v-card elevation="0">
+                  <v-card class="pa-4" elevation="0">
+                    <v-expansion-panels v-model="expandedPanelIndex">
+                      <v-expansion-panel
+                        v-for="(professional, index) in professionalInfos"
+                        :key="index"
+                        elevation="0"
+                      >
+                        <v-expansion-panel-header>{{
+                          "Professional: " + index
+                        }}</v-expansion-panel-header>
+                        <v-expansion-panel-content>
+                          <v-row class="py-0">
+                            <v-col cols="3" class="py-0"
+                              ><v-radio-group
+                                mandatory
+                                row
+                                v-model="experience"
+                                :rules="[rules.required]"
+                                required
+                              >
+                                <v-radio
+                                  label="Fresher"
+                                  value="Fresher"
+                                ></v-radio>
+                                <v-radio
+                                  label="Experienced"
+                                  value="Experienced"
+                                >
+                                </v-radio> </v-radio-group
+                            ></v-col>
+                            <v-col
+                              v-if="experience == 'Experienced'"
+                              cols="2"
+                              class="py-0"
+                            >
+                              <v-text-field
+                                label="Years *"
+                                type="number"
+                                outlined
+                                class="rounded-xl"
+                                :rules="[rules.required]"
+                                required
+                                v-model="professional.experienceYear"
+                              >
+                              </v-text-field>
+                            </v-col>
+                            <v-col
+                              v-if="experience == 'Experienced'"
+                              cols="2"
+                              class="py-0"
+                            >
+                              <v-text-field
+                                label="Month"
+                                type="number"
+                                outlined
+                                class="rounded-xl"
+                                v-model="professional.experienceMonth"
+                              >
+                              </v-text-field>
+                            </v-col>
+                          </v-row>
+                          <v-row class="py-0">
+                            <v-col class="py-0"
+                              ><v-text-field
+                                outlined
+                                label="Role/ Position *"
+                                rounded
+                                class="rounded-xl"
+                                counter="100"
+                                maxLength="100"
+                                :rules="[rules.required]"
+                                required
+                                v-model="professional.position"
+                              ></v-text-field
+                            ></v-col> </v-row
+                          ><v-row class="py-0">
+                            <v-col class="py-0"
+                              ><v-select
+                                label="Employment Type"
+                                :items="[
+                                  'Permanent',
+                                  'Contract',
+                                  'Prohibition',
+                                ]"
+                                outlined
+                                class="rounded-xl"
+                                v-model="professional.employeeTypeId"
+                              >
+                              </v-select
+                            ></v-col>
+                          </v-row>
+
+                          <v-row class="py-0">
+                            <v-col class="py-0"
+                              ><v-select
+                                label="School / Institute"
+                                :items="['School 1', 'School 2', 'School 3']"
+                                outlined
+                                class="rounded-xl"
+                              >
+                              </v-select
+                            ></v-col>
+                          </v-row>
+                          <v-row class="py-0">
+                            <v-col class="py-0">
+                              <v-checkbox
+                                class="py-0"
+                                v-model="isCurrentlyWorking"
+                                label="I am currently working on this role / position."
+                              ></v-checkbox>
+                            </v-col>
+                          </v-row>
+                          <v-row class="py-0">
+                            <v-col cols="6" class="py-0"
+                              ><v-text-field
+                                outlined
+                                label="Start Date"
+                                rounded
+                                class="rounded-xl"
+                                v-model="professional.startDate"
+                                type="date"
+                                :rules="dobRules"
+                              ></v-text-field
+                            ></v-col>
+                            <v-col cols="6" class="py-0"
+                              ><v-text-field
+                                :disabled="isCurrentlyWorking"
+                                outlined
+                                label="End Date"
+                                rounded
+                                class="rounded-xl"
+                                v-model="professional.endDate"
+                                type="date"
+                                :rules="dobRules"
+                              ></v-text-field
+                            ></v-col>
+                          </v-row>
+                          <v-row class="py-0">
+                            <v-col class="py-0"
+                              ><v-select
+                                label="Board"
+                                :items="['Board 1', 'Board 2', 'Board 3']"
+                                outlined
+                                class="rounded-xl"
+                                v-model="professional.boardId"
+                              >
+                              </v-select
+                            ></v-col> </v-row
+                          ><v-row class="py-0">
+                            <v-col class="py-0"
+                              ><v-select
+                                label="Level"
+                                :items="['Level 1', 'Level 2', 'Level 3']"
+                                outlined
+                                class="rounded-xl"
+                              >
+                              </v-select
+                            ></v-col> </v-row
+                          ><v-row class="py-0">
+                            <v-col class="py-0"
+                              ><v-select
+                                label="Grade"
+                                :items="['Grade 1', 'Grade 2', 'Grade 3']"
+                                outlined
+                                class="rounded-xl"
+                              >
+                              </v-select
+                            ></v-col> </v-row
+                          ><v-row class="py-0">
+                            <v-col class="py-0"
+                              ><v-select
+                                label="Subject"
+                                :items="['Subject 1', 'Subject 2', 'Subject 3']"
+                                outlined
+                                class="rounded-xl"
+                              >
+                              </v-select
+                            ></v-col>
+                          </v-row>
+                        </v-expansion-panel-content>
+                      </v-expansion-panel>
+                    </v-expansion-panels>
+                    <v-row>
+                      <v-col class="mt-4">
+                        <v-btn text @click="addProfessionalInfo"
+                          >Add More Qualification</v-btn
+                        >
+                      </v-col>
+                    </v-row>
+                  </v-card>
+                </v-card>
+              </v-form>
+              <v-container>
+                <v-row>
+                  <v-btn
+                    rounded
+                    outlined
+                    class="ma-4"
+                    color="primary"
+                    @click="e1 = 2"
+                  >
+                    BACK
+                  </v-btn>
+                  <v-btn
+                    rounded
+                    depressed
+                    color="secondaryAccent"
+                    class="primary--text my-4"
+                    @click="saveDetails"
+                  >
+                    SAVE DETAILS
+                  </v-btn>
+                  <v-spacer></v-spacer>
+                  <v-btn
+                    rounded
+                    color="secondary"
+                    class="black--text ma-4"
+                    @click="startTest"
+                  >
+                    START TEST
+                  </v-btn>
+                </v-row>
+              </v-container>
+            </v-stepper-content>
+
+            <!-- <v-stepper-content step="3" v-model="expandedPanelIndex">
               <v-form lazy-validation ref="step3">
                 <v-card elevation="0" id="myScroll">
                   <v-card
@@ -459,7 +821,6 @@
                           outlined
                           class="rounded-xl"
                           v-model="professionalInfo.experienceYear"
-
                         >
                         </v-select>
                       </v-col>
@@ -467,8 +828,7 @@
                     <v-row class="py-0">
                       <v-col class="py-0"
                         ><v-text-field
-                        v-model="professionalInfo.position"
-
+                          v-model="professionalInfo.position"
                           outlined
                           label="Role/ Position *"
                           rounded
@@ -485,7 +845,6 @@
                           outlined
                           class="rounded-xl"
                           v-model="professionalInfo.employeeTypeId"
-
                         >
                         </v-select
                       ></v-col>
@@ -608,7 +967,7 @@
                   </v-btn>
                 </v-row>
               </v-container>
-            </v-stepper-content>
+            </v-stepper-content> -->
           </v-stepper-items>
         </v-stepper>
       </v-container>
@@ -622,7 +981,9 @@ import { validationMixin } from "vuelidate";
 import { required, email } from "vuelidate/lib/validators";
 import "../styles.css";
 import AddressController from "@/controllers/AddressController.js";
-import UsersController from "@/controllers/UsersController.js";
+import PersonalInfoController from "@/controllers/PersonalInfoController.js";
+import AcademicsController from "@/controllers/AcademicsController.js";
+import ProfessionalController from "@/controllers/ProfessionalController.js";
 
 export default {
   name: "RegistrationView",
@@ -670,23 +1031,22 @@ export default {
       errorDialog: false,
       personalInfo: {
         title: "",
-        firstName: "",
-        middleName: "",
-        lastName: "",
+        first_name: "",
+        middle_name: "",
+        last_name: "",
         email: "",
         dob: "",
         gender: "",
-        phoneNo: "",
-        countryId: 0,
-        stateId: 0,
-        cityId: 0,
-        districtId: 0,
+        phone_no: "",
+        country_id: 0,
+        state_id: 0,
+        city_id: 0,
         address: "",
         pincode: 0,
-        isEmailVerified: false,
-        isPhoneVerified: false,
+        is_email_verified: false,
+        is_phone_verified: false,
       },
-      academicsInfo: [
+      academicQualifications: [
         {
           institution: "",
           programme: "",
@@ -700,7 +1060,7 @@ export default {
           certificate_url: "",
         },
       ],
-      professionalInfo: [
+      professionalInfos: [
         {
           experienceYear: 0,
           experienceMonth: 0,
@@ -740,45 +1100,74 @@ export default {
         }
       );
     },
-    goToStep2() {
+    async goToStep2() {
       if (this.$refs.step1.validate()) {
-        this.e1 = 2;
-        this.expandedPanelIndex = 0;
+        console.log("userif conditon");
+        this.isCreatingUser = true;
+        const response = await PersonalInfoController.createUserPersonalInfo(
+          this.personalInfo
+        );
+        console.log(response);
+        if (response.data.success) {
+          this.isCreatingUser = false;
+          this.successDialog = true;
+          this.e1 = 2;
+          this.expandedPanelIndex = 0;
+        } else {
+          this.isCreatingUser = false;
+        }
       }
     },
-    goToStep3() {
+    async goToStep3() {
       if (this.$refs.step2.validate()) {
-        this.e1 = 3;
-        this.expandedPanelIndex = 0;
+        console.log("userif conditon");
+        this.isCreatingUser = true;
+        const response = await AcademicsController.createUserAcademicsInfo({
+          academicsInfo: this.academicQualifications,
+        });
+        console.log(response);
+        if (response.data.success) {
+          this.isCreatingUser = false;
+          this.successDialog = true;
+          this.e1 = 3;
+          this.expandedPanelIndex = 0;
+        } else {
+          this.isCreatingUser = false;
+        }
       }
     },
-    async createUser() {
+    async saveDetails() {
       console.log("function");
       if (this.$refs.step3.validate()) {
         console.log("userif conditon");
         this.isCreatingUser = true;
-        const response = await UsersController.createUser({
-          personalInfo: this.personalInfo,
-          academicsInfo: this.academicsInfo,
-          professionalInfo: this.professionalInfo,
+        const response = await ProfessionalController.createUserProfessionalInfo({
+          professionalInfo: this.professionalInfos,
         });
         console.log(response);
         if (response.data.success) {
           this.isCreatingUser = false;
           this.successDialog = true;
           this.$router.push("/home");
-          // this.dialog = false;
         } else {
           this.isCreatingUser = false;
-          // this.errorMessage = response.data.error;
-          // this.errorDialog = true;
         }
       }
     },
     async startTest() {
-      console.log("function");
       if (this.$refs.step3.validate()) {
-        this.$router.push("/home");
+        this.isCreatingUser = true;
+        const response = await ProfessionalController.createUserProfessionalInfo({
+          professionalInfo: this.professionalInfos,
+        });
+        console.log(response);
+        if (response.data.success) {
+          this.isCreatingUser = false;
+          this.successDialog = true;
+          this.$router.push("/home");
+        } else {
+          this.isCreatingUser = false;
+        }
       }
     },
     onResize() {
@@ -799,14 +1188,14 @@ export default {
     },
     async fetchStates() {
       const response = await AddressController.getStates(
-        this.personalInfo.countryId
+        this.personalInfo.country_id
       );
       this.states = response.data.data.rows;
       //console.log(this.states);
     },
     async fetchDistricts() {
       const response = await AddressController.getDistricts(
-        this.personalInfo.stateId
+        this.personalInfo.state_id
       );
       this.districts = response.data.data.rows;
       //console.log(this.districts);
@@ -821,10 +1210,37 @@ export default {
     },
     async fetchCities() {
       const response = await AddressController.getCities(
-        this.personalInfo.stateId
+        this.personalInfo.state_id
       );
       this.cities = response.data.data.rows;
       //console.log(this.cities);
+    },
+    addAcademicQualification() {
+      this.academicQualifications.push({
+        institution: "",
+        programme: "",
+        startDate: "",
+        endDate: "",
+        fieldOfStudy: "",
+        extraCarricularActivities: "",
+        gradeScore: "",
+        gradeType: "",
+        achievements: "",
+        certificate_url: "",
+      });
+      this.expandedPanelIndex = this.academicQualifications.length - 1;
+    },
+    addProfessionalInfo() {
+      this.professionalInfos.push({
+        experienceYear: 0,
+        experienceMonth: 0,
+        position: "",
+        employeeTypeId: 0,
+        boardId: 0,
+        startDate: "",
+        endDate: "",
+      });
+      this.expandedPanelIndex = this.professionalInfos.length - 1;
     },
   },
   watch: {
