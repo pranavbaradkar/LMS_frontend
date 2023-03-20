@@ -1045,7 +1045,7 @@ export default {
   },
   data() {
     return {
-      e1: 2,
+      e1: 1,
       experience: "Fresher",
       isCurrentlyWorking: false,
       isFetchingLocation: false,
