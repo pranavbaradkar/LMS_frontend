@@ -13,6 +13,7 @@ export default {
 
 
     try {
+      console.log("generating otp",data)
       const response = await instance.post('auth/generate-otp', data);
       console.log(response);
       if (response.data.success) {
@@ -29,6 +30,9 @@ export default {
     }
 
   },
+
+  
+
   async validateOTP(data) {
     try {
       // console.log("validate data", data)
@@ -44,6 +48,7 @@ export default {
       alert(error.response.data.error)
     }
   },
+  
   logout: function () {
     localStorage.removeItem(TOKEN_KEY)
     

@@ -54,11 +54,11 @@
             </v-text-field>  -->
               <span height="40px">
                 
-                <v-text-field label="Email address" :suffix="vibgyouBool?'@vegs.org':''"  :rules="emailRules" class="rounded-xl"
+                <v-text-field label="Email address" :suffix="vibgyouBool?'@vgos.org':''"  :rules="emailRules" class="rounded-xl"
                    placeholder="Enter Email Id" v-model="email" solo outlined></v-text-field>
               </span>
             </v-form>
-            <v-btn v-if="usingPhone" color="secondary" class="textcolor--text" rounded large width="100%" @click="generateOtp"
+            <v-btn v-if="usingPhone" color="secondary" class="textcolor--text" rounded large width="100%" @click="generatePhoneOtp"
               :disabled="phoneNumber.length != 10">
               Generate OTP
             </v-btn>
@@ -75,7 +75,7 @@
             </v-card-title>
 
             <v-card-text class="text-center text-body-1 font-weight-light d-inline px-0  ">
-              <span> {{ !vibgyouBool ? 'Are You already a VIBGYOU School Teacher ?' : 'Seeking a Teaching Job At VIBGYOR School ? '}} </span>
+              <span> {{ !vibgyouBool ? 'Are You already a VIBGYOR School Teacher ?' : 'Seeking a Teaching Job At VIBGYOR School ? '}} </span>
               <v-card-text @click="() => { vibgyouBool = !vibgyouBool; usingPhone = false }" class="justify-center primary--text cursor d-inlines"><span class="font-weight-medium"
                   >Click Here To Log In</span>
               </v-card-text>
@@ -164,12 +164,24 @@ export default {
       const response = AuthService.generateOTP({
         "email": this.email
       });
+      
 
       console.log("opt send response", response)
       this.isGenerateOtpClicked = true;
       this.otpTimmer();
 
     },
+    generatePhoneOtp(){
+      this.time = 119;
+      const response = AuthService.generateOTP({
+    "mobile": "+91"+this.phoneNumber
+});
+      
+
+      console.log("opt send response", response)
+      this.isGenerateOtpClicked = true;
+      this.otpTimmer();
+      },
     otpTimmer() {
       this.timer = setInterval(() => {
         if (this.time == 0) {
@@ -182,7 +194,9 @@ export default {
       }, 1000)
     },
     async validateOTP() {
-      const res = await AuthService.validateOTP({
+      var res = null;
+      if(!this.usingPhone){
+      res = await AuthService.validateOTP({
         "email": this.email,
         "otp": this.otp,
         "debug": false
@@ -192,6 +206,20 @@ export default {
 
         this.$router.push("/");
       }
+    }
+      else {
+       res = await AuthService.validateOTP({
+        "phone": "91"+this.phoneNumber,
+        "otp": this.otp,
+        "debug": false
+      });
+      console.log(res)
+      if (res) {
+
+        this.$router.push("/");
+      }
+      }
+      
 
       // this.isGenerateOtpClicked = true;
     },
