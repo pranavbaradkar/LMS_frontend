@@ -10,32 +10,26 @@
           <v-row class="align-center">
             <v-card-title class="font-weight-light pr-0">Hello,</v-card-title>
 
-            <v-card-title class="pl-2">Diksha 👋</v-card-title>
+            <v-card-title class="pl-2"
+              >{{ userInfo.first_name }} 👋</v-card-title
+            >
             <v-menu offset-y>
-      <template v-slot:activator="{ on, attrs }">
-        <v-btn
-          color="primary"
-          dark
-          v-bind="attrs"
-          v-on="on"
-          text
-          icon
-        >
-        <v-avatar>
-              <v-img src="../assets/user.png"></v-img>
-        </v-avatar>
-        </v-btn>
-      </template>
-      <!-- <v-list>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn color="primary" dark v-bind="attrs" v-on="on" text icon>
+                  <v-avatar>
+                    <v-img src="../assets/user.png"></v-img>
+                  </v-avatar>
+                </v-btn>
+              </template>
+              <!-- <v-list>
         <v-list-item      
         >
           <v-list-item-title >Log out</v-list-item-title>
         </v-list-item>
 
       </v-list> -->
-      <v-btn @click="logout">logout</v-btn>
-    </v-menu>
-            
+              <v-btn @click="logout">logout</v-btn>
+            </v-menu>
           </v-row>
         </v-list-item-action>
       </v-list-item>
@@ -206,60 +200,56 @@
           </v-card>
         </v-img>
         <div class="text-h6 py-4">Other Tests</div>
-   
+
         <div class="slideparent">
-     
           <v-slide-group
             v-model="model"
             class="pa-0 ma-0 surface"
             center-active
             show-arrows
           >
-            <v-slide-item v-for="n in 15" :key="n">
-         <div class="mytestcard">
-              <v-card              
-               class="mx-auto mr-3 movingcard"
-                max-width="344"
-                outlined
-                height="180"                
-              >
-                <v-list-item three-line>
-                  <v-list-item-avatar
-                    tile
-                    size="80"
-                    color="grey"
-                  ></v-list-item-avatar>
-                  <v-list-item-content>
-                    <v-list-item-title class="text-h7 mb-0 text-wrap">
-                      Trained Graduate Teacher Assessment (VGOS)
-                    </v-list-item-title>
-                    <v-list-item-subtitle>
-                      This course will provide you with in Depth knowledge of
-                      Child development. it will take you though all the
-                      developmental domens</v-list-item-subtitle
-                    >
-                  </v-list-item-content>
-                </v-list-item>
-                <v-expand-transition>
-                  <v-card-actions>
-                    <v-btn
-                      block
-                      color="secondary"
-                      class="black--text"
-                      rounded
-                      to="/assessment"
-                      >START TEST</v-btn
-                    >
-                  </v-card-actions>
-                </v-expand-transition>
-              </v-card>
-            </div>
+            <v-slide-item v-for="assessment in allAssessments" :key="assessment.id">
+              <div class="mytestcard">
+                <v-card
+                  class="mx-auto mr-3 movingcard"
+                  min-width="344"
+                  max-width="344"
+                  outlined
+                  height="180"
+                >
+                  <v-list-item three-line>
+                    <v-list-item-avatar
+                      tile
+                      size="80"
+                      color="grey"
+                    ></v-list-item-avatar>
+                    <v-list-item-content>
+                      <v-list-item-title class="text-h7 mb-0 text-wrap">
+                        {{ assessment.name }}
+                      </v-list-item-title>
+                      <v-list-item-subtitle>
+                        {{ assessment.instructions }}
+                        </v-list-item-subtitle
+                      >
+                    </v-list-item-content>
+                  </v-list-item>
+                  <v-expand-transition>
+                    <v-card-actions>
+                      <v-btn
+                        block
+                        color="secondary"
+                        class="black--text"
+                        rounded
+                        to="/assessment"
+                        >START TEST</v-btn
+                      >
+                    </v-card-actions>
+                  </v-expand-transition>
+                </v-card>
+              </div>
             </v-slide-item>
           </v-slide-group>
         </div>
-
- 
-
       </v-card>
     </v-container>
   </div>
@@ -268,6 +258,11 @@
 <script>
 import "../styles.css";
 import AuthService from "../services/AuthService";
+import LogedInUserInfo from "@/controllers/LogedInUserInfo";
+import AssessmentController from "@/controllers/AssessmentController";
+import RecommendedAssessmentController from "@/controllers/RecommendedAssessmentController";
+
+
 export default {
   name: "HomeView",
   data() {
@@ -277,6 +272,9 @@ export default {
       model: null,
       dialog: false,
       windowHeight: window.innerHeight,
+      userInfo: {},
+      allAssessments: [],
+      recommendedAssessment:{},
     };
   },
   computed: {
@@ -297,12 +295,31 @@ export default {
     onResize() {
       this.windowHeight = window.innerHeight;
     },
-    logout(){
-    AuthService.logout();
-    this.$router.push("/login")
-  }
+    logout() {
+      AuthService.logout();
+      this.$router.push("/login");
+    },
+    async getUserInfo() {
+      const response = await LogedInUserInfo.getUserInfo();
+      this.userInfo = response.data.user;
+    },
+    async getAllAssessment() {
+      const response = await AssessmentController.getAllAssessment();
+      this.allAssessments = response.data.data;
+      
+    },
+    async getRecommendedAssessment() {
+      const response = await RecommendedAssessmentController.getRecommendedAssessment();
+      console.log("response", response);
+      this.recommendedAssessment = response.data.data;
+      console.log("data" ,this.recommendedAssessment);
+    },
   },
- 
+  created() {
+    this.getUserInfo();
+    this.getAllAssessment();
+    this.getRecommendedAssessment();
+  },
 };
 </script>
    
