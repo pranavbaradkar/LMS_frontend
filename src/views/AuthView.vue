@@ -201,22 +201,29 @@ export default {
         "otp": this.otp,
         "debug": false
       });
+      
       console.log(res)
-      if (res) {
+        if (res.is_profile_created) {
 
         this.$router.push("/");
-      }
+        }
+        else {
+        this.$router.push("/register");
+        }
     }
       else {
        res = await AuthService.validateOTP({
-        "phone": "91"+this.phoneNumber,
+        "mobile": "+91"+this.phoneNumber,
         "otp": this.otp,
         "debug": false
       });
       console.log(res)
-      if (res) {
+      if (res.is_profile_created) {
 
         this.$router.push("/");
+      }
+      else {
+        this.$router.push("/register");
       }
       }
       

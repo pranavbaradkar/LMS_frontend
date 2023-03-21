@@ -35,13 +35,13 @@ export default {
 
   async validateOTP(data) {
     try {
-      // console.log("validate data", data)
-      const response = await instance.post('auth/validate-otp', data);
-      //console.log(response);
+      console.log("validate data", data)
+      const response = await instance.post('auth/validate-otp', data); 
+      console.log(response);
       if (response.data.success) {
         const token = response.data.token
         localStorage.setItem(TOKEN_KEY, token)
-        return response.data.success;
+        return response.data;
       }
     }
      catch (error) {      
