@@ -1,0 +1,12 @@
+{
+  "hosting": {
+    "site":"teachers-assessment",
+
+    "public": "dist",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  }
+}
