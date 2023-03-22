@@ -152,9 +152,10 @@
                               counter="10"
                               prefix="+91"
                               type="number"
-                              :rules="[rules.required]"
+                              :rules="[rules.required, (v) => (v && v.length >= 10 && v.length<=10) || 'Mobile number must be 10 digit']"
                               required
-                            ></v-text-field
+                            >{{ userInfo.phone_no }}
+                            </v-text-field
                           ></v-col>
                         </v-row>
                         <v-row class="py-0">
@@ -291,10 +292,12 @@
                               v-model="personalInfo.pincode"
                               :value="pinCode"
                               outlined
+                              type="number"
+                            
                               label="Pin Code *"
                               rounded
                               class="rounded-xl"
-                              :rules="[rules.required]"
+                              :rules="[rules.required, (v) => (v && v.length >= 6 && v.length<=6) || 'Pincode must be 6 digit']"
                               required
                             ></v-text-field>
                           </v-col>
@@ -1032,6 +1035,8 @@ import BoardController from "@/controllers/BoardController";
 import LevelController from "@/controllers/LevelController";
 import GradeController from "@/controllers/GradeController";
 import SubjectController from "@/controllers/SubjectController";
+import LogedInUserInfo from "@/controllers/LogedInUserInfo";
+
 
 export default {
   name: "RegistrationView",
@@ -1083,6 +1088,8 @@ export default {
       searchSubject: "",
       searchLevels: "",
       boardData: "",
+      userInfo: {},
+
       isCreatingUser: false,
       successDialog: false,
       errorDialog: false,
@@ -1262,6 +1269,13 @@ export default {
         }
       }
     },
+    async getUserInfo() {
+      const response = await LogedInUserInfo.getUserInfo();
+      this.userInfo = response.data.user;
+      console.log(this.userInfo);
+      this.personalInfo.email=this.userInfo.email;
+      this.personalInfo.phone_no=this.userInfo.phone_no;
+    },
     onResize() {
       this.windowHeight = window.innerHeight;
     },
@@ -1411,10 +1425,15 @@ export default {
     this.$nextTick(() => {
       window.addEventListener("resize", this.onResize);
     });
+   
   },
 
   beforeDestroy() {
     window.removeEventListener("resize", this.onResize);
+  },
+  created() {
+    this.getUserInfo();
+   
   },
 };
 </script>
