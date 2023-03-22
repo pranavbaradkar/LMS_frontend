@@ -7,7 +7,7 @@
           <v-card :height="getHeight" id="myScroll" class="pa-4 pt-0">
             <v-card height="auto" id="circleCard" elevation="0">
               <v-card-title
-                class="text-subtitle font-weight-regular accent--text"
+                class="text-subtitle font-weight-regular accent--text testHead"
               >
                 <p>{{ assessment.name }}</p>
                 <span></span>
@@ -178,10 +178,15 @@
               <v-card height="auto" color="surface" elevation="0" class="mt-8">
                 <v-card-title>
                   <v-row v-if="selectedQuestion!=null">
-                    <v-btn  class="ma-auto my-2" width="48%" min-height="50px" height="auto" v-for="(option,index) in screening.questions[selectedQuestion].question_options" :key="index">
-                      <div class="text-wrap">
+                    <v-btn  class="ma-auto my-2 text-wrap"  min-height="50px" height="auto" v-for="(option,index) in screening.questions[selectedQuestion].question_options" :key="index">
+
+                    
                       {{ option.option_value }}
-                      </div>
+                   
+
+                
+
+
                     </v-btn>
                    
                   </v-row>
@@ -306,9 +311,5 @@ export default {
 .v-list-item {
   min-height: 32px;
 }
-.text-wrap {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: wrap;
-  }
+
 </style>
