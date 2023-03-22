@@ -67,16 +67,14 @@
             <div class="white--text">
               <div class="text-caption">Recommended</div>
 
-              <div class="text-h4 mb-1">Primary Teacher Assessment(VGOS)</div>
+              <div class="text-h4 mb-1">{{ recommendedAssessment.name }}</div>
               <v-list-item-subtitle class="mt-4"
-                >This course will provide you with in depth knowledge of child
-                <br />development. it will take you though all the development
-                domains. them on topics you care about.</v-list-item-subtitle
+                >{{ recommendedAssessment.instructions }}</v-list-item-subtitle
               >
               <div class="mt-4">
-                <v-icon class="white--text">mdi-book</v-icon> 11
+                <v-icon class="white--text">mdi-book</v-icon> {{ recommendedAssessment.tests[0].total_no_of_questions }}
                 Questions<v-icon class="white--text">mdi-circle-small</v-icon
-                ><v-icon class="white--text">mdi-clock</v-icon> 5 mins
+                ><v-icon class="white--text">mdi-clock</v-icon> 60 mins
                 <v-icon class="white--text">mdi-circle-small</v-icon
                 ><v-icon class="white--text">mdi-book</v-icon>
                 300 Users

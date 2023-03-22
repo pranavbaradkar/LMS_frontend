@@ -9,12 +9,12 @@
               <v-card-title
                 class="text-subtitle font-weight-regular accent--text"
               >
-                <span>National Level Teacher</span>
-                <span>Assessment</span>
+                <p>{{ assessment.name }}</p>
+                <span></span>
               </v-card-title>
               <v-card-subtitle>
                 <span class="font-weight-light grey--text">Test Duration:</span>
-                <span> 5 minutes</span>
+                <span v-if="assessment.tests!=null"> {{ assessment.tests[0].duration_of_assessment }} minutes</span>
               </v-card-subtitle>
 
               <v-divider class="mx-4 mt-0"></v-divider>
@@ -67,7 +67,7 @@
                 <v-list-item-group mandatory v-model="selectedQuestion">
                   <v-list-item
                     class="grey lighten-4 pt-2"
-                    v-for="(item, i) in questions"
+                    v-for="(item, i) in screening.questions"
                     :key="i"
                   >
                     <v-list-item-content class="py-0">
@@ -78,7 +78,7 @@
                           :color="i == selectedQuestion ? 'green' : 'primary'"
                           >mdi-circle-medium</v-icon
                         >
-                        {{ item }}</v-list-item-title
+                       Question {{ i+1}}</v-list-item-title
                       >
                       <v-divider class="mt-2 mb-1"></v-divider>
                     </v-list-item-content>
@@ -171,26 +171,19 @@
                 elevation="0"
                 class="mt-8"
               >
-                <v-card-title
-                  >"Development is never ending process" This idea is associated
-                  with:
+                <v-card-title v-if="selectedQuestion!=null"
+                  >{{ screening.questions[selectedQuestion].statement }}
                 </v-card-title>
               </v-card>
               <v-card height="auto" color="surface" elevation="0" class="mt-8">
                 <v-card-title>
-                  <v-row>
-                    <v-btn class="ma-auto my-2" width="48%" height="50px">
-                      Principle of interrelation
+                  <v-row v-if="selectedQuestion!=null">
+                    <v-btn  class="ma-auto my-2" width="48%" min-height="50px" height="auto" v-for="(option,index) in screening.questions[selectedQuestion].question_options" :key="index">
+                      <div class="text-wrap">
+                      {{ option.option_value }}
+                      </div>
                     </v-btn>
-                    <v-btn class="ma-auto my-2" width="48%" height="50px">
-                      Principle of integration
-                    </v-btn>
-                    <v-btn class="ma-auto my-2" width="48%" height="50px">
-                      Principle of continuity
-                    </v-btn>
-                    <v-btn class="ma-auto my-2" width="48%" height="50px">
-                      Principle of interaction
-                    </v-btn>
+                   
                   </v-row>
                 </v-card-title>
               </v-card>
@@ -203,7 +196,7 @@
                   ><v-row>
                     <v-btn
                       rounded
-                      color="secondary"
+                      color="primary"
                       @click="e1 = 2"
                       width="100"
                       outlined
@@ -213,16 +206,17 @@
 
                     <v-btn
                       rounded
-                      color="primary"
-                      elevation="8"
+                      color="secondary"
+                 
                       @click="e1 = 2"
                       width="100"
                       class="ml-8 black--text"
+
                     >
                       NEXT
                     </v-btn>
                     <v-spacer></v-spacer>
-                    <v-btn large text color="secondary">
+                    <v-btn large text color="primary">
                       <v-icon class="pr-2" right> mdi-bookmark-outline </v-icon>
                       BOOKMARK THIS QUESTION
                     </v-btn>
@@ -239,13 +233,17 @@
 
 <script>
 import "../styles.css";
+import AssessmentsController from "../controllers/AssessmentsController";
+import RecommendedAssessmentController from "../controllers/RecommendedAssessmentController";
 export default {
   name: "AssessmentView",
   data() {
     return {
       windowHeight: window.innerHeight,
-      selectedQuestion: 0,
+      selectedQuestion: null,
       power: 25,
+      screening:{},
+      assessment:{},
       questions: [
         "Question 1",
         "Question 2",
@@ -290,6 +288,17 @@ export default {
     onResize() {
       this.windowHeight = window.innerHeight;
     },
+    async getAssessmentInfo(){
+      const response = await AssessmentsController.getSingleAssessment();
+      const response2 = await RecommendedAssessmentController.getRecommendedAssessment();
+      this.assessment=response2.data.data;
+      this.screening=response.data.data[0];
+      console.log("response: ", this.screening);
+    }
+  },
+  created() {
+    this.getAssessmentInfo();
+
   },
 };
 </script>
@@ -297,4 +306,9 @@ export default {
 .v-list-item {
   min-height: 32px;
 }
+.text-wrap {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: wrap;
+  }
 </style>
