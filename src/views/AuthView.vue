@@ -236,6 +236,10 @@ export default {
   },
   created() {
 
+    if (AuthService.isAuthenticated()) {
+      if (this.$route.path !== "/") this.$router.replace("/");
+    }
+
   },
 };
 </script>
