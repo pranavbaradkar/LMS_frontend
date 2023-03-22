@@ -754,7 +754,7 @@
                                 :search-input.sync="searchLevels"
                                 :items="tableLevels"
                                 multiple
-                                @click="getLevel"
+
                                 item-text="name"
                                 item-value="id"
                               >
@@ -768,7 +768,6 @@
                                 outlined
                                 item-text="name"
                                 item-value="id"
-                                @click="getGrades"
                                 class="rounded-xl"
                                 
                               >
@@ -777,7 +776,6 @@
                           ><v-row class="py-0">
                             <v-col class="py-0">
                               <v-autocomplete
-                                @click="getSubjects"
                               
                                 clearable
                                 deletable-chips
@@ -1145,9 +1143,9 @@ export default {
           board_id: 0,
           start_date: Date.now(),
           end_date: Date.now(),
-          level_ids: "",
-          grade_ids: "",
-          subject_ids: "",
+          level_ids: "1,2,3",
+          grade_ids: "1,2,3",
+          subject_ids: "1,2,3",
           school_id: 0,
           other_name: "",
         },
@@ -1433,7 +1431,9 @@ export default {
   },
   created() {
     this.getUserInfo();
-   
+    this.getLevel();
+   this.getGrades();
+   this.getSubjects();
   },
 };
 </script>
