@@ -216,7 +216,7 @@ export default {
        res = await AuthService.validateOTP({
         "mobile": "+91"+this.phoneNumber,
         "otp": this.otp,
-        "debug": true
+        "debug": false
       });
       // console.log(res)
       if (res.is_profile_created) {
