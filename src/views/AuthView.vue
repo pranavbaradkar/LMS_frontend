@@ -159,26 +159,26 @@ export default {
     selectCountry() {
       this.ctList = false;
     },
-    generateOtp() {
+    async generateOtp() {
       this.time = 119;
-      const response = AuthService.generateOTP({
+      await AuthService.generateOTP({
         "email": this.email
       });
       
 
-      console.log("opt send response", response)
+      // console.log("opt send response", response)
       this.isGenerateOtpClicked = true;
       this.otpTimmer();
 
     },
-    generatePhoneOtp(){
+    async generatePhoneOtp(){
       this.time = 119;
-      const response = AuthService.generateOTP({
-    "mobile": "+91"+this.phoneNumber
+      await AuthService.generateOTP({
+      "mobile": "+91"+this.phoneNumber
 });
       
 
-      console.log("opt send response", response)
+      // console.log("opt send response", response)
       this.isGenerateOtpClicked = true;
       this.otpTimmer();
       },
@@ -202,7 +202,7 @@ export default {
         "debug": false
       });
       
-      console.log(res)
+      // console.log(res)
         if (res.is_profile_created) {
 
         this.$router.push("/");
@@ -215,9 +215,9 @@ export default {
        res = await AuthService.validateOTP({
         "mobile": "+91"+this.phoneNumber,
         "otp": this.otp,
-        "debug": false
+        "debug": true
       });
-      console.log(res)
+      // console.log(res)
       if (res.is_profile_created) {
 
         this.$router.push("/");

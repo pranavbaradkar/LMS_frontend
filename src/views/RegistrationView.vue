@@ -154,7 +154,7 @@
                               type="number"
                               :rules="[rules.required, (v) => (v && v.length >= 10 && v.length<=10) || 'Mobile number must be 10 digit']"
                               required
-                            >{{ userInfo.phone_no }}
+                            >
                             </v-text-field
                           ></v-col>
                         </v-row>
@@ -1143,9 +1143,9 @@ export default {
           board_id: 0,
           start_date: Date.now(),
           end_date: Date.now(),
-          level_ids: "1,2,3",
-          grade_ids: "1,2,3",
-          subject_ids: "1,2,3",
+          level_ids: "40,41,49",
+          grade_ids: "91",
+          subject_ids: "68,69,70",
           school_id: 0,
           other_name: "",
         },
@@ -1178,7 +1178,7 @@ export default {
           this.long = position.coords.longitude; //'80.3211793';
           var url = `https://geocode.maps.co/reverse?lat=${this.lat}&lon=${this.long}`;
           const response = await axios.get(url);
-          console.log(response.data.address);
+          // console.log(response.data.address);
           this.country = response.data.address.country;
           this.state = response.data.address.state;
           this.district = response.data.address.state_district;
@@ -1196,12 +1196,12 @@ export default {
     async goToStep2() {
      
       if (this.$refs.step1.validate()) {
-        console.log("userif conditon");
+        // console.log("userif conditon");
         this.isCreatingUser = true;
         const response = await PersonalInfoController.createUserPersonalInfo(
           this.personalInfo
         );
-        console.log(response);
+        // console.log(response);
         if (response.data.success) {
           this.isCreatingUser = false;
           this.successDialog = true;
@@ -1215,12 +1215,12 @@ export default {
     async goToStep3() {
      
       if (this.$refs.step2.validate()) {
-        console.log("userif conditon");
+        // console.log("userif conditon");
         this.isCreatingUser = true;
         const response = await AcademicsController.createUserAcademicsInfo(
           this.academicQualifications
         );
-        console.log(response);
+        // console.log(response);
         if (response.data.success) {
           this.isCreatingUser = false;
           this.successDialog = true;
@@ -1232,15 +1232,15 @@ export default {
       }
     },
     async saveDetails() {
-      console.log("function");
+      // console.log("function");
       if (this.$refs.step3.validate()) {
-        console.log("userif conditon");
+        // console.log("userif conditon");
         this.isCreatingUser = true;
         const response =
           await ProfessionalController.createUserProfessionalInfo(
             this.professionalInfos
           );
-        console.log(response);
+        // console.log(response);
         if (response.data.success) {
           this.isCreatingUser = false;
           this.successDialog = true;
@@ -1257,7 +1257,7 @@ export default {
           await ProfessionalController.createUserProfessionalInfo(
             this.professionalInfos
           );
-        console.log(response);
+        // console.log(response);
         if (response.data.success) {
           this.isCreatingUser = false;
           this.successDialog = true;
@@ -1272,7 +1272,7 @@ export default {
       this.userInfo = response.data.user;
       console.log(this.userInfo);
       this.personalInfo.email=this.userInfo.email;
-      this.personalInfo.phone_no=this.userInfo.phone_no;
+      this.personalInfo.phone_no=this.userInfo.phone_no.slice(-10);
     },
     onResize() {
       this.windowHeight = window.innerHeight;
@@ -1321,24 +1321,24 @@ export default {
     },
     async getSchool() {
       const response = await SchoolController.getSchool();
-      console.log(response);
+      // console.log(response);
       this.schoolData = response.data.data;
       this.tableData = this.schoolData.rows;
     },
     async getBoards() {
       const response = await BoardController.getBoards();
-      console.log(response);
+      // console.log(response);
       this.boardData = response.data.data;
       this.tableBoards = this.boardData.rows;
     },
     async getLevel() {
       const response = await LevelController.getLevel();
       this.tableLevels = response.data.data.rows;
-      console.log("table data", this.tableData);
+      // console.log("table data", this.tableData);
     },
     async getGrades() {
       const response = await GradeController.getAllGrades();
-      console.log(response);
+      // console.log(response);
       this.gradeData = response.data.data;
       this.tableGrades = this.gradeData.rows;
     },
