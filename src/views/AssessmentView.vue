@@ -89,8 +89,14 @@
                         />
                         Question {{ i + 1 }}</v-list-item-title
                       >
+                      
                       <v-divider class="mt-2 mb-1"></v-divider>
                     </v-list-item-content>
+                    <v-list-item-action v-if="bookmarked.includes(item)"> 
+                        <v-icon color="primary">
+                          mdi-bookmark
+                        </v-icon>
+                      </v-list-item-action>
                   </v-list-item>
                 </v-list-item-group>
               </v-card>
@@ -186,6 +192,7 @@
                 color="grey lighten-4"
                 elevation="0"
                 class="mt-8"
+                min-height="200px"
               >
                 <v-card-title v-if="questions[selectedQuestion] != null"
                   >{{ questions[selectedQuestion].statement }}
@@ -258,6 +265,20 @@
         </v-col>
       </v-row>
     </v-container>
+    <v-dialog v-model="successDialog" max-width="366px" persistent>
+      <v-card>
+        <v-container fluid class="pa-8">
+          <v-card-text class="text-center">
+            <v-icon color="success" size="96">mdi-check-circle-outline</v-icon>
+            <p class="text-h5 py-4">Assessment Submitted Successfully</p>
+            <v-btn class="primary" large width="157px" rounded @click="()=>{
+              successDialog = false;
+              $router.push('/');
+            }">OK</v-btn>
+          </v-card-text>
+        </v-container>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -270,13 +291,14 @@ export default {
   name: "AssessmentView",
   data() {
     return {
+      successDialog: false,
       windowHeight: window.innerHeight,
       selectedQuestion: 0,
       power: 25,
       screening: [],
       assessment: {},
       questions: [],
-      response:{},
+      response: {},
       bookmarked: [],
       answeredProgress: 0,
       skippedProgress: 0,
@@ -287,7 +309,6 @@ export default {
     getHeight() {
       return this.windowHeight - 30 + "px";
     },
-
   },
   mounted() {
     this.$nextTick(() => {
@@ -299,33 +320,38 @@ export default {
     window.removeEventListener("resize", this.onResize);
   },
   methods: {
-    bookmarkQuestion(question){
-      if(!this.bookmarked.includes(question)){
-        this.bookmarked.push(question)
-      }
-      else {
+    bookmarkQuestion(question) {
+      if (!this.bookmarked.includes(question)) {
+        this.bookmarked.push(question);
+      } else {
         let index = this.bookmarked.indexOf(question);
-        this.bookmarked.splice(index,1)
-      }      
-
-    }
-,
-    updateProgress(){
+        this.bookmarked.splice(index, 1);
+      }
+    },
+    updateProgress() {
       this.answeredProgress = 0;
-      this.questions.forEach((question)=>{
-        if(question.myAnswer!=null){
+      this.questions.forEach((question) => {
+        if (question.myAnswer != null) {
           this.answeredProgress++;
         }
-      })
-
-    },
-    submitAssessment(){
-      this.questions.forEach((question)=>{
-       if(question.myAnswer!=null){
-        Vue.set(this.response,question.id, question.myAnswer)
-       }
       });
-      console.log(this.response);
+    },
+    async submitAssessment() {
+      this.questions.forEach((question) => {
+        if (question.myAnswer != null) {
+          Vue.set(this.response, question.id, question.myAnswer);
+        }
+      });
+      const response = await AssessmentsController.submitAssessment(
+        this.assessment.id,
+        {
+          response_json: this.response,
+        }
+      );
+      console.log(response);
+      if(response.data.success){
+        this.successDialog=true;
+      }
     },
     setOption(option) {
       this.questions[this.selectedQuestion].myAnswer = option.option_key;
@@ -350,7 +376,7 @@ export default {
       this.screening.forEach((element) => {
         this.questions.push(...element.questions);
       });
-      //console.log("response: ", this.questions);
+      console.log("response: ", this.assessment);
     },
   },
   created() {
