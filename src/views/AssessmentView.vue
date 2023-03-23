@@ -27,10 +27,10 @@
                       :rotate="360"
                       :size="85"
                       :width="15"
-                      :value=((getAnswered/questions.length))
+                      :value=((answeredProgress/questions.length)*100)
                       color="primary"
                     >
-                      {{ getAnswered }}
+                      {{ answeredProgress }}
                     </v-progress-circular>
                     <v-card-subtitle class="py-2">ANSWERED</v-card-subtitle>
                   </div>
@@ -54,10 +54,10 @@
                     :rotate="360"
                     :size="85"
                     :width="15"
-                    :value="50"
+                    :value="((bookmarked.length/questions.length)*100)"
                     color="primary"
                   >
-                    50
+                    {{ this.bookmarked.length }}
                   </v-progress-circular>
                   <v-card-subtitle class="py-2">BOOKMARK</v-card-subtitle>
                 </div>
@@ -242,9 +242,13 @@
                       NEXT
                     </v-btn>
                     <v-spacer></v-spacer>
-                    <v-btn large text color="primary">
+                    <v-btn v-if="!bookmarked.includes(questions[selectedQuestion])" large text color="primary" @click="bookmarkQuestion(questions[selectedQuestion])" >
                       <v-icon class="pr-2" right> mdi-bookmark-outline </v-icon>
                       BOOKMARK THIS QUESTION
+                    </v-btn>
+                    <v-btn v-else large text color="primary" @click="bookmarkQuestion(questions[selectedQuestion])" >
+                      <v-icon class="pr-2" right> mdi-bookmark-outline </v-icon>
+                      REMOVE BOOKMARK
                     </v-btn>
                   </v-row></v-card-title
                 >
@@ -273,21 +277,17 @@ export default {
       assessment: {},
       questions: [],
       response:{},
+      bookmarked: [],
+      answeredProgress: 0,
+      skippedProgress: 0,
+      bookmarkedProgress: 0,
     };
   },
   computed: {
     getHeight() {
       return this.windowHeight - 30 + "px";
     },
-    getAnswered(){
-      var count=0;
-      this.questions.forEach((question)=>{
-        if(question.myAnswer!=null){
-          count++;
-        }
-      })
-      return count;
-    }
+
   },
   mounted() {
     this.$nextTick(() => {
@@ -299,6 +299,26 @@ export default {
     window.removeEventListener("resize", this.onResize);
   },
   methods: {
+    bookmarkQuestion(question){
+      if(!this.bookmarked.includes(question)){
+        this.bookmarked.push(question)
+      }
+      else {
+        let index = this.bookmarked.indexOf(question);
+        this.bookmarked.splice(index,1)
+      }      
+
+    }
+,
+    updateProgress(){
+      this.answeredProgress = 0;
+      this.questions.forEach((question)=>{
+        if(question.myAnswer!=null){
+          this.answeredProgress++;
+        }
+      })
+
+    },
     submitAssessment(){
       this.questions.forEach((question)=>{
        if(question.myAnswer!=null){
@@ -310,6 +330,7 @@ export default {
     setOption(option) {
       this.questions[this.selectedQuestion].myAnswer = option.option_key;
       console.log(this.questions[this.selectedQuestion]);
+      this.updateProgress();
     },
     next() {
       this.selectedQuestion = this.selectedQuestion + 1;
