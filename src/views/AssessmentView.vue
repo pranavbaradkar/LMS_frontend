@@ -27,10 +27,10 @@
                       :rotate="360"
                       :size="85"
                       :width="15"
-                      :value="1"
+                      :value=((getAnswered/questions.length))
                       color="primary"
                     >
-                      01
+                      {{ getAnswered }}
                     </v-progress-circular>
                     <v-card-subtitle class="py-2">ANSWERED</v-card-subtitle>
                   </div>
@@ -66,7 +66,7 @@
             <v-divider class="mx-4 mt-0"></v-divider>
             <v-container>
               <v-card elevation="0" id="myScroll" height="auto">
-                <v-list-item-group mandatory v-model="selectedQuestion" >
+                <v-list-item-group mandatory v-model="selectedQuestion">
                   <v-list-item
                     class="grey lighten-4 pt-2"
                     v-for="(item, i) in questions"
@@ -79,10 +79,14 @@
                         "
                         ><v-icon
                           large
-                          :color="i == selectedQuestion ? 'green' : 'primary'"
+                          :color="item.myAnswer!=null ? 'green' : 'primary'"
                           >mdi-circle-medium</v-icon
                         >
-                        <img v-if="i == selectedQuestion" src="../assets/Polygonpoly.png"  class="polyicon">
+                        <img
+                          v-if="i == selectedQuestion"
+                          src="../assets/Polygonpoly.png"
+                          class="polyicon"
+                        />
                         Question {{ i + 1 }}</v-list-item-title
                       >
                       <v-divider class="mt-2 mb-1"></v-divider>
@@ -97,19 +101,21 @@
         <v-col cols="9" class="pl-0">
           <v-card :height="getHeight" class="d-flex flex-column">
             <v-card-title @click="$router.push('/')">
-              <v-icon >mdi-close</v-icon>
+              <v-icon>mdi-close</v-icon>
             </v-card-title>
             <v-container class="px-16">
               <v-row class="pb-0 align-center text-align-center">
                 <v-col cols="1" class="pa-0">
                   <v-text-field
                     label="HH"
+                    readonly
+                  
                     value="00"
                     outlined
                     rounded
                     class="rounded-xl centered-input mygredient"
                   >
-                </v-text-field>
+                  </v-text-field>
                 </v-col>
                 <span class="pa-2 mb-5">:</span>
                 <v-col cols="1" class="pa-0">
@@ -142,6 +148,7 @@
                     rounded
                     color="accent"
                     class="white--text"
+                    @click="submitAssessment"
                     >SUBMIT</v-btn
                   >
                 </v-col>
@@ -150,7 +157,7 @@
               <v-progress-linear
                 class="rounded-xl"
                 rounded
-                :value="((selectedQuestion+1)/questions.length)*100"
+                :value="((selectedQuestion + 1) / questions.length) * 100"
                 color="primary"
                 height="25"
               ></v-progress-linear>
@@ -158,13 +165,11 @@
                 <v-col>
                   <span class="text-caption"
                     >Question
-                    {{
-                      (selectedQuestion+1) + " of " + questions.length
-                    }}</span
+                    {{ selectedQuestion + 1 + " of " + questions.length }}</span
                   >
                 </v-col>
-                <v-col class="text-end" v-if="questions!=0">
-                  <v-chip 
+                <v-col class="text-end" v-if="questions != 0">
+                  <v-chip
                     outlined
                     active
                     text-color="black"
@@ -193,10 +198,15 @@
                       class="ma-auto my-2 text-wrap"
                       min-height="50px"
                       height="auto"
-                      v-for="(option, index) in questions[
-                        selectedQuestion
-                      ].question_options"
+                      :color="questions[selectedQuestion].myAnswer==option.option_key ?'primary':'' "
+                      v-for="(option, index) in questions[selectedQuestion]
+                        .question_options"
                       :key="index"
+                      @click="
+                        setOption(
+                          questions[selectedQuestion].question_options[index]
+                        )
+                      "
                     >
                       {{ option.option_value }}
                     </v-btn>
@@ -224,9 +234,7 @@
                     <v-btn
                       rounded
                       color="secondary"
-                      :disabled="
-                        selectedQuestion == questions.length - 1
-                      "
+                      :disabled="selectedQuestion == questions.length - 1"
                       @click="next"
                       width="100"
                       class="ml-8 black--text"
@@ -253,6 +261,7 @@
 import "../styles.css";
 import AssessmentsController from "../controllers/AssessmentsController";
 import RecommendedAssessmentController from "../controllers/RecommendedAssessmentController";
+import Vue from "vue";
 export default {
   name: "AssessmentView",
   data() {
@@ -262,13 +271,23 @@ export default {
       power: 25,
       screening: [],
       assessment: {},
-      questions:[],
+      questions: [],
+      response:{},
     };
   },
   computed: {
     getHeight() {
       return this.windowHeight - 30 + "px";
     },
+    getAnswered(){
+      var count=0;
+      this.questions.forEach((question)=>{
+        if(question.myAnswer!=null){
+          count++;
+        }
+      })
+      return count;
+    }
   },
   mounted() {
     this.$nextTick(() => {
@@ -280,6 +299,18 @@ export default {
     window.removeEventListener("resize", this.onResize);
   },
   methods: {
+    submitAssessment(){
+      this.questions.forEach((question)=>{
+       if(question.myAnswer!=null){
+        Vue.set(this.response,question.id, question.myAnswer)
+       }
+      });
+      console.log(this.response);
+    },
+    setOption(option) {
+      this.questions[this.selectedQuestion].myAnswer = option.option_key;
+      console.log(this.questions[this.selectedQuestion]);
+    },
     next() {
       this.selectedQuestion = this.selectedQuestion + 1;
     },
@@ -295,10 +326,10 @@ export default {
         await RecommendedAssessmentController.getRecommendedAssessment();
       this.assessment = response2.data.data;
       this.screening = response.data.data;
-      this.screening.forEach(element => {
+      this.screening.forEach((element) => {
         this.questions.push(...element.questions);
       });
-      console.log("response: ", this.questions);
+      //console.log("response: ", this.questions);
     },
   },
   created() {
