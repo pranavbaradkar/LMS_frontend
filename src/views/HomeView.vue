@@ -3,7 +3,7 @@
     <v-app-bar app elevation="0" color="surface" class="justify-start">
       <v-list-item>
         <v-list-item-icon>
-          <v-img src="../assets/logo.png" contain height="32"></v-img>
+          <v-img src="../assets/logo.svg" contain height="32"></v-img>
         </v-list-item-icon>
         <v-list-item-content> </v-list-item-content>
         <v-list-item-action>

@@ -2,8 +2,8 @@
   <div class="surface">
     <v-app-bar color="surface" elevation="0" fixed>
       <v-list-item>
-        <v-list-item-icon>
-          <v-img src="../assets/logo.png" contain></v-img>
+        <v-list-item-icon class="pt-4">
+          <v-img src="../assets/logo.svg" contain max-width="16rem" ></v-img>
         </v-list-item-icon>
       </v-list-item>
     </v-app-bar>
@@ -129,6 +129,7 @@
                               outlined
                               label="Email Address *"
                               rounded
+                              :suffix="emailVerify ? 'Verified' :  'Verify'"
                               class="rounded-xl"
                               :rules="emailRules"
                               required
@@ -144,7 +145,7 @@
                           <v-col class="py-0"
                             ><v-text-field
                               v-model="personalInfo.phone_no"
-                              suffix="Verify"
+                              :suffix=" phoneVerify ? 'Verified' :  'Verify'"
                               label="Your 10-digit mobile no."
                               outlined
                               rounded
@@ -175,7 +176,7 @@
                             <v-select
                               v-model="personalInfo.gender"
                               label="Gender*"
-                              :items="['FEMALE', 'MALE']"
+                              :items="['FEMALE', 'MALE', 'OTHERS']"
                               outlined
                               class="rounded-xl"
                               :rules="[rules.required]"
@@ -1053,6 +1054,8 @@ export default {
       isCurrentlyWorking: false,
       isFetchingLocation: false,
       windowHeight: window.innerHeight,
+      phoneVerify: false,
+      emailVerify: false,
       country: "",
       state: "",
       district: "",

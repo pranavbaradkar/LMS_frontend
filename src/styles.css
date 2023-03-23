@@ -31,6 +31,21 @@
     width: 100%;
   
   }
+  .mygredient > .v-input__control > .v-input__slot {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.38) 0%, rgba(130, 210, 218, 0.6) 100%);
+  }
+
+  .v-text-field__slot > input {
+    padding: 0px !important;
+
+  }
+  .polyicon {
+    position: absolute;
+left: 8px;
+top: 10px;
+width: 30px;
+height: 30px;
+  }
  .testHead {
     word-break: break-word !important;
  }

@@ -69,7 +69,7 @@
                 <v-list-item-group mandatory v-model="selectedQuestion" >
                   <v-list-item
                     class="grey lighten-4 pt-2"
-                    v-for="(item, i) in screening.questions"
+                    v-for="(item, i) in questions"
                     :key="i"
                   >
                     <v-list-item-content class="py-0">
@@ -82,6 +82,7 @@
                           :color="i == selectedQuestion ? 'green' : 'primary'"
                           >mdi-circle-medium</v-icon
                         >
+                        <img v-if="i == selectedQuestion" src="../assets/Polygonpoly.png"  class="polyicon">
                         Question {{ i + 1 }}</v-list-item-title
                       >
                       <v-divider class="mt-2 mb-1"></v-divider>
@@ -99,34 +100,35 @@
               <v-icon >mdi-close</v-icon>
             </v-card-title>
             <v-container class="px-16">
-              <v-row class="pb-0 align-center">
-                <v-col cols="1" class="pr-0 pb-0">
+              <v-row class="pb-0 align-center text-align-center">
+                <v-col cols="1" class="pa-0">
                   <v-text-field
                     label="HH"
                     value="00"
                     outlined
                     rounded
-                    class="rounded-xl centered-input"
-                  ></v-text-field>
+                    class="rounded-xl centered-input mygredient"
+                  >
+                </v-text-field>
                 </v-col>
-                <span class="pa-2 pr-0">:</span>
-                <v-col cols="1" class="pr-0 pb-0">
+                <span class="pa-2 mb-5">:</span>
+                <v-col cols="1" class="pa-0">
                   <v-text-field
                     label="MM"
                     value="04"
                     outlined
                     rounded
-                    class="rounded-xl centered-input"
+                    class="rounded-xl centered-input mygredient"
                   ></v-text-field>
                 </v-col>
-                <span class="pa-2 pr-0">:</span>
-                <v-col cols="1" class="pr-0 pb-0">
+                <span class="pa-2 mb-5">:</span>
+                <v-col cols="1" class="pa-0">
                   <v-text-field
                     label="SS"
                     value="59"
                     outlined
                     rounded
-                    class="rounded-xl centered-input"
+                    class="rounded-xl centered-input mygredient"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="1" class="pr-0">
@@ -148,7 +150,7 @@
               <v-progress-linear
                 class="rounded-xl"
                 rounded
-                :value="((selectedQuestion+1)/screening.questions.length)*100"
+                :value="((selectedQuestion+1)/questions.length)*100"
                 color="primary"
                 height="25"
               ></v-progress-linear>
@@ -157,18 +159,18 @@
                   <span class="text-caption"
                     >Question
                     {{
-                      (selectedQuestion+1) + " of " + screening.questions.length
+                      (selectedQuestion+1) + " of " + questions.length
                     }}</span
                   >
                 </v-col>
-                <v-col class="text-end">
-                  <v-chip
+                <v-col class="text-end" v-if="questions!=0">
+                  <v-chip 
                     outlined
                     active
                     text-color="black"
                     color="primary"
                     active-class="secondary"
-                    >{{ screening.name }}</v-chip
+                    >{{ questions[selectedQuestion].skill.name }}</v-chip
                   >
                 </v-col>
               </v-row>
@@ -180,18 +182,18 @@
                 elevation="0"
                 class="mt-8"
               >
-                <v-card-title v-if="selectedQuestion != null"
-                  >{{ screening.questions[selectedQuestion].statement }}
+                <v-card-title v-if="questions[selectedQuestion] != null"
+                  >{{ questions[selectedQuestion].statement }}
                 </v-card-title>
               </v-card>
               <v-card height="auto" color="surface" elevation="0" class="mt-8">
                 <v-card-title>
-                  <v-row v-if="selectedQuestion != null">
+                  <v-row v-if="questions[selectedQuestion] != null">
                     <v-btn
                       class="ma-auto my-2 text-wrap"
                       min-height="50px"
                       height="auto"
-                      v-for="(option, index) in screening.questions[
+                      v-for="(option, index) in questions[
                         selectedQuestion
                       ].question_options"
                       :key="index"
@@ -223,7 +225,7 @@
                       rounded
                       color="secondary"
                       :disabled="
-                        selectedQuestion == screening.questions.length - 1
+                        selectedQuestion == questions.length - 1
                       "
                       @click="next"
                       width="100"
@@ -256,10 +258,11 @@ export default {
   data() {
     return {
       windowHeight: window.innerHeight,
-      selectedQuestion: null,
+      selectedQuestion: 0,
       power: 25,
-      screening: {},
+      screening: [],
       assessment: {},
+      questions:[],
     };
   },
   computed: {
@@ -291,8 +294,11 @@ export default {
       const response2 =
         await RecommendedAssessmentController.getRecommendedAssessment();
       this.assessment = response2.data.data;
-      this.screening = response.data.data[0];
-      console.log("response: ", this.screening);
+      this.screening = response.data.data;
+      this.screening.forEach(element => {
+        this.questions.push(...element.questions);
+      });
+      console.log("response: ", this.questions);
     },
   },
   created() {
