@@ -14,7 +14,9 @@
               </v-card-title>
               <v-card-subtitle>
                 <span class="font-weight-light grey--text">Test Duration:</span>
-                <span v-if="assessment.tests!=null"> {{ assessment.tests[0].duration_of_assessment }} minutes</span>
+                <span v-if="assessment.tests != null">
+                  {{ assessment.tests[0].duration_of_assessment }} minutes</span
+                >
               </v-card-subtitle>
 
               <v-divider class="mx-4 mt-0"></v-divider>
@@ -64,21 +66,23 @@
             <v-divider class="mx-4 mt-0"></v-divider>
             <v-container>
               <v-card elevation="0" id="myScroll" height="auto">
-                <v-list-item-group mandatory v-model="selectedQuestion">
+                <v-list-item-group mandatory v-model="selectedQuestion" >
                   <v-list-item
                     class="grey lighten-4 pt-2"
-                    v-for="(item, i) in screening.questions"
+                    v-for="(item, i) in questions"
                     :key="i"
                   >
                     <v-list-item-content class="py-0">
                       <v-list-item-title
-                      :class="i==selectedQuestion?'secondary--text':'text'"
+                        :class="
+                          i == selectedQuestion ? 'secondary--text' : 'text'
+                        "
                         ><v-icon
                           large
                           :color="i == selectedQuestion ? 'green' : 'primary'"
                           >mdi-circle-medium</v-icon
                         >
-                       Question {{ i+1}}</v-list-item-title
+                        Question {{ i + 1 }}</v-list-item-title
                       >
                       <v-divider class="mt-2 mb-1"></v-divider>
                     </v-list-item-content>
@@ -91,8 +95,8 @@
         <!-- Right Card -->
         <v-col cols="9" class="pl-0">
           <v-card :height="getHeight" class="d-flex flex-column">
-            <v-card-title>
-              <v-icon>mdi-close</v-icon>
+            <v-card-title @click="$router.push('/')">
+              <v-icon >mdi-close</v-icon>
             </v-card-title>
             <v-container class="px-16">
               <v-row class="pb-0 align-center">
@@ -144,22 +148,27 @@
               <v-progress-linear
                 class="rounded-xl"
                 rounded
-                v-model="power"
+                :value="((selectedQuestion+1)/questions.length)*100"
                 color="primary"
                 height="25"
               ></v-progress-linear>
               <v-row justify="space-between" class="pt-2">
                 <v-col>
-                  <span class="text-caption">Question 02 of 11</span>
+                  <span class="text-caption"
+                    >Question
+                    {{
+                      (selectedQuestion+1) + " of " + questions.length
+                    }}</span
+                  >
                 </v-col>
-                <v-col class="text-end">
-                  <v-chip
+                <v-col class="text-end" v-if="questions!=0">
+                  <v-chip 
                     outlined
                     active
                     text-color="black"
                     color="primary"
                     active-class="secondary"
-                    >IQ</v-chip
+                    >{{ questions[selectedQuestion].skill.name }}</v-chip
                   >
                 </v-col>
               </v-row>
@@ -171,24 +180,24 @@
                 elevation="0"
                 class="mt-8"
               >
-                <v-card-title v-if="selectedQuestion!=null"
-                  >{{ screening.questions[selectedQuestion].statement }}
+                <v-card-title v-if="questions[selectedQuestion] != null"
+                  >{{ questions[selectedQuestion].statement }}
                 </v-card-title>
               </v-card>
               <v-card height="auto" color="surface" elevation="0" class="mt-8">
                 <v-card-title>
-                  <v-row v-if="selectedQuestion!=null">
-                    <v-btn  class="ma-auto my-2 text-wrap"  min-height="50px" height="auto" v-for="(option,index) in screening.questions[selectedQuestion].question_options" :key="index">
-
-                    
+                  <v-row v-if="questions[selectedQuestion] != null">
+                    <v-btn
+                      class="ma-auto my-2 text-wrap"
+                      min-height="50px"
+                      height="auto"
+                      v-for="(option, index) in questions[
+                        selectedQuestion
+                      ].question_options"
+                      :key="index"
+                    >
                       {{ option.option_value }}
-                   
-
-                
-
-
                     </v-btn>
-                   
                   </v-row>
                 </v-card-title>
               </v-card>
@@ -202,9 +211,10 @@
                     <v-btn
                       rounded
                       color="primary"
-                      @click="e1 = 2"
+                      @click="previous"
                       width="100"
                       outlined
+                      :disabled="selectedQuestion == 0"
                     >
                       Previous
                     </v-btn>
@@ -212,11 +222,12 @@
                     <v-btn
                       rounded
                       color="secondary"
-                 
-                      @click="e1 = 2"
+                      :disabled="
+                        selectedQuestion == questions.length - 1
+                      "
+                      @click="next"
                       width="100"
                       class="ml-8 black--text"
-
                     >
                       NEXT
                     </v-btn>
@@ -245,34 +256,11 @@ export default {
   data() {
     return {
       windowHeight: window.innerHeight,
-      selectedQuestion: null,
+      selectedQuestion: 0,
       power: 25,
-      screening:{},
-      assessment:{},
-      questions: [
-        "Question 1",
-        "Question 2",
-        "Question 3",
-        "Question 4",
-        "Question 5",
-        "Question 6",
-        "Question 7",
-        "Question 8",
-        "Question 9",
-        "Question 10",
-        "Question 11",
-        "Question 11",
-        "Question 11",
-        "Question 11",
-        "Question 11",
-        "Question 11",
-        "Question 11",
-        "Question 11",
-        "Question 11",
-        "Question 11",
-        "Question 11",
-        "Question 11",
-      ],
+      screening: [],
+      assessment: {},
+      questions:[],
     };
   },
   computed: {
@@ -290,20 +278,29 @@ export default {
     window.removeEventListener("resize", this.onResize);
   },
   methods: {
+    next() {
+      this.selectedQuestion = this.selectedQuestion + 1;
+    },
+    previous() {
+      this.selectedQuestion = this.selectedQuestion - 1;
+    },
     onResize() {
       this.windowHeight = window.innerHeight;
     },
-    async getAssessmentInfo(){
+    async getAssessmentInfo() {
       const response = await AssessmentsController.getSingleAssessment();
-      const response2 = await RecommendedAssessmentController.getRecommendedAssessment();
-      this.assessment=response2.data.data;
-      this.screening=response.data.data[0];
-      console.log("response: ", this.screening);
-    }
+      const response2 =
+        await RecommendedAssessmentController.getRecommendedAssessment();
+      this.assessment = response2.data.data;
+      this.screening = response.data.data;
+      this.screening.forEach(element => {
+        this.questions.push(...element.questions);
+      });
+      console.log("response: ", this.questions);
+    },
   },
   created() {
     this.getAssessmentInfo();
-
   },
 };
 </script>
@@ -311,5 +308,4 @@ export default {
 .v-list-item {
   min-height: 32px;
 }
-
 </style>
