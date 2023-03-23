@@ -145,7 +145,7 @@
                           <v-col class="py-0"
                             ><v-text-field
                               v-model="personalInfo.phone_no"
-                              :suffix=" phoneVerify ? 'Verify' : 'Verified'"
+                              :suffix=" phoneVerify ? 'Verified' :  'Verify'"
                               label="Your 10-digit mobile no."
                               outlined
                               rounded
