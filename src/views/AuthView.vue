@@ -4,7 +4,7 @@
     <v-app-bar color="transparent" elevation="0" absolute height="120">
       <v-list-item>
         <v-list-item-icon>
-          <v-img src="../assets/logo.png" contain></v-img>
+          <v-img src="../assets/logo.svg" width="16rem" contain></v-img>
         </v-list-item-icon>
       </v-list-item>
     </v-app-bar>
@@ -12,7 +12,7 @@
       <v-col cols="12" lg="12" md="12" class="fill-height d-flex flex-column justify-center align-center">
         <v-card width="426px" height="auto">
           <div class="text-center pt-3 pl-8 pr-8" v-if="!isGenerateOtpClicked">
-            <img src="../assets/icon.png" width="70px" height="70px" />
+            <img src="../assets/icon.svg" width="70px" height="70px" />
             <v-card-title class="justify-center text-h5 font-weight-bold pt-0">
               Log In
             </v-card-title>
@@ -113,7 +113,7 @@
               </v-col>
             </v-row>
             <v-card-text class="text-center">
-              <span class="primary--text" :disabled="resendBool" @click="generateOtp"> RESEND OTP </span>
+              <span class="primary--text cursor" :disabled="resendBool" @click="()=>{this.isGenerateOtpClicked = false;}"> RESEND OTP </span>
             </v-card-text>
             <v-card-title class="justify-center">
               <v-btn color="secondary" class="textcolor--text" rounded large width="90%" height="40" @click="validateOTP">
@@ -183,6 +183,7 @@ export default {
       this.otpTimmer();
       },
     otpTimmer() {
+      clearInterval(this.timer)
       this.timer = setInterval(() => {
         if (this.time == 0) {
           clearInterval(this.timer)
