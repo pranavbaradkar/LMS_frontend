@@ -82,6 +82,7 @@
                           :color="i == selectedQuestion ? 'green' : 'primary'"
                           >mdi-circle-medium</v-icon
                         >
+                        <img v-if="i == selectedQuestion" src="../assets/Polygonpoly.png"  class="polyicon">
                         Question {{ i + 1 }}</v-list-item-title
                       >
                       <v-divider class="mt-2 mb-1"></v-divider>
@@ -99,34 +100,35 @@
               <v-icon >mdi-close</v-icon>
             </v-card-title>
             <v-container class="px-16">
-              <v-row class="pb-0 align-center">
-                <v-col cols="1" class="pr-0 pb-0">
+              <v-row class="pb-0 align-center text-align-center">
+                <v-col cols="1" class="pa-0">
                   <v-text-field
                     label="HH"
                     value="00"
                     outlined
                     rounded
-                    class="rounded-xl centered-input"
-                  ></v-text-field>
+                    class="rounded-xl centered-input mygredient"
+                  >
+                </v-text-field>
                 </v-col>
-                <span class="pa-2 pr-0">:</span>
-                <v-col cols="1" class="pr-0 pb-0">
+                <span class="pa-2 mb-5">:</span>
+                <v-col cols="1" class="pa-0">
                   <v-text-field
                     label="MM"
                     value="04"
                     outlined
                     rounded
-                    class="rounded-xl centered-input"
+                    class="rounded-xl centered-input mygredient"
                   ></v-text-field>
                 </v-col>
-                <span class="pa-2 pr-0">:</span>
-                <v-col cols="1" class="pr-0 pb-0">
+                <span class="pa-2 mb-5">:</span>
+                <v-col cols="1" class="pa-0">
                   <v-text-field
                     label="SS"
                     value="59"
                     outlined
                     rounded
-                    class="rounded-xl centered-input"
+                    class="rounded-xl centered-input mygredient"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="1" class="pr-0">
