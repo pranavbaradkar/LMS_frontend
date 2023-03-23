@@ -69,7 +69,7 @@
                 <v-list-item-group mandatory v-model="selectedQuestion" >
                   <v-list-item
                     class="grey lighten-4 pt-2"
-                    v-for="(item, i) in screening.questions"
+                    v-for="(item, i) in questions"
                     :key="i"
                   >
                     <v-list-item-content class="py-0">
@@ -148,7 +148,7 @@
               <v-progress-linear
                 class="rounded-xl"
                 rounded
-                :value="((selectedQuestion+1)/screening.questions.length)*100"
+                :value="((selectedQuestion+1)/questions.length)*100"
                 color="primary"
                 height="25"
               ></v-progress-linear>
@@ -157,18 +157,18 @@
                   <span class="text-caption"
                     >Question
                     {{
-                      (selectedQuestion+1) + " of " + screening.questions.length
+                      (selectedQuestion+1) + " of " + questions.length
                     }}</span
                   >
                 </v-col>
-                <v-col class="text-end">
-                  <v-chip
+                <v-col class="text-end" v-if="questions!=0">
+                  <v-chip 
                     outlined
                     active
                     text-color="black"
                     color="primary"
                     active-class="secondary"
-                    >{{ screening.name }}</v-chip
+                    >{{ questions[selectedQuestion].skill.name }}</v-chip
                   >
                 </v-col>
               </v-row>
@@ -180,18 +180,18 @@
                 elevation="0"
                 class="mt-8"
               >
-                <v-card-title v-if="selectedQuestion != null"
-                  >{{ screening.questions[selectedQuestion].statement }}
+                <v-card-title v-if="questions[selectedQuestion] != null"
+                  >{{ questions[selectedQuestion].statement }}
                 </v-card-title>
               </v-card>
               <v-card height="auto" color="surface" elevation="0" class="mt-8">
                 <v-card-title>
-                  <v-row v-if="selectedQuestion != null">
+                  <v-row v-if="questions[selectedQuestion] != null">
                     <v-btn
                       class="ma-auto my-2 text-wrap"
                       min-height="50px"
                       height="auto"
-                      v-for="(option, index) in screening.questions[
+                      v-for="(option, index) in questions[
                         selectedQuestion
                       ].question_options"
                       :key="index"
@@ -223,7 +223,7 @@
                       rounded
                       color="secondary"
                       :disabled="
-                        selectedQuestion == screening.questions.length - 1
+                        selectedQuestion == questions.length - 1
                       "
                       @click="next"
                       width="100"
@@ -256,10 +256,11 @@ export default {
   data() {
     return {
       windowHeight: window.innerHeight,
-      selectedQuestion: null,
+      selectedQuestion: 0,
       power: 25,
-      screening: {},
+      screening: [],
       assessment: {},
+      questions:[],
     };
   },
   computed: {
@@ -291,8 +292,11 @@ export default {
       const response2 =
         await RecommendedAssessmentController.getRecommendedAssessment();
       this.assessment = response2.data.data;
-      this.screening = response.data.data[0];
-      console.log("response: ", this.screening);
+      this.screening = response.data.data;
+      this.screening.forEach(element => {
+        this.questions.push(...element.questions);
+      });
+      console.log("response: ", this.questions);
     },
   },
   created() {
