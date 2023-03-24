@@ -3,12 +3,17 @@
     <v-app-bar color="surface" elevation="0" fixed>
       <v-list-item>
         <v-list-item-icon class="pt-4">
-          <v-img src="../assets/logo.svg" contain max-width="16rem" ></v-img>
+          <v-img src="../assets/logo.svg" contain max-width="16rem"></v-img>
         </v-list-item-icon>
       </v-list-item>
     </v-app-bar>
 
-    <v-card color="surface" :height="getHeight - 64 + 'px'" depressed elevation="0">
+    <v-card
+      color="surface"
+      :height="getHeight - 64 + 'px'"
+      depressed
+      elevation="0"
+    >
       <v-card-title class="justify-center mt-10"> Welcome </v-card-title>
       <v-card-subtitle class="text-center"
         ><span
@@ -107,8 +112,7 @@
                           ></v-col>
                         </v-row>
                         <v-row class="py-0">
-                          <v-col class="py-0"
-                            >
+                          <v-col class="py-0">
                             <!-- <v-text-field
                               v-model="personalInfo.email"
                               outlined
@@ -123,37 +127,39 @@
                               :error-messages="emailErrors"
                             ></v-text-field> -->
 
-
                             <v-text-field
                               v-model="personalInfo.email"
                               outlined
                               label="Email Address *"
                               rounded
-                              :suffix="emailVerify ? 'Verified' :  'Verify'"
+                              :suffix="emailVerify ? 'Verified' : 'Verify'"
+                              :readonly="emailVerify"
                               class="rounded-xl"
                               :rules="emailRules"
                               required
                               @keydown.enter.prevent="submit"
-                          ></v-text-field>
-                        
-                        
-                        
-                        
-                        </v-col>
+                            ></v-text-field>
+                          </v-col>
                         </v-row>
                         <v-row class="py-0">
                           <v-col class="py-0"
                             ><v-text-field
                               v-model="personalInfo.phone_no"
-                              :suffix=" phoneVerify ? 'Verified' :  'Verify'"
+                              :suffix="phoneVerify ? 'Verified' : 'Verify'"
                               label="Your 10-digit mobile no."
                               outlined
+                              :readonly="phoneVerify"
                               rounded
                               class="rounded-xl"
                               counter="10"
                               prefix="+91"
                               type="number"
-                              :rules="[rules.required, (v) => (v && v.length >= 10 && v.length<=10) || 'Mobile number must be 10 digit']"
+                              :rules="[
+                                rules.required,
+                                (v) =>
+                                  (v && v.length >= 10 && v.length <= 10) ||
+                                  'Mobile number must be 10 digit',
+                              ]"
                               required
                             >
                             </v-text-field
@@ -220,7 +226,6 @@
                               class="rounded-xl"
                               :rules="[rules.required]"
                               required
-                              @click="fetchCountries"
                               @change="fetchStates"
                             >
                             </v-select>
@@ -294,11 +299,15 @@
                               :value="pinCode"
                               outlined
                               type="number"
-                            
                               label="Pin Code *"
                               rounded
                               class="rounded-xl"
-                              :rules="[rules.required, (v) => (v && v.length >= 6 && v.length<=6) || 'Pincode must be 6 digit']"
+                              :rules="[
+                                rules.required,
+                                (v) =>
+                                  (v && v.length >= 6 && v.length <= 6) ||
+                                  'Pincode must be 6 digit',
+                              ]"
                               required
                             ></v-text-field>
                           </v-col>
@@ -418,7 +427,6 @@
                           <v-row class="py-0">
                             <v-col cols="12" class="py-0">
                               <v-text-field
-                              
                                 outlined
                                 label="Extra Curricular Activities"
                                 rounded
@@ -745,7 +753,6 @@
                           ><v-row class="py-0">
                             <v-col class="py-0">
                               <v-autocomplete
-                               
                                 clearable
                                 deletable-chips
                                 label="Level"
@@ -755,7 +762,6 @@
                                 :search-input.sync="searchLevels"
                                 :items="tableLevels"
                                 multiple
-
                                 item-text="name"
                                 item-value="id"
                               >
@@ -770,14 +776,12 @@
                                 item-text="name"
                                 item-value="id"
                                 class="rounded-xl"
-                                
                               >
                               </v-select
                             ></v-col> </v-row
                           ><v-row class="py-0">
                             <v-col class="py-0">
                               <v-autocomplete
-                              
                                 clearable
                                 deletable-chips
                                 label="Subject"
@@ -789,7 +793,6 @@
                                 multiple
                                 item-text="name"
                                 item-value="id"
-                               
                               >
                               </v-autocomplete>
                             </v-col>
@@ -1036,7 +1039,6 @@ import GradeController from "@/controllers/GradeController";
 import SubjectController from "@/controllers/SubjectController";
 import LogedInUserInfo from "@/controllers/LogedInUserInfo";
 
-
 export default {
   name: "RegistrationView",
   mixins: [validationMixin],
@@ -1121,7 +1123,6 @@ export default {
         city_id: 0,
         address: "",
         pincode: 0,
-       
       },
       academicQualifications: [
         {
@@ -1197,7 +1198,6 @@ export default {
       );
     },
     async goToStep2() {
-     
       if (this.$refs.step1.validate()) {
         // console.log("userif conditon");
         this.isCreatingUser = true;
@@ -1216,7 +1216,6 @@ export default {
       }
     },
     async goToStep3() {
-     
       if (this.$refs.step2.validate()) {
         // console.log("userif conditon");
         this.isCreatingUser = true;
@@ -1274,8 +1273,10 @@ export default {
       const response = await LogedInUserInfo.getUserInfo();
       this.userInfo = response.data.user;
       console.log(this.userInfo);
-      this.personalInfo.email=this.userInfo.email;
-      this.personalInfo.phone_no=this.userInfo.phone_no.slice(-10);
+      this.personalInfo.email = this.userInfo.email;
+      this.personalInfo.phone_no = this.userInfo.phone_no.slice(-10);
+      this.emailVerify=this.userInfo.is_email_verified;
+      this.phoneVerify=this.userInfo.is_phone_verified;
     },
     onResize() {
       this.windowHeight = window.innerHeight;
@@ -1291,6 +1292,8 @@ export default {
     async fetchCountries() {
       const response = await AddressController.getCountries();
       this.countries = response.data.data.rows;
+      this.countries.reverse();
+
       //console.log(this.countries);
     },
     async fetchStates() {
@@ -1298,6 +1301,7 @@ export default {
         this.personalInfo.country_id
       );
       this.states = response.data.data.rows;
+      this.states.reverse();
       //console.log(this.states);
     },
     async fetchDistricts() {
@@ -1305,6 +1309,9 @@ export default {
         this.personalInfo.state_id
       );
       this.districts = response.data.data.rows;
+      this.district.reverse();
+
+      
       //console.log(this.districts);
       this.fetchCities();
     },
@@ -1313,6 +1320,8 @@ export default {
         this.personalInfo.districtId
       );
       this.talukas = response.data.data.rows;
+      this.talukas.reverse();
+
       //console.log(this.talukas);
     },
     async fetchCities() {
@@ -1320,6 +1329,8 @@ export default {
         this.personalInfo.state_id
       );
       this.cities = response.data.data.rows;
+      this.cities.reverse();
+
       //console.log(this.cities);
     },
     async getSchool() {
@@ -1426,7 +1437,6 @@ export default {
     this.$nextTick(() => {
       window.addEventListener("resize", this.onResize);
     });
-   
   },
 
   beforeDestroy() {
@@ -1435,8 +1445,9 @@ export default {
   created() {
     this.getUserInfo();
     this.getLevel();
-   this.getGrades();
-   this.getSubjects();
+    this.getGrades();
+    this.getSubjects();
+    this.fetchCountries();
   },
 };
 </script>
