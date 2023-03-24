@@ -4,7 +4,6 @@
       <v-list-item>
         <v-list-item-icon class="pt-4">
           <v-img src="../assets/logo.svg" contain max-width="16rem"></v-img>
-          <v-img src="../assets/logo.svg" contain max-width="16rem"></v-img>
         </v-list-item-icon>
       </v-list-item>
     </v-app-bar>
