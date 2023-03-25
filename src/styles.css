@@ -164,6 +164,12 @@ body {
     height: 27px;
     background-color: grey;
 }
+.camerabtn {
+    position: relative !important;
+bottom: -26px;
+left: -31px;
+z-index: 10;
+}
 
 .phoneNo {
     width: 100%;

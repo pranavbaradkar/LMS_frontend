@@ -218,7 +218,7 @@
               </v-col>
             </v-row>
             <v-card-text class="text-center">
-              <span
+              <!-- <span
                 class="primary--text cursor"
                 :disabled="resendBool"
                 @click="
@@ -228,7 +228,21 @@
                 "
               >
                 RESEND OTP
-              </span>
+              </span> -->
+
+
+
+              <v-btn
+                text
+                
+                class="textcolor--text pl-4"
+                @click="generatePhoneOtp"
+                :disabled="resendBool"
+                >RESEND OTP</v-btn >
+
+
+
+
             </v-card-text>
             <v-card-title class="justify-center">
               <v-btn
@@ -303,6 +317,7 @@ export default {
     },
     otpTimmer() {
       clearInterval(this.timer);
+      this.resendBool = true;
       this.timer = setInterval(() => {
         if (this.time == 0) {
           clearInterval(this.timer);

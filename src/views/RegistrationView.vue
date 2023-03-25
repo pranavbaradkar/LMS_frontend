@@ -156,10 +156,17 @@
                             <v-icon size="100px" v-if="!avatar" color="primary">
                               mdi-account-circle-outline
                             </v-icon>
-
+                           
+                            
                             <v-avatar size="100px" v-ripple v-else>
                               <img :src="avatar.imageURL" alt="avatar" />
                             </v-avatar>
+                            <v-avatar color="#82D2DA" size="30" class="camerabtn">
+                              <v-icon size="25px" class="text--color" >
+                              mdi-camera-outline
+                            </v-icon>
+                            </v-avatar>
+                            
                           </div>
                         </image-input> </v-card-title
                       ><v-card-subtitle class="text-center"
@@ -233,8 +240,8 @@
                                   <div>
                                     <v-btn
                                       on
-                                      text
-                                      class="pb-5 px-0,pt-0 mx-0 my-0"
+                                      text                                 
+                                      class="mb-4"
                                       max-height="35"
                                       :disabled="!emailBool"
                                       v-if="!personalInfo.is_email_verified"
@@ -275,6 +282,7 @@
                               :readonly="personalInfo.is_phone_verified"
                               rounded
                               class="rounded-xl"
+                              @keypress="isNumber($event)"
                               counter="10"
                               prefix="+91"
                               :type="
@@ -473,7 +481,7 @@
                               v-model="personalInfo.pincode"
                               :value="pinCode"
                               outlined
-                              type="number"
+                              @keypress="isNumber($event)"
                               label="Pin Code *"
                               rounded
                               class="rounded-xl"
@@ -501,13 +509,16 @@
                   </v-row>
                 </v-card>
               </v-form>
-
+              
               <v-card elevation="0">
                 <v-row>
                   <v-col cols="2"></v-col>
                   <v-col cols="10">
+                    <v-divider></v-divider>
                     <v-card-title
-                      ><v-btn
+                      >
+                      
+                      <v-btn
                         rounded
                         color="secondary"
                         class="black--text"
@@ -522,7 +533,7 @@
             </v-stepper-content>
             <!------------------------------------------ STEP 2 ------------------------------------------>
 
-            <v-stepper-content step="2" v-model="expandedPanelIndex">
+            <v-stepper-content step="2" v-model="expandedPanelIndex" class="pb-0">
               <v-card
                 :height="getHeight - 350 + 'px'"
                 id="myScroll"
@@ -667,8 +678,8 @@
 
                       <v-row>
                         <v-col class="mt-4">
-                          <v-btn text @click="addAcademicQualification"
-                            >Add More Qualification</v-btn
+                          <v-btn text @click="addAcademicQualification" class="textcolor--text"
+                            ><v-icon>mdi-plus-circle-outline</v-icon>Add Educational Qualification (optional)</v-btn
                           >
                         </v-col>
                       </v-row>
@@ -676,12 +687,12 @@
                   </v-card>
                 </v-form>
               </v-card>
-
+              <v-divider class="mt-2"></v-divider>
               <v-btn
                 rounded
                 outlined
                 class="mx-4 my-4"
-                color="primary"
+               
                 @click="e1 = 1"
               >
                 BACK
@@ -689,7 +700,7 @@
               <v-btn
                 rounded
                 color="secondary"
-                class="black--text"
+                class="black--text my-4"
                 @click="goToStep3"
               >
                 NEXT
@@ -698,7 +709,7 @@
 
             <!------------------------------------------ STEP 3 ------------------------------------------>
 
-            <v-stepper-content step="3" v-model="expandedPanelIndex">
+            <v-stepper-content step="3" v-model="expandedPanelIndex" class="pb-0">
               <v-card
                 :height="getHeight - 350 + 'px'"
                 id="myScroll"
@@ -746,6 +757,7 @@
                                   label="Years *"
                                   type="number"
                                   outlined
+                                  @keypress="isNumber($event)"
                                   class="rounded-xl"
                                   :rules="[rules.required]"
                                   required
@@ -761,6 +773,7 @@
                                 <v-text-field
                                   label="Month"
                                   type="number"
+                                  @keypress="isNumber($event)"
                                   outlined
                                   class="rounded-xl"
                                   v-model="professional.experience_month"
@@ -991,8 +1004,8 @@
                       </v-expansion-panels>
                       <v-row>
                         <v-col class="mt-4" v-if="experience == 'Experienced'">
-                          <v-btn text @click="addProfessionalInfo"
-                            >Add More Qualification</v-btn
+                          <v-btn text @click="addProfessionalInfo" class="textcolor--text"
+                            ><v-icon>mdi-plus-circle-outline</v-icon>Add more professional details(optional)</v-btn
                           >
                         </v-col>
                       </v-row>
@@ -1002,12 +1015,13 @@
               </v-card>
 
               <v-container>
-                <v-row>
+                <v-divider></v-divider>
+                <v-row class="mt-0">
                   <v-btn
                     rounded
                     outlined
                     class="ma-4"
-                    color="primary"
+                 
                     @click="e1 = 2"
                   >
                     BACK
@@ -1027,6 +1041,7 @@
                     color="secondary"
                     class="black--text ma-4"
                     @click="startTest"
+                    depressed
                   >
                     PROCEED TO ASSESSMENT
                   </v-btn>
@@ -1208,6 +1223,15 @@ export default {
     };
   },
   methods: {
+    isNumber: function(evt) {
+      evt = (evt) ? evt : window.event;
+      var charCode = (evt.which) ? evt.which : evt.keyCode;
+      if (((charCode < 48 || charCode > 57)) ) {
+        evt.preventDefault();
+      } else {
+        return true;
+      }
+    },
     async location() {
       this.isFetchingLocation = true;
       navigator.geolocation.getCurrentPosition(
