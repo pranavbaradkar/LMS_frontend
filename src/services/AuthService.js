@@ -30,6 +30,20 @@ export default {
     }
 
   },
+  async verifyOTP(data) {
+    try {
+      console.log("validate data", data)
+      const response = await instance.post('auth/validate-otp', data); 
+      console.log(response);
+      if (response.data.success) {
+      
+        return response.data;
+      }
+    }
+     catch (error) {      
+      alert(error.response.data.error)
+    }
+  },
 
   
 
