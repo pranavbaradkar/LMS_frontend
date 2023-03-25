@@ -83,7 +83,7 @@
                 <v-text-field
                   label="Email address"
                   :suffix="vibgyouBool ? '@vgos.org' : ''"
-                  :rules="emailRules"
+                  :rules="vibgyouBool ?  vgosRules : emailRules "
                   class="rounded-xl"
                   placeholder="Enter Email Id"
                   v-model="email"
@@ -267,6 +267,7 @@
 <script>
 import "../styles.css";
 import AuthService from "../services/AuthService";
+
 export default {
   components: {},
   name: "AuthView",
@@ -289,6 +290,12 @@ export default {
             v
           ) || "E-mail must be valid",
       ],
+      vgosRules: [
+        (v) => !!v || "E-mail is required",
+        (v) => /^[a-zA-Z0-9_-]{3,16}$/.test(
+            v
+          ) || "E-mail must be valid",
+      ],
     };
   },
   methods: {
@@ -297,9 +304,13 @@ export default {
     },
     async generateOtp() {
       this.time = 119;
-      await AuthService.generateOTP({
-        email: this.email,
+    
+        await AuthService.generateOTP({
+        email: this.vibgyouBool ?  this.email+"@gmail.com" : this.email,
       });
+
+     
+      
 
       // console.log("opt send response", response)
       this.isGenerateOtpClicked = true;
@@ -330,11 +341,24 @@ export default {
     async validateOTP() {
       var res = null;
       if (!this.usingPhone) {
-        res = await AuthService.validateOTP({
+
+
+        if(this.vibgyouBool){
+          res = await AuthService.validateOTP({
+          email: this.email +'@gmail.com',
+          otp: this.otp,
+          debug: false,
+        });
+        }
+        else {
+          res = await AuthService.validateOTP({
           email: this.email,
           otp: this.otp,
           debug: false,
         });
+        }
+
+        
 
         // console.log(res)
         if (res.is_profile_created) {
