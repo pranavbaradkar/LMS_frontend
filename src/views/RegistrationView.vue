@@ -54,7 +54,7 @@
       </v-card>
     </v-dialog>
     <v-dialog v-model="otpDialog" max-width="450px" class="center">
-      <v-card height="100%" elevation="0">
+      <v-card height="100%" elevation="0" class="pb-8">
         <v-card-title class="justify-center text-h5 font-weight-bold">
           {{ usingPhone ? "Verify Your Phone Number" : "Verify Your Email" }}
         </v-card-title>
@@ -64,8 +64,8 @@
           }}</span></v-card-text
         >
 
-        <v-row justify="center">
-          <v-col cols="10">
+     
+     <div class="d-flex flex-column pl-8 pr-8">
             <v-otp-input length="6" type="number" v-model="otp"></v-otp-input>
             <v-row justify="space-between" class="ma-0 pa-0">
               <v-col class="ma-0 pa-0">
@@ -81,8 +81,8 @@
                 >
               </v-col>
             </v-row>
-          </v-col>
-        </v-row>
+     </div>
+
 
         <v-card-text class="text-center">
           <v-btn
@@ -292,11 +292,16 @@
                             >
                               <template #append>
                                 <div class="px-0 py-0">
+
+
+
+
+                                  
                                   <v-btn
                                     on
                                     text
                                     max-height="35"
-                                    class="pb-5 px-0,pt-0 mx-0 my-0"
+                                    class="mb-4"
                                     :disabled="
                                       personalInfo.phone_no.length != 10
                                     "
@@ -310,6 +315,13 @@
                                   >
                                     verify
                                   </v-btn>
+                              
+
+
+
+
+
+
                                   <v-row v-if="personalInfo.is_phone_verified">
                                     <v-col class="px-0">
                                       <v-img
