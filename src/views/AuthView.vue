@@ -358,7 +358,7 @@ export default {
   > .v-input__slot {
   box-shadow: unset;
 }
-
+/* 
 .myBackground {
   background: radial-gradient(
       farthest-side at bottom left,
@@ -383,7 +383,14 @@ export default {
     linear-gradient(#aad5d9eb, white, white, #788c8ed9);
   backdrop-filter: blur(1px);
   z-index: 2;
+} */
+
+.myBackground {
+ background-image: url("../assets/auth_bg.svg");
+background-repeat: no-repeat;
+background-size: cover;
 }
+
 
 input[type="text"] {
   width: 100%;
