@@ -5,6 +5,7 @@ import HomeView from '../views/HomeView'
 import RegistrationView from '../views/RegistrationView'
 import AuthService from '@/services/AuthService'
 import AssessmentView from '../views/AssessmentView'
+import SucessSubmitView from '../views/SucessSubmitView'
 
 //import store from "../store";
 
@@ -27,6 +28,15 @@ const routes = [
       requiresAuth: true,
     }
   },
+  {
+    path: '/sucess',
+    name: 'SucessSubmitView',
+    component: SucessSubmitView,
+    meta: {
+      requiresAuth: true,
+    }
+  },
+  
   {
     path: '/',
     name: 'HomeView',

@@ -198,6 +198,54 @@ z-index: 10;
     top: 0px;
     z-index: 2;
 }
+.m-body {
+    width: 100%;
+    height: calc(100vh - 65px) !important;
+
+}
+.m-center {
+    justify-content: center !important;
+    align-items: center !important;
+}
+.m-btn {
+    border: 1.5px solid rgba(0, 0, 0, 0.2) !important;
+border-radius: 8px;
+}
+.c-b-t {
+    width: 27px;
+height: 11px;
+
+font-family: 'Graphik';
+font-style: normal;
+font-weight: 400;
+font-size: 10px;
+line-height: 11px;
+
+/* identical to box height */
+letter-spacing: 0.02em;
+
+color: rgba(0, 0, 0, 0.8);
+}
+.w-100 {
+    width: 100%;
+}
+.c-b-t-m {
+    width: 145.92px;
+height: 18px;
+
+font-family: 'Graphik';
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+line-height: 15px;
+letter-spacing: 0.02em;
+
+color: rgba(0, 0, 0, 0.8);
+white-space: nowrap; 
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
 #myScroll::-webkit-scrollbar {
     display: none;
