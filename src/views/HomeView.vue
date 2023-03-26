@@ -209,11 +209,12 @@
             <v-slide-item v-for="assessment in allAssessments" :key="assessment.id">
               <div class="mytestcard">
                 <v-card
-                  class="mx-auto mr-3 movingcard"
+                  class="mx-auto mr-3 mb-4 movingcard"
                   min-width="344"
                   max-width="344"
                   outlined
                   height="180"
+
                 >
                   <v-list-item three-line>
                     <v-list-item-avatar
@@ -300,6 +301,7 @@ export default {
     async getUserInfo() {
       const response = await LogedInUserInfo.getUserInfo();
       this.userInfo = response.data.user;
+      this.$store.state.userInfo=this.userInfo;
     },
     async getAllAssessment() {
       const response = await AssessmentController.getAllAssessment();

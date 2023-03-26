@@ -29,7 +29,7 @@ const routes = [
     }
   },
   {
-    path: '/sucess',
+    path: '/success',
     name: 'SucessSubmitView',
     component: SucessSubmitView,
     meta: {
