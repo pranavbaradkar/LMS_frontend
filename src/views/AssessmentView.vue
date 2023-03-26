@@ -4,7 +4,7 @@
       <v-row>
         <!-- Left Card -->
         <v-col cols="3">
-          <v-card :height="getHeight" id="myScroll" class="pa-4 pt-0">
+          <v-card :height="getHeight" id="myScroll" class="pa-4 ma-2 pt-0 rounded-xl">
             <v-card height="auto" id="circleCard" elevation="0">
               <v-card-title
                 class="text-subtitle font-weight-regular accent--text testHead"
@@ -105,44 +105,47 @@
         </v-col>
         <!-- Right Card -->
         <v-col cols="9" class="pl-0">
-          <v-card :height="getHeight" class="d-flex flex-column">
+          <v-card :height="getHeight" class="d-flex my-2 mr-2  flex-column rounded-xl">
             <v-card-title @click="$router.push('/')">
               <v-icon>mdi-close</v-icon>
             </v-card-title>
             <v-container class="px-16">
               <v-row class="pb-0 align-center text-align-center">
-                <v-col cols="1" class="pa-0">
+                <v-card class="pa-0" width="70" elevation="0">
                   <v-text-field
                     label="HH"
                     readonly
-                  
                     value="00"
                     outlined
                     rounded
                     class="rounded-xl centered-input mygredient"
                   >
                   </v-text-field>
-                </v-col>
+                </v-card>
                 <span class="pa-2 mb-5">:</span>
-                <v-col cols="1" class="pa-0">
+                <v-card class="pa-0" width="70" elevation="0">
                   <v-text-field
                     label="MM"
-                    value="04"
+                    readonly
+                    value="00"
                     outlined
                     rounded
                     class="rounded-xl centered-input mygredient"
-                  ></v-text-field>
-                </v-col>
+                  >
+                  </v-text-field>
+                </v-card>
                 <span class="pa-2 mb-5">:</span>
-                <v-col cols="1" class="pa-0">
+                <v-card class="pa-0" width="70" elevation="0">
                   <v-text-field
                     label="SS"
-                    value="59"
+                    readonly
+                    value="00"
                     outlined
                     rounded
                     class="rounded-xl centered-input mygredient"
-                  ></v-text-field>
-                </v-col>
+                  >
+                  </v-text-field>
+                </v-card>
                 <v-col cols="1" class="pr-0">
                   <span>Time Left</span>
                 </v-col>
@@ -161,7 +164,7 @@
               </v-row>
 
               <v-progress-linear
-                class="rounded-xl"
+                class="rounded-xl my-4"
                 rounded
                 :value="((selectedQuestion + 1) / questions.length) * 100"
                 color="primary"
@@ -191,18 +194,18 @@
                 height="auto"
                 color="grey lighten-4"
                 elevation="0"
-                class="mt-8"
-                min-height="200px"
+                class="mt-8 rounded-xl"
+                min-height="192px"
               >
                 <v-card-title v-if="questions[selectedQuestion] != null"
                   >{{ questions[selectedQuestion].statement }}
                 </v-card-title>
               </v-card>
-              <v-card height="auto" color="surface" elevation="0" class="mt-8">
+              <v-card height="auto" color="surface" elevation="0" class="mt-8 rounded-xl">
                 <v-card-title>
-                  <v-row v-if="questions[selectedQuestion] != null">
+                  <v-row v-if="questions[selectedQuestion] != null" justify="center">
                     <v-btn
-                      class="ma-auto my-2 text-wrap"
+                      class="ma-2 text-wrap"
                       min-height="50px"
                       height="auto"
                       :color="questions[selectedQuestion].myAnswer==option.option_key ?'primary':'' "
@@ -223,7 +226,8 @@
             </v-container>
 
             <v-spacer></v-spacer>
-            <v-card elevation="0" class="px-12">
+            <v-divider></v-divider>
+            <v-card elevation="0" class="px-12 mb-2 mt-4">
               <v-container>
                 <v-card-title
                   ><v-row>
@@ -307,7 +311,7 @@ export default {
   },
   computed: {
     getHeight() {
-      return this.windowHeight - 30 + "px";
+      return this.windowHeight - 40 + "px";
     },
   },
   mounted() {
@@ -349,8 +353,8 @@ export default {
         }
       );
       console.log(response);
-      if(response.data.success){
-        this.successDialog=true;
+      if (response.data.success) {
+        this.successDialog = true;
       }
     },
     setOption(option) {
