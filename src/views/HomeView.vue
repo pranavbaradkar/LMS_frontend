@@ -10,7 +10,7 @@
           <v-row class="align-center">
             <v-card-title class="font-weight-light pr-0">Hello,</v-card-title>
 
-            <v-card-title class="pl-2"
+            <v-card-title class="pl-2" v-if="userInfo!=null"
               >{{ userInfo.first_name }} 👋</v-card-title
             >
             <v-menu offset-y>
@@ -64,7 +64,7 @@
             variant="outlined"
             color="#0f0d0d57"
           >
-            <div class="white--text">
+            <div class="white--text" v-if="recommendedAssessment!=null">
               <div class="text-caption">Recommended</div>
 
               <div class="text-h4 mb-1">{{ recommendedAssessment.name }}</div>
@@ -309,6 +309,9 @@ export default {
     async getRecommendedAssessment() {
       const response = await RecommendedAssessmentController.getRecommendedAssessment();
       console.log("response", response);
+      if(response.status==401){
+        AuthService.logout();
+      }
       this.recommendedAssessment = response.data.data;
       console.log("data" ,this.recommendedAssessment);
     },
