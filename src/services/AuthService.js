@@ -54,6 +54,7 @@ export default {
       console.log(response);
       if (response.data.success) {
         const token = response.data.token
+        localStorage.setItem('USER_DATA', response.data)
         localStorage.setItem(TOKEN_KEY, token)
         return response.data;
       }

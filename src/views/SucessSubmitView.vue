@@ -36,9 +36,15 @@
 
             <v-card width="55rem" height="25rem" class="d-flex flex-column align-center justify-center pa-8 " outlined >
                 <img src="../assets/bgicon.svg" width="200px" height="auto">
-                <div class="text-subtitle-1" text-center>Thank You for Confirmation</div>
-                <div>Hold your breath, your school HR will announce </div>
+                <div class="text-subtitle-1" text-center><v-card-title class="ma-0 pa-0">Thank You for Confirmation</v-card-title></div>
+                <v-card-subtitle class="ma-0 pa-0">
+                    <div>Hold your breath, your school HR will announce </div>
+               </v-card-subtitle>
+                <v-card-subtitle class="ma-0 pa-0">
+                 
                    <div> the results once they are published.</div>
+                </v-card-subtitle>
+                
           
                 <div class="d-flex justify-space-between w-100 ma-6" >
                     <v-card width="245" height="54" class="d-flex flex-row m-center m-btn" elevation="0" depressed><v-checkbox></v-checkbox><img class="mr-2" src="../assets/Gmail.svg" width="25px" height="auto">
@@ -49,16 +55,16 @@
                     </v-card>
 
 
-                    <v-card width="245" height="54" class="d-flex flex-row m-center m-btn" elevation="0" depressed><v-checkbox></v-checkbox><img class="mr-2" src="../assets/Gmail.svg" width="25px" height="auto">
+                    <v-card width="245" height="54" class="d-flex flex-row m-center m-btn" elevation="0" depressed><v-checkbox></v-checkbox><v-icon class="mr-2" size="25">mdi-message-reply-outline</v-icon>
                     <div class="d-flex flex-column">
-                        <div class="c-b-t">Email</div>
+                        <div class="c-b-t">SMS</div>
                         <div class="c-b-t-m">sktivari1@gmail.com</div>
                     </div>
                     </v-card>
 
-                    <v-card width="245" height="54" class="d-flex flex-row m-center m-btn" elevation="0" depressed border="1"><v-checkbox></v-checkbox><img class="mr-2" src="../assets/Gmail.svg" width="25px" height="auto">
+                    <v-card width="245" height="54" class="d-flex flex-row m-center m-btn" elevation="0" depressed border="1"><v-checkbox></v-checkbox><v-icon class="mr-2" size="25">mdi-whatsapp</v-icon>
                     <div class="d-flex flex-column">
-                        <div class="c-b-t">Email</div>
+                        <div class="c-b-t">Whatsapp</div>
                         <div class="c-b-t-m">sktivari1@gmail.com</div>
                     </div>
                     </v-card>

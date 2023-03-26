@@ -196,7 +196,7 @@
             <p class="text-h5 py-4">Assessment Submitted Successfully</p>
             <v-btn class="primary" large width="157px" rounded @click="() => {
               successDialog = false;
-              $router.push('/');
+              $router.push('/sucess');
             }">OK</v-btn>
           </v-card-text>
         </v-container>
@@ -353,6 +353,7 @@ export default {
       console.log(response);
       if (response.data.success) {
         this.successDialog = true;
+    
       }
     },
     setOption(option) {
