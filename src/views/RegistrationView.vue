@@ -939,7 +939,6 @@
                                     :items="boardsData"
                                     item-text="name"
                                     item-value="id"
-                                    v-model="professional.board_id"
                                     multiple
                                   >
                                   </v-autocomplete>
@@ -956,7 +955,6 @@
                                     :items="tableLevels"
                                     multiple
                                     item-text="name"
-                                    v-model="professional.level_ids"
                                     item-value="id"
                                   >
                                   </v-autocomplete>
@@ -976,7 +974,6 @@
                                     multiple
                                     item-text="name"
                                     item-value="id"
-                                    v-model="professional.subject_ids"
                                   >
                                   </v-autocomplete>
                                 </v-col>
@@ -1036,7 +1033,7 @@
                     SAVE DETAILS
                   </v-btn>
                   <v-spacer></v-spacer>
-                  <v-btn
+                  <!-- <v-btn
                     rounded
                     color="secondary"
                     class="black--text ma-4"
@@ -1044,7 +1041,7 @@
                     depressed
                   >
                     PROCEED TO ASSESSMENT
-                  </v-btn>
+                  </v-btn> -->
                 </v-row>
               </v-container>
             </v-stepper-content>
@@ -1188,16 +1185,14 @@ export default {
           experience_month: 0,
           position: "",
           employee_type_id: 0,
-          // board_id: 0,
-          board_id: [],
+          board_id: 0,
           start_date: Date.now(),
           end_date: Date.now(),
-          // level_ids: "40,41,49",
-          level_ids: [],
-
+          level_ids: "40,41,49",
+          // level_ids: [],
           grade_ids: "91",
-          // subject_ids: "68,69,70",\
-          subject_ids: [],
+          subject_ids: "68,69,70",
+          // subject_ids: [],
           school_id: 0,
           other_name: "",
           deleteIndex: null,
@@ -1302,9 +1297,9 @@ export default {
       }
     },
     async saveDetails() {
-      // console.log("function");
+      console.log("function");
       if (this.$refs.step3.validate()) {
-        // console.log("userif conditon");
+        console.log("userif conditon");
         // this.professionalInfos.forEach((object)=>{
         //       object.level_ids.join(", ");
         //       object.level_ids = JSON.stringify(object.level_ids)
@@ -1333,7 +1328,7 @@ export default {
           await ProfessionalController.createUserProfessionalInfo(
             this.professionalInfos
           );
-        // console.log(response);
+         console.log(response);
         if (response.data.success) {
           this.isCreatingUser = false;
           this.successDialog = true;
@@ -1469,12 +1464,12 @@ export default {
         experience_month: 0,
         position: "",
         employee_type_id: 0,
-        board_id: [],
+        board_id: 0,
         start_date: "",
         end_date: "",
-        level_ids: [],
+        level_ids: "",
         grade_ids: "",
-        subject_ids: [],
+        subject_ids:"",
         school_id: 0,
         other_name: "",
       });
