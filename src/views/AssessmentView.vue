@@ -119,19 +119,19 @@
             <v-container class="px-16">
               <v-row class="align-center text-align-center px-2 pb-8">
                 <v-card class="pa-0" width="70" elevation="0">
-                  <v-text-field hide-details="" label="HH" readonly value="00" outlined rounded
+                  <v-text-field hide-details="" label="HH" readonly :value=hours outlined rounded
                     class="rounded-xl centered-input mygredient">
                   </v-text-field>
                 </v-card>
-                <span class="pa-2 mb-5">:</span>
+                <span class="pa-2">:</span>
                 <v-card class="pa-0" width="70" elevation="0">
-                  <v-text-field hide-details="" label="MM" readonly value="00" outlined rounded
+                  <v-text-field hide-details="" label="MM" readonly :value=mins outlined rounded
                     class="rounded-xl centered-input mygredient">
                   </v-text-field>
                 </v-card>
-                <span class="pa-2 mb-5">:</span>
+                <span class="pa-2">:</span>
                 <v-card class="pa-0" width="70" elevation="0">
-                  <v-text-field hide-details="" label="SS" readonly value="00" outlined rounded
+                  <v-text-field hide-details="" label="SS" readonly :value=secs outlined rounded
                     class="rounded-xl centered-input mygredient">
                   </v-text-field>
                 </v-card>
@@ -154,7 +154,7 @@
                     {{ selectedQuestion + 1 + " of " + questions.length }}</span>
                 </v-col>
                 <v-col class="text-end" v-if="questions != 0">
-                  <v-chip outlined active text-color="black" color="primary" active-class="secondary">{{
+                  <v-chip  active text-color="black" class="m-q-chip"  >{{
                     questions[selectedQuestion].skill.name }}</v-chip>
                 </v-col>
               </v-row>
@@ -167,8 +167,8 @@
                   </v-card-title>
               </v-card>
             </v-card>
-
-              <v-card height="auto" color="surface" elevation="0" class="mt-8 rounded-xl">
+            <v-card class="option-card mt-8 rounded-xl " elevation="0">
+              <v-card height="auto" color="sufaceAccent" elevation="0">
                 <v-card-title>
                   <v-row v-if="questions[selectedQuestion] != null" justify="center">
                     <v-btn class="ma-2 text-wrap" min-height="50px" height="auto"
@@ -182,6 +182,7 @@
                     </v-btn>
                   </v-row>
                 </v-card-title>
+              </v-card>
               </v-card>
             </v-container>
 
@@ -313,6 +314,11 @@ export default {
   name: "AssessmentView",
   data() {
     return {
+      hours: "00",
+      mins: "00",
+      secs: "00",
+      seconds: 300,
+      timerId: null,
       isProgressClicked: false,
       summaryDialog: false,
       successDialog: false,
@@ -338,6 +344,8 @@ export default {
     },
   },
   mounted() {
+    this.startTimer();
+
     this.$nextTick(() => {
       window.addEventListener("resize", this.onResize);
     });
@@ -345,8 +353,37 @@ export default {
 
   beforeDestroy() {
     window.removeEventListener("resize", this.onResize);
+    this.stopTimer();
   },
   methods: {
+    startTimer() {
+      this.interval = setInterval(() => {
+        this.updateTime();
+      }, 1000);
+    },
+    updateTime() {
+      if (this.seconds <= 0) {
+        clearInterval(this.interval);
+        return;
+      }
+
+      this.seconds -= 1;
+
+      const remainingHours = Math.floor(this.seconds / 3600);
+      const remainingMinutes = Math.floor((this.seconds % 3600) / 60);
+      const remainingSeconds = this.seconds % 60;
+
+      this.hours = this.pad(remainingHours);
+      this.mins = this.pad(remainingMinutes);
+      this.secs = this.pad(remainingSeconds);
+    },
+    pad(value) {
+      return value < 10 ? "0" + value : value;
+    },
+    stopTimer() {
+      clearInterval(this.timerId);
+      this.timerId = null;
+    },
     openProgressList(type) {
       this.isProgressClicked = true;
       switch (type) {
@@ -415,7 +452,6 @@ export default {
       console.log(response);
       if (response.data.success) {
         this.successDialog = true;
-    
       }
     },
     setOption(option) {
@@ -451,7 +487,10 @@ export default {
         await RecommendedAssessmentController.getRecommendedAssessment();
       this.assessment = response2.data.data;
       this.screening = response.data.data;
+      this.seconds=this.assessment.tests[0].duration_of_assessment*60
+  
       this.screening.forEach((element) => {
+        
         this.questions.push(...element.questions);
       });
       //console.log("response: ", this.assessment);
@@ -468,6 +507,9 @@ export default {
 }
 .my-card {
   border: 1px solid rgba(175, 175, 175, 0.342);
+}
+.option-card{
+  border: 0.5px solid rgba(0, 0, 0, 0.26);
 }
 .submitButton {
   position: fixed;
