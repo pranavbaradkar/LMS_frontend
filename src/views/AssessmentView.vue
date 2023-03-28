@@ -3,8 +3,8 @@
     <v-container fluid>
       <v-row>
         <!-- Left Card -->
-        <v-col cols="3">
-          <v-card :height="getHeight" id="myScroll" class="pa-4 ma-2 pt-0 rounded-xl">
+        <v-col cols="3" >
+          <v-card v-if="!isProgressClicked" :height="getHeight" id="myScroll" class="pa-4 ma-2 pt-0 rounded-xl">
             <v-card height="auto" id="circleCard" elevation="0">
               <v-card-title class="text-subtitle font-weight-regular accent--text testHead">
                 <p>{{ assessment.name }}</p>
@@ -20,7 +20,7 @@
               <v-card-title class="pa-x pt-8 pb-0">
                 <v-row justify="space-around">
                   <div class="d-flex flex-column mb-6 align-center">
-                    <v-progress-circular :rotate="360" :size="85" :width="15"
+                    <v-progress-circular :rotate="360" :size="85" :width="15" @click="openProgressList('Answered')"
                       :value=((answeredProgress/questions.length)*100) color="answered
                         ">
                       <h4 class="black--text">{{answeredProgress }}</h4>
@@ -28,7 +28,7 @@
                     <v-card-subtitle class="py-2">ANSWERED</v-card-subtitle>
                   </div>
                   <div class="d-flex flex-column mb-6 align-center">
-                    <v-progress-circular :rotate="360" :size="85" :width="15"  :value="((skipped.length / questions.length) * 100)" color="skipped" >
+                    <v-progress-circular :rotate="360" :size="85" :width="15"  :value="((skipped.length / questions.length) * 100)" color="skipped" @click="openProgressList('Skipped')">
                       <h4 class="black--text">{{ this.skipped.length }}</h4>
 
                     </v-progress-circular>
@@ -39,7 +39,7 @@
               <v-card-title class="justify-center py-0">
                 <div class="d-flex flex-column mb-6 align-center">
                   <v-progress-circular :rotate="360" :size="85" :width="15"
-                    :value="((bookmarked.length / questions.length) * 100)" color="bookmarked">
+                    :value="((bookmarked.length / questions.length) * 100)" color="bookmarked" @click="openProgressList('Bookmark')">
                     <h4 class="black--text">{{ this.bookmarked.length }}</h4>
 
                   </v-progress-circular>
@@ -71,6 +71,44 @@
               </v-card>
             </v-container>
           </v-card>
+          <!-- progress List -->
+          <v-card v-else :height="getHeight" id="myScroll" class="pa-4 ma-2 pt-0 rounded-xl" @click="isProgressClicked=false">
+            <v-card height="auto" id="circleCard" elevation="0">
+              <v-card-title class="text-subtitle font-weight-regular accent--text testHead">
+                <p>{{ progressListTitle }}</p>
+                
+              </v-card-title>
+              
+
+              <v-divider class="mx-4 mt-0"></v-divider>
+              
+             
+            </v-card>
+            <v-divider class="mx-4 mt-0"></v-divider>
+            <v-container>
+              <v-card elevation="0" id="myScroll" height="auto">
+                <v-list-item-group mandatory v-model="selectedQuestion">
+                  <v-list-item class="grey lighten-4 pt-2" v-for="(item, i) in progressList" :key="i" @click="isProgressClicked=false">
+                    <v-list-item-content class="py-0">
+                      <v-list-item-title :class="
+                        i == selectedQuestion ? 'primary--text font-weight-regular' : 'font-weight-light'
+                      "><v-icon large :color="getColor(item)">mdi-circle-medium</v-icon>
+                        <img v-if="i == selectedQuestion" src="../assets/Polygonpoly.png" class="polyicon" />
+                        Question {{ i + 1 }}</v-list-item-title>
+
+                      <v-divider class="mt-2 mb-1"></v-divider>
+                    </v-list-item-content>
+                    <v-list-item-action v-if="bookmarked.includes(item)">
+                      <v-icon color="primary">
+                        mdi-bookmark
+                      </v-icon>
+                    </v-list-item-action>
+                  </v-list-item>
+                </v-list-item-group>
+              </v-card>
+            </v-container>
+          </v-card>
+
         </v-col>
         <!-- Right Card -->
         <v-col cols="9" class="pl-0">
@@ -196,7 +234,6 @@
             <p class="text-h5 py-4">Assessment Submitted Successfully</p>
             <v-btn class="primary" large width="157px" rounded @click="() => {
               successDialog = false;
-              $router.push('/sucess');
             }">OK</v-btn>
           </v-card-text>
         </v-container>
@@ -276,14 +313,17 @@ export default {
   name: "AssessmentView",
   data() {
     return {
+      isProgressClicked: false,
       summaryDialog: false,
       successDialog: false,
       windowHeight: window.innerHeight,
       selectedQuestion: 0,
+      progressListTitle: "",
       power: 25,
       screening: [],
       assessment: {},
       questions: [],
+      progressList: [],
       response: {},
       bookmarked: [],
       skipped: [],
@@ -307,6 +347,29 @@ export default {
     window.removeEventListener("resize", this.onResize);
   },
   methods: {
+    openProgressList(type) {
+      this.isProgressClicked = true;
+      switch (type) {
+        case "Answered":
+          this.progressListTitle = "Answered Questions";
+          this.progressList = this.questions.filter(
+            (question) => question.myAnswer != null
+          );
+          break;
+        case "Skipped":
+          this.progressListTitle = "Skipped Questions";
+
+          this.progressList = this.skipped;
+          break;
+        case "Bookmark":
+          this.progressListTitle = "Bookmarked Questions";
+
+          this.progressList = this.bookmarked;
+          break;
+        default:
+          break;
+      }
+    },
     getColor(item) {
       if (this.bookmarked.includes(item)) {
         return "bookmarked";
@@ -338,7 +401,6 @@ export default {
       });
     },
     async submitAssessment() {
-     
       this.questions.forEach((question) => {
         if (question.myAnswer != null) {
           Vue.set(this.response, question.id, question.myAnswer);
@@ -352,10 +414,7 @@ export default {
       );
       console.log(response);
       if (response.data.success) {
-        this.successDialog = true;    
-      }
-     else  {
-        this.$router.push('/failed')
+        this.successDialog = true;
     
       }
     },
@@ -410,8 +469,8 @@ export default {
 .my-card {
   border: 1px solid rgba(175, 175, 175, 0.342);
 }
-.submitButton{
-  position:fixed;
+.submitButton {
+  position: fixed;
   bottom: 50px;
 }
 </style>
