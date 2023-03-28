@@ -352,7 +352,10 @@ export default {
       );
       console.log(response);
       if (response.data.success) {
-        this.successDialog = true;
+        this.successDialog = true;    
+      }
+     else  {
+        this.$router.push('/failed')
     
       }
     },

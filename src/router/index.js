@@ -6,6 +6,7 @@ import RegistrationView from '../views/RegistrationView'
 import AuthService from '@/services/AuthService'
 import AssessmentView from '../views/AssessmentView'
 import SucessSubmitView from '../views/SucessSubmitView'
+import FailedView from '../views/FailedView'
 
 //import store from "../store";
 
@@ -16,6 +17,14 @@ const routes = [
     path: '/login',
     name: 'AuthView',
     component: AuthView,
+    meta: {
+      requiresAuth: false,
+    }
+  },
+  {
+    path: '/failed',
+    name: 'FailedView',
+    component: FailedView,
     meta: {
       requiresAuth: false,
     }
