@@ -1154,7 +1154,7 @@ export default {
       successDialog: false,
       errorDialog: false,
       dobRules: [
-        (v) => !!v || "Date of Birth is required",
+        (v) => !!v || "Field is required",
         // (v) =>
         //   /^\d{4}-\d{2}-\d{2}$/.test(v) ||
         //   "Date of Birth must be in YYYY-MM-DD format",
@@ -1187,8 +1187,8 @@ export default {
         {
           institution: "",
           programme: "",
-          start_date: Date.now(),
-          end_date: Date.now(),
+          start_date:"",
+          end_date:"",
           field_of_study: "",
           extra_carricular_activities: [],
           grade_score: 0,
@@ -1204,8 +1204,8 @@ export default {
           position: "",
           employee_type_id: 0,
           board_id: 0,
-          start_date: Date.now(),
-          end_date: Date.now(),
+          start_date:"",
+          end_date:"",
           level_ids: "40,41,49",
           // level_ids: [],
           grade_ids: "91",
