@@ -37,7 +37,7 @@
                 </v-row>
               </v-card-title>
               <v-card-title class="justify-center py-0">
-                <div class="d-flex flex-column mb-6 align-center">
+                <div class="d-flex flex-column mb-2 align-center">
                   <v-progress-circular :rotate="360" :size="85" :width="15"
                     :value="((bookmarked.length / questions.length) * 100)" color="bookmarked" @click="openProgressList('Bookmark')">
                     <h4 class="black--text">{{ this.bookmarked.length }}</h4>
@@ -451,7 +451,12 @@ export default {
       );
       console.log(response);
       if (response.data.success) {
-        this.successDialog = true;
+        // this.successDialog = true;
+        this.$router.push('/success');
+      }
+      else{
+        this.$router.push('/failed');
+
       }
     },
     setOption(option) {

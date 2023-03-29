@@ -126,8 +126,8 @@
         ><br /><span>them on topics you care about.</span></v-card-subtitle
       >
       <v-container>
-        <v-stepper v-model="e1">
-          <v-stepper-header class="text-subtitle-2 secondaryAccent">
+        <v-stepper v-model="e1" class="rounded-lg">
+          <v-stepper-header class="text-subtitle-2 secondaryAccent rounded-lg">
             <v-stepper-step :complete="e1 > 1" step="1">
               PERSONAL INFORMATION
             </v-stepper-step>
