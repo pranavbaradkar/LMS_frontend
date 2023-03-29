@@ -730,56 +730,74 @@
                           }}</v-expansion-panel-header>
                           <v-expansion-panel-content>
                             <v-row class="py-0">
-                              <v-col cols="3" class="py-0"
-                                ><v-radio-group
+                              <v-col class="py-0">
+                                <v-card width="100%" elevation="0" class="mb-10 rounded-xl" outlined><v-radio-group
                                   mandatory
                                   row
                                   v-model="experience"
                                   :rules="[rules.required]"
                                   required
                                 >
-                                  <v-radio
+                                <v-col class="py-0">
+                                 
+                                   <v-row class=" py-0 px-0 ml-2 ">                                  
+                                      <v-radio class="mb-8 py-0"
+                                      label="I have"
+                                      value="Experienced"
+                                    >
+                                    </v-radio>
+                                    
+                                    <v-col                                   
+                                    cols="1 center"
+                                    class="py-0 px-0"
+                                  >
+                                    <v-text-field
+                                      type="number"
+                                      outlined
+                                      @keypress="isNumber($event)"
+                                      class="rounded-xl"
+                                     
+                                      v-model="professional.experience_year"
+                                    >
+                                    </v-text-field>
+                                  </v-col>
+                                  <v-col  cols="1 center"
+                                    class="py-0  px-0"><div class="pt-4 ml-4">
+                                    Years
+                                  </div></v-col>
+                                  <v-col
+                                    
+                                    cols="1"
+                                    class="py-0 px-0"
+                                  >
+                                    <v-text-field
+                                      type="number"
+                                      @keypress="isNumber($event)"
+                                      outlined
+                                      class="rounded-xl"
+                                      v-model="professional.experience_month"
+                                    >
+                                    </v-text-field>
+                                  </v-col>
+                                  <v-col  cols="4 center"
+                                  class="py-0  px-0"><div class="pt-4 ml-4">
+                                    Months of experiences
+                                </div></v-col>
+                                   </v-row>
+                                   <v-row class="pb-4 ml-2"> <v-radio
                                     label="Fresher"
                                     value="Fresher"
-                                  ></v-radio>
-                                  <v-radio
-                                    label="Experienced"
-                                    value="Experienced"
                                   >
-                                  </v-radio> </v-radio-group
-                              ></v-col>
-                              <v-col
-                                v-if="experience == 'Experienced'"
-                                cols="2"
-                                class="py-0"
-                              >
-                                <v-text-field
-                                  label="Years *"
-                                  type="number"
-                                  outlined
-                                  @keypress="isNumber($event)"
-                                  class="rounded-xl"
-                                  :rules="[rules.required]"
-                                  required
-                                  v-model="professional.experience_year"
-                                >
-                                </v-text-field>
+                                </v-radio></v-row>
+                                </v-col>
+                               
+
+                                   </v-radio-group
+                              ></v-card>
                               </v-col>
-                              <v-col
-                                v-if="experience == 'Experienced'"
-                                cols="2"
-                                class="py-0"
-                              >
-                                <v-text-field
-                                  label="Month"
-                                  type="number"
-                                  @keypress="isNumber($event)"
-                                  outlined
-                                  class="rounded-xl"
-                                  v-model="professional.experience_month"
-                                >
-                                </v-text-field>
-                              </v-col>
+                              
+                                
+                            
                             </v-row>
                             <div v-if="experience == 'Experienced'">
                               <v-row class="py-0">
@@ -1081,7 +1099,7 @@ export default {
   },
   data() {
     return {
-      e1: 1,
+      e1: 3,
       experience: "Fresher",
       isCurrentlyWorking: false,
       isFetchingLocation: false,
