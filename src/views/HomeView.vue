@@ -10,7 +10,7 @@
           <v-row class="align-center">
             <v-card-title class="font-weight-light pr-0">Hello,</v-card-title>
 
-            <v-card-title class="pl-2" v-if="userInfo!=null"
+            <v-card-title class="pl-2" v-if="userInfo != null"
               >{{ userInfo.first_name }} 👋</v-card-title
             >
             <v-menu offset-y>
@@ -64,15 +64,16 @@
             variant="outlined"
             color="#0f0d0d57"
           >
-            <div class="white--text" v-if="recommendedAssessment!=null">
+            <div class="white--text" v-if="recommendedAssessment != null">
               <div class="text-caption">Recommended</div>
 
               <div class="text-h4 mb-1">{{ recommendedAssessment.name }}</div>
-              <v-list-item-subtitle class="mt-4"
-                >{{ recommendedAssessment.instructions }}</v-list-item-subtitle
-              >
+              <v-list-item-subtitle class="mt-4">{{
+                recommendedAssessment.instructions
+              }}</v-list-item-subtitle>
               <div class="mt-4">
-                <v-icon class="white--text">mdi-book</v-icon> {{ recommendedAssessment.tests[0].total_no_of_questions }}
+                <v-icon class="white--text">mdi-book</v-icon>
+                {{ recommendedAssessment.tests[0].total_no_of_questions }}
                 Questions<v-icon class="white--text">mdi-circle-small</v-icon
                 ><v-icon class="white--text">mdi-clock</v-icon> 60 mins
                 <v-icon class="white--text">mdi-circle-small</v-icon
@@ -89,6 +90,7 @@
                     large
                     v-bind="attrs"
                     v-on="on"
+                    @click="recommendedTestViewEvent"
                     >START TEST</v-btn
                   >
                 </template>
@@ -187,8 +189,7 @@
                       class="black--text mb-16"
                       rounded
                       large
-                      @click="dialog = false"
-                      to="/assessment"
+                      @click="startTest"
                       >START TEST</v-btn
                     >
                   </v-card>
@@ -206,7 +207,10 @@
             center-active
             show-arrows
           >
-            <v-slide-item v-for="assessment in allAssessments" :key="assessment.id">
+            <v-slide-item
+              v-for="assessment in allAssessments"
+              :key="assessment.id"
+            >
               <div class="mytestcard">
                 <v-card
                   class="mx-auto mr-3 mb-4 movingcard"
@@ -214,7 +218,6 @@
                   max-width="344"
                   outlined
                   height="180"
-
                 >
                   <v-list-item three-line>
                     <v-list-item-avatar
@@ -228,8 +231,7 @@
                       </v-list-item-title>
                       <v-list-item-subtitle>
                         {{ assessment.instructions }}
-                        </v-list-item-subtitle
-                      >
+                      </v-list-item-subtitle>
                     </v-list-item-content>
                   </v-list-item>
                   <v-expand-transition>
@@ -239,7 +241,8 @@
                         color="secondary"
                         class="black--text"
                         rounded
-                        to="/assessment"
+                        v-on:click="selectedAssessment = assessment"
+                        @click="dialog=true"
                         >START TEST</v-btn
                       >
                     </v-card-actions>
@@ -261,11 +264,11 @@ import LogedInUserInfo from "@/controllers/LogedInUserInfo";
 import AssessmentController from "@/controllers/AssessmentController";
 import RecommendedAssessmentController from "@/controllers/RecommendedAssessmentController";
 
-
 export default {
   name: "HomeView",
   data() {
     return {
+      selectedAssessment: null,
       mouseHover: null,
       tab: null,
       model: null,
@@ -273,7 +276,7 @@ export default {
       windowHeight: window.innerHeight,
       userInfo: {},
       allAssessments: [],
-      recommendedAssessment:{},
+      recommendedAssessment: {},
     };
   },
   computed: {
@@ -291,6 +294,40 @@ export default {
     window.removeEventListener("resize", this.onResize);
   },
   methods: {
+    startRecommendedTest() {
+      this.dialog = false;
+      this.$mixpanel.track("StartTestClicked", {
+        assessment_id: this.recommendedAssessment.id,
+        assessment_name: this.recommendedAssessment.name,
+        source: "instruction_page/recommendation_page",
+        screen_name: "RecommendedTestScreen",
+      });
+      this.$router.push("/assessment");
+    },
+    startTest() {
+      this.dialog = false;
+      this.$mixpanel.track("StartTestClicked", {
+        assessment_id: this.selectedAssessment.id,
+        assessment_name: this.selectedAssessment.name,
+        source: "instruction_page/recommendation_page",
+        screen_name: "RecommendedTestScreen",
+      });
+      this.$router.push("/assessment");
+    },
+    recommendedTestViewEvent() {
+      this.selectedAssessment = this.recommendedAssessment;
+      this.$mixpanel.track("RecommendedViewTestClicked", {
+        assessment_id: this.recommendedAssessment.id,
+        assessment_name: this.recommendedAssessment.name,
+        screen_name: "RecommendedTestScreen",
+      });
+      this.$mixpanel.track("InstructionsModalLoaded", {
+        assessment_id: this.recommendedAssessment.id,
+        assessment_name: this.recommendedAssessment.name,
+        screen_name: "AssessmentInstructionsScreen",
+      });
+    },
+
     onResize() {
       this.windowHeight = window.innerHeight;
     },
@@ -301,21 +338,24 @@ export default {
     async getUserInfo() {
       const response = await LogedInUserInfo.getUserInfo();
       this.userInfo = response.data.user;
-      this.$store.state.userInfo=this.userInfo;
+      this.$store.state.userInfo = this.userInfo;
     },
     async getAllAssessment() {
       const response = await AssessmentController.getAllAssessment();
       this.allAssessments = response.data.data;
-      
     },
     async getRecommendedAssessment() {
-      const response = await RecommendedAssessmentController.getRecommendedAssessment();
+      const response =
+        await RecommendedAssessmentController.getRecommendedAssessment();
       console.log("response", response);
-      if(response.status==401){
+      this.$mixpanel.track("RecommendationScreenLoaded", {
+        screen_name: "RecommendationScreen",
+      });
+      if (response.status == 401) {
         AuthService.logout();
       }
       this.recommendedAssessment = response.data.data;
-      console.log("data" ,this.recommendedAssessment);
+      console.log("data", this.recommendedAssessment);
     },
   },
   created() {

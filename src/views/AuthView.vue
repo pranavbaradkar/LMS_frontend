@@ -62,6 +62,13 @@
                 placeholder="Phone Number"
                 v-model="phoneNumber"
                 maxlength="10"
+                @change="
+                  () => {
+                    if (phoneNumber.length == 10) {
+                      triggerPhoneNumberEvent;
+                    }
+                  }
+                "
               />
               <div v-if="ctList" id="countrylist">
                 <div
@@ -88,13 +95,13 @@
                 <v-text-field
                   label="Email address"
                   :suffix="vibgyouBool ? '@vgos.org' : ''"
-                  :rules="vibgyouBool ?  vgosRules : emailRules "
-                  error-messages="fvefhjr"
+                  :rules="vibgyouBool ? vgosRules : emailRules"
                   class="rounded-xl"
                   placeholder="Enter Email Id"
                   v-model="email"
                   solo
                   outlined
+                  @focus="triggerEmailEvent"
                 ></v-text-field>
               </span>
             </v-form>
@@ -236,19 +243,13 @@
                 RESEND OTP
               </span> -->
 
-
-
               <v-btn
                 text
-                
                 class="textcolor--text pl-4"
                 @click="generatePhoneOtp"
                 :disabled="resendBool"
-                >RESEND OTP</v-btn >
-
-
-
-
+                >RESEND OTP</v-btn
+              >
             </v-card-text>
             <v-card-title class="justify-center">
               <v-btn
@@ -300,26 +301,37 @@ export default {
       ],
       vgosRules: [
         (v) => !!v || "E-mail is required",
-        (v) => /^[a-zA-Z0-9_-]{3,16}$/.test(
-            v
-          ) || "E-mail must be valid",
+        (v) => /^[a-zA-Z0-9_-]{3,16}$/.test(v) || "E-mail must be valid",
       ],
     };
   },
   methods: {
+    triggerPhoneNumberEvent() {
+      this.$mixpanel.track("PhoneNumberFilled", {
+        phone_number: this.phoneNumber,
+        screen_name: "LoginScreen",
+      });
+    },
+    triggerEmailEvent() {
+      this.$mixpanel.track("EmailFilled", {
+        email_address: this.email,
+        screen_name: "LoginScreen",
+      });
+    },
     selectCountry() {
       this.ctList = false;
     },
     async generateOtp() {
       this.time = 119;
-    
-        await AuthService.generateOTP({
-        email: this.vibgyouBool ?  this.email+"@gmail.com" : this.email,
+
+      await AuthService.generateOTP({
+        email: this.vibgyouBool ? this.email + "@gmail.com" : this.email,
       });
-
-     
-      
-
+      this.$mixpanel.track("GenerateOTPClicked", {
+  "email_address":  this.email,
+  "user_type": this.vibgyouBool? "teacher" :"job_seeker",
+  "screen_name": "LoginScreen"
+});
       // console.log("opt send response", response)
       this.isGenerateOtpClicked = true;
       this.otpTimmer();
@@ -329,10 +341,14 @@ export default {
       await AuthService.generateOTP({
         mobile: "+91" + this.phoneNumber,
       });
-      
-       // console.log("opt send response", response)
-       this.isGenerateOtpClicked = true;
-       this.otpTimmer();
+      this.$mixpanel.track("GenerateOTPClicked", {
+  "phone_number": this.phoneNumber,
+  "user_type": this.vibgyouBool? "teacher" :"job_seeker",
+  "screen_name": "LoginScreen"
+});
+      // console.log("opt send response", response)
+      this.isGenerateOtpClicked = true;
+      this.otpTimmer();
     },
     otpTimmer() {
       clearInterval(this.timer);
@@ -347,26 +363,22 @@ export default {
       }, 1000);
     },
     async validateOTP() {
+      
       var res = null;
       if (!this.usingPhone) {
-
-
-        if(this.vibgyouBool){
+        if (this.vibgyouBool) {
           res = await AuthService.validateOTP({
-          email: this.email +'@gmail.com',
-          otp: this.otp,
-          debug: false,
-        });
-        }
-        else {
+            email: this.email + "@gmail.com",
+            otp: this.otp,
+            debug: false,
+          });
+        } else {
           res = await AuthService.validateOTP({
-          email: this.email,
-          otp: this.otp,
-          debug: false,
-        });
+            email: this.email,
+            otp: this.otp,
+            debug: false,
+          });
         }
-
-        
 
         // console.log(res)
         if (res.is_profile_created) {
@@ -391,11 +403,14 @@ export default {
       // this.isGenerateOtpClicked = true;
     },
   },
-  computed: {},
   created() {
     if (AuthService.isAuthenticated()) {
       if (this.$route.path !== "/") this.$router.replace("/");
     }
+    this.$mixpanel.track("AppOpened", {
+      app_name: "Smart Staff Selection",
+      screen_name: "LoginScreen",
+    });
   },
 };
 </script>
@@ -433,11 +448,10 @@ export default {
 } */
 
 .myBackground {
- background-image: url("../assets/auth_bg.svg");
-background-repeat: no-repeat;
-background-size: cover;
+  background-image: url("../assets/auth_bg.svg");
+  background-repeat: no-repeat;
+  background-size: cover;
 }
-
 
 input[type="text"] {
   width: 100%;

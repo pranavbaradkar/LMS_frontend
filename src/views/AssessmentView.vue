@@ -51,7 +51,7 @@
             <v-container>
               <v-card elevation="0" id="myScroll" height="auto">
                 <v-list-item-group mandatory v-model="selectedQuestion">
-                  <v-list-item class="grey lighten-4 pt-2" v-for="(item, i) in questions" :key="i">
+                  <v-list-item class="grey lighten-4 pt-2" v-for="(item, i) in questions" :key="i" @click="questionClicked(item)">
                     <v-list-item-content class="py-0">
                       <v-list-item-title :class="
                         i == selectedQuestion ? 'primary--text font-weight-regular' : 'font-weight-light'
@@ -141,7 +141,7 @@
                 <v-spacer></v-spacer>
                 <v-col cols="4" class="text-end">
                   <v-btn width="150px" height="48px" rounded color="accent" class="white--text"
-                    @click=" summaryDialog = true;">SUBMIT</v-btn>
+                    @click=" openTestSummary">SUBMIT</v-btn>
                 </v-col>
               </v-row>
 
@@ -318,6 +318,7 @@ export default {
       mins: "00",
       secs: "00",
       seconds: 300,
+      lastAnswerTime: null,
       timerId: null,
       isProgressClicked: false,
       summaryDialog: false,
@@ -330,6 +331,7 @@ export default {
       assessment: {},
       questions: [],
       progressList: [],
+      option_selected: "",
       response: {},
       bookmarked: [],
       skipped: [],
@@ -354,8 +356,26 @@ export default {
   beforeDestroy() {
     window.removeEventListener("resize", this.onResize);
     this.stopTimer();
+    this.$mixpanel.track("AssessmentClosed", {
+      assessment_id: this.assessment.id,
+      assessment_name: this.assessment.name,
+      questions_qnswered: this.answeredProgress,
+      questions_bookmarked: this.bookmarked,
+      questions_skipped: this.skipped,
+      total_time_spent_in_sec:
+        this.assessment.tests[0].duration_of_assessment * 60 - this.seconds,
+      screen_name: "AssessmentScreen",
+    });
   },
   methods: {
+    openTestSummary() {
+      this.summaryDialog = true;
+      this.$mixpanel.track("TestSummaryLoaded", {
+        assessment_id: this.assessment.id,
+        assessment_name: this.assessment.name,
+        screen_name: "TestSummaryScreen",
+      });
+    },
     startTimer() {
       this.interval = setInterval(() => {
         this.updateTime();
@@ -419,10 +439,18 @@ export default {
     bookmarkQuestion(question) {
       if (!this.bookmarked.includes(question)) {
         this.bookmarked.push(question);
+        this.$mixpanel.track("QuestionBookmarked", {
+          question_id: this.selectedQuestion.id,
+          screen_name: "AssessmentScreen",
+        });
         console.log(this.questions[this.selectedQuestion]);
         if (this.skipped.includes(question)) {
           let index = this.bookmarked.indexOf(question);
           this.skipped.splice(index, 1);
+          this.$mixpanel.track("BookmarkRemoved", {
+            question_id: this.selectedQuestion.id,
+            screen_name: "AssessmentScreen",
+          });
         }
       } else {
         let index = this.bookmarked.indexOf(question);
@@ -449,19 +477,47 @@ export default {
           response_json: this.response,
         }
       );
+      this.$mixpanel.track("SubmitButtonClicked", {
+        assessment_id: this.assessment.id,
+        questions_answered: {
+          count: this.answeredProgress,
+          question_id: this.questions.filter((item) => item.myAnswer != null),
+        },
+        question_bookmarked: {
+          count: this.bookmarked,
+          question_id: this.bookmarked,
+        },
+        questions_skipped: {
+          count: this.skipped,
+          question_id: this.skipped,
+        },
+        questions_not_answered: {
+          count: this.questions.length - this.answeredProgress,
+          question_id: this.questions.filter((item) => item.myAnswer == null),
+        },
+        counter_sec: this.seconds,
+        total_time_spent_in_sec:
+          this.assessment.tests[0].duration_of_assessment * 60 - this.seconds,
+        screen_name: "AssessmentScreen",
+      });
       console.log(response);
       if (response.data.success) {
         // this.successDialog = true;
-        this.$router.push('/success');
-      }
-      else{
-        this.$router.push('/failed');
-
+        this.$router.push({
+          path: "/success",
+          query: { assessment: JSON.stringify(this.assessment) },
+        });
+      } else {
+        this.$router.push({
+          path: "/failed",
+          query: { assessment: JSON.stringify(this.assessment) },
+        });
       }
     },
     setOption(option) {
       this.questions[this.selectedQuestion].myAnswer = option.option_key;
       console.log(this.questions[this.selectedQuestion]);
+
       if (this.skipped.includes(this.questions[this.selectedQuestion])) {
         let index = this.bookmarked.indexOf(
           this.questions[this.selectedQuestion]
@@ -469,6 +525,15 @@ export default {
         this.skipped.splice(index, 1);
       }
       this.updateProgress();
+      this.$mixpanel.track("AnswerGiven", {
+        question_id: this.selectedQuestion.id,
+
+        option_selected:
+          this.questions[this.selectedQuestion].myAnswer == null
+            ? "NA"
+            : this.questions[this.selectedQuestion].myAnswer,
+        screen_name: "AssessmentScreen",
+      });
     },
     skipQuestion(question) {
       if (!this.skipped.includes(question)) {
@@ -477,11 +542,49 @@ export default {
         console.log(this.questions[this.selectedQuestion]);
       }
     },
+
     next() {
+      this.$mixpanel.track("NextButtonClicked", {
+        question_id: this.selectedQuestion.id,
+        question_number_in_view: this.selectedQuestion + 1,
+        question_bookmarked: this.bookmarked.includes(
+          this.questions[this.selectedQuestion]
+        ),
+        option_selected:
+          this.questions[this.selectedQuestion].myAnswer == null
+            ? "NA"
+            : this.questions[this.selectedQuestion].myAnswer,
+        screen_name: "AssessmentScreen",
+        time_taken_in_sec: this.lastAnswerTime - this.seconds,
+      });
+      this.lastAnswerTime = this.seconds;
       this.selectedQuestion = this.selectedQuestion + 1;
     },
     previous() {
+      this.$mixpanel.track("PreviousButtonClicked", {
+        question_id: this.selectedQuestion.id,
+        question_number_in_view: this.selectedQuestion + 1,
+        question_bookmarked: this.bookmarked.includes(
+          this.questions[this.selectedQuestion]
+        ),
+        option_selected:
+          this.questions[this.selectedQuestion].myAnswer == null
+            ? "NA"
+            : this.questions[this.selectedQuestion].myAnswer,
+        screen_name: "AssessmentScreen",
+        time_taken_in_sec: this.lastAnswerTime - this.seconds,
+      });
       this.selectedQuestion = this.selectedQuestion - 1;
+    },
+    questionClicked() {
+      this.$mixpanel.track("QuestionListClicked", {
+        question_id: this.selectedQuestion.id,
+        question_number_in_view: this.selectedQuestion + 1,
+        question_bookmarked: this.bookmarked.includes(
+          this.questions[this.selectedQuestion]
+        ),
+        screen_name: "AssessmentScreen",
+      });
     },
     onResize() {
       this.windowHeight = window.innerHeight;
@@ -492,15 +595,21 @@ export default {
         await RecommendedAssessmentController.getRecommendedAssessment();
       this.assessment = response2.data.data;
       this.screening = response.data.data;
-      this.seconds=this.assessment.tests[0].duration_of_assessment*60
-  
+      this.seconds = this.assessment.tests[0].duration_of_assessment * 60;
+      this.lastAnswerTime = this.seconds;
+
       this.screening.forEach((element) => {
-        
         this.questions.push(...element.questions);
+      });
+      this.$mixpanel.track("AssessmentLoaded", {
+        assessment_id: this.assessment.id,
+        assessment_name: this.assessment.name,
+        screen_name: "AssessmentScreen",
       });
       //console.log("response: ", this.assessment);
     },
   },
+
   created() {
     this.getAssessmentInfo();
   },
@@ -513,7 +622,7 @@ export default {
 .my-card {
   border: 1px solid rgba(175, 175, 175, 0.342);
 }
-.option-card{
+.option-card {
   border: 0.5px solid rgba(0, 0, 0, 0.26);
 }
 .submitButton {
