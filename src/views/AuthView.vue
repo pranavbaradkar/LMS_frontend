@@ -1,6 +1,11 @@
 <template>
   <!-- author: suraj -->
   <div id="app" class="myBackground">
+    <v-dialog max-width="200px" v-model="sendingOtpDialog" >
+      <v-card >
+        <div class="text-h6  d-flex justify-center" >Sending OTP..</div>
+      </v-card>
+    </v-dialog>
     <v-app-bar color="transparent" elevation="0" absolute height="120">
       <v-list-item>
         <v-list-item-icon>
@@ -84,6 +89,7 @@
                   label="Email address"
                   :suffix="vibgyouBool ? '@vgos.org' : ''"
                   :rules="vibgyouBool ?  vgosRules : emailRules "
+                  error-messages="fvefhjr"
                   class="rounded-xl"
                   placeholder="Enter Email Id"
                   v-model="email"
@@ -258,6 +264,7 @@
               </v-btn>
             </v-card-title>
           </v-card>
+      
         </v-card>
       </v-col>
     </v-row>
@@ -279,6 +286,7 @@ export default {
       resendBool: false,
       vibgyouBool: false,
       phoneNumber: "",
+      sendingOtpDialog:false,
       ctList: false,
       email: "",
       time: 119,
@@ -321,10 +329,10 @@ export default {
       await AuthService.generateOTP({
         mobile: "+91" + this.phoneNumber,
       });
-
-      // console.log("opt send response", response)
-      this.isGenerateOtpClicked = true;
-      this.otpTimmer();
+      
+       // console.log("opt send response", response)
+       this.isGenerateOtpClicked = true;
+       this.otpTimmer();
     },
     otpTimmer() {
       clearInterval(this.timer);
