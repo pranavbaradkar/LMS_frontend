@@ -187,7 +187,7 @@
                               :items="['Ms', 'Mrs', 'Mr']"
                               outlined
                               class="rounded-xl"
-                              :rules="[rules.required]"
+                              :rules="[v => !!v || 'Title is required']"
                               required
                             >
                             </v-select
@@ -199,7 +199,7 @@
                               label="First Name *"
                               rounded
                               class="rounded-xl"
-                              :rules="[rules.required]"
+                              :rules="[v => !!v || 'First Name is required']"
                               required
                             ></v-text-field></v-col
                           ><v-col cols="3" class="py-0"
@@ -217,7 +217,7 @@
                               label="Last Name"
                               rounded
                               class="rounded-xl"
-                              :rules="[rules.required]"
+                              :rules="[v => !!v || 'Last Name is required']"
                               required
                             ></v-text-field
                           ></v-col>
@@ -232,7 +232,7 @@
                                 rounded
                                 :readonly="personalInfo.is_email_verified"
                                 class="rounded-xl"
-                                :rules="emailRules"
+                                :rules="[v => !!v || 'Email Address is required']"
                                 required
                                 @keydown.enter.prevent="submit"
                               >
@@ -290,8 +290,9 @@
                                   ? 'number'
                                   : 'text'
                               "
+                             
                               :rules="[
-                                rules.required,
+                                v => !!v || 'Mobile number is required',
                                 (v) =>
                                   (v && v.length >= 10 && v.length <= 10) ||
                                   'Mobile number must be 10 digit',
@@ -346,7 +347,7 @@
                               rounded
                               type="date"
                               class="rounded-xl"
-                              :rules="[rules.required]"
+                              :rules="[v => !!v || 'Date of Birth is required']"
                               required
                             ></v-text-field
                           ></v-col>
@@ -357,7 +358,7 @@
                               :items="['FEMALE', 'MALE', 'OTHERS']"
                               outlined
                               class="rounded-xl"
-                              :rules="[rules.required]"
+                              :rules="[v => !!v || 'Gender is required']"
                               required
                             >
                             </v-select>
@@ -396,7 +397,7 @@
                               item-text="country_name"
                               outlined
                               class="rounded-xl"
-                              :rules="[rules.required]"
+                              :rules="[v => !!v || 'Country name is required']"
                               required
                               @change="fetchStates"
                             >
@@ -412,7 +413,7 @@
                               class="rounded-xl"
                               item-value="id"
                               item-text="state_name"
-                              :rules="[rules.required]"
+                              :rules="[v => !!v || 'State name is required']"
                               required
                               @change="fetchDistricts"
                             >
@@ -430,7 +431,7 @@
                               class="rounded-xl"
                               item-value="id"
                               item-text="district_name"
-                              :rules="[rules.required]"
+                              :rules="[v => !!v || 'District name is required']"
                               @change="fetchTalukas"
                             >
                             </v-select>
@@ -458,7 +459,7 @@
                               :items="cities"
                               outlined
                               class="rounded-xl"
-                              :rules="[rules.required]"
+                              :rules="[v => !!v || 'City / Village name is required']"
                               required
                               item-value="id"
                               item-text="city_name"
@@ -475,7 +476,7 @@
                               rounded
                               class="rounded-xl"
                               :rules="[
-                                rules.required,
+                                v => !!v || 'Pincode is required',
                                 (v) =>
                                   (v && v.length >= 6 && v.length <= 6) ||
                                   'Pincode must be 6 digit',
@@ -574,7 +575,7 @@
                                   label="School/ College/ University *"
                                   rounded
                                   class="rounded-xl"
-                                  :rules="[rules.required]"
+                                  :rules="[v => !!v || 'School/ College/ University name is required']"
                                   required
                                 ></v-text-field
                               ></v-col>
@@ -587,7 +588,7 @@
                                   label="Degree/ Diploma/ Certification *"
                                   rounded
                                   class="rounded-xl"
-                                  :rules="[rules.required]"
+                                  :rules="[v => !!v || 'Degree/ Diploma/ Certification name is required']"
                                   required
                                 ></v-text-field
                               ></v-col> </v-row
@@ -612,8 +613,8 @@
                                   rounded
                                   class="rounded-xl"
                                   type="date"
-                                  :rules="dobRules"
-                                ></v-text-field
+                                  :rules="[v => !!v || 'Start Date is required']"
+                                  ></v-text-field
                               ></v-col>
                               <v-col cols="6" class="py-0"
                                 ><v-text-field
@@ -623,8 +624,8 @@
                                   rounded
                                   class="rounded-xl"
                                   type="date"
-                                  :rules="dobRules"
-                                ></v-text-field
+                                  :rules="[v => !!v || 'End Date is required']"
+                                  ></v-text-field
                               ></v-col>
                             </v-row>
 
@@ -733,7 +734,7 @@
                                     mandatory
                                     row
                                     v-model="experience"
-                                    :rules="[rules.required]"
+                                    :rules="[v => !!v || 'Please select one']"
                                     required
                                   >
                                     <v-col class="py-0">
@@ -804,7 +805,7 @@
                                     class="rounded-xl"
                                     counter="100"
                                     maxLength="100"
-                                    :rules="[rules.required]"
+                                    :rules="[v => !!v || 'Role/ Position name is required']"
                                     required
                                     v-model="professional.position"
                                   ></v-text-field
@@ -857,8 +858,8 @@
                                     class="rounded-xl"
                                     v-model="professional.start_date"
                                     type="date"
-                                    :rules="dobRules"
-                                  ></v-text-field
+                                    :rules="[v => !!v || 'Start Date is required']"
+                                    ></v-text-field
                                 ></v-col>
                                 <v-col cols="6" class="py-0"
                                   ><v-text-field
@@ -869,8 +870,8 @@
                                     class="rounded-xl"
                                     v-model="professional.end_date"
                                     type="date"
-                                    :rules="dobRules"
-                                  ></v-text-field
+                                    :rules="[v => !!v || 'End Date is required']"
+                                    ></v-text-field
                                 ></v-col>
                               </v-row>
                               <v-row class="py-0">
@@ -1223,9 +1224,6 @@ export default {
           name: "Prohibition",
         },
       ],
-      rules: {
-        required: (value) => !!value || "Field is required",
-      },
     };
   },
   methods: {
