@@ -64,25 +64,23 @@
           }}</span></v-card-text
         >
 
-     
-     <div class="d-flex flex-column pl-8 pr-8">
-            <v-otp-input length="6" type="number" v-model="otp"></v-otp-input>
-            <v-row justify="space-between" class="ma-0 pa-0">
-              <v-col class="ma-0 pa-0">
-                <v-card-subtitle class="ma-0 pa-0"
-                  >0{{ Math.floor(time / 60) }}:
-                  <span v-if="time % 60 < 10">0</span
-                  >{{ time % 60 }}</v-card-subtitle
-                >
-              </v-col>
-              <v-col class="ma-0 pa-0">
-                <v-card-subtitle class="ma-0 pa-0 text-end">
-                  {{ otp.length }}/6</v-card-subtitle
-                >
-              </v-col>
-            </v-row>
-     </div>
-
+        <div class="d-flex flex-column pl-8 pr-8">
+          <v-otp-input length="6" type="number" v-model="otp"></v-otp-input>
+          <v-row justify="space-between" class="ma-0 pa-0">
+            <v-col class="ma-0 pa-0">
+              <v-card-subtitle class="ma-0 pa-0"
+                >0{{ Math.floor(time / 60) }}:
+                <span v-if="time % 60 < 10">0</span
+                >{{ time % 60 }}</v-card-subtitle
+              >
+            </v-col>
+            <v-col class="ma-0 pa-0">
+              <v-card-subtitle class="ma-0 pa-0 text-end">
+                {{ otp.length }}/6</v-card-subtitle
+              >
+            </v-col>
+          </v-row>
+        </div>
 
         <v-card-text class="text-center">
           <v-btn
@@ -156,17 +154,19 @@
                             <v-icon size="100px" v-if="!avatar" color="primary">
                               mdi-account-circle-outline
                             </v-icon>
-                           
-                            
+
                             <v-avatar size="100px" v-ripple v-else>
                               <img :src="avatar.imageURL" alt="avatar" />
                             </v-avatar>
-                            <v-avatar color="#82D2DA" size="30" class="camerabtn">
-                              <v-icon size="25px" class="text--color" >
-                              mdi-camera-outline
-                            </v-icon>
+                            <v-avatar
+                              color="#82D2DA"
+                              size="30"
+                              class="camerabtn"
+                            >
+                              <v-icon size="25px" class="text--color">
+                                mdi-camera-outline
+                              </v-icon>
                             </v-avatar>
-                            
                           </div>
                         </image-input> </v-card-title
                       ><v-card-subtitle class="text-center"
@@ -240,7 +240,7 @@
                                   <div>
                                     <v-btn
                                       on
-                                      text                                 
+                                      text
                                       class="mb-4"
                                       max-height="35"
                                       :disabled="!emailBool"
@@ -300,11 +300,6 @@
                             >
                               <template #append>
                                 <div class="px-0 py-0">
-
-
-
-
-                                  
                                   <v-btn
                                     on
                                     text
@@ -323,12 +318,6 @@
                                   >
                                     verify
                                   </v-btn>
-                              
-
-
-
-
-
 
                                   <v-row v-if="personalInfo.is_phone_verified">
                                     <v-col class="px-0">
@@ -509,15 +498,13 @@
                   </v-row>
                 </v-card>
               </v-form>
-              
+
               <v-card elevation="0">
                 <v-row>
                   <v-col cols="2"></v-col>
                   <v-col cols="10">
                     <v-divider></v-divider>
-                    <v-card-title
-                      >
-                      
+                    <v-card-title>
                       <v-btn
                         rounded
                         color="secondary"
@@ -533,7 +520,11 @@
             </v-stepper-content>
             <!------------------------------------------ STEP 2 ------------------------------------------>
 
-            <v-stepper-content step="2" v-model="expandedPanelIndex" class="pb-0">
+            <v-stepper-content
+              step="2"
+              v-model="expandedPanelIndex"
+              class="pb-0"
+            >
               <v-card
                 :height="getHeight - 350 + 'px'"
                 id="myScroll"
@@ -678,8 +669,12 @@
 
                       <v-row>
                         <v-col class="mt-4">
-                          <v-btn text @click="addAcademicQualification" class="textcolor--text"
-                            ><v-icon>mdi-plus-circle-outline</v-icon>Add Educational Qualification (optional)</v-btn
+                          <v-btn
+                            text
+                            @click="addAcademicQualification"
+                            class="textcolor--text"
+                            ><v-icon>mdi-plus-circle-outline</v-icon>Add
+                            Educational Qualification (optional)</v-btn
                           >
                         </v-col>
                       </v-row>
@@ -688,13 +683,7 @@
                 </v-form>
               </v-card>
               <v-divider class="mt-2"></v-divider>
-              <v-btn
-                rounded
-                outlined
-                class="mx-4 my-4"
-               
-                @click="e1 = 1"
-              >
+              <v-btn rounded outlined class="mx-4 my-4" @click="e1 = 1">
                 BACK
               </v-btn>
               <v-btn
@@ -709,7 +698,11 @@
 
             <!------------------------------------------ STEP 3 ------------------------------------------>
 
-            <v-stepper-content step="3" v-model="expandedPanelIndex" class="pb-0">
+            <v-stepper-content
+              step="3"
+              v-model="expandedPanelIndex"
+              class="pb-0"
+            >
               <v-card
                 :height="getHeight - 350 + 'px'"
                 id="myScroll"
@@ -731,73 +724,75 @@
                           <v-expansion-panel-content>
                             <v-row class="py-0">
                               <v-col class="py-0">
-                                <v-card width="100%" elevation="0" class="mb-10 rounded-xl" outlined><v-radio-group
-                                  mandatory
-                                  row
-                                  v-model="experience"
-                                  :rules="[rules.required]"
-                                  required
-                                >
-                                <v-col class="py-0">
-                                 
-                                   <v-row class=" py-0 px-0 ml-2 ">                                  
-                                      <v-radio class="mb-8 py-0"
-                                      label="I have"
-                                      value="Experienced"
-                                    >
-                                    </v-radio>
-                                    
-                                    <v-col                                   
-                                    cols="1 center"
-                                    class="py-0 px-0"
+                                <v-card
+                                  width="100%"
+                                  elevation="0"
+                                  class="mb-10 rounded-xl"
+                                  outlined
+                                  ><v-radio-group
+                                    mandatory
+                                    row
+                                    v-model="experience"
+                                    :rules="[rules.required]"
+                                    required
                                   >
-                                    <v-text-field
-                                      type="number"
-                                      outlined
-                                      @keypress="isNumber($event)"
-                                      class="rounded-xl"
-                                     
-                                      v-model="professional.experience_year"
-                                    >
-                                    </v-text-field>
-                                  </v-col>
-                                  <v-col  cols="1 center"
-                                    class="py-0  px-0"><div class="pt-4 ml-4">
-                                    Years
-                                  </div></v-col>
-                                  <v-col
-                                    
-                                    cols="1"
-                                    class="py-0 px-0"
-                                  >
-                                    <v-text-field
-                                      type="number"
-                                      @keypress="isNumber($event)"
-                                      outlined
-                                      class="rounded-xl"
-                                      v-model="professional.experience_month"
-                                    >
-                                    </v-text-field>
-                                  </v-col>
-                                  <v-col  cols="4 center"
-                                  class="py-0  px-0"><div class="pt-4 ml-4">
-                                    Months of experiences
-                                </div></v-col>
-                                   </v-row>
-                                   <v-row class="pb-4 ml-2"> <v-radio
-                                    label="Fresher"
-                                    value="Fresher"
-                                  >
-                                </v-radio></v-row>
-                                </v-col>
-                               
+                                    <v-col class="py-0">
+                                      <v-row class="py-0 px-0 ml-2">
+                                        <v-radio
+                                          class="mb-8 py-0"
+                                          label="I have"
+                                          value="Experienced"
+                                        >
+                                        </v-radio>
 
-                                   </v-radio-group
-                              ></v-card>
+                                        <v-col
+                                          cols="1 center"
+                                          class="py-0 px-0"
+                                        >
+                                          <v-text-field
+                                            type="number"
+                                            outlined
+                                            @keypress="isNumber($event)"
+                                            class="rounded-xl"
+                                            v-model="
+                                              professional.experience_year
+                                            "
+                                          >
+                                          </v-text-field>
+                                        </v-col>
+                                        <v-col cols="1 center" class="py-0 px-0"
+                                          ><div class="pt-4 ml-4">
+                                            Years
+                                          </div></v-col
+                                        >
+                                        <v-col cols="1" class="py-0 px-0">
+                                          <v-text-field
+                                            type="number"
+                                            @keypress="isNumber($event)"
+                                            outlined
+                                            class="rounded-xl"
+                                            v-model="
+                                              professional.experience_month
+                                            "
+                                          >
+                                          </v-text-field>
+                                        </v-col>
+                                        <v-col cols="4 center" class="py-0 px-0"
+                                          ><div class="pt-4 ml-4">
+                                            Months of experiences
+                                          </div></v-col
+                                        >
+                                      </v-row>
+                                      <v-row class="pb-4 ml-2">
+                                        <v-radio
+                                          label="Fresher"
+                                          value="Fresher"
+                                        >
+                                        </v-radio
+                                      ></v-row>
+                                    </v-col> </v-radio-group
+                                ></v-card>
                               </v-col>
-                              
-                                
-                            
                             </v-row>
                             <div v-if="experience == 'Experienced'">
                               <v-row class="py-0">
@@ -1019,8 +1014,12 @@
                       </v-expansion-panels>
                       <v-row>
                         <v-col class="mt-4" v-if="experience == 'Experienced'">
-                          <v-btn text @click="addProfessionalInfo" class="textcolor--text"
-                            ><v-icon>mdi-plus-circle-outline</v-icon>Add more professional details(optional)</v-btn
+                          <v-btn
+                            text
+                            @click="addProfessionalInfo"
+                            class="textcolor--text"
+                            ><v-icon>mdi-plus-circle-outline</v-icon>Add more
+                            professional details(optional)</v-btn
                           >
                         </v-col>
                       </v-row>
@@ -1032,13 +1031,7 @@
               <v-container>
                 <v-divider></v-divider>
                 <v-row class="mt-0">
-                  <v-btn
-                    rounded
-                    outlined
-                    class="ma-4"
-                 
-                    @click="e1 = 2"
-                  >
+                  <v-btn rounded outlined class="ma-4" @click="e1 = 2">
                     BACK
                   </v-btn>
                   <v-btn
@@ -1187,8 +1180,8 @@ export default {
         {
           institution: "",
           programme: "",
-          start_date:"",
-          end_date:"",
+          start_date: "",
+          end_date: "",
           field_of_study: "",
           extra_carricular_activities: [],
           grade_score: 0,
@@ -1204,8 +1197,8 @@ export default {
           position: "",
           employee_type_id: 0,
           board_id: 0,
-          start_date:"",
-          end_date:"",
+          start_date: "",
+          end_date: "",
           level_ids: "40,41,49",
           // level_ids: [],
           grade_ids: "91",
@@ -1236,10 +1229,10 @@ export default {
     };
   },
   methods: {
-    isNumber: function(evt) {
-      evt = (evt) ? evt : window.event;
-      var charCode = (evt.which) ? evt.which : evt.keyCode;
-      if (((charCode < 48 || charCode > 57)) ) {
+    isNumber: function (evt) {
+      evt = evt ? evt : window.event;
+      var charCode = evt.which ? evt.which : evt.keyCode;
+      if (charCode < 48 || charCode > 57) {
         evt.preventDefault();
       } else {
         return true;
@@ -1287,6 +1280,10 @@ export default {
         );
         // console.log(response);
         if (response.data.success) {
+          this.$mixpanel.track("AcademicsPageLoaded", {
+            user_type: "job_seeker",
+            screen_name: "AcademicsScreen",
+          });
           this.isCreatingUser = false;
           this.successDialog = true;
           this.e1 = 2;
@@ -1305,6 +1302,14 @@ export default {
         );
         // console.log(response);
         if (response.data.success) {
+          this.$mixpanel.track("NextButtonClicked", {
+            academics_info: this.academicQualifications,
+            screen_name: "AcademicProfileInformationScreen",
+          });
+          this.$mixpanel.track("ProfessionInfoStepLoaded", {
+            user_type: "job_seeker",
+            screen_name: "ProfessionInfoScreen",
+          });
           this.isCreatingUser = false;
           this.successDialog = true;
           this.e1 = 3;
@@ -1318,6 +1323,12 @@ export default {
       console.log("function");
       if (this.$refs.step3.validate()) {
         console.log("userif conditon");
+        this.$mixpanel.track("SaveProfileDetailsClicked", {
+          personal_info: this.personalInfo,
+          academics_info: this.academicQualifications,
+          professional_info: this.professionalInfos,
+          screen_name: "ProfileProfessionalInfoScreen",
+        });
         // this.professionalInfos.forEach((object)=>{
         //       object.level_ids.join(", ");
         //       object.level_ids = JSON.stringify(object.level_ids)
@@ -1346,7 +1357,7 @@ export default {
           await ProfessionalController.createUserProfessionalInfo(
             this.professionalInfos
           );
-         console.log(response);
+        console.log(response);
         if (response.data.success) {
           this.isCreatingUser = false;
           this.successDialog = true;
@@ -1487,7 +1498,7 @@ export default {
         end_date: "",
         level_ids: "",
         grade_ids: "",
-        subject_ids:"",
+        subject_ids: "",
         school_id: 0,
         other_name: "",
       });
@@ -1497,8 +1508,13 @@ export default {
       this.usingPhone = false;
       this.resendBool = false;
       this.time = 119;
+
       await AuthService.generateOTP({
         email: this.personalInfo.email,
+      });
+      this.$mixpanel.track("VerifyEmailClicked", {
+        email_address: this.personalInfo.email,
+        screen_name: "PersonalProfileInformationScreen",
       });
 
       // console.log("opt send response", response)
@@ -1510,6 +1526,10 @@ export default {
       this.resendBool = false;
       await AuthService.generateOTP({
         mobile: "+91" + this.personalInfo.phone_no,
+      });
+      this.$mixpanel.track("VerifyMobileClicked", {
+        phone_number: this.personalInfo.phone_no,
+        screen_name: "PersonalProfileInformationScreen",
       });
 
       // console.log("opt send response", response)
@@ -1536,6 +1556,11 @@ export default {
           otp: this.otp,
           debug: false,
         });
+        this.$mixpanel.track("VerifyOTP", {
+          counter_secs_taken: 45,
+          otp_status: "Verified",
+          screen_name: "EnterOTPEmailScreen",
+        });
         this.personalInfo.is_email_verified = res.success;
         this.otpDialog = false;
       } else {
@@ -1544,7 +1569,11 @@ export default {
           otp: this.otp,
           debug: false,
         });
-
+        this.$mixpanel.track("VerifyOTP", {
+          counter_secs_taken: 45,
+          otp_status: "Verified",
+          screen_name: "EnterOTPMobileScreen",
+        });
         this.personalInfo.is_phone_verified = res.success;
         this.otpDialog = false;
         console.log("RES VLAUE ", res);
@@ -1613,6 +1642,10 @@ export default {
     window.removeEventListener("resize", this.onResize);
   },
   created() {
+    this.$mixpanel.track("PersonalInformationStepLoaded", {
+      user_type: "job_seeker",
+      screen_name: "PersonalProfileInformationScreen",
+    });
     this.getUserInfo();
     this.getLevel();
     this.getGrades();
