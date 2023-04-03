@@ -714,9 +714,23 @@
                           :key="index"
                           elevation="0"
                         >
-                          <v-expansion-panel-header>{{
-                            "Professional: " + index
-                          }}</v-expansion-panel-header>
+                          <v-expansion-panel-header><div
+                            class="d-flex flex-column"
+                            v-if="expandedPanelIndex != index"
+                          >
+                            <div class="font-weight-regular">
+                              {{ index + 1 + ". " + professional.position }}
+                            </div>
+                            <div class="text-body-2 grey--text">
+                              {{
+                                new Date(
+                                  professional.start_date
+                                ).getFullYear() +
+                                " - " +
+                                new Date(professional.end_date).getFullYear()
+                              }}
+                            </div>
+                          </div></v-expansion-panel-header>
                           <v-expansion-panel-content>
                             <v-row class="py-0">
                               <v-col class="py-0">
@@ -830,7 +844,6 @@
                                     item-text="name"
                                     class="rounded-xl"
                                     v-model="professional.school_id"
-                                    @click="getSchool"
                                   >
                                   </v-select
                                 ></v-col>
@@ -1645,6 +1658,7 @@ export default {
     this.getSubjects();
     this.fetchCountries();
     this.getBoards();
+    this.getSchool();
   },
 };
 </script>
