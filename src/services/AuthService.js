@@ -13,7 +13,7 @@ export default {
 
 
     try {
-      console.log("generating otp",data)
+      console.log("generating otp", data)
       const response = await instance.post('auth/generate-otp', data);
       console.log(response);
       if (response.data.success) {
@@ -33,40 +33,54 @@ export default {
   async verifyOTP(data) {
     try {
       console.log("validate data", data)
-      const response = await instance.post('auth/validate-otp', data); 
+      const response = await instance.post('auth/validate-otp', data);
       console.log(response);
       if (response.data.success) {
-      
+
         return response.data;
       }
     }
-     catch (error) {      
+    catch (error) {
       alert(error.response.data.error)
     }
   },
 
-  
+
 
   async validateOTP(data) {
     try {
       console.log("validate data", data)
-      const response = await instance.post('auth/validate-otp', data); 
+      const response = await instance.post('auth/validate-otp', data);
       console.log(response);
       if (response.data.success) {
         const token = response.data.token
         localStorage.setItem('USER_DATA', response.data)
         localStorage.setItem(TOKEN_KEY, token)
+        this.$mixpanel.track("VerifyOTP", {
+          "counter_secs_taken": 45,
+          "otp_status": "Verified",
+          "screen_name": "EnterOTPScreen"
+        });
         return response.data;
+
       }
     }
-     catch (error) {      
+    catch (error) {
+      this.$mixpanel.track("VerifyOTP", {
+        "counter_secs_taken": 45,
+        "otp_status": "Incorrect",
+        "screen_name": "EnterOTPScreen"
+      });
       alert(error.response.data.error)
     }
   },
-  
+
   logout: function () {
     localStorage.removeItem(TOKEN_KEY)
-    
+    this.$mixpanel.track("UserLoggedOut", {
+      "session_timeout": false,
+      "screen_name": "ThankyouScreen"
+    });
   },
   getUser: function () {
     const token = localStorage.getItem(TOKEN_KEY)
