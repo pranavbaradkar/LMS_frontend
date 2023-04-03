@@ -21,13 +21,6 @@
                   </v-avatar>
                 </v-btn>
               </template>
-              <!-- <v-list>
-        <v-list-item      
-        >
-          <v-list-item-title >Log out</v-list-item-title>
-        </v-list-item>
-
-      </v-list> -->
               <v-btn @click="logout">logout</v-btn>
             </v-menu>
           </v-row>

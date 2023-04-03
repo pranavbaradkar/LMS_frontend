@@ -102,6 +102,11 @@ body {
     /* IE and Edge */
 
 }
+.vue-country-select {
+ 
+    border: none !important;
+
+  }
 
 .cursor {
     cursor: pointer;
@@ -154,7 +159,7 @@ body {
     width: 100%;
     border-bottom-right-radius: 12px;
     border-top-right-radius: 12px;
-    margin-left: 12px;
+    margin-left: 15px;
 }
 
 .countrylist {

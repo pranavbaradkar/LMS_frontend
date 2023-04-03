@@ -5,6 +5,9 @@ import store from './store'
 import vuetify from './plugins/vuetify'
 import axios from 'axios';
 
+import VueCountryCode from "vue-country-code-select";
+Vue.use(VueCountryCode);
+
 
 Vue.config.productionTip = false
 axios.defaults.withCredentials = true

@@ -5,7 +5,9 @@
       <v-list-item>
         <v-list-item-icon>
           <v-img src="../assets/logo.svg" width="16rem" contain></v-img>
+
         </v-list-item-icon>
+        
       </v-list-item>
     </v-app-bar>
     <v-row align="center" justify="center" style="height: 100vh" dense>
@@ -39,37 +41,20 @@
             >
               Email Id
             </div>
-
+            
             <div
               class="rounded-xl phoneNo mb-4"
               v-if="usingPhone && !vibgyouBool"
             >
-              <div class="phoneprefix pl-4" @click="ctList = true">
-                <img src="../assets/india.png" height="16px" />
-                <div class="pa-1">+91</div>
-                <v-icon v-if="!ctList">mdi-chevron-down</v-icon
-                ><v-icon v-if="ctList">mdi-chevron-up</v-icon>
-                <v-divider vertical inset class="my-2"></v-divider>
-              </div>
-              <input
-                type="text"
-                class="myinput"
-                placeholder="Phone Number"
-                v-model="phoneNumber"
-                maxlength="10"
-              />
-              <div v-if="ctList" id="countrylist">
-                <div
-                  v-for="index in 5"
-                  v-bind:key="index"
-                  class="ctNameIcon"
-                  @click="selectCountry"
-                >
-                  <img class="ctimg" src="../assets/india.png" height="16px" />
-                  <span class="ctname">India</span>
-                  <span class="ctCode">+ 91</span>
-                </div>
-              </div>
+                <vue-country-code class="ml-2" :preferredCountries="['in']" @onSelect="onSelect" ></vue-country-code>
+             <span class="mr-2"> +{{ this.dialCode  }} </span>   
+                  <input
+                    type="text"
+                    class="myinput"
+                    placeholder="Phone Number"
+                    v-model="phoneNumber"
+                    maxlength="10"
+                  />
             </div>
             <v-form v-model="valid" v-if="!usingPhone || vibgyouBool">
               <!--<v-text-field v-if="!vibgyouBool" :label="Enter Email Id" placeholder="Enter Email Id" :rules="emailRules" solo outlined
@@ -257,6 +242,9 @@
                 VERIFY
               </v-btn>
             </v-card-title>
+
+          
+
           </v-card>
         </v-card>
       </v-col>
@@ -278,6 +266,9 @@ export default {
       usingPhone: true,
       resendBool: false,
       vibgyouBool: false,
+      countryName : "",
+      countryIso2 : "",
+      dialCode : "",
       phoneNumber: "",
       ctList: false,
       email: "",
@@ -307,19 +298,22 @@ export default {
     
         await AuthService.generateOTP({
         email: this.vibgyouBool ?  this.email+"@gmail.com" : this.email,
-      });
-
-     
-      
+      }),
 
       // console.log("opt send response", response)
       this.isGenerateOtpClicked = true;
       this.otpTimmer();
     },
+    onSelect({name, iso2, dialCode}) {
+      this.countryName = name;
+      this.countryIso2 = iso2;
+      this.dialCode = dialCode;
+
+     },
     async generatePhoneOtp() {
       this.time = 119;
       await AuthService.generateOTP({
-        mobile: "+91" + this.phoneNumber,
+        mobile: "+"+this.dialCode+""+ this.phoneNumber,
       });
 
       // console.log("opt send response", response)
