@@ -652,12 +652,7 @@
                             <v-row v-if="index != 0">
                               <v-col cols="12" class="d-flex justify-end">
                                 <v-btn
-                                  @click="
-                                    (index) => {
-                                      indexValue = index;
-                                      deleteDialog = true;
-                                    }
-                                  "
+                                  @click="openDeleteDiolog(index) "
                                   text
                                   class="d-flex justify-end red--text"
                                   >Remove</v-btn
@@ -998,12 +993,7 @@
                             >
                               <v-col cols="12" class="d-flex justify-end">
                                 <v-btn
-                                  @click="
-                                    (index) => {
-                                      indexValue = index;
-                                      deleteDialog = true;
-                                    }
-                                  "
+                                  @click="openDeleteDiolog(index)"
                                   text
                                   class="d-flex justify-end red--text"
                                   >Remove</v-btn
@@ -1579,6 +1569,11 @@ export default {
 
       // this.isGenerateOtpClicked = true;
     },
+    openDeleteDiolog(index){
+      this.indexValue=index;
+      this.deleteDialog=true;
+
+    }
   },
   watch: {
     avatar: {
