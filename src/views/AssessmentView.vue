@@ -59,7 +59,9 @@
                         <img v-if="i == selectedQuestion" src="../assets/Polygonpoly.png" class="polyicon" />
                         Question {{ i + 1 }}</v-list-item-title>
 
-                      <v-divider class="mt-2 mb-1"></v-divider>
+                      <v-list-item-subtitle>
+                        <v-divider class="mt-2 mb-1"></v-divider>
+                      </v-list-item-subtitle>
                     </v-list-item-content>
                     <v-list-item-action v-if="bookmarked.includes(item)">
                       <v-icon color="primary">
