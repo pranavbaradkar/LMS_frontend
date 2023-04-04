@@ -346,6 +346,8 @@ export default {
     },
   },
   mounted() {
+    window.addEventListener('beforeunload', this.handleBeforeUnload);
+
     this.startTimer();
 
     this.$nextTick(() => {
@@ -354,6 +356,7 @@ export default {
   },
 
   beforeDestroy() {
+    window.removeEventListener('beforeunload', this.handleBeforeUnload);
     window.removeEventListener("resize", this.onResize);
     this.stopTimer();
     this.$mixpanel.track("AssessmentClosed", {
@@ -608,11 +611,18 @@ export default {
       });
       //console.log("response: ", this.assessment);
     },
+    handleBeforeUnload(event) {
+      event.preventDefault();
+      event.returnValue = '';
+      const confirmationMessage = 'Are you sure you want to leave? Your unsaved changes will be lost.';
+      event.returnValue = confirmationMessage;
+      return confirmationMessage;
+    },
   },
-
   created() {
     this.getAssessmentInfo();
   },
+
 };
 </script>
 <style scoped>
