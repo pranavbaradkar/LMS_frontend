@@ -56,31 +56,22 @@ export default {
         const token = response.data.token
         localStorage.setItem('USER_DATA', response.data)
         localStorage.setItem(TOKEN_KEY, token)
-        this.$mixpanel.track("VerifyOTP", {
-          "counter_secs_taken": 45,
-          "otp_status": "Verified",
-          "screen_name": "EnterOTPScreen"
-        });
+        
         return response.data;
 
       }
+      else{
+        return response.data;
+      }
     }
     catch (error) {
-      this.$mixpanel.track("VerifyOTP", {
-        "counter_secs_taken": 45,
-        "otp_status": "Incorrect",
-        "screen_name": "EnterOTPScreen"
-      });
+      
       alert(error.response.data.error)
     }
   },
 
   logout: function () {
     localStorage.removeItem(TOKEN_KEY)
-    this.$mixpanel.track("UserLoggedOut", {
-      "session_timeout": false,
-      "screen_name": "ThankyouScreen"
-    });
   },
   getUser: function () {
     const token = localStorage.getItem(TOKEN_KEY)

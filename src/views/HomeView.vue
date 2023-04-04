@@ -326,12 +326,34 @@ export default {
     },
     logout() {
       AuthService.logout();
+      this.$mixpanel.track("UserLoggedOut", {
+      "session_timeout": false,
+      "screen_name": "ThankyouScreen"
+    });
+    this.$mixpanel.reset();
       this.$router.push("/login");
     },
     async getUserInfo() {
       const response = await LogedInUserInfo.getUserInfo();
       this.userInfo = response.data.user;
       this.$store.state.userInfo = this.userInfo;
+      console.log(this.userInfo);
+      this.identifyUser();
+
+    },
+    identifyUser() {
+      const userId = this.userInfo.id;
+      const userName = this.userInfo.first_name+" "+ this.userInfo.last_name;
+      const userEmail = this.userInfo.email;
+
+      // Identify the user
+      this.$mixpanel.identify(userId);
+
+      // Set user properties
+      this.$mixpanel.people.set({
+        '$name': userName,
+        '$email': userEmail,
+      });
     },
     async getAllAssessment() {
       const response = await AssessmentController.getAllAssessment();

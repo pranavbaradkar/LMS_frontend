@@ -1,18 +1,16 @@
 <template>
   <!-- author: suraj -->
   <div id="app" class="myBackground">
-    <v-dialog max-width="200px" v-model="sendingOtpDialog" >
-      <v-card >
-        <div class="text-h6  d-flex justify-center" >Sending OTP..</div>
+    <v-dialog max-width="200px" v-model="sendingOtpDialog">
+      <v-card>
+        <div class="text-h6 d-flex justify-center">Sending OTP..</div>
       </v-card>
     </v-dialog>
     <v-app-bar color="transparent" elevation="0" absolute height="120">
       <v-list-item>
         <v-list-item-icon>
           <v-img src="../assets/logo.svg" width="16rem" contain></v-img>
-
         </v-list-item-icon>
-        
       </v-list-item>
     </v-app-bar>
     <v-row align="center" justify="center" style="height: 100vh" dense>
@@ -46,20 +44,24 @@
             >
               Email Id
             </div>
-            
+
             <div
               class="rounded-xl phoneNo mb-4"
               v-if="usingPhone && !vibgyouBool"
             >
-                <vue-country-code class="ml-2" :preferredCountries="['in']" @onSelect="onSelect" ></vue-country-code>
-             <span class="mr-2"> +{{ this.dialCode  }} </span>   
-                  <input
-                    type="text"
-                    class="myinput"
-                    placeholder="Phone Number"
-                    v-model="phoneNumber"
-                    maxlength="10"
-                  />
+              <vue-country-code
+                class="ml-2"
+                :preferredCountries="['in']"
+                @onSelect="onSelect"
+              ></vue-country-code>
+              <span class="mr-2"> +{{ this.dialCode }} </span>
+              <input
+                type="text"
+                class="myinput"
+                placeholder="Phone Number"
+                v-model="phoneNumber"
+                maxlength="10"
+              />
             </div>
             <v-form v-model="valid" v-if="!usingPhone || vibgyouBool">
               <!--<v-text-field v-if="!vibgyouBool" :label="Enter Email Id" placeholder="Enter Email Id" :rules="emailRules" solo outlined
@@ -242,11 +244,7 @@
                 VERIFY
               </v-btn>
             </v-card-title>
-
-          
-
           </v-card>
-      
         </v-card>
       </v-col>
     </v-row>
@@ -267,11 +265,11 @@ export default {
       usingPhone: true,
       resendBool: false,
       vibgyouBool: false,
-      countryName : "",
-      countryIso2 : "",
-      dialCode : "",
+      countryName: "",
+      countryIso2: "",
+      dialCode: "",
       phoneNumber: "",
-      sendingOtpDialog:false,
+      sendingOtpDialog: false,
       ctList: false,
       email: "",
       time: 119,
@@ -312,30 +310,29 @@ export default {
         email: this.vibgyouBool ? this.email + "@gmail.com" : this.email,
       });
       this.$mixpanel.track("GenerateOTPClicked", {
-  "email_address":  this.email,
-  "user_type": this.vibgyouBool? "teacher" :"job_seeker",
-  "screen_name": "LoginScreen"
-});
+        email_address: this.email,
+        user_type: this.vibgyouBool ? "teacher" : "job_seeker",
+        screen_name: "LoginScreen",
+      });
       // console.log("opt send response", response)
       this.isGenerateOtpClicked = true;
       this.otpTimmer();
     },
-    onSelect({name, iso2, dialCode}) {
+    onSelect({ name, iso2, dialCode }) {
       this.countryName = name;
       this.countryIso2 = iso2;
       this.dialCode = dialCode;
-
-     },
+    },
     async generatePhoneOtp() {
       this.time = 119;
       await AuthService.generateOTP({
-        mobile: "+"+this.dialCode+""+ this.phoneNumber,
+        mobile: "+" + this.dialCode + "" + this.phoneNumber,
       });
       this.$mixpanel.track("GenerateOTPClicked", {
-  "phone_number": this.phoneNumber,
-  "user_type": this.vibgyouBool? "teacher" :"job_seeker",
-  "screen_name": "LoginScreen"
-});
+        phone_number: this.phoneNumber,
+        user_type: this.vibgyouBool ? "teacher" : "job_seeker",
+        screen_name: "LoginScreen",
+      });
       // console.log("opt send response", response)
       this.isGenerateOtpClicked = true;
       this.otpTimmer();
@@ -353,7 +350,6 @@ export default {
       }, 1000);
     },
     async validateOTP() {
-      
       var res = null;
       if (!this.usingPhone) {
         if (this.vibgyouBool) {
@@ -362,12 +358,38 @@ export default {
             otp: this.otp,
             debug: false,
           });
+          if (res.success) {
+            this.$mixpanel.track("VerifyOTP", {
+              counter_secs_taken: 45,
+              otp_status: "Verified",
+              screen_name: "EnterOTPScreen",
+            });
+          } else {
+            this.$mixpanel.track("VerifyOTP", {
+              counter_secs_taken: 45,
+              otp_status: "Incorrect",
+              screen_name: "EnterOTPScreen",
+            });
+          }
         } else {
           res = await AuthService.validateOTP({
             email: this.email,
             otp: this.otp,
             debug: false,
           });
+          if (res.success) {
+            this.$mixpanel.track("VerifyOTP", {
+              counter_secs_taken: 45,
+              otp_status: "Verified",
+              screen_name: "EnterOTPScreen",
+            });
+          } else {
+            this.$mixpanel.track("VerifyOTP", {
+              counter_secs_taken: 45,
+              otp_status: "Incorrect",
+              screen_name: "EnterOTPScreen",
+            });
+          }
         }
 
         // console.log(res)
@@ -382,6 +404,19 @@ export default {
           otp: this.otp,
           debug: false,
         });
+        if (res.success) {
+          this.$mixpanel.track("VerifyOTP", {
+            counter_secs_taken: 45,
+            otp_status: "Verified",
+            screen_name: "EnterOTPScreen",
+          });
+        } else {
+          this.$mixpanel.track("VerifyOTP", {
+            counter_secs_taken: 45,
+            otp_status: "Incorrect",
+            screen_name: "EnterOTPScreen",
+          });
+        }
         // console.log(res)
         if (res.is_profile_created) {
           this.$router.push("/");

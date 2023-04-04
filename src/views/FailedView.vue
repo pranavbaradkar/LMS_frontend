@@ -71,7 +71,7 @@
     
 <script>
 import "../styles.css";
-
+import AuthService from "../services/AuthService";
 export default {
   name: "FailedView",
   data() {
@@ -83,7 +83,18 @@ export default {
   beforeDestroy() {
     window.removeEventListener("resize", this.onResize);
   },
-  methods: {},
+  methods: {
+    logout() {
+      AuthService.logout();
+
+      this.$mixpanel.track("UserLoggedOut", {
+        session_timeout: false,
+        screen_name: "ThankyouScreen",
+      });
+      this.$mixpanel.reset();
+      this.$router.push("/login");
+    },
+  },
   created() {
     const assessment = JSON.parse(this.$route.query.assessment);
     this.$mixpanel.track("SubmissionFailed", {
