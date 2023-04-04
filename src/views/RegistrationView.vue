@@ -1198,7 +1198,7 @@ export default {
         {
           experience_year: 0,
           experience_month: 0,
-          position: "",
+          position: "NA",
           employee_type_id: 0,
           board_id: 0,
           start_date: "",
