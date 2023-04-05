@@ -1324,12 +1324,16 @@ export default {
       console.log("function");
       if (this.$refs.step3.validate()) {
         console.log("userif conditon");
-        this.$mixpanel.track("SaveProfileDetailsClicked", {
+        let mixpanelData={
           personal_info: this.personalInfo,
-          academics_info: this.academicQualifications,
-          professional_info: this.professionalInfos,
-          screen_name: "ProfileProfessionalInfoScreen",
-        });
+        }
+        this.academicQualifications.forEach((item,index)=>{
+          mixpanelData[`academics_info_${index+1}`] = item;
+        })
+        this.professionalInfos.forEach((item,index)=>{
+          mixpanelData[`professional_info_${index+1}`] = item;
+        })
+        this.$mixpanel.track("SaveProfileDetailsClicked", mixpanelData);
         // this.professionalInfos.forEach((object)=>{
         //       object.level_ids.join(", ");
         //       object.level_ids = JSON.stringify(object.level_ids)
