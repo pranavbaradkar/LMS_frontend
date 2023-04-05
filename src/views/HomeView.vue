@@ -235,7 +235,7 @@
                         class="black--text"
                         rounded
                         v-on:click="selectedAssessment = assessment"
-                        @click="dialog=true"
+                        @click="dialog = true"
                         >START TEST</v-btn
                       >
                     </v-card-actions>
@@ -327,10 +327,10 @@ export default {
     logout() {
       AuthService.logout();
       this.$mixpanel.track("UserLoggedOut", {
-      "session_timeout": false,
-      "screen_name": "ThankyouScreen"
-    });
-    this.$mixpanel.reset();
+        session_timeout: false,
+        screen_name: "ThankyouScreen",
+      });
+      this.$mixpanel.reset();
       this.$router.push("/login");
     },
     async getUserInfo() {
@@ -339,20 +339,20 @@ export default {
       this.$store.state.userInfo = this.userInfo;
       console.log(this.userInfo);
       this.identifyUser();
-
     },
     identifyUser() {
       const userId = this.userInfo.id;
-      const userName = this.userInfo.first_name+" "+ this.userInfo.last_name;
+      const userName = this.userInfo.first_name + " " + this.userInfo.last_name;
       const userEmail = this.userInfo.email;
-
+      const userPhone = this.userInfo.phone_no;
       // Identify the user
       this.$mixpanel.identify(userId);
 
       // Set user properties
       this.$mixpanel.people.set({
-        '$name': userName,
-        '$email': userEmail,
+        $name: userName,
+        $email: userEmail,
+        $phone: userPhone,
       });
     },
     async getAllAssessment() {
@@ -362,7 +362,7 @@ export default {
     async getRecommendedAssessment() {
       const response =
         await RecommendedAssessmentController.getRecommendedAssessment();
-      console.log("response", response);
+      //console.log("response", response);
       this.$mixpanel.track("RecommendationScreenLoaded", {
         screen_name: "RecommendationScreen",
       });
@@ -370,7 +370,7 @@ export default {
         AuthService.logout();
       }
       this.recommendedAssessment = response.data.data;
-      console.log("data", this.recommendedAssessment);
+      //console.log("data", this.recommendedAssessment);
     },
   },
   created() {
