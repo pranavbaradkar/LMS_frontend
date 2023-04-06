@@ -119,9 +119,8 @@
       <v-card-title class="justify-center mt-10"> Welcome </v-card-title>
       <v-card-subtitle class="text-center"
         ><span
-          >Let's start your profile, connect to people you know, and engage
-          with</span
-        ><br /><span>them on topics you care about.</span></v-card-subtitle
+          >Vibgyor Group of Schools offers an opportunity to be part of an inspiring and innovative team of educators.</span
+        ><br /><span>Please fill out the profile information to get a personalized assessment for the opportunity with us.</span></v-card-subtitle
       >
       <v-container>
         <v-stepper v-model="e1" class="rounded-lg">
@@ -187,7 +186,7 @@
                               :items="['Ms', 'Mrs', 'Mr']"
                               outlined
                               class="rounded-xl"
-                              :rules="[v => !!v || 'Title is required']"
+                              :rules="[(v) => !!v || 'Title is required']"
                               required
                             >
                             </v-select
@@ -199,7 +198,7 @@
                               label="First Name *"
                               rounded
                               class="rounded-xl"
-                              :rules="[v => !!v || 'First Name is required']"
+                              :rules="[(v) => !!v || 'First Name is required']"
                               required
                             ></v-text-field></v-col
                           ><v-col cols="3" class="py-0"
@@ -217,7 +216,7 @@
                               label="Last Name"
                               rounded
                               class="rounded-xl"
-                              :rules="[v => !!v || 'Last Name is required']"
+                              :rules="[(v) => !!v || 'Last Name is required']"
                               required
                             ></v-text-field
                           ></v-col>
@@ -232,7 +231,9 @@
                                 rounded
                                 :readonly="personalInfo.is_email_verified"
                                 class="rounded-xl"
-                                :rules="[v => !!v || 'Email Address is required']"
+                                :rules="[
+                                  (v) => !!v || 'Email Address is required',
+                                ]"
                                 required
                                 @keydown.enter.prevent="submit"
                               >
@@ -241,12 +242,9 @@
                                     <v-btn
                                       on
                                       text
-                                         
-
-                                       class="pb-2"
+                                      class="pb-2"
                                       :disabled="!emailBool"
                                       v-if="!personalInfo.is_email_verified"
-                           
                                       @click="generateOtp(), (otpDialog = true)"
                                     >
                                       Verify
@@ -262,13 +260,10 @@
                                           max-width="24"
                                         ></v-img>
                                       </v-col>
-                                      <v-col class="px-0">
-                                        
-                                      </v-col>
+                                      <v-col class="px-0"> </v-col>
                                     </v-row>
-                                  </div>
-                                </template></v-text-field
-                              >
+                                  </div> </template
+                              ></v-text-field>
                             </v-form>
                           </v-col>
                         </v-row>
@@ -289,9 +284,8 @@
                                   ? 'number'
                                   : 'text'
                               "
-                             
                               :rules="[
-                                v => !!v || 'Mobile number is required',
+                                (v) => !!v || 'Mobile number is required',
                                 (v) =>
                                   (v && v.length >= 10 && v.length <= 10) ||
                                   'Mobile number must be 10 digit',
@@ -328,9 +322,7 @@
                                       ></v-img>
                                     </v-col>
 
-                                    <v-col class="px-0">
-                                   
-                                    </v-col>
+                                    <v-col class="px-0"> </v-col>
                                   </v-row>
                                 </div>
                               </template>
@@ -346,7 +338,9 @@
                               rounded
                               type="date"
                               class="rounded-xl"
-                              :rules="[v => !!v || 'Date of Birth is required']"
+                              :rules="[
+                                (v) => !!v || 'Date of Birth is required',
+                              ]"
                               required
                             ></v-text-field
                           ></v-col>
@@ -357,7 +351,7 @@
                               :items="['FEMALE', 'MALE', 'OTHERS']"
                               outlined
                               class="rounded-xl"
-                              :rules="[v => !!v || 'Gender is required']"
+                              :rules="[(v) => !!v || 'Gender is required']"
                               required
                             >
                             </v-select>
@@ -392,11 +386,12 @@
                               :value="country"
                               label="Country *"
                               :items="countries"
-                              item-value="id"
-                              item-text="country_name"
+                          
                               outlined
                               class="rounded-xl"
-                              :rules="[v => !!v || 'Country name is required']"
+                              :rules="[
+                                (v) => !!v || 'Country name is required',
+                              ]"
                               required
                               @change="fetchStates"
                             >
@@ -412,7 +407,7 @@
                               class="rounded-xl"
                               item-value="id"
                               item-text="state_name"
-                              :rules="[v => !!v || 'State name is required']"
+                              :rules="[(v) => !!v || 'State name is required']"
                               required
                               @change="fetchDistricts"
                             >
@@ -430,7 +425,9 @@
                               class="rounded-xl"
                               item-value="id"
                               item-text="district_name"
-                              :rules="[v => !!v || 'District name is required']"
+                              :rules="[
+                                (v) => !!v || 'District name is required',
+                              ]"
                               @change="fetchTalukas"
                             >
                             </v-select>
@@ -454,12 +451,12 @@
                             <v-select
                               v-model="personalInfo.city_id"
                               :value="cityVillage"
-                              label="City / Village *"
+                              label="City / Village"
                               :items="cities"
                               outlined
                               class="rounded-xl"
-                              :rules="[v => !!v || 'City / Village name is required']"
-                              required
+                              
+                              
                               item-value="id"
                               item-text="city_name"
                             >
@@ -475,7 +472,7 @@
                               rounded
                               class="rounded-xl"
                               :rules="[
-                                v => !!v || 'Pincode is required',
+                                (v) => !!v || 'Pincode is required',
                                 (v) =>
                                   (v && v.length >= 6 && v.length <= 6) ||
                                   'Pincode must be 6 digit',
@@ -501,8 +498,8 @@
 
               <v-card elevation="0">
                 <v-row>
-                  <v-col cols="2"></v-col>
-                  <v-col cols="10">
+                 
+                  <v-col cols="12">
                     <v-divider></v-divider>
                     <v-card-title>
                       <v-btn
@@ -574,7 +571,11 @@
                                   label="School/ College/ University *"
                                   rounded
                                   class="rounded-xl"
-                                  :rules="[v => !!v || 'School/ College/ University name is required']"
+                                  :rules="[
+                                    (v) =>
+                                      !!v ||
+                                      'School/ College/ University name is required',
+                                  ]"
                                   required
                                 ></v-text-field
                               ></v-col>
@@ -587,7 +588,11 @@
                                   label="Degree/ Diploma/ Certification *"
                                   rounded
                                   class="rounded-xl"
-                                  :rules="[v => !!v || 'Degree/ Diploma/ Certification name is required']"
+                                  :rules="[
+                                    (v) =>
+                                      !!v ||
+                                      'Degree/ Diploma/ Certification name is required',
+                                  ]"
                                   required
                                 ></v-text-field
                               ></v-col> </v-row
@@ -612,8 +617,10 @@
                                   rounded
                                   class="rounded-xl"
                                   type="date"
-                                  :rules="[v => !!v || 'Start Date is required']"
-                                  ></v-text-field
+                                  :rules="[
+                                    (v) => !!v || 'Start Date is required',
+                                  ]"
+                                ></v-text-field
                               ></v-col>
                               <v-col cols="6" class="py-0"
                                 ><v-text-field
@@ -623,8 +630,10 @@
                                   rounded
                                   class="rounded-xl"
                                   type="date"
-                                  :rules="[v => !!v || 'End Date is required']"
-                                  ></v-text-field
+                                  :rules="[
+                                    (v) => !!v || 'End Date is required',
+                                  ]"
+                                ></v-text-field
                               ></v-col>
                             </v-row>
 
@@ -651,7 +660,7 @@
                             <v-row v-if="index != 0">
                               <v-col cols="12" class="d-flex justify-end">
                                 <v-btn
-                                  @click="openDeleteDiolog(index) "
+                                  @click="openDeleteDiolog(index)"
                                   text
                                   class="d-flex justify-end red--text"
                                   >Remove</v-btn
@@ -713,23 +722,25 @@
                           :key="index"
                           elevation="0"
                         >
-                          <v-expansion-panel-header><div
-                            class="d-flex flex-column"
-                            v-if="expandedPanelIndex != index"
+                          <v-expansion-panel-header
+                            ><div
+                              class="d-flex flex-column"
+                              v-if="expandedPanelIndex != index"
+                            >
+                              <div class="font-weight-regular">
+                                {{ index + 1 + ". " + professional.position }}
+                              </div>
+                              <div class="text-body-2 grey--text">
+                                {{
+                                  new Date(
+                                    professional.start_date
+                                  ).getFullYear() +
+                                  " - " +
+                                  new Date(professional.end_date).getFullYear()
+                                }}
+                              </div>
+                            </div></v-expansion-panel-header
                           >
-                            <div class="font-weight-regular">
-                              {{ index + 1 + ". " + professional.position }}
-                            </div>
-                            <div class="text-body-2 grey--text">
-                              {{
-                                new Date(
-                                  professional.start_date
-                                ).getFullYear() +
-                                " - " +
-                                new Date(professional.end_date).getFullYear()
-                              }}
-                            </div>
-                          </div></v-expansion-panel-header>
                           <v-expansion-panel-content>
                             <v-row class="py-0">
                               <v-col class="py-0">
@@ -742,7 +753,7 @@
                                     mandatory
                                     row
                                     v-model="experience"
-                                    :rules="[v => !!v || 'Please select one']"
+                                    :rules="[(v) => !!v || 'Please select one']"
                                     required
                                   >
                                     <v-col class="py-0">
@@ -769,8 +780,8 @@
                                           >
                                           </v-text-field>
                                         </v-col>
-                                        <v-col cols="1 center" class="py-0 px-0"
-                                          ><div class="pt-4 ml-4">
+                                        <v-col cols="1" class="py-0 px-0"
+                                          ><div class="pt-4 ml-1">
                                             Years
                                           </div></v-col
                                         >
@@ -787,8 +798,8 @@
                                           </v-text-field>
                                         </v-col>
                                         <v-col cols="4 center" class="py-0 px-0"
-                                          ><div class="pt-4 ml-4">
-                                            Months of experiences
+                                          ><div class="pt-4 ml-1">
+                                            Months of experience
                                           </div></v-col
                                         >
                                       </v-row>
@@ -813,7 +824,11 @@
                                     class="rounded-xl"
                                     counter="100"
                                     maxLength="100"
-                                    :rules="[v => !!v || 'Role/ Position name is required']"
+                                    :rules="[
+                                      (v) =>
+                                        !!v ||
+                                        'Role/ Position name is required',
+                                    ]"
                                     required
                                     v-model="professional.position"
                                   ></v-text-field
@@ -865,8 +880,10 @@
                                     class="rounded-xl"
                                     v-model="professional.start_date"
                                     type="date"
-                                    :rules="[v => !!v || 'Start Date is required']"
-                                    ></v-text-field
+                                    :rules="[
+                                      (v) => !!v || 'Start Date is required',
+                                    ]"
+                                  ></v-text-field
                                 ></v-col>
                                 <v-col cols="6" class="py-0"
                                   ><v-text-field
@@ -877,8 +894,10 @@
                                     class="rounded-xl"
                                     v-model="professional.end_date"
                                     type="date"
-                                    :rules="[v => !!v || 'End Date is required']"
-                                    ></v-text-field
+                                    :rules="[
+                                      (v) => !!v || 'End Date is required',
+                                    ]"
+                                  ></v-text-field
                                 ></v-col>
                               </v-row>
                               <v-row class="py-0">
@@ -1044,7 +1063,7 @@
                     class="primary--text my-4"
                     @click="saveDetails"
                   >
-                    SAVE DETAILS
+                    SAVE & PROCEED TO ASSESSMENTS >>
                   </v-btn>
                   <v-spacer></v-spacer>
                   <!-- <v-btn
@@ -1134,7 +1153,7 @@ export default {
       time: 119,
       emailBool: false,
       usingPhone: true,
-
+      gradesData:[],
       tableLevels: [],
 
       subjectsData: [],
@@ -1142,7 +1161,7 @@ export default {
       searchSubject: "",
       searchLevels: "",
       searchBoards: "",
-      boardsData: "",
+      boardsData: [],
       userInfo: {},
       indexValue: null,
 
@@ -1246,7 +1265,7 @@ export default {
           this.long = position.coords.longitude; //'80.3211793';
           var url = `https://geocode.maps.co/reverse?lat=${this.lat}&lon=${this.long}`;
           const response = await axios.get(url);
-          // console.log(response.data.address);
+           console.log(response.data.address);
           this.country = response.data.address.country;
           this.state = response.data.address.state;
           this.district = response.data.address.state_district;
@@ -1320,27 +1339,26 @@ export default {
       }
     },
     async saveDetails() {
-      console.log("function");
+      //console.log("function");
       if (this.$refs.step3.validate()) {
-        console.log("userif conditon");
-        let mixpanelData={
+        //console.log("userif conditon");
+        let mixpanelData = {
           personal_info: this.personalInfo,
-        }
-        this.academicQualifications.forEach((item,index)=>{
-          mixpanelData[`academics_info_${index+1}`] = item;
-        })
-        this.professionalInfos.forEach((item,index)=>{
-          mixpanelData[`professional_info_${index+1}`] = item;
-        })
+        };
+        this.academicQualifications.forEach((item, index) => {
+          mixpanelData[`academics_info_${index + 1}`] = item;
+        });
+        this.professionalInfos.forEach((item, index) => {
+          mixpanelData[`professional_info_${index + 1}`] = item;
+        });
         this.$mixpanel.track("SaveProfileDetailsClicked", mixpanelData);
-       
 
         this.isCreatingUser = true;
         const response =
           await ProfessionalController.createUserProfessionalInfo(
             this.professionalInfos
           );
-        console.log(response);
+        //console.log(response);
         if (response.data.success) {
           this.isCreatingUser = false;
           this.successDialog = true;
@@ -1370,7 +1388,7 @@ export default {
     async getUserInfo() {
       const response = await LogedInUserInfo.getUserInfo();
       this.userInfo = response.data.user;
-      console.log(this.userInfo);
+      //console.log(this.userInfo);
       this.personalInfo.is_email_verified = this.userInfo.is_email_verified;
       this.personalInfo.is_phone_verified = this.userInfo.is_phone_verified;
       this.personalInfo.email = this.userInfo.email;
@@ -1434,25 +1452,34 @@ export default {
       const response = await SchoolController.getSchool();
       // console.log(response);
       this.schoolData = response.data.data.rows;
+      //console.log("school log", this.schoolData);
+
     },
     async getBoards() {
       const response = await BoardController.getBoards();
-      // console.log(response);
+       //console.log(response);
       this.boardsData = response.data.data.rows;
-      console.log("board log", this.boardsData);
+      //console.log("board log", this.boardsData);
     },
     async getLevel() {
       const response = await LevelController.getLevel();
+
       this.tableLevels = response.data.data.rows;
+      //console.log("level log", this.tableLevels);
+
     },
     async getGrades() {
       const response = await GradeController.getAllGrades();
-      // console.log(response);
       this.gradesData = response.data.data.rows;
+      //console.log("grades log", this.gradesData);
+
     },
     async getSubjects() {
       const response = await SubjectController.getSubject();
+
       this.subjectsData = response.data.data.rows;
+      //console.log("subject log", this.subjectsData);
+
     },
 
     addAcademicQualification() {
@@ -1559,16 +1586,15 @@ export default {
         });
         this.personalInfo.is_phone_verified = res.success;
         this.otpDialog = false;
-        console.log("RES VLAUE ", res);
+        //console.log("RES VLAUE ", res);
       }
 
       // this.isGenerateOtpClicked = true;
     },
-    openDeleteDiolog(index){
-      this.indexValue=index;
-      this.deleteDialog=true;
-
-    }
+    openDeleteDiolog(index) {
+      this.indexValue = index;
+      this.deleteDialog = true;
+    },
   },
   watch: {
     avatar: {
