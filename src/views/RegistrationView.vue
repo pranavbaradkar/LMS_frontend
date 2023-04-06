@@ -147,7 +147,7 @@
               <v-form lazy-validation ref="step1">
                 <v-card elevation="0" id="myScroll">
                   <v-row>
-                    <v-col cols="2">
+                    <!-- <v-col cols="2">
                       <v-card-title class="justify-center">
                         <image-input v-model="avatar">
                           <div slot="activator" class="text-center">
@@ -172,8 +172,8 @@
                       ><v-card-subtitle class="text-center"
                         >**Allowed File Types:jpeg, jpg, png**</v-card-subtitle
                       >
-                    </v-col>
-                    <v-col cols="10">
+                    </v-col> -->
+                    <v-col cols="12">
                       <v-card
                         :height="getHeight - 350 + 'px'"
                         class="pa-4"
@@ -241,11 +241,12 @@
                                     <v-btn
                                       on
                                       text
-                                      class="mb-4"
-                                      max-height="35"
+                                         
+
+                                       class="pb-2"
                                       :disabled="!emailBool"
                                       v-if="!personalInfo.is_email_verified"
-                                      btn-text-transform="lowercase"
+                           
                                       @click="generateOtp(), (otpDialog = true)"
                                     >
                                       Verify
@@ -258,13 +259,11 @@
                                         <v-img
                                           src="../assets/verifiedIcon.png"
                                           contain
-                                          max-width="18"
+                                          max-width="24"
                                         ></v-img>
                                       </v-col>
                                       <v-col class="px-0">
-                                        <p color="“primary”" on text>
-                                          Verified
-                                        </p>
+                                        
                                       </v-col>
                                     </v-row>
                                   </div>
@@ -325,12 +324,12 @@
                                       <v-img
                                         src="../assets/verifiedIcon.png"
                                         contain
-                                        max-width="18"
+                                        max-width="24"
                                       ></v-img>
                                     </v-col>
 
                                     <v-col class="px-0">
-                                      <p color="“primary”" on text>Verified</p>
+                                   
                                     </v-col>
                                   </v-row>
                                 </div>
@@ -1068,7 +1067,7 @@
 </template>
 <script>
 import axios from "axios";
-import ImageInput from "../components/ImageInput.vue";
+//import ImageInput from "../components/ImageInput.vue";
 import { validationMixin } from "vuelidate";
 import { required, email } from "vuelidate/lib/validators";
 import "../styles.css";
@@ -1091,9 +1090,9 @@ export default {
   validations: {
     email: { required, email },
   },
-  components: {
-    ImageInput,
-  },
+  // components: {
+  //   ImageInput,
+  // },
   data() {
     return {
       e1: 1,
@@ -1334,28 +1333,7 @@ export default {
           mixpanelData[`professional_info_${index+1}`] = item;
         })
         this.$mixpanel.track("SaveProfileDetailsClicked", mixpanelData);
-        // this.professionalInfos.forEach((object)=>{
-        //       object.level_ids.join(", ");
-        //       object.level_ids = JSON.stringify(object.level_ids)
-        //       object.level_ids = object.level_ids.replace('[', '')
-        //       object.level_ids = object.level_ids.replace(']', '')
-
-        //       object.subject_ids.join(", ");
-        //       object.subject_ids = JSON.stringify(object.subject_ids)
-        //       object.subject_ids = object.subject_ids.replace('[', '')
-        //       object.subject_ids = object.subject_ids.replace(']', '')
-
-        //       object.grade_ids.join(", ");
-        //       object.grade_ids = JSON.stringify(object.grade_ids)
-        //       object.grade_ids = object.grade_ids.replace('[', '')
-        //       object.grade_ids = object.grade_ids.replace(']', '')
-
-        //       object.board_id.join(", ");
-        //       object.board_id = JSON.stringify(object.board_id)
-        //       object.board_id = object.board_id.replace('[', '')
-        //       object.board_id = object.board_id.replace(']', '')
-
-        // })
+       
 
         this.isCreatingUser = true;
         const response =
