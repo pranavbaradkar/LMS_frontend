@@ -200,6 +200,7 @@
                               class="rounded-xl"
                               :rules="[(v) => !!v || 'First Name is required']"
                               required
+                              persistent-counter="10"
                             ></v-text-field></v-col
                           ><v-col cols="3" class="py-0"
                             ><v-text-field
@@ -613,7 +614,7 @@
                                 ><v-text-field
                                   v-model="qualification.start_date"
                                   outlined
-                                  label="Start Date"
+                                  label="Start Date*"
                                   rounded
                                   class="rounded-xl"
                                   type="date"
@@ -626,7 +627,7 @@
                                 ><v-text-field
                                   v-model="qualification.end_date"
                                   outlined
-                                  label="End Date"
+                                  label="End Date* (or expected)"
                                   rounded
                                   class="rounded-xl"
                                   type="date"
@@ -676,9 +677,9 @@
                           <v-btn
                             text
                             @click="addAcademicQualification"
-                            class="textcolor--text"
-                            ><v-icon>mdi-plus-circle-outline</v-icon>Add
-                            Educational Qualification (optional)</v-btn
+                            class="textcolor--text unset-capitalize"
+                            ><v-icon>mdi-plus-circle-outline</v-icon>Add another 
+                            Educational Qualification (You might have)</v-btn
                           >
                         </v-col>
                       </v-row>
@@ -693,7 +694,7 @@
               <v-btn
                 rounded
                 color="secondary"
-                class="black--text my-4"
+                class="black--text my-4 m-btn-p"
                 @click="goToStep3"
               >
                 NEXT
@@ -744,7 +745,7 @@
                           <v-expansion-panel-content>
                             <v-row class="py-0">
                               <v-col class="py-0">
-                                <v-card
+                                <v-card v-if="index == 0"
                                   width="100%"
                                   elevation="0"
                                   class="mb-10 rounded-xl"
@@ -1114,7 +1115,7 @@ export default {
   // },
   data() {
     return {
-      e1: 1,
+      e1: 3,
       experience: "Fresher",
       isCurrentlyWorking: false,
       isFetchingLocation: false,

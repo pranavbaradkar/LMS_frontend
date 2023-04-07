@@ -150,7 +150,32 @@ body {
 .ctCode {
     padding-left: 20px
 }
+.v-text-field--filled > .v-input__control > .v-input__slot, .v-text-field--full-width > .v-input__control > .v-input__slot, .v-text-field--outlined > .v-input__control > .v-input__slot {
+   
+    min-height: 48px !important;
+    height: 48px !important;
+  }
 
+  .unset-capitalize {
+    text-transform: unset !important;
+  }
+  .m-btn-p > span {
+
+  }
+  
+  .v-application--is-ltr .v-text-field .v-label {
+
+    top: 15px;
+  }
+  /* input {
+    text-align: center;
+  }
+  ::-webkit-input-placeholder {
+    text-align: center;
+  }
+  :-moz-placeholder {
+    text-align: center;
+  } */
 .myinput {
     border-top-style: hidden;
     border-right-style: hidden;
