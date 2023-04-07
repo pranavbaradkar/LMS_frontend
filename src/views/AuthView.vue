@@ -123,6 +123,7 @@
                 @click="
                   () => {
                     usingPhone = true;
+                  
                   }
                 "
                 width="auto"
@@ -163,7 +164,7 @@
                 @click="
                   () => {
                     vibgyouBool = !vibgyouBool;
-                    usingPhone = false;
+                    usingPhone = !usingPhone;
                   }
                 "
                 class="textcolor--text pl-4"
@@ -328,23 +329,19 @@ export default {
     },
     async generatePhoneOtp() {
       this.time = 119;
-      const response  =   await AuthService.generateOTP({
-        mobile: ""+this.phoneNumber,
+      const status  =   await AuthService.generateOTP({
+        mobile: this.phoneNumber,
       });
-      console.log("otp generate res",response)
+      // console.log("otp generate res",response)
       this.$mixpanel.track("GenerateOTPClicked", {
         phone_number: this.phoneNumber,
         user_type: this.vibgyouBool ? "teacher" : "job_seeker",
         screen_name: "LoginScreen",
       });
       // console.log("opt send response", response)
-      if(response.data.success){
+      if(status){
         this.isGenerateOtpClicked = true;
-      }
-      else {
-        alert(response.data.message)
-      }
-      
+      }      
       this.otpTimmer();
     },
     otpTimmer() {

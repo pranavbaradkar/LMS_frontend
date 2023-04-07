@@ -15,15 +15,19 @@ export default {
     try {
       console.log("generating otp", data)
       const response = await instance.post('auth/generate-otp', data);
-      console.log(response);
+   
       if (response.data.success) {
         return response.data.success;
       }
-    } catch (error) {
+    } catch (error) {    
       if (error.response.status === 404) {
+        alert(error.response.data.error);
         return error.response.success;
+        // response.data.error
       } else {
         // handle other errors
+        alert(error.response.data.error);
+
         //console.log('An error occurred:', error.message)
         return error.response.success;
       }
