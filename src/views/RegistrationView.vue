@@ -1448,11 +1448,12 @@ export default {
       //console.log(this.states);
     },
     async fetchDistricts() {
+      console.log(this.personalInfo.state_id);
       const response = await AddressController.getDistricts(
         this.personalInfo.state_id
       );
       this.districts = response.data.data.rows;
-      this.district.reverse();
+      this.districts.reverse();
 
       //console.log(this.districts);
       this.fetchCities();
