@@ -12,9 +12,6 @@ Mixpanel.init('8df9eaa72e6170c56e2868056fe86a1a', {
   debug: true
 });
 
-Mixpanel.init('8df9eaa72e6170c56e2868056fe86a1a', {
-  debug: true
-});
 
 Vue.mixin({
   beforeCreate() {

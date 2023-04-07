@@ -28,7 +28,7 @@
             </v-card-title>
             <v-card-text class="text-center text-body-1 font-weight-light">
               <span
-                >Welcome{{ !vibgyouBool ? " Job Seeker!" : "" }} Please enter
+                >Welcome{{ !vibgyouBool ? " Job Seeker!" : "Teachers" }} Please enter
                 your credentials to start the journey</span
               >
             </v-card-text>
@@ -49,11 +49,14 @@
               class="rounded-xl phoneNo mb-4"
               v-if="usingPhone && !vibgyouBool"
             >
+            <div @click="(e)=>{e.preventDefault}">
               <vue-country-code
+              disabled
                 class="ml-2"
                 :preferredCountries="['in']"
                 @onSelect="onSelect"
               ></vue-country-code>
+            </div>
               <span class="mr-2"> +{{ this.dialCode }} </span>
               <input
                 type="text"
@@ -100,7 +103,7 @@
             <v-btn
               v-else
               color="secondary"
-              class="black--text pt-2"
+              class="black--text"
               rounded
               :disabled="!valid"
               large
@@ -325,16 +328,23 @@ export default {
     },
     async generatePhoneOtp() {
       this.time = 119;
-      await AuthService.generateOTP({
-        mobile: "+" + this.dialCode + "" + this.phoneNumber,
+      const response  =   await AuthService.generateOTP({
+        mobile: ""+this.phoneNumber,
       });
+      console.log("otp generate res",response)
       this.$mixpanel.track("GenerateOTPClicked", {
         phone_number: this.phoneNumber,
         user_type: this.vibgyouBool ? "teacher" : "job_seeker",
         screen_name: "LoginScreen",
       });
       // console.log("opt send response", response)
-      this.isGenerateOtpClicked = true;
+      if(response.data.success){
+        this.isGenerateOtpClicked = true;
+      }
+      else {
+        alert(response.data.message)
+      }
+      
       this.otpTimmer();
     },
     otpTimmer() {
@@ -400,7 +410,7 @@ export default {
         }
       } else {
         res = await AuthService.validateOTP({
-          mobile: "+91" + this.phoneNumber,
+          mobile: this.phoneNumber,
           otp: this.otp,
           debug: false,
         });
