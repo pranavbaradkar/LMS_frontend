@@ -115,12 +115,12 @@
       :height="getHeight - 64 + 'px'"
       depressed
       elevation="0"
-    >
-      <v-card-title class="justify-center mt-10"> Welcome </v-card-title>
+    > 
+      <v-card-title class="justify-center mt-10" > Welcome </v-card-title>
       <v-card-subtitle class="text-center"
         ><span
           >Vibgyor Group of Schools offers an opportunity to be part of an inspiring and innovative team of educators.</span
-        ><br /><span>Please fill out the profile information to get a personalized assessment for the opportunity with us.</span></v-card-subtitle
+        ><br /> <span>Please fill out the profile information to get a personalized assessment for the opportunity with us.</span></v-card-subtitle
       >
       <v-container>
         <v-stepper v-model="e1" class="rounded-lg">
@@ -192,7 +192,10 @@
                             </v-select
                           ></v-col>
                           <v-col cols="4" class="py-0"
-                            ><v-text-field
+                            >
+                            
+                            <div id="scrollId"></div>
+                            <v-text-field
                               v-model="personalInfo.first_name"
                               outlined
                               label="First Name *"
@@ -498,6 +501,7 @@
                               rounded
                               class="rounded-xl"
                             ></v-text-field>
+                         
                           </v-col>
                         </v-row>
                       </v-card>
@@ -1272,6 +1276,7 @@ export default {
     };
   },
   methods: {
+   
     consolee(data){
       console.log("undefined data",data)
     },

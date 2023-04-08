@@ -49,10 +49,12 @@
             </v-card>
             <v-divider class="mx-4 mt-0"></v-divider>
             <v-container>
-              <v-card elevation="0" id="myScroll" height="auto">
+              <v-card elevation="0" id="myScroll" height="auto"> 
+             
+                <!-- need to set height of this card for set  good scroll -->
                 <v-list-item-group mandatory v-model="selectedQuestion">
-                  <v-list-item class="grey lighten-4 pt-2" v-for="(item, i) in questions" :key="i" @click="questionClicked(item)">
-                    <v-list-item-content class="py-0">
+                  <v-list-item class="grey lighten-4 pt-2"  v-for="(item, i) in questions" :key="i" @click="questionClicked(item)">
+                    <v-list-item-content class="py-0" :id="scrollId+''+i">
                       <v-list-item-title :class="
                         i == selectedQuestion ? 'primary--text font-weight-regular' : 'font-weight-light'
                       "><v-icon large :color="getColor(item)">mdi-circle-medium</v-icon>
@@ -71,19 +73,16 @@
                   </v-list-item>
                 </v-list-item-group>
               </v-card>
+     
             </v-container>
           </v-card>
           <!-- progress List -->
           <v-card v-else :height="getHeight" id="myScroll" class="pa-4 ma-2 pt-0 rounded-xl" @click="isProgressClicked=false">
             <v-card height="auto" id="circleCard" elevation="0">
               <v-card-title class="text-subtitle font-weight-regular accent--text testHead">
-                <p>{{ progressListTitle }}</p>
-                
+                <p>{{ progressListTitle }}</p>                
               </v-card-title>
-              
-
-              <v-divider class="mx-4 mt-0"></v-divider>
-              
+              <v-divider class="mx-4 mt-0"></v-divider>           
              
             </v-card>
             <v-divider class="mx-4 mt-0"></v-divider>
@@ -202,6 +201,7 @@
                       width="120px" height="36px" class="ml-8 black--text">
                       NEXT
                     </v-btn>
+                 
                     <v-spacer></v-spacer>
                     <v-btn v-if="!bookmarked.includes(questions[selectedQuestion])" large text color="primary"
                       @click="bookmarkQuestion(questions[selectedQuestion])">
@@ -304,6 +304,7 @@
     
       </v-card>
     </v-dialog>
+  
   </div>
 </template>
 
@@ -340,6 +341,9 @@ export default {
       answeredProgress: 0,
       skippedProgress: 0,
       bookmarkedProgress: 0,
+      scrollId: "scrollId",
+      counter: 0,
+
     };
   },
   computed: {
@@ -350,6 +354,7 @@ export default {
   mounted() {
     window.addEventListener('beforeunload', this.handleBeforeUnload);
 
+  
     this.startTimer();
 
     this.$nextTick(() => {
@@ -373,6 +378,17 @@ export default {
     });
   },
   methods: {
+    scrollMethod(data){
+      console.log("scroll view",data)
+      // document.getElementById(data).scrollIntoView()
+
+      const element =  document.getElementById(data);
+ 
+      element.scrollIntoView()
+   
+
+    },
+ 
     openTestSummary() {
       this.summaryDialog = true;
       this.$mixpanel.track("TestSummaryLoaded", {
@@ -564,6 +580,8 @@ export default {
       });
       this.lastAnswerTime = this.seconds;
       this.selectedQuestion = this.selectedQuestion + 1;
+      this.couter++;
+      this.scrollMethod("scrollId"+this.selectedQuestion)
     },
     previous() {
       this.$mixpanel.track("PreviousButtonClicked", {
@@ -580,6 +598,8 @@ export default {
         time_taken_in_sec: this.lastAnswerTime - this.seconds,
       });
       this.selectedQuestion = this.selectedQuestion - 1;
+      this.couter++;
+      this.scrollMethod("scrollId"+this.selectedQuestion)
     },
     questionClicked() {
       this.$mixpanel.track("QuestionListClicked", {

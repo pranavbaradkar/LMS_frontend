@@ -247,6 +247,7 @@
         </div>
       </v-card>
     </v-container>
+  
   </div>
 </template>
   
