@@ -214,7 +214,7 @@
                             ><v-text-field
                               v-model="personalInfo.last_name"
                               outlined
-                              label="Last Name"
+                              label="Last Name*"
                               rounded
                               class="rounded-xl"
                               :rules="[(v) => !!v || 'Last Name is required']"
