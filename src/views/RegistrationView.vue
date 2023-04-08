@@ -387,6 +387,8 @@
                               :value="country"
                               label="Country *"
                               :items="countries"
+                              item-text="country_name"
+                              item-value="id"
                           
                               outlined
                               class="rounded-xl"
@@ -471,6 +473,8 @@
                               @keypress="isNumber($event)"
                               label="Pin Code *"
                               rounded
+                              counter="6"
+                              maxLength="6"
                               class="rounded-xl"
                               :rules="[
                                 (v) => !!v || 'Pincode is required',
@@ -485,7 +489,9 @@
                             <v-text-field
                               v-model="personalInfo.address"
                               outlined
-                              label="Address"
+                              label="Address*"
+                              counter="100"
+                              maxLength="100"
                               rounded
                               class="rounded-xl"
                             ></v-text-field>
@@ -572,6 +578,8 @@
                                   label="School/ College/ University *"
                                   rounded
                                   class="rounded-xl"
+                                  counter="100"
+                                  maxLength="100"
                                   :rules="[
                                     (v) =>
                                       !!v ||
@@ -589,6 +597,8 @@
                                   label="Degree/ Diploma/ Certification *"
                                   rounded
                                   class="rounded-xl"
+                                  
+
                                   :rules="[
                                     (v) =>
                                       !!v ||
@@ -605,6 +615,8 @@
                                   label="Field of Study"
                                   rounded
                                   class="rounded-xl"
+                                  counter="100"
+                                    maxLength="100"
                                 ></v-text-field
                               ></v-col>
                             </v-row>
@@ -645,6 +657,8 @@
                                   label="Extra Curricular Activities"
                                   rounded
                                   class="rounded-xl"
+                                  counter="500"
+                                    maxLength="500"
                                 ></v-text-field>
                               </v-col>
                             </v-row>
@@ -655,6 +669,8 @@
                                   label="Achievements"
                                   rounded
                                   class="rounded-xl"
+                                  counter="500"
+                                    maxLength="500"
                                 ></v-text-field>
                               </v-col>
                             </v-row>
@@ -727,11 +743,12 @@
                             ><div
                               class="d-flex flex-column"
                               v-if="expandedPanelIndex != index"
+                              @click="consolee(professional.end_date)"
                             >
                               <div class="font-weight-regular">
                                 {{ index + 1 + ". " + professional.position }}
                               </div>
-                              <div class="text-body-2 grey--text">
+                              <div class="text-body-2 grey--text"  v-if="professional.end_date != ''" >
                                 {{
                                   new Date(
                                     professional.start_date
@@ -763,6 +780,8 @@
                                           class="mb-8 py-0"
                                           label="I have"
                                           value="Experienced"
+                                          color="accent"
+
                                         >
                                         </v-radio>
 
@@ -808,6 +827,7 @@
                                         <v-radio
                                           label="Fresher"
                                           value="Fresher"
+                                          color="accent"
                                         >
                                         </v-radio
                                       ></v-row>
@@ -1115,7 +1135,7 @@ export default {
   // },
   data() {
     return {
-      e1: 3,
+      e1: 1,
       experience: "Fresher",
       isCurrentlyWorking: false,
       isFetchingLocation: false,
@@ -1249,6 +1269,9 @@ export default {
     };
   },
   methods: {
+    consolee(data){
+      console.log("undefined data",data)
+    },
     isNumber: function (evt) {
       evt = evt ? evt : window.event;
       var charCode = evt.which ? evt.which : evt.keyCode;

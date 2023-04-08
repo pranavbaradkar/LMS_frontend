@@ -38,7 +38,8 @@ export default {
     try {
       console.log("validate data", data)
       const response = await instance.post('auth/validate-otp', data);
-      console.log(response);
+      console.log("varified response",response)
+ 
       if (response.data.success) {
 
         return response.data;
@@ -55,7 +56,7 @@ export default {
     try {
       console.log("validate data", data)
       const response = await instance.post('auth/validate-otp', data);
-      console.log(response);
+      console.log("validate response",response);
       if (response.data.success) {
         const token = response.data.token
         localStorage.setItem('USER_DATA', response.data)

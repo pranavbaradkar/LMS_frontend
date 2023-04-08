@@ -19,6 +19,7 @@ export default new Vuetify({
                 skipped:'#F6E866',
                 bookmarked:'#E868E3',
             },
+         
         },
     },
 });
