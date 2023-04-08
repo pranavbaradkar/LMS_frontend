@@ -238,42 +238,13 @@
                                 required
                                 @keydown.enter.prevent="submit"
                               >
-                                <!-- <template #append>
-                                  <div class="d-flex flex-row"> -->
-                                            <!-- <v-btn
-                                              on
-                                              text
-                                              class="pb-2"
-                                              :disabled="!emailBool"
-                                              v-if="!personalInfo.is_email_verified"
-                                              @click="generateOtp(), (otpDialog = true)"
-                                            >
-                                              Verify
-                                            </v-btn>
-                                               <v-img v-if="personalInfo.is_email_verified"
-                                              src="../assets/verifiedIcon.png"
-                                              contain
-                                              max-width="24"
-                                               ></v-img> -->
-
-                                        <!-- <v-row v-if="personalInfo.is_email_verified" >
-                                          <v-col class="px-0"> -->
-                                            <!-- <v-img
-                                              src="../assets/verifiedIcon.png"
-                                              contain
-                                              max-width="24"
-                                            ></v-img> -->
-                                          <!-- </v-col> -->
-                                          <!-- <v-col class="px-0"> </v-col> -->
-                                        <!-- </v-row> -->
-                                  <!-- </div>
-                                </template -->
+                                
                                 <template #append>
-                                    <div>
+                                    <div class="d-flex align-center">
                                       <v-btn
                                         on
                                         text
-                                        class="pb-2"
+                                      
                                         :disabled="!emailBool"
                                         v-if="!personalInfo.is_email_verified"
                                         @click="generateOtp(), (otpDialog = true)"
@@ -293,7 +264,8 @@
                                         </v-col>
                                         <v-col class="px-0"> </v-col>
                                       </v-row>
-                                    </div> </template
+                                    </div>
+                                     </template
                                 >
                               ></v-text-field>
                             </v-form>
@@ -325,12 +297,12 @@
                               required
                             >
                               <template #append>
-                                <div class="px-0 py-0">
+                                <div class="d-flex align-center">
                                   <v-btn
                                     on
                                     text
                                     max-height="35"
-                                    class="mb-4"
+                                  
                                     :disabled="
                                       personalInfo.phone_no.length != 10
                                     "

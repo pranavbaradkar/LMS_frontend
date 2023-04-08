@@ -162,7 +162,11 @@ body {
   .m-btn-p > span {
 
   }
-  
+  .v-application--is-ltr .v-text-field .v-input__append-inner {
+   margin-top: 0px !important;
+   height: 48px;
+   align-content: center;
+  }
   .v-application--is-ltr .v-text-field .v-label {
 
     top: 15px;
