@@ -4,8 +4,8 @@
       <v-row>
         <!-- Left Card -->
         <v-col cols="3" >
-          <v-card v-if="!isProgressClicked" :height="getHeight" id="myScroll" class="pa-4 ma-2 pt-0 rounded-xl">
-            <v-card height="auto" id="circleCard" elevation="0">
+          <v-card v-if="!isProgressClicked" :height="getHeight" class="pa-4 ma-2 pt-0 rounded-xl">
+            <v-card min-height="420" id="circleCard" elevation="0">
               <v-card-title class="text-subtitle font-weight-regular accent--text testHead">
                 <p>{{ assessment.name }}</p>
                 <span></span>
@@ -48,8 +48,8 @@
               </v-card-title>
             </v-card>
             <v-divider class="mx-4 mt-0"></v-divider>
-            <v-container>
-              <v-card elevation="0" id="myScroll" height="auto"> 
+            <v-container class="py-0 my-0">
+              <v-card elevation="0" id="myScroll" :height="getQuestionsListHeight"> 
              
                 <!-- need to set height of this card for set  good scroll -->
                 <v-list-item-group mandatory v-model="selectedQuestion">
@@ -350,6 +350,10 @@ export default {
     getHeight() {
       return this.windowHeight - 40 + "px";
     },
+    getQuestionsListHeight(){
+      return this.windowHeight - 480 + "px";
+
+    }
   },
   mounted() {
     window.addEventListener('beforeunload', this.handleBeforeUnload);
