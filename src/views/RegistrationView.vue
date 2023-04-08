@@ -144,7 +144,7 @@
             <!------------------------------------------ STEP 1 ------------------------------------------>
             <v-stepper-content step="1">
               <v-form lazy-validation ref="step1">
-                <v-card elevation="0" id="myScroll">
+                <v-card elevation="0" id="myScroll" class="pa-2">
                   <v-row>
                     <!-- <v-col cols="2">
                       <v-card-title class="justify-center">
@@ -175,7 +175,7 @@
                     <v-col cols="12">
                       <v-card
                         :height="getHeight - 350 + 'px'"
-                        class="pa-4"
+                        class="pa-4 "
                         elevation="0"
                       >
                         <v-row class="py-0">
@@ -511,11 +511,11 @@
                  
                   <v-col cols="12">
                     <v-divider></v-divider>
-                    <v-card-title>
+                    <v-card-title class="pb-0">
                       <v-btn
                         rounded
                         color="secondary"
-                        class="black--text"
+                        class="black--text mx-1"
                         @click="goToStep2"
                       >
                         NEXT
@@ -1324,7 +1324,7 @@ export default {
         const response = await PersonalInfoController.createUserPersonalInfo(
           this.personalInfo
         );
-        // console.log(response);
+        console.log(response);
         if (response.data.success) {
           this.$mixpanel.track("AcademicsPageLoaded", {
             user_type: "job_seeker",

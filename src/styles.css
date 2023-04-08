@@ -162,6 +162,15 @@ body {
   .m-btn-p > span {
 
   }
+  .v-select__slot > .v-label {
+    padding-left: 12px !important;
+  }
+  .v-select__slot > .v-input__append-inner > .v-input__icon > .v-icon {
+    margin-top: 24px !important
+  }
+  .v-select__selection--comma {
+    margin-left: 12px !important;
+  }
   .v-application--is-ltr .v-text-field .v-input__append-inner {
    margin-top: 0px !important;
    height: 48px;
