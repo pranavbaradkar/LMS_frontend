@@ -238,32 +238,63 @@
                                 required
                                 @keydown.enter.prevent="submit"
                               >
-                                <template #append>
-                                  <div>
-                                    <v-btn
-                                      on
-                                      text
-                                      class="pb-2"
-                                      :disabled="!emailBool"
-                                      v-if="!personalInfo.is_email_verified"
-                                      @click="generateOtp(), (otpDialog = true)"
-                                    >
-                                      Verify
-                                    </v-btn>
+                                <!-- <template #append>
+                                  <div class="d-flex flex-row"> -->
+                                            <!-- <v-btn
+                                              on
+                                              text
+                                              class="pb-2"
+                                              :disabled="!emailBool"
+                                              v-if="!personalInfo.is_email_verified"
+                                              @click="generateOtp(), (otpDialog = true)"
+                                            >
+                                              Verify
+                                            </v-btn>
+                                               <v-img v-if="personalInfo.is_email_verified"
+                                              src="../assets/verifiedIcon.png"
+                                              contain
+                                              max-width="24"
+                                               ></v-img> -->
 
-                                    <v-row
-                                      v-if="personalInfo.is_email_verified"
-                                    >
-                                      <v-col class="px-0">
-                                        <v-img
-                                          src="../assets/verifiedIcon.png"
-                                          contain
-                                          max-width="24"
-                                        ></v-img>
-                                      </v-col>
-                                      <v-col class="px-0"> </v-col>
-                                    </v-row>
-                                  </div> </template
+                                        <!-- <v-row v-if="personalInfo.is_email_verified" >
+                                          <v-col class="px-0"> -->
+                                            <!-- <v-img
+                                              src="../assets/verifiedIcon.png"
+                                              contain
+                                              max-width="24"
+                                            ></v-img> -->
+                                          <!-- </v-col> -->
+                                          <!-- <v-col class="px-0"> </v-col> -->
+                                        <!-- </v-row> -->
+                                  <!-- </div>
+                                </template -->
+                                <template #append>
+                                    <div>
+                                      <v-btn
+                                        on
+                                        text
+                                        class="pb-2"
+                                        :disabled="!emailBool"
+                                        v-if="!personalInfo.is_email_verified"
+                                        @click="generateOtp(), (otpDialog = true)"
+                                      >
+                                        Verify
+                                      </v-btn>
+  
+                                      <v-row
+                                        v-if="personalInfo.is_email_verified"
+                                      >
+                                        <v-col class="px-0">
+                                          <v-img
+                                            src="../assets/verifiedIcon.png"
+                                            contain
+                                            max-width="24"
+                                          ></v-img>
+                                        </v-col>
+                                        <v-col class="px-0"> </v-col>
+                                      </v-row>
+                                    </div> </template
+                                >
                               ></v-text-field>
                             </v-form>
                           </v-col>
@@ -345,7 +376,7 @@
                               required
                             ></v-text-field
                           ></v-col>
-                          <v-col cols="2" class="py-0">
+                          <v-col cols="3" class="py-0">
                             <v-select
                               v-model="personalInfo.gender"
                               label="Gender*"
