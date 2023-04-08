@@ -1220,6 +1220,7 @@ export default {
         phone_no: "",
         country_id: 0,
         state_id: 0,
+        talukTehsil:0,
         city_id: 0,
         address: "",
         pincode: 0,
@@ -1440,7 +1441,6 @@ export default {
     async fetchCountries() {
       const response = await AddressController.getCountries();
       this.countries = response.data.data.rows;
-      this.countries.reverse();
 
       //console.log(this.countries);
     },
@@ -1449,7 +1449,6 @@ export default {
         this.personalInfo.country_id
       );
       this.states = response.data.data.rows;
-      this.states.reverse();
       //console.log(this.states);
     },
     async fetchDistricts() {
@@ -1458,7 +1457,6 @@ export default {
         this.personalInfo.state_id
       );
       this.districts = response.data.data.rows;
-      this.districts.reverse();
 
       //console.log(this.districts);
       this.fetchCities();
@@ -1468,16 +1466,15 @@ export default {
         this.personalInfo.districtId
       );
       this.talukas = response.data.data.rows;
-      this.talukas.reverse();
 
       //console.log(this.talukas);
     },
     async fetchCities() {
       const response = await AddressController.getCities(
-        this.personalInfo.state_id
+        this.personalInfo.state_id,
+        this.personalInfo.talukTehsil,
       );
       this.cities = response.data.data.rows;
-      this.cities.reverse();
 
       //console.log(this.cities);
     },
