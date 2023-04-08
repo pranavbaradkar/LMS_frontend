@@ -3,7 +3,7 @@
     <v-container fluid>
       <v-row>
         <!-- Left Card -->
-        <v-col cols="3" >
+        <v-col cols="3">
           <v-card v-if="!isProgressClicked" :height="getHeight" class="pa-4 ma-2 pt-0 rounded-xl">
             <v-card min-height="420" id="circleCard" elevation="0">
               <v-card-title class="text-subtitle font-weight-regular accent--text testHead">
@@ -22,13 +22,15 @@
                   <div class="d-flex flex-column mb-6 align-center">
                     <v-progress-circular :rotate="360" :size="85" :width="15" @click="openProgressList('Answered')"
                       :value=((answeredProgress/questions.length)*100) color="answered
-                        ">
-                      <h4 class="black--text">{{answeredProgress }}</h4>
+                          ">
+                      <h4 class="black--text">{{ answeredProgress }}</h4>
                     </v-progress-circular>
                     <v-card-subtitle class="py-2">ANSWERED</v-card-subtitle>
                   </div>
                   <div class="d-flex flex-column mb-6 align-center">
-                    <v-progress-circular :rotate="360" :size="85" :width="15"  :value="((skipped.length / questions.length) * 100)" color="skipped" @click="openProgressList('Skipped')">
+                    <v-progress-circular :rotate="360" :size="85" :width="15"
+                      :value="((skipped.length / questions.length) * 100)" color="skipped"
+                      @click="openProgressList('Skipped')">
                       <h4 class="black--text">{{ this.skipped.length }}</h4>
 
                     </v-progress-circular>
@@ -39,7 +41,8 @@
               <v-card-title class="justify-center py-0">
                 <div class="d-flex flex-column mb-2 align-center">
                   <v-progress-circular :rotate="360" :size="85" :width="15"
-                    :value="((bookmarked.length / questions.length) * 100)" color="bookmarked" @click="openProgressList('Bookmark')">
+                    :value="((bookmarked.length / questions.length) * 100)" color="bookmarked"
+                    @click="openProgressList('Bookmark')">
                     <h4 class="black--text">{{ this.bookmarked.length }}</h4>
 
                   </v-progress-circular>
@@ -49,12 +52,13 @@
             </v-card>
             <v-divider class="mx-4 mt-0"></v-divider>
             <v-container class="py-0 my-0">
-              <v-card elevation="0" id="myScroll" :height="getQuestionsListHeight"> 
-             
+              <v-card elevation="0" id="myScroll" :height="getQuestionsListHeight">
+
                 <!-- need to set height of this card for set  good scroll -->
                 <v-list-item-group mandatory v-model="selectedQuestion">
-                  <v-list-item class="grey lighten-4 pt-2"  v-for="(item, i) in questions" :key="i" @click="questionClicked(item)">
-                    <v-list-item-content class="py-0" :id="scrollId+''+i">
+                  <v-list-item class="grey lighten-4 pt-2" v-for="(item, i) in questions" :key="i"
+                    @click="questionClicked(item)">
+                    <v-list-item-content class="py-0" :id="scrollId + '' + i">
                       <v-list-item-title :class="
                         i == selectedQuestion ? 'primary--text font-weight-regular' : 'font-weight-light'
                       "><v-icon large :color="getColor(item)">mdi-circle-medium</v-icon>
@@ -73,23 +77,25 @@
                   </v-list-item>
                 </v-list-item-group>
               </v-card>
-     
+
             </v-container>
           </v-card>
           <!-- progress List -->
-          <v-card v-else :height="getHeight" id="myScroll" class="pa-4 ma-2 pt-0 rounded-xl" @click="isProgressClicked=false">
+          <v-card v-else :height="getHeight" id="myScroll" class="pa-4 ma-2 pt-0 rounded-xl"
+            @click="isProgressClicked = false">
             <v-card height="auto" id="circleCard" elevation="0">
               <v-card-title class="text-subtitle font-weight-regular accent--text testHead">
-                <p>{{ progressListTitle }}</p>                
+                <p>{{ progressListTitle }}</p>
               </v-card-title>
-              <v-divider class="mx-4 mt-0"></v-divider>           
-             
+              <v-divider class="mx-4 mt-0"></v-divider>
+
             </v-card>
             <v-divider class="mx-4 mt-0"></v-divider>
             <v-container>
               <v-card elevation="0" id="myScroll" height="auto">
                 <v-list-item-group mandatory v-model="selectedQuestion">
-                  <v-list-item class="grey lighten-4 pt-2" v-for="(item, i) in progressList" :key="i" @click="isProgressClicked=false">
+                  <v-list-item class="grey lighten-4 pt-2" v-for="(item, i) in progressList" :key="i"
+                    @click="isProgressClicked = false">
                     <v-list-item-content class="py-0">
                       <v-list-item-title :class="
                         i == selectedQuestion ? 'primary--text font-weight-regular' : 'font-weight-light'
@@ -117,6 +123,7 @@
             <v-card-title @click="$router.push('/')" class="pb-0">
               <v-icon>mdi-close</v-icon>
             </v-card-title>
+            <!-- Progress Bar -->
             <v-container class="px-16">
               <v-row class="align-center text-align-center px-2 pb-8">
                 <v-card class="pa-0" width="70" elevation="0">
@@ -142,48 +149,50 @@
                 <v-spacer></v-spacer>
                 <v-col cols="4" class="text-end">
                   <v-btn width="150px" height="48px" rounded color="accent" class="white--text"
-                    @click=" openTestSummary">SUBMIT</v-btn>
+                    @click="openTestSummary">SUBMIT</v-btn>
                 </v-col>
               </v-row>
 
               <v-progress-linear class="rounded-xl mt-4 mb-6" rounded
-                :value="((answeredProgress+skipped.length+bookmarked.length)/ questions.length) * 100" color="secondary" background-color="grey lighten-2"
-                height="25"></v-progress-linear>
+                :value="((answeredProgress + skipped.length + bookmarked.length) / questions.length) * 100" color="secondary"
+                background-color="grey lighten-2" height="25"></v-progress-linear>
               <v-row justify="space-between" class="pt-2">
                 <v-col>
                   <span class="text-caption">Question
                     {{ selectedQuestion + 1 + " of " + questions.length }}</span>
                 </v-col>
                 <v-col class="text-end" v-if="questions != 0">
-                  <v-chip  active text-color="black" class="m-q-chip"  >{{
+                  <v-chip active text-color="black" class="m-q-chip">{{
                     questions[selectedQuestion].skill.name }}</v-chip>
                 </v-col>
               </v-row>
             </v-container>
 
             <v-container class="px-16 " id="myScroll">
+              <!-- Question Block -->
               <v-card class="my-card pa-0 mt-2 rounded-xl" elevation="0">
-                <v-card height="auto" elevation="0"  color="grey lighten-4" min-height="192px">
-                 <v-card-title v-if="questions[selectedQuestion] != null">{{ questions[selectedQuestion].statement }}
+                <v-card height="auto" elevation="0" color="grey lighten-4" min-height="192px">
+                  <v-card-title v-if="questions[selectedQuestion] != null">{{ questions[selectedQuestion].statement }}
                   </v-card-title>
+                </v-card>
               </v-card>
-            </v-card>
-            <v-card class="option-card mt-8 rounded-xl " elevation="0">
-              <v-card height="auto" color="sufaceAccent" elevation="0">
-                <v-card-title>
-                  <v-row v-if="questions[selectedQuestion] != null" justify="center">
-                    <v-btn class="ma-2 text-wrap" min-height="50px" height="auto"
-                      :color="questions[selectedQuestion].myAnswer == option.option_key ? 'secondaryAccent' : ''" v-for="(option, index) in questions[selectedQuestion]
-                        .question_options" :key="index" @click="
-                          setOption(
-                            questions[selectedQuestion].question_options[index]
-                          )
-                        ">
-                      {{ option.option_value }}
-                    </v-btn>
-                  </v-row>
-                </v-card-title>
-              </v-card>
+              <!-- Options Card -->
+              <v-card class="option-card mt-8 rounded-xl " elevation="0">
+                <v-card height="auto" color="sufaceAccent" elevation="0">
+                  <v-card-title>
+                    <v-row v-if="questions[selectedQuestion] != null" justify="center">
+                      <v-btn class="ma-2 text-wrap" min-height="50px" height="auto"
+                        :color="questions[selectedQuestion].myAnswer == option.option_key ? 'secondaryAccent' : ''" v-for="(option, index) in questions[selectedQuestion]
+                          .question_options" :key="index" @click="
+    setOption(
+      questions[selectedQuestion].question_options[index]
+    )
+  ">
+                        {{ option.option_value }}
+                      </v-btn>
+                    </v-row>
+                  </v-card-title>
+                </v-card>
               </v-card>
             </v-container>
 
@@ -201,7 +210,7 @@
                       width="120px" height="36px" class="ml-8 black--text">
                       NEXT
                     </v-btn>
-                 
+
                     <v-spacer></v-spacer>
                     <v-btn v-if="!bookmarked.includes(questions[selectedQuestion])" large text color="primary"
                       @click="bookmarkQuestion(questions[selectedQuestion])">
@@ -209,13 +218,14 @@
                       BOOKMARK
                     </v-btn>
                     <v-btn v-else large text color="primary" @click="bookmarkQuestion(questions[selectedQuestion])">
-                      <v-icon class="pr-2" right> mdi-bookmark-outline </v-icon>
+                      <v-icon class="pr-2" right> mdi-bookmark </v-icon>
                       REMOVE BOOKMARK
                     </v-btn>
 
                     <v-tooltip bottom>
                       <template v-slot:activator="{ on, attrs }">
-                        <v-btn text large color="primary" v-bind="attrs" v-on="on" @click="skipQuestion(questions[selectedQuestion])">
+                        <v-btn text large color="primary" v-bind="attrs" v-on="on"
+                          @click="skipQuestion(questions[selectedQuestion])">
                           >> SKIP
                         </v-btn>
                       </template>
@@ -244,67 +254,153 @@
     </v-dialog>
     <!-- Test Summary Dialog -->
     <v-dialog v-model="summaryDialog" fullscreen persistent>
-      <v-card>
-        <v-card>
-          <v-card-title>Test Summary</v-card-title>
-          <v-card-subtitle>{{ assessment.name }}</v-card-subtitle>
-        </v-card>
+      <v-container fluid>
+        <v-row>
+          <!-- Left Card -->
+          <v-col cols="3">
+            <v-card :height="getHeight" id="myScroll" class="pa-4 ma-2 pt-0 rounded-xl">
+              <v-card height="auto" id="circleCard" elevation="0">
+                <v-card-title class="text-subtitle font-weight-regular accent--text testHead">
+                  <p>{{ assessment.name }}</p>
+                  <span></span>
+                </v-card-title>
+                <v-card-subtitle>
+                  <span class="font-weight-light grey--text">Test Duration:</span>
+                  <span v-if="assessment.tests != null">
+                    {{ assessment.tests[0].duration_of_assessment }} minutes</span>
+                </v-card-subtitle>
+                <v-divider class="mx-4 mt-0"></v-divider>
 
-          <v-row justify="center">
-            <v-col cols="4" >
-              <v-card-text class="text-center">
-                <v-card-title class="justify-center py-0">
-                <div class="d-flex flex-column mb-6 align-center">
-                  <v-progress-circular :rotate="360" :size="120" :width="15"
-                      :value=((answeredProgress/questions.length)*100) color="answered
-                        ">
-                      <h4 class="black--text">{{answeredProgress }}</h4>
-                    </v-progress-circular>
-                    <v-card-subtitle class="py-2">ANSWERED</v-card-subtitle>
-                </div>
+              </v-card>
+              <v-divider class="mx-4 mt-0"></v-divider>
+              <v-container>
+                <v-card elevation="0" id="myScroll" height="auto">
+                  <v-list-item-group mandatory v-model="selectedQuestion">
+                    <v-list-item class="grey lighten-4 pt-2" v-for="(item, i) in questions" :key="i"
+                      @click="questionClicked(item)">
+                      <v-list-item-content class="py-0" :id="scrollId + '' + i">
+                        <v-list-item-title :class="
+                          i == selectedQuestion ? 'primary--text font-weight-regular' : 'font-weight-light'
+                        "><v-icon large :color="getColor(item)">mdi-circle-medium</v-icon>
+                          <img v-if="i == selectedQuestion" src="../assets/Polygonpoly.png" class="polyicon" />
+                          Question {{ i + 1 }}</v-list-item-title>
+
+                        <v-list-item-subtitle>
+                          <v-divider class="mt-2 mb-1"></v-divider>
+                        </v-list-item-subtitle>
+                      </v-list-item-content>
+                      <v-list-item-action v-if="bookmarked.includes(item)">
+                        <v-icon color="primary">
+                          mdi-bookmark
+                        </v-icon>
+                      </v-list-item-action>
+                    </v-list-item>
+                  </v-list-item-group>
+                </v-card>
+              </v-container>
+            </v-card>
+
+          </v-col>
+          <!-- Right Card -->
+          <v-col cols="9" class="pl-0">
+            <v-card :height="getHeight" class="d-flex my-2 mr-2  flex-column rounded-xl">
+              <v-card-title v-if="seconds != 0" @click="summaryDialog = false" class="pb-0">
+                <v-icon>mdi-close</v-icon>
               </v-card-title>
-            <v-card-title class="pa-x pt-8 pb-0">
-                <v-row justify="space-around">
-                  <div class="d-flex flex-column mb-6 align-center">
+              <v-card-title v-else class="pb-0 mt-4">
 
-
-
-                    <v-progress-circular :rotate="360" :size="85" :width="15"
-                    :value="((bookmarked.length / questions.length) * 100)" color="bookmarked">
-                    <h4 class="black--text">{{ this.bookmarked.length }}</h4>
-
-                  </v-progress-circular>
-                  <v-card-subtitle class="py-2">BOOKMARK</v-card-subtitle>
-
-
-
-                    
-                  </div>
-                  <div class="d-flex flex-column mb-6 align-center">
-                    <v-progress-circular :rotate="360" :size="85" :width="15"  :value="((skipped.length / questions.length) * 100)" color="skipped" >
-                      <h4 class="black--text">{{ this.skipped.length }}</h4>
-
-                    </v-progress-circular>
-                    <v-card-subtitle class="py-2">SKIPPED</v-card-subtitle>
-                  </div>
+              </v-card-title>
+              <!-- Progress Bar -->
+              <v-container class="px-16">
+                <v-row class="align-center text-align-center px-2 pb-4">
+                  <v-card class="pa-0" width="70" elevation="0">
+                    <v-text-field hide-details="" label="HH" readonly :value=hours outlined rounded
+                      class="rounded-xl centered-input mygredient">
+                    </v-text-field>
+                  </v-card>
+                  <span class="pa-2">:</span>
+                  <v-card class="pa-0" width="70" elevation="0">
+                    <v-text-field hide-details="" label="MM" readonly :value=mins outlined rounded
+                      class="rounded-xl centered-input mygredient">
+                    </v-text-field>
+                  </v-card>
+                  <span class="pa-2">:</span>
+                  <v-card class="pa-0" width="70" elevation="0">
+                    <v-text-field hide-details="" label="SS" readonly :value=secs outlined rounded
+                      class="rounded-xl centered-input mygredient">
+                    </v-text-field>
+                  </v-card>
+                  <v-col cols="2" class="pr-0">
+                    <span>Time Left</span>
+                  </v-col>
+                  <v-spacer></v-spacer>
                 </v-row>
-              </v-card-title>
-              
-          </v-card-text>
-     
-          
-            </v-col>
-          </v-row>
-          
-     
-          <v-card elevation="0" width="100%" class="submitButton text-center">
-           <v-btn color="secondary" class="black--text" width="249px" rounded x-large @click="submitAssessment">SUBMIT</v-btn>
 
-         </v-card>
-    
-      </v-card>
+                <v-row justify="space-between" align="center">
+                  <v-col>
+                    <span class="text-h6">Screening Test Summary
+                    </span>
+                  </v-col>
+                  <v-col class="text-end">
+                    <v-chip class="ma-2 grey lighten-3"><v-icon large
+                        color="answered">mdi-circle-medium</v-icon>Answered</v-chip>
+                    <v-chip class="ma-2 grey lighten-3"><v-icon large
+                        color="skipped">mdi-circle-medium</v-icon>Skipped</v-chip>
+                    <v-chip class="ma-2 grey lighten-3"><v-icon large
+                        color="bookmarked">mdi-circle-medium</v-icon>Bookmarked</v-chip>
+                  </v-col>
+                </v-row>
+
+                <v-card width="100%" color="grey lighten-2" height="25" class="rounded-xl d-flex flex-row mt-4 mb-2" elevation="0">
+                  
+                      <v-card color="answered" height="20"   :width="((answeredProgress/questions.length)*100)+'%'" elevation="0" class="rounded-xl"></v-card>
+             
+
+                      <v-card color="skipped" height="20" :width="((skipped.length / questions.length) * 100)+'%'"
+                        elevation="0" class="rounded-xl"></v-card>
+               
+
+                      <v-card color="bookmarked" height="20"  :width="((bookmarked.length / questions.length) * 100)+'%'" elevation="0" class="rounded-xl"></v-card>
+
+                   
+                </v-card>
+
+              </v-container>
+
+              <v-container class="px-16" id="myScroll">
+                <!-- Summary Questions Card -->
+                <v-layout row wrap justify-center>
+                  <v-card v-for="(question, index) in questions" :key="index"
+                    :class="'text-center ma-2 rounded-lg' + getColorClass(question)" width="70px" height="54" elevation="4"
+                    outlined>
+                    <v-card-text class="text-body-1 font-weight-bold px-1">
+                      Q {{ index+1 }}
+
+                    </v-card-text>
+                  </v-card>
+                </v-layout>
+
+
+              </v-container>
+
+              <v-spacer></v-spacer>
+              <v-divider></v-divider>
+              <v-card elevation="0" class="my-4">
+
+                <v-card-title>
+                  <v-row justify="center">
+                    <v-btn color="accent" width="249px" rounded x-large @click="submitAssessment">CONFIRM
+                      SUBMISSION</v-btn>
+                  </v-row>
+                </v-card-title>
+
+              </v-card>
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-container>
     </v-dialog>
-  
+
   </div>
 </template>
 
@@ -320,11 +416,11 @@ export default {
       hours: "00",
       mins: "00",
       secs: "00",
-      seconds: 300,
+      seconds: 10,
       lastAnswerTime: null,
       timerId: null,
       isProgressClicked: false,
-      summaryDialog: false,
+      summaryDialog: true,
       successDialog: false,
       windowHeight: window.innerHeight,
       selectedQuestion: 0,
@@ -343,22 +439,19 @@ export default {
       bookmarkedProgress: 0,
       scrollId: "scrollId",
       counter: 0,
-
     };
   },
   computed: {
     getHeight() {
       return this.windowHeight - 40 + "px";
     },
-    getQuestionsListHeight(){
+    getQuestionsListHeight() {
       return this.windowHeight - 480 + "px";
-
-    }
+    },
   },
   mounted() {
-    window.addEventListener('beforeunload', this.handleBeforeUnload);
+    window.addEventListener("beforeunload", this.handleBeforeUnload);
 
-  
     this.startTimer();
 
     this.$nextTick(() => {
@@ -367,7 +460,7 @@ export default {
   },
 
   beforeDestroy() {
-    window.removeEventListener('beforeunload', this.handleBeforeUnload);
+    window.removeEventListener("beforeunload", this.handleBeforeUnload);
     window.removeEventListener("resize", this.onResize);
     this.stopTimer();
     this.$mixpanel.track("AssessmentClosed", {
@@ -382,17 +475,26 @@ export default {
     });
   },
   methods: {
-    scrollMethod(data){
-      console.log("scroll view",data)
+    getColorClass(question) {
+      if (this.bookmarked.includes(question)) {
+        return " bookmarked-border";
+      } else if (this.skipped.includes(question)) {
+        return " skipped-border";
+      } else if (question.myAnswer != null) {
+        return " answered-border";
+      } else {
+        return "";
+      }
+    },
+    scrollMethod(data) {
+      //console.log("scroll view",data)
       // document.getElementById(data).scrollIntoView()
 
-      const element =  document.getElementById(data);
- 
-      element.scrollIntoView()
-   
+      const element = document.getElementById(data);
 
+      element.scrollIntoView();
     },
- 
+
     openTestSummary() {
       this.summaryDialog = true;
       this.$mixpanel.track("TestSummaryLoaded", {
@@ -408,6 +510,7 @@ export default {
     },
     updateTime() {
       if (this.seconds <= 0) {
+        this.summaryDialog = true;
         clearInterval(this.interval);
         return;
       }
@@ -468,7 +571,7 @@ export default {
           question_id: this.selectedQuestion.id,
           screen_name: "AssessmentScreen",
         });
-        console.log(this.questions[this.selectedQuestion]);
+        //console.log(this.questions[this.selectedQuestion]);
         if (this.skipped.includes(question)) {
           let index = this.bookmarked.indexOf(question);
           this.skipped.splice(index, 1);
@@ -525,7 +628,7 @@ export default {
           this.assessment.tests[0].duration_of_assessment * 60 - this.seconds,
         screen_name: "AssessmentScreen",
       });
-      console.log(response);
+      //console.log(response);
       if (response.data.success) {
         // this.successDialog = true;
         this.$router.push({
@@ -563,9 +666,11 @@ export default {
     skipQuestion(question) {
       if (!this.skipped.includes(question)) {
         this.skipped.push(question);
-        this.next();
-        console.log(this.questions[this.selectedQuestion]);
+        //console.log(this.questions[this.selectedQuestion]);
       }
+      this.questions[this.selectedQuestion].myAnswer = null;
+      this.updateProgress();
+      this.next();
     },
 
     next() {
@@ -585,7 +690,7 @@ export default {
       this.lastAnswerTime = this.seconds;
       this.selectedQuestion = this.selectedQuestion + 1;
       this.couter++;
-      this.scrollMethod("scrollId"+this.selectedQuestion)
+      this.scrollMethod("scrollId" + this.selectedQuestion);
     },
     previous() {
       this.$mixpanel.track("PreviousButtonClicked", {
@@ -603,7 +708,7 @@ export default {
       });
       this.selectedQuestion = this.selectedQuestion - 1;
       this.couter++;
-      this.scrollMethod("scrollId"+this.selectedQuestion)
+      this.scrollMethod("scrollId" + this.selectedQuestion);
     },
     questionClicked() {
       this.$mixpanel.track("QuestionListClicked", {
@@ -635,12 +740,13 @@ export default {
         assessment_name: this.assessment.name,
         screen_name: "AssessmentScreen",
       });
-      //console.log("response: ", this.assessment);
+      console.log("screening: ", this.questions);
     },
     handleBeforeUnload(event) {
       event.preventDefault();
-      event.returnValue = '';
-      const confirmationMessage = 'Are you sure you want to leave? Your unsaved changes will be lost.';
+      event.returnValue = "";
+      const confirmationMessage =
+        "Are you sure you want to leave? Your unsaved changes will be lost.";
       event.returnValue = confirmationMessage;
       return confirmationMessage;
     },
@@ -648,19 +754,36 @@ export default {
   created() {
     this.getAssessmentInfo();
   },
-
 };
 </script>
 <style scoped>
 .v-list-item {
   min-height: 32px;
 }
+
+.answered-border {
+  border-color: #009051;
+  border-width: 2px;
+}
+
+.skipped-border {
+  border-color: #f6e866;
+  border-width: 2px;
+}
+
+.bookmarked-border {
+  border-color: #e868e3;
+  border-width: 2px;
+}
+
 .my-card {
   border: 1px solid rgba(175, 175, 175, 0.342);
 }
+
 .option-card {
   border: 0.5px solid rgba(0, 0, 0, 0.26);
 }
+
 .submitButton {
   position: fixed;
   bottom: 50px;
