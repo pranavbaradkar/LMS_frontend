@@ -7,7 +7,7 @@ const instance = axios.create({
 export default {
     getCountries: async function () {
         try {
-            const response = await instance.get('meta/countries')
+            const response = await instance.get('meta/countries?[sortBy]=asc')
             return response;
         } catch (error) {
             return error.response;
@@ -15,7 +15,7 @@ export default {
     },
     getStates: async function (countryId) {
         try {
-            const response = await instance.get('meta/states?country_id='+countryId)
+            const response = await instance.get('meta/states?country_id='+countryId+'&[sortBy]=asc')
             return response;
         } catch (error) {
             return error.response;
@@ -23,7 +23,7 @@ export default {
     },
     getDistricts: async function (stateId) {
         try {
-            const response = await instance.get('/meta/districts?state_id='+stateId)
+            const response = await instance.get('/meta/districts?state_id='+stateId+'&[sortBy]=asc')
             return response;
         } catch (error) {
             return error.response;
@@ -31,16 +31,16 @@ export default {
     },
     getTalukas: async function (districtId) {
         try {
-            const response = await instance.get('meta/talukas?district_id='+districtId)
+            const response = await instance.get('meta/talukas?district_id='+districtId+'&[sortBy]=asc')
             return response;
         } catch (error) {
             return error.response;
         }
     }
     ,
-    getCities: async function (stateId) {
+    getCities: async function (stateId,talukaId) {
         try {
-            const response = await instance.get('/meta/cities?state_id='+stateId)
+            const response = await instance.get('/meta/cities?state_id='+stateId+'&taluka_id='+talukaId+'&[orderBy]=city_name&[sortBy]=asc')
             return response;
         } catch (error) {
             return error.response;
