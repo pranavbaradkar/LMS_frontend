@@ -128,19 +128,21 @@
               <v-row class="align-center text-align-center px-2 pb-8">
                 <v-card class="pa-0" width="70" elevation="0">
                   <v-text-field hide-details="" label="HH" readonly :value=hours outlined rounded
-                    class="rounded-xl centered-input mygredient">
+                    class="rounded-xl centered-input " :style="seconds<=60?'background: linear-gradient(180deg, rgba(255, 59, 48, 0.076) 0%, rgba(255, 59, 48, 0.12) 100%);':'background: linear-gradient(180deg, rgba(255, 255, 255, 0.38) 0%, rgba(130, 210, 218, 0.6) 100%)'">
                   </v-text-field>
                 </v-card>
                 <span class="pa-2">:</span>
                 <v-card class="pa-0" width="70" elevation="0">
                   <v-text-field hide-details="" label="MM" readonly :value=mins outlined rounded
-                    class="rounded-xl centered-input mygredient">
+                  class="rounded-xl centered-input " :style="seconds<=60?'background: linear-gradient(180deg, rgba(255, 59, 48, 0.076) 0%, rgba(255, 59, 48, 0.12) 100%);':'background: linear-gradient(180deg, rgba(255, 255, 255, 0.38) 0%, rgba(130, 210, 218, 0.6) 100%)'">
+
                   </v-text-field>
                 </v-card>
                 <span class="pa-2">:</span>
                 <v-card class="pa-0" width="70" elevation="0">
                   <v-text-field hide-details="" label="SS" readonly :value=secs outlined rounded
-                    class="rounded-xl centered-input mygredient">
+                  class="rounded-xl centered-input " :style="seconds<=60?'background: linear-gradient(180deg, rgba(255, 59, 48, 0.076) 0%, rgba(255, 59, 48, 0.12) 100%);':'background: linear-gradient(180deg, rgba(255, 255, 255, 0.38) 0%, rgba(130, 210, 218, 0.6) 100%)'">
+
                   </v-text-field>
                 </v-card>
                 <v-col cols="2" class="pr-0">
@@ -212,19 +214,19 @@
                     </v-btn>
 
                     <v-spacer></v-spacer>
-                    <v-btn v-if="!bookmarked.includes(questions[selectedQuestion])" large text color="primary"
+                    <v-btn v-if="!bookmarked.includes(questions[selectedQuestion])" large text color="primary" :disabled="isTimeUp"
                       @click="bookmarkQuestion(questions[selectedQuestion])">
                       <v-icon class="pr-2" right> mdi-bookmark-outline </v-icon>
                       BOOKMARK
                     </v-btn>
-                    <v-btn v-else large text color="primary" @click="bookmarkQuestion(questions[selectedQuestion])">
+                    <v-btn v-else large text color="primary" @click="bookmarkQuestion(questions[selectedQuestion])" :disabled="isTimeUp">
                       <v-icon class="pr-2" right> mdi-bookmark </v-icon>
                       REMOVE BOOKMARK
                     </v-btn>
 
                     <v-tooltip bottom>
                       <template v-slot:activator="{ on, attrs }">
-                        <v-btn text large color="primary" v-bind="attrs" v-on="on"
+                        <v-btn text large color="primary" v-bind="attrs" v-on="on" :disabled="isTimeUp"
                           @click="skipQuestion(questions[selectedQuestion])">
                           >> SKIP
                         </v-btn>
@@ -277,7 +279,7 @@
                 <v-card elevation="0" id="myScroll" height="auto">
                   <v-list-item-group mandatory v-model="selectedQuestion">
                     <v-list-item class="grey lighten-4 pt-2" v-for="(item, i) in questions" :key="i"
-                      @click="questionClicked(item)">
+                      @click="onClickSummaryQuestionBox(i)">
                       <v-list-item-content class="py-0" :id="scrollId + '' + i">
                         <v-list-item-title :class="
                           i == selectedQuestion ? 'primary--text font-weight-regular' : 'font-weight-light'
@@ -315,19 +317,22 @@
                 <v-row class="align-center text-align-center px-2 pb-4">
                   <v-card class="pa-0" width="70" elevation="0">
                     <v-text-field hide-details="" label="HH" readonly :value=hours outlined rounded
-                      class="rounded-xl centered-input mygredient">
+                    class="rounded-xl centered-input " :style="seconds<=60?'background: linear-gradient(180deg, rgba(255, 59, 48, 0.076) 0%, rgba(255, 59, 48, 0.12) 100%);':'background: linear-gradient(180deg, rgba(255, 255, 255, 0.38) 0%, rgba(130, 210, 218, 0.6) 100%)'">
+
                     </v-text-field>
                   </v-card>
                   <span class="pa-2">:</span>
                   <v-card class="pa-0" width="70" elevation="0">
                     <v-text-field hide-details="" label="MM" readonly :value=mins outlined rounded
-                      class="rounded-xl centered-input mygredient">
+                    class="rounded-xl centered-input " :style="seconds<=60?'background: linear-gradient(180deg, rgba(255, 59, 48, 0.076) 0%, rgba(255, 59, 48, 0.12) 100%);':'background: linear-gradient(180deg, rgba(255, 255, 255, 0.38) 0%, rgba(130, 210, 218, 0.6) 100%)'">
+
                     </v-text-field>
                   </v-card>
                   <span class="pa-2">:</span>
                   <v-card class="pa-0" width="70" elevation="0">
                     <v-text-field hide-details="" label="SS" readonly :value=secs outlined rounded
-                      class="rounded-xl centered-input mygredient">
+                    class="rounded-xl centered-input " :style="seconds<=60?'background: linear-gradient(180deg, rgba(255, 59, 48, 0.076) 0%, rgba(255, 59, 48, 0.12) 100%);':'background: linear-gradient(180deg, rgba(255, 255, 255, 0.38) 0%, rgba(130, 210, 218, 0.6) 100%)'">
+
                     </v-text-field>
                   </v-card>
                   <v-col cols="2" class="pr-0">
@@ -353,24 +358,19 @@
 
                 <v-card width="100%" color="grey lighten-2" height="25" class="rounded-xl d-flex flex-row mt-4 mb-2" elevation="0">
                   
-                      <v-card color="answered" height="20"   :width="((answeredProgress/questions.length)*100)+'%'" elevation="0" class="rounded-xl"></v-card>
+                      <v-card color="answered" height="25"   :width="((answeredProgress/questions.length)*100)+'%'" elevation="0" class="rounded-xl"></v-card>
              
 
-                      <v-card color="skipped" height="20" :width="((skipped.length / questions.length) * 100)+'%'"
+                      <v-card color="skipped" height="25" :width="((skipped.length / questions.length) * 100)+'%'"
                         elevation="0" class="rounded-xl"></v-card>
-               
-
-                      <v-card color="bookmarked" height="20"  :width="((bookmarked.length / questions.length) * 100)+'%'" elevation="0" class="rounded-xl"></v-card>
-
-                   
+                      <v-card color="bookmarked" height="25"  :width="((bookmarked.length / questions.length) * 100)+'%'" elevation="0" class="rounded-xl"></v-card> 
                 </v-card>
-
               </v-container>
-
               <v-container class="px-16" id="myScroll">
                 <!-- Summary Questions Card -->
                 <v-layout row wrap justify-center>
-                  <v-card v-for="(question, index) in questions" :key="index"
+                  
+                  <v-card v-for="(question, index) in questions" :key="index" @click="onClickSummaryQuestionBox(index)"
                     :class="'text-center ma-2 rounded-lg' + getColorClass(question)" width="70px" height="54" elevation="4"
                     outlined>
                     <v-card-text class="text-body-1 font-weight-bold px-1">
@@ -420,7 +420,7 @@ export default {
       lastAnswerTime: null,
       timerId: null,
       isProgressClicked: false,
-      summaryDialog: true,
+      summaryDialog: false,
       successDialog: false,
       windowHeight: window.innerHeight,
       selectedQuestion: 0,
@@ -442,6 +442,9 @@ export default {
     };
   },
   computed: {
+    isTimeUp() {
+      return this.seconds <= 0;
+    },
     getHeight() {
       return this.windowHeight - 40 + "px";
     },
@@ -474,7 +477,13 @@ export default {
       screen_name: "AssessmentScreen",
     });
   },
+
   methods: {
+    onClickSummaryQuestionBox(index) {
+      this.selectedQuestion = index;
+      this.summaryDialog = false;
+      this.scrollMethod("scrollId" + this.selectedQuestion);
+    },
     getColorClass(question) {
       if (this.bookmarked.includes(question)) {
         return " bookmarked-border";
@@ -643,25 +652,27 @@ export default {
       }
     },
     setOption(option) {
-      this.questions[this.selectedQuestion].myAnswer = option.option_key;
-      console.log(this.questions[this.selectedQuestion]);
+      if (!this.isTimeUp) {
+        this.questions[this.selectedQuestion].myAnswer = option.option_key;
+        console.log(this.questions[this.selectedQuestion]);
 
-      if (this.skipped.includes(this.questions[this.selectedQuestion])) {
-        let index = this.bookmarked.indexOf(
-          this.questions[this.selectedQuestion]
-        );
-        this.skipped.splice(index, 1);
+        if (this.skipped.includes(this.questions[this.selectedQuestion])) {
+          let index = this.bookmarked.indexOf(
+            this.questions[this.selectedQuestion]
+          );
+          this.skipped.splice(index, 1);
+        }
+        this.updateProgress();
+        this.$mixpanel.track("AnswerGiven", {
+          question_id: this.selectedQuestion.id,
+
+          option_selected:
+            this.questions[this.selectedQuestion].myAnswer == null
+              ? "NA"
+              : this.questions[this.selectedQuestion].myAnswer,
+          screen_name: "AssessmentScreen",
+        });
       }
-      this.updateProgress();
-      this.$mixpanel.track("AnswerGiven", {
-        question_id: this.selectedQuestion.id,
-
-        option_selected:
-          this.questions[this.selectedQuestion].myAnswer == null
-            ? "NA"
-            : this.questions[this.selectedQuestion].myAnswer,
-        screen_name: "AssessmentScreen",
-      });
     },
     skipQuestion(question) {
       if (!this.skipped.includes(question)) {
