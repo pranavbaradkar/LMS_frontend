@@ -10,9 +10,7 @@
           <v-row class="align-center">
             <v-card-title class="font-weight-light pr-0">Hello,</v-card-title>
 
-            <v-card-title class="pl-2" v-if="userInfo != null"
-              >{{ userInfo.first_name }} 👋</v-card-title
-            >
+            <v-card-title class="pl-2" v-if="userInfo != null">{{ userInfo.first_name }} 👋</v-card-title>
             <v-menu offset-y>
               <template v-slot:activator="{ on, attrs }">
                 <v-btn color="primary" dark v-bind="attrs" v-on="on" text icon>
@@ -28,35 +26,14 @@
       </v-list-item>
     </v-app-bar>
     <v-container>
-      <v-card
-        color="surface"
-        class="mx-auto"
-        elevation="0"
-        width="100%"
-        :height="getHeight"
-        variant="outlined"
-      >
+      <v-card color="surface" class="mx-auto" elevation="0" width="100%" :height="getHeight" variant="outlined">
         <div class="text-h6 mb-1 text-center">Test Selection</div>
-        <v-list-item-subtitle class="text-center grey--text"
-          >Let's start your profile, connect to people you know, and engage with
-          <br />them on topics you care about.</v-list-item-subtitle
-        >
+        <v-list-item-subtitle class="text-center grey--text">Let's start your profile, connect to people you know, and
+          engage with
+          <br />them on topics you care about.</v-list-item-subtitle>
 
-        <v-img
-          width="100%"
-          height="320px"
-          src="../assets/holebanner.jpeg"
-          cover
-          class="mt-4"
-        >
-          <v-card
-            class="pa-10"
-            elevation="0"
-            width="100%"
-            height="100%"
-            variant="outlined"
-            color="#0f0d0d57"
-          >
+        <v-img width="100%" height="320px" src="../assets/holebanner.jpeg" cover class="mt-4">
+          <v-card class="pa-10" elevation="0" width="100%" height="100%" variant="outlined" color="#0f0d0d57">
             <div class="white--text" v-if="recommendedAssessment != null">
               <div class="text-caption">Recommended</div>
 
@@ -67,125 +44,110 @@
               <div class="mt-4">
                 <v-icon class="white--text">mdi-book</v-icon>
                 {{ recommendedAssessment.tests[0].total_no_of_questions }}
-                Questions<v-icon class="white--text">mdi-circle-small</v-icon
-                ><v-icon class="white--text">mdi-clock</v-icon> 60 mins
-                <v-icon class="white--text">mdi-circle-small</v-icon
-                ><v-icon class="white--text">mdi-book</v-icon>
+                Questions<v-icon class="white--text">mdi-circle-small</v-icon><v-icon
+                  class="white--text">mdi-clock</v-icon> 60 mins
+                <v-icon class="white--text">mdi-circle-small</v-icon><v-icon class="white--text">mdi-book</v-icon>
                 300 Users
               </div>
 
-              <v-dialog v-model="dialog" height="90%" width="40vw">
+              <v-dialog v-model="dialog" height="90%" width="40vw" max-width="700px" >
                 <template v-slot:activator="{ on, attrs }">
-                  <v-btn
-                    color="secondary"
-                    class="black--text mt-8"
-                    rounded
-                    large
-                    v-bind="attrs"
-                    v-on="on"
-                    @click="recommendedTestViewEvent"
-                    >VIEW TEST</v-btn
-                  >
+                  <v-btn color="secondary" class="black--text mt-8" rounded large v-bind="attrs" v-on="on"
+                    @click="recommendedTestViewEvent">VIEW TEST</v-btn>
                 </template>
 
-                <div id="mycard">
-                  <v-card width="700" elevation="0">
-                    <div class="text-h6 mb-1 text-center pt-8">
-                      Test Instruction
-                    </div>
-                    <v-card-subtitle class="pt-2 grey--text text-center"
-                      >Primary Teacher Assessment(VGOS)</v-card-subtitle
-                    >
-                    <v-list dense>
+                <div id="mycard" >
+                  <v-card width="auto"  elevation="0" class="rounded-xl" color="#FBF5F2">
+          <v-btn class="i-close-btn" icon @click="dialog = false"><v-icon >mdi-close</v-icon></v-btn> 
+                  
+                    <v-stepper v-model="e1" class="rounded-lg transparent elevation-0 pt-8 " color="#FBF5F2">
+                      <v-stepper-header class="text-subtitle-2 elevation-0">
+                        <v-stepper-step :complete="e1 > 1" step="1">
+                          Screening Test
+                        </v-stepper-step>
+
+                        <v-divider></v-divider>
+
+                        <v-stepper-step :complete="e1 > 2" step="2">
+                          Main Test
+                        </v-stepper-step>
+                      </v-stepper-header>
+                      <v-stepper-items>
+                        <!------------------------------------------ STEP 1 ------------------------------------------>
+                        <v-stepper-content step="1">
+                          <div class="d-flex flex-column">
+                            <div class="Subtitle-2 text--secondary ">Primary Teacher Assessment (VGOS) </div>
+                            <div class="Subtitle-1">Screening Test</div>
+                            <div class="d-flex flex-row text-secondry">
+                              <div class="d-flex flex-row">
+                                <v-icon>mdi-note-text-outline</v-icon>
+                                <div class="m-2 mr-2">20 Questions</div> 
+                                <v-icon>mdi-circle-small</v-icon>
+                              </div>
+                              <div class="d-flex flex-row">
+                                <v-icon>mdi-note-text-outline</v-icon>
+                                <div class="m-2 mr-2">20 Questions</div> 
+                                <v-icon>mdi-circle-small</v-icon>
+                              </div>
+                              <div class="d-flex flex-row">
+                                <v-icon>mdi-note-text-outline</v-icon>
+                                <div class="m-2 mr-2">20 Questions</div>                                
+                              </div>
+                            </div>
+                            <p class="body-2">Sections</p>
+                            <div class="w-100 d-flex flex-row flex-wrap">
+                              <v-chip v-for="i in 8" :key="i" class="ma-2" color="secondary">Englush language</v-chip>
+                            </div>
+                            <v-card-title>Instructions</v-card-title>
+
+                            <v-list color="transparent">
                       <v-list-item-group>
-                        <v-list-item class="pt-0 pb-0">
+
+
+
+                        <v-list-item v-for="i in 6" :key="i" class="pt-0 pb-0">
                           <v-list-item-icon class="pr-0 mr-0">
                             <v-icon>mdi-circle-small</v-icon>
                           </v-list-item-icon>
-                          <v-list-item-content>
-                            <v-card-subtitle class="pt-2 text-start"
+                          <v-list-item-content class="ma-0 pa-0">
+                            <v-card-subtitle class="ma-0 pa-0 text-start"
                               >This assessment consists a total of 11
                               questions</v-card-subtitle
                             >
                           </v-list-item-content>
                         </v-list-item>
 
-                        <v-list-item class="pt-0 pb-0">
-                          <v-list-item-icon class="pr-0 mr-0">
-                            <v-icon>mdi-circle-small</v-icon>
-                          </v-list-item-icon>
-                          <v-list-item-content>
-                            <v-card-subtitle class="pt-2 text-start"
-                              >The test assesses you in 4 different areas as can
-                              be seen in the progress-bar at the
-                              top</v-card-subtitle
-                            >
-                          </v-list-item-content>
-                        </v-list-item>
 
-                        <v-list-item class="pt-0 pb-0">
-                          <v-list-item-icon class="pr-0 mr-0">
-                            <v-icon>mdi-circle-small</v-icon>
-                          </v-list-item-icon>
-                          <v-list-item-content>
-                            <v-card-subtitle class="pt-2 text-start"
-                              >You get a maximum of 60s to answer a question in
-                              this test</v-card-subtitle
-                            >
-                          </v-list-item-content>
-                        </v-list-item>
 
-                        <v-list-item class="pt-0 pb-0">
-                          <v-list-item-icon class="pr-0 mr-0">
-                            <v-icon>mdi-circle-small</v-icon>
-                          </v-list-item-icon>
-                          <v-list-item-content class="pt-0 pb-0">
-                            <v-card-subtitle class="pt-2 text-start"
-                              >A timer that keeps ticking at the top indicates
-                              how much time you have to answer a
-                              question</v-card-subtitle
-                            >
-                          </v-list-item-content>
-                        </v-list-item>
-
-                        <v-list-item class="pt-0 pb-0">
-                          <v-list-item-icon class="pr-0 mr-0">
-                            <v-icon>mdi-circle-small</v-icon>
-                          </v-list-item-icon>
-                          <v-list-item-content class="pt-0 pb-0">
-                            <v-card-subtitle class="pt-2 text-start"
-                              >There is no negative making, some questions may
-                              have more than one correct answer</v-card-subtitle
-                            >
-                          </v-list-item-content>
-                        </v-list-item>
-
-                        <v-list-item class="pt-0 pb-0">
-                          <v-list-item-icon class="pr-0 mr-0">
-                            <v-icon>mdi-circle-small</v-icon>
-                          </v-list-item-icon>
-                          <v-list-item-content class="pt-0 pb-0">
-                            <v-card-subtitle class="pt-2 text-start"
-                              >Upon the assessment completion, not only the
-                              score but a detailed report is
-                              generated</v-card-subtitle
-                            >
-                          </v-list-item-content>
-                        </v-list-item>
+                   
                       </v-list-item-group>
                     </v-list>
+
+
+
+                          </div>
+                          <div class="d-flex justify-center w-100">
+                            <v-btn color="secondary" class="black--text mt-10 mb-12" rounded large @click="startTest">START
+                            TEST</v-btn>
+                          </div>
+                          
+
+                        </v-stepper-content>
+                        <!------------------------------------------ STEP 2 ------------------------------------------>
+
+                        <v-stepper-content step="2" v-model="expandedPanelIndex" class="pb-0">
+
+                        </v-stepper-content>
+
+
+                      </v-stepper-items>
+                    </v-stepper>
+
+
+
                   </v-card>
 
-                  <v-card elevation="0" align="center" width="100%">
-                    <v-btn
-                      color="secondary"
-                      class="black--text mb-16"
-                      rounded
-                      large
-                      @click="startTest"
-                      >START TEST</v-btn
-                    >
-                  </v-card>
+
                 </div>
               </v-dialog>
             </div>
@@ -194,30 +156,12 @@
         <div class="text-h6 py-4">Other Tests</div>
 
         <div class="slideparent">
-          <v-slide-group
-            v-model="model"
-            class="pa-0 ma-0 surface"
-            center-active
-            show-arrows
-          >
-            <v-slide-item
-              v-for="assessment in allAssessments"
-              :key="assessment.id"
-            >
+          <v-slide-group v-model="model" class="pa-0 ma-0 surface" center-active show-arrows>
+            <v-slide-item v-for="assessment in allAssessments" :key="assessment.id">
               <div class="mytestcard">
-                <v-card
-                  class="mx-auto mr-3 mb-4 movingcard"
-                  min-width="344"
-                  max-width="344"
-                  outlined
-                  height="180"
-                >
+                <v-card class="mx-auto mr-3 mb-4 movingcard" min-width="344" max-width="344" outlined height="180">
                   <v-list-item three-line>
-                    <v-list-item-avatar
-                      tile
-                      size="80"
-                      color="grey"
-                    ></v-list-item-avatar>
+                    <v-list-item-avatar tile size="80" color="grey"></v-list-item-avatar>
                     <v-list-item-content>
                       <v-list-item-title class="text-h7 mb-0 text-wrap">
                         {{ assessment.name }}
@@ -229,15 +173,8 @@
                   </v-list-item>
                   <v-expand-transition>
                     <v-card-actions>
-                      <v-btn
-                        block
-                        color="secondary"
-                        class="black--text"
-                        rounded
-                        v-on:click="selectedAssessment = assessment"
-                        @click="dialog = true"
-                        >VIEW TEST</v-btn
-                      >
+                      <v-btn block color="secondary" class="black--text" rounded
+                        v-on:click="selectedAssessment = assessment" @click="dialog = true">VIEW TEST</v-btn>
                     </v-card-actions>
                   </v-expand-transition>
                 </v-card>
@@ -247,7 +184,7 @@
         </div>
       </v-card>
     </v-container>
-  
+
   </div>
 </template>
   
@@ -271,6 +208,7 @@ export default {
       userInfo: {},
       allAssessments: [],
       recommendedAssessment: {},
+      e1: 1,
     };
   },
   computed: {
