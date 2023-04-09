@@ -308,13 +308,13 @@ white-space: nowrap;
 }
 
 #mycard {
-    height: 90vh;
+    /* height: 90vh; */
     max-height: 800px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    background-color: white;
+    background-color: "#FBF5F2";
 }
 .v-slide-group__prev > .v-icon {
     margin-bottom: -70px !important;

@@ -50,16 +50,15 @@
                 300 Users
               </div>
 
-              <v-dialog v-model="dialog" height="90%" width="40vw" max-width="700px" >
+              <v-dialog v-model="dialog"  max-width="650px" color="#FBF5F2" >
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn color="secondary" class="black--text mt-8" rounded large v-bind="attrs" v-on="on"
                     @click="recommendedTestViewEvent">VIEW TEST</v-btn>
                 </template>
 
-                <div id="mycard" >
-                  <v-card width="auto"  elevation="0" class="rounded-xl" color="#FBF5F2">
-          <v-btn class="i-close-btn" icon @click="dialog = false"><v-icon >mdi-close</v-icon></v-btn> 
-                  
+                    <v-card fluid  elevation="0" class="rounded-xl" color="#FBF5F2">
+                    <v-btn class="i-close-btn" icon @click="dialog = false"><v-icon >mdi-close</v-icon></v-btn> 
+                            
                     <v-stepper v-model="e1" class="rounded-lg transparent elevation-0 pt-8 " color="#FBF5F2">
                       <v-stepper-header class="text-subtitle-2 elevation-0">
                         <v-stepper-step :complete="e1 > 1" step="1">
@@ -76,52 +75,35 @@
                         <!------------------------------------------ STEP 1 ------------------------------------------>
                         <v-stepper-content step="1">
                           <div class="d-flex flex-column">
-                            <div class="Subtitle-2 text--secondary ">Primary Teacher Assessment (VGOS) </div>
-                            <div class="Subtitle-1">Screening Test</div>
+                            <div class="Subtitle-2 text--secondary ">{{ selectedAssessment.name }}</div>
+                            <div class="Subtitle-1 pt-5">Screening Test</div>
                             <div class="d-flex flex-row text-secondry">
-                              <div class="d-flex flex-row">
+                              <div class="d-flex flex-row text--secondary">
                                 <v-icon>mdi-note-text-outline</v-icon>
                                 <div class="m-2 mr-2">20 Questions</div> 
                                 <v-icon>mdi-circle-small</v-icon>
                               </div>
                               <div class="d-flex flex-row">
-                                <v-icon>mdi-note-text-outline</v-icon>
-                                <div class="m-2 mr-2">20 Questions</div> 
+                                <v-icon>mdi-clock-outline</v-icon>
+                                <div class="m-2 mr-2">15 mins</div> 
                                 <v-icon>mdi-circle-small</v-icon>
                               </div>
                               <div class="d-flex flex-row">
-                                <v-icon>mdi-note-text-outline</v-icon>
-                                <div class="m-2 mr-2">20 Questions</div>                                
+                                <v-icon>mdi-map-marker-radius-outline</v-icon>
+                                <div class="m-2 mr-2">Online</div>                                
                               </div>
                             </div>
-                            <p class="body-2">Sections</p>
-                            <div class="w-100 d-flex flex-row flex-wrap">
-                              <v-chip v-for="i in 8" :key="i" class="ma-2" color="secondary">Englush language</v-chip>
+                            <div class="Subtitle-1 pt-5">Sections</div>
+                            <div class="w-100 ">
+                              <!-- <v-chip-group> -->
+                              <v-chip v-for="(item, index) in selectedAssessment.skills" :key="index" class="ma-2" color="secondary">{{ item }}</v-chip>
+                            <!-- </v-chip-group> -->
                             </div>
-                            <v-card-title>Instructions</v-card-title>
+                            <v-card-title class="pl-0">Instructions</v-card-title>
 
-                            <v-list color="transparent">
-                      <v-list-item-group>
-
-
-
-                        <v-list-item v-for="i in 6" :key="i" class="pt-0 pb-0">
-                          <v-list-item-icon class="pr-0 mr-0">
-                            <v-icon>mdi-circle-small</v-icon>
-                          </v-list-item-icon>
-                          <v-list-item-content class="ma-0 pa-0">
-                            <v-card-subtitle class="ma-0 pa-0 text-start"
-                              >This assessment consists a total of 11
-                              questions</v-card-subtitle
-                            >
-                          </v-list-item-content>
-                        </v-list-item>
-
-
-
-                   
-                      </v-list-item-group>
-                    </v-list>
+                            <p class="text--secondary">
+                             {{ selectedAssessment.instructions}}
+                            </p>
 
 
 
@@ -148,7 +130,7 @@
                   </v-card>
 
 
-                </div>
+       
               </v-dialog>
             </div>
           </v-card>
@@ -199,7 +181,7 @@ export default {
   name: "HomeView",
   data() {
     return {
-      selectedAssessment: null,
+      selectedAssessment: {},
       mouseHover: null,
       tab: null,
       model: null,
@@ -248,6 +230,7 @@ export default {
     },
     recommendedTestViewEvent() {
       this.selectedAssessment = this.recommendedAssessment;
+      console.log("instruction",this.selectedAssessment)
       this.$mixpanel.track("RecommendedViewTestClicked", {
         assessment_id: this.recommendedAssessment.id,
         assessment_name: this.recommendedAssessment.name,
