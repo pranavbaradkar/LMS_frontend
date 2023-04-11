@@ -41,7 +41,7 @@
               <v-list-item-subtitle class="mt-4">{{
                 recommendedAssessment.instructions
               }}</v-list-item-subtitle>
-              <div class="mt-4">
+              <div class="mt-4" v-if="recommendedAssessment.tests != null">
                 <v-icon class="white--text">mdi-book</v-icon>
                 {{ recommendedAssessment.tests[0].total_no_of_questions }}
                 Questions<v-icon class="white--text">mdi-circle-small</v-icon><v-icon
@@ -117,7 +117,7 @@
                         </v-stepper-content>
                         <!------------------------------------------ STEP 2 ------------------------------------------>
 
-                        <v-stepper-content step="2" v-model="expandedPanelIndex" class="pb-0">
+                        <v-stepper-content step="2" class="pb-0">
 
                         </v-stepper-content>
 
