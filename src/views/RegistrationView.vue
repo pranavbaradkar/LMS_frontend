@@ -386,124 +386,234 @@
                             ></v-progress-circular>
                           </v-col>
                         </v-row>
-                        <v-row class="py-0">
-                          <v-col cols="6" class="py-0">
-                            <v-select
-                              v-model="personalInfo.country_id"
-                              :value="country"
-                              label="Country *"
-                              :items="countries"
-                              item-text="country_name"
-                              item-value="id"
-                          
-                              outlined
-                              class="rounded-xl"
-                              :rules="[
-                                (v) => !!v || 'Country name is required',
-                              ]"
-                              required
-                              @change="fetchStates"
-                            >
-                            </v-select>
-                          </v-col>
-                          <v-col cols="6" class="py-0">
-                            <v-select
-                              v-model="personalInfo.state_id"
-                              :value="state"
-                              label="State *"
-                              :items="states"
-                              outlined
-                              class="rounded-xl"
-                              item-value="id"
-                              item-text="state_name"
-                              :rules="[(v) => !!v || 'State name is required']"
-                              required
-                              @change="fetchDistricts"
-                            >
-                            </v-select>
-                          </v-col>
-                        </v-row>
-                        <v-row class="py-0">
-                          <v-col cols="6" class="py-0">
-                            <v-select
-                              v-model="personalInfo.districtId"
-                              :value="district"
-                              label="District"
-                              :items="districts"
-                              outlined
-                              class="rounded-xl"
-                              item-value="id"
-                              item-text="district_name"
-                              :rules="[
-                                (v) => !!v || 'District name is required',
-                              ]"
-                              @change="fetchTalukas"
-                            >
-                            </v-select>
-                          </v-col>
-                          <v-col cols="6" class="py-0">
-                            <v-select
-                              v-model="personalInfo.talukTehsil"
-                              :value="talukTehsil"
-                              label="Taluk / Tehsil"
-                              :items="talukas"
-                              outlined
-                              class="rounded-xl"
-                              item-value="id"
-                              item-text="taluka_name"
-                              @change="fetchCities"
-                            >
-                            </v-select>
-                          </v-col> </v-row
-                        ><v-row class="py-0">
-                          <v-col cols="6" class="py-0">
-                            <v-select
-                              v-model="personalInfo.city_id"
-                              :value="cityVillage"
-                              label="City / Village"
-                              :items="cities"
-                              outlined
-                              class="rounded-xl"
-                              
-                              
-                              item-value="id"
-                              item-text="city_name"
-                            >
-                            </v-select>
-                          </v-col>
-                          <v-col cols="6" class="py-0">
-                            <v-text-field
-                              v-model="personalInfo.pincode"
-                              :value="pinCode"
-                              outlined
-                              @keypress="isNumber($event)"
-                              label="Pin Code *"
-                              rounded
-                              counter="6"
-                              maxLength="6"
-                              class="rounded-xl"
-                              :rules="[
-                                (v) => !!v || 'Pincode is required',
-                                (v) =>
-                                  (v && v.length >= 6 && v.length <= 6) ||
-                                  'Pincode must be 6 digit',
-                              ]"
-                              required
-                            ></v-text-field>
-                          </v-col>
-                          <v-col cols="12" class="py-0">
-                            <v-text-field
-                              v-model="personalInfo.address"
-                              outlined
-                              label="Address*"
-                              counter="100"
-                              maxLength="100"
-                              rounded
-                              class="rounded-xl"
-                            ></v-text-field>
-                         
-                          </v-col>
-                        </v-row>
+                        <div v-if="!isCurrentLocation" class=" pt-5">
+                          <v-row class="py-0">
+                            <v-col cols="6" class="py-0">
+                              <v-select
+                                v-model="personalInfo.country_id"
+                                :value="country"
+                                label="Country *"
+                                :items="countries"
+                                item-text="country_name"
+                                item-value="id"
+                            
+                                outlined
+                                class="rounded-xl"
+                                :rules="[
+                                  (v) => !!v || 'Country name is required',
+                                ]"
+                                required
+                                @change="fetchStates"
+                              >
+                              </v-select>
+                            </v-col>
+                            <v-col cols="6" class="py-0">
+                              <v-select
+                                v-model="personalInfo.state_id"
+                                :value="state"
+                                label="State *"
+                                :items="states"
+                                outlined
+                                class="rounded-xl"
+                                item-value="id"
+                                item-text="state_name"
+                                :rules="[(v) => !!v || 'State name is required']"
+                                required
+                                @change="fetchDistricts"
+                              >
+                              </v-select>
+                            </v-col>
+                          </v-row>
+                          <v-row class="py-0">
+                            <v-col cols="6" class="py-0">
+                              <v-select
+                                v-model="personalInfo.districtId"
+                                :value="district"
+                                label="District"
+                                :items="districts"
+                                outlined
+                                class="rounded-xl"
+                                item-value="id"
+                                item-text="district_name"
+                                :rules="[
+                                  (v) => !!v || 'District name is required',
+                                ]"
+                                @change="fetchTalukas"
+                              >
+                              </v-select>
+                            </v-col>
+                            <v-col cols="6" class="py-0">
+                              <v-select
+                                v-model="personalInfo.talukTehsil"
+                                :value="talukTehsil"
+                                label="Taluk / Tehsil"
+                                :items="talukas"
+                                outlined
+                                class="rounded-xl"
+                                item-value="id"
+                                item-text="taluka_name"
+                                @change="fetchCities"
+                              >
+                              </v-select>
+                            </v-col> </v-row
+                          ><v-row class="py-0">
+                            <v-col cols="6" class="py-0">
+                              <v-select
+                                v-model="personalInfo.city_id"
+                                :value="cityVillage"
+                                label="City / Village"
+                                :items="cities"
+                                outlined
+                                class="rounded-xl"
+                                
+                                
+                                item-value="id"
+                                item-text="city_name"
+                              >
+                              </v-select>
+                            </v-col>
+                            <v-col cols="6" class="py-0">
+                              <v-text-field
+                                v-model="personalInfo.pincode"
+                                :value="pinCode"
+                                outlined
+                                @keypress="isNumber($event)"
+                                label="Pin Code *"
+                                rounded
+                                counter="6"
+                                maxLength="6"
+                                class="rounded-xl"
+                                :rules="[
+                                  (v) => !!v || 'Pincode is required',
+                                  (v) =>
+                                    (v && v.length >= 6 && v.length <= 6) ||
+                                    'Pincode must be 6 digit',
+                                ]"
+                                required
+                              ></v-text-field>
+                            </v-col>
+                            <v-col cols="12" class="py-0">
+                              <v-text-field
+                                v-model="personalInfo.address"
+                                outlined
+                                label="Address*"
+                                counter="100"
+                                maxLength="100"
+                                rounded
+                                class="rounded-xl"
+                              ></v-text-field>
+                           
+                            </v-col>
+                          </v-row>
+                        </div>
+                        <div v-if="isCurrentLocation" class=" pt-5">
+                          <v-row class="py-0">
+                            <v-col cols="6" class="py-0">
+                              <v-text-field
+                                v-model="personalInfo.country_name" 
+                                label="Country *"
+                                outlined
+                                rounded
+                                class="rounded-xl"
+                                readonly
+                                :rules="[
+                                  (v) => !!v || 'Country name is required',
+                                ]"
+                                required
+                               
+                              >
+                              </v-text-field>
+                            </v-col>
+                            <v-col cols="6" class="py-0">
+                              <v-text-field
+                                v-model="personalInfo.state_name"
+                                readonly
+                                label="State *"
+                                outlined
+                                rounded
+                                class="rounded-xl"                     
+                                :rules="[(v) => !!v || 'State name is required']"
+                                required
+                              >
+                              </v-text-field>
+                            </v-col>
+                          </v-row>
+                          <v-row class="py-0">
+                            <v-col cols="6" class="py-0">
+                              <v-text-field
+                                v-model="personalInfo.district_name"
+                                label="District"
+                                readonly
+                                outlined
+                                rounded
+                                class="rounded-xl"
+                                :rules="[
+                                  (v) => !!v || 'District name is required',
+                                ]"
+                               
+                              >
+                              </v-text-field>
+                            </v-col>
+                            <v-col cols="6" class="py-0">
+                              <v-text-field
+                                v-model="personalInfo.taluka_name"
+                                label="Taluk / Tehsil"
+                                readonly
+                                outlined
+                                rounded
+                                class="rounded-xl"                          
+                              >
+                              </v-text-field>
+                            </v-col> </v-row
+                          ><v-row class="py-0">
+                            <v-col cols="6" class="py-0">
+                              <v-text-field
+                                v-model="personalInfo.city_name"
+                                readonly
+                                label="City / Village"
+                                :items="cities"
+                                outlined
+                                rounded
+                                class="rounded-xl"
+                              >
+                              </v-text-field>
+                            </v-col>
+                            <v-col cols="6" class="py-0">
+                              <v-text-field
+                                v-model="personalInfo.pincode"
+                                :value="pinCode"
+                                outlined
+                                @keypress="isNumber($event)"
+                                label="Pin Code *"
+                                rounded
+                                readonly
+                                counter="6"
+                                maxLength="6"
+                                
+                                :rules="[
+                                  (v) => !!v || 'Pincode is required',
+                                  (v) =>
+                                    (v && v.length >= 6 && v.length <= 6) ||
+                                    'Pincode must be 6 digit',
+                                ]"
+                                required
+                              ></v-text-field>
+                            </v-col>
+                            <v-col cols="12" class="py-0">
+                              <v-text-field
+                                v-model="personalInfo.address"
+                                outlined
+                                label="Address*"
+                                counter="100"
+                                maxLength="100"
+                                rounded
+                                class="rounded-xl"
+                              ></v-text-field>
+                           
+                            </v-col>
+                          </v-row>
+                        </div>
+                       
                       </v-card>
                     </v-col>
                   </v-row>
@@ -1182,7 +1292,7 @@ export default {
   // },
   data() {
     return {
-      e1: 2,
+      e1: 1,
       experience: "Fresher",
       isCurrentlyWorking: false,
       isFetchingLocation: false,
@@ -1224,7 +1334,7 @@ export default {
       usingPhone: true,
       gradesData:[],
       tableLevels: [],
-
+      isCurrentLocation:false,
       subjectsData: [],
       pdf: "",
 
@@ -1261,12 +1371,17 @@ export default {
         dob: "",
         gender: "",
         phone_no: "",
-        country_id: 0,
-        state_id: 0,
-        talukTehsil:0,
-        city_id: 0,
+        country_id: -1,
+        state_id: -1,
+        talukTehsil:-1,
+        city_id: -1,
         address: "",
         pincode: 0,
+        country_name:"",
+        state_name:"",
+        city_name:"",
+        district_name:"",
+        taluka_name:"",
         is_phone_verified: false,
         is_email_verified: false,
       },
@@ -1339,14 +1454,18 @@ export default {
           this.long = position.coords.longitude; //'80.3211793';
           var url = `https://geocode.maps.co/reverse?lat=${this.lat}&lon=${this.long}`;
           const response = await axios.get(url);
-           console.log(response.data.address);
-          this.country = response.data.address.country;
-          this.state = response.data.address.state;
-          this.district = response.data.address.state_district;
-          this.pinCode = response.data.address.postcode;
-          this.talukTehsil = response.data.address.county;
-          this.cityVillage = response.data.address.city;
-          this.isFetchingLocation = false;
+           console.log(response);
+           if(response.status == 200){
+            this.isCurrentLocation=true;
+            this.personalInfo.country_name = response.data.address.country;
+            this.personalInfo.state_name = response.data.address.state;
+            this.personalInfo.district_name = response.data.address.state_district;
+            this.personalInfo.pincode = response.data.address.postcode;
+            this.personalInfo.taluka_name = response.data.address.county;
+            this.personalInfo.city_name = response.data.address.neighbourhood;
+            this.isFetchingLocation = false;
+           }
+         
         },
         (error) => {
           this.isFetchingLocation = false;
