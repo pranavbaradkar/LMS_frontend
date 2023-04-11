@@ -714,8 +714,7 @@
                                   label="Degree/ Diploma/ Certification *"
                                   rounded
                                   class="rounded-xl"
-                                  
-
+                                
                                   :rules="[
                                     (v) =>
                                       !!v ||
@@ -807,21 +806,17 @@
                                       outlined                                     
                                       rounded
                                       class="rounded-xl"
-                                      
+          
                                       append-inner-icon="mdi-attachment"
                                     >
                                     <template #append>
                                     <div class="d-flex align-center">                                   
   
-                                      
                                           <v-icon>mdi-attachment</v-icon> Attachment
 
                                     </div>
                                      </template
                                 >
-                                  
-                                  
-                                  
                                   </v-file-input>
 
 
@@ -1482,8 +1477,8 @@ export default {
       this.indexValue = null;
     },
     async goToStep2() {
-      if (this.$refs.step1.validate()) {
-        // console.log("userif conditon");
+      if (this.$refs.step1.validate() && this.personalInfo.is_email_verified && this.personalInfo.is_phone_verified) {
+        console.log("userif conditon");
         this.isCreatingUser = true;
         const response = await PersonalInfoController.createUserPersonalInfo(
           this.personalInfo
