@@ -1574,7 +1574,7 @@ export default {
     async getUserInfo() {
       const response = await LogedInUserInfo.getUserInfo();
       this.userInfo = response.data.user;
-      //console.log(this.userInfo);
+      console.log("ducdfk.nc",this.userInfo);
       this.personalInfo.is_email_verified = this.userInfo.is_email_verified;
       this.personalInfo.is_phone_verified = this.userInfo.is_phone_verified;
       this.personalInfo.email = this.userInfo.email;
@@ -1748,6 +1748,7 @@ export default {
           email: this.personalInfo.email,
           otp: this.otp,
           debug: false,
+          user_id: this.userInfo.id,
         });
         this.$mixpanel.track("VerifyOTP", {
           counter_secs_taken: 45,
@@ -1758,9 +1759,10 @@ export default {
         this.otpDialog = false;
       } else {
         res = await AuthService.verifyOTP({
-          mobile: "+91" + this.personalInfo.phone_no,
+          mobile: this.personalInfo.phone_no,
           otp: this.otp,
           debug: false,
+          user_id:this.userInfo.id,
         });
         this.$mixpanel.track("VerifyOTP", {
           counter_secs_taken: 45,
