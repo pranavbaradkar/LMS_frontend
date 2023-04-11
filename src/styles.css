@@ -333,3 +333,9 @@ white-space: nowrap;
     right: 16px;
     z-index: 5;
 }
+.v-file-input > .v-input__prepend-outer {
+   display: none;
+  }
+.v-input__append-inner .v-input__icon--clear {
+    margin-top: 24px;
+}

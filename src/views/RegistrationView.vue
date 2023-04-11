@@ -681,12 +681,52 @@
                                 ></v-text-field>
                               </v-col>
                             </v-row>
+                            <v-row class="py-0">
+                              <v-col cols="12" class="py-0">
+                                <!-- <div class="rounded-xl d-flex flex-row justify-space-between align-center" outline style="height:48px; width: 100%; margin-bottom: 8px;padding: 0 24px; border: 1px solid grey; position: relative">
+                                    <div>
+                                      <v-chip v-for="i in 5" :key="i">cetificate.jpg</v-chip>
+                                    </div>
+                                    <div style="float: right; position: absolute;  right: 12px; width: 124px" class="textcolor--text">
+                                      <v-icon>mdi-attachment</v-icon> Attachment
+                                      <input type="file" id="myfile" name="myfile"  @change="onChange" style="position: absolute; top:0px; width: 124px; height: 48px;opacity: 0; right: 0px; cursor: pointer">
+                                    </div>
+                                </div> -->
+
+
+                                <v-file-input
+                                      chips                                    
+                                      outlined                                     
+                                      rounded
+                                      class="rounded-xl"
+                                      
+                                      append-inner-icon="mdi-attachment"
+                                    >
+                                    <template #append>
+                                    <div class="d-flex align-center">                                   
+  
+                                      
+                                          <v-icon>mdi-attachment</v-icon> Attachment
+
+                                    </div>
+                                     </template
+                                >
+                                  
+                                  
+                                  
+                                  </v-file-input>
+
+
+
+                              </v-col>
+                            </v-row>
                             <v-row v-if="index != 0">
                               <v-col cols="12" class="d-flex justify-end">
                                 <v-btn
                                   @click="openDeleteDiolog(index)"
                                   text
                                   class="d-flex justify-end red--text"
+
                                   >Remove</v-btn
                                 >
                               </v-col>
@@ -1142,7 +1182,7 @@ export default {
   // },
   data() {
     return {
-      e1: 1,
+      e1: 2,
       experience: "Fresher",
       isCurrentlyWorking: false,
       isFetchingLocation: false,
@@ -1155,6 +1195,7 @@ export default {
       cityVillage: "",
       pinCode: "",
       address: "",
+      upload2: "",
       talukTehsil: "",
       avatar: null,
       saving: false,
@@ -1185,6 +1226,7 @@ export default {
       tableLevels: [],
 
       subjectsData: [],
+      pdf: "",
 
       searchSubject: "",
       searchLevels: "",
@@ -1209,6 +1251,7 @@ export default {
             v
           ) || "E-mail must be valid",
       ],
+     upload: ["suarj","kumar"],
       personalInfo: {
         title: "",
         first_name: "",
@@ -1278,9 +1321,7 @@ export default {
   },
   methods: {
    
-    consolee(data){
-      console.log("undefined data",data)
-    },
+
     isNumber: function (evt) {
       evt = evt ? evt : window.event;
       var charCode = evt.which ? evt.which : evt.keyCode;
