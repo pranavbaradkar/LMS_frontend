@@ -115,12 +115,17 @@
       :height="getHeight - 64 + 'px'"
       depressed
       elevation="0"
-    > 
-      <v-card-title class="justify-center mt-10" > Welcome </v-card-title>
+    >
+      <v-card-title class="justify-center mt-10"> Welcome </v-card-title>
       <v-card-subtitle class="text-center"
         ><span
-          >Vibgyor Group of Schools offers an opportunity to be part of an inspiring and innovative team of educators.</span
-        ><br /> <span>Please fill out the profile information to get a personalized assessment for the opportunity with us.</span></v-card-subtitle
+          >Vibgyor Group of Schools offers an opportunity to be part of an
+          inspiring and innovative team of educators.</span
+        ><br />
+        <span
+          >Please fill out the profile information to get a personalized
+          assessment for the opportunity with us.</span
+        ></v-card-subtitle
       >
       <v-container>
         <v-stepper v-model="e1" class="rounded-lg">
@@ -175,7 +180,7 @@
                     <v-col cols="12">
                       <v-card
                         :height="getHeight - 350 + 'px'"
-                        class="pa-4 "
+                        class="pa-4"
                         elevation="0"
                       >
                         <v-row class="py-0">
@@ -191,9 +196,7 @@
                             >
                             </v-select
                           ></v-col>
-                          <v-col cols="4" class="py-0"
-                            >
-                            
+                          <v-col cols="4" class="py-0">
                             <div id="scrollId"></div>
                             <v-text-field
                               v-model="personalInfo.first_name"
@@ -241,36 +244,34 @@
                                 required
                                 @keydown.enter.prevent="submit"
                               >
-                                
                                 <template #append>
-                                    <div class="d-flex align-center">
-                                      <v-btn
-                                        on
-                                        text
-                                      
-                                        :disabled="!emailBool"
-                                        v-if="!personalInfo.is_email_verified"
-                                        @click="generateOtp(), (otpDialog = true)"
-                                      >
-                                        Verify
-                                      </v-btn>
-  
-                                      <v-row
-                                        v-if="personalInfo.is_email_verified"
-                                      >
-                                        <v-col class="px-0">
-                                          <v-img
-                                            src="../assets/verifiedIcon.png"
-                                            contain
-                                            max-width="24"
-                                          ></v-img>
-                                        </v-col>
-                                        <v-col class="px-0"> </v-col>
-                                      </v-row>
-                                    </div>
-                                     </template
-                                >
-                              ></v-text-field>
+                                  <div class="d-flex align-center">
+                                    <v-btn
+                                      on
+                                      text
+                                      :disabled="!emailBool"
+                                      v-if="!personalInfo.is_email_verified"
+                                      @click="generateOtp(), (otpDialog = true)"
+                                    >
+                                      Verify
+                                    </v-btn>
+
+                                    <v-row
+                                      v-if="personalInfo.is_email_verified"
+                                    >
+                                      <v-col class="px-0">
+                                        <v-img
+                                          src="../assets/verifiedIcon.png"
+                                          contain
+                                          max-width="24"
+                                        ></v-img>
+                                      </v-col>
+                                      <v-col class="px-0"> </v-col>
+                                    </v-row>
+                                  </div>
+                                </template>
+                                ></v-text-field
+                              >
                             </v-form>
                           </v-col>
                         </v-row>
@@ -305,7 +306,6 @@
                                     on
                                     text
                                     max-height="35"
-                                  
                                     :disabled="
                                       personalInfo.phone_no.length != 10
                                     "
@@ -386,7 +386,7 @@
                             ></v-progress-circular>
                           </v-col>
                         </v-row>
-                        <div v-if="!isCurrentLocation" class=" pt-5">
+                        <div v-if="!isCurrentLocation" class="pt-5">
                           <v-row class="py-0">
                             <v-col cols="6" class="py-0">
                               <v-select
@@ -396,7 +396,6 @@
                                 :items="countries"
                                 item-text="country_name"
                                 item-value="id"
-                            
                                 outlined
                                 class="rounded-xl"
                                 :rules="[
@@ -417,7 +416,9 @@
                                 class="rounded-xl"
                                 item-value="id"
                                 item-text="state_name"
-                                :rules="[(v) => !!v || 'State name is required']"
+                                :rules="[
+                                  (v) => !!v || 'State name is required',
+                                ]"
                                 required
                                 @change="fetchDistricts"
                               >
@@ -465,8 +466,6 @@
                                 :items="cities"
                                 outlined
                                 class="rounded-xl"
-                                
-                                
                                 item-value="id"
                                 item-text="city_name"
                               >
@@ -502,15 +501,14 @@
                                 rounded
                                 class="rounded-xl"
                               ></v-text-field>
-                           
                             </v-col>
                           </v-row>
                         </div>
-                        <div v-if="isCurrentLocation" class=" pt-5">
+                        <div v-if="isCurrentLocation" class="pt-5">
                           <v-row class="py-0">
                             <v-col cols="6" class="py-0">
                               <v-text-field
-                                v-model="personalInfo.country_name" 
+                                v-model="personalInfo.country_name"
                                 label="Country *"
                                 outlined
                                 rounded
@@ -520,7 +518,6 @@
                                   (v) => !!v || 'Country name is required',
                                 ]"
                                 required
-                               
                               >
                               </v-text-field>
                             </v-col>
@@ -531,8 +528,10 @@
                                 label="State *"
                                 outlined
                                 rounded
-                                class="rounded-xl"                     
-                                :rules="[(v) => !!v || 'State name is required']"
+                                class="rounded-xl"
+                                :rules="[
+                                  (v) => !!v || 'State name is required',
+                                ]"
                                 required
                               >
                               </v-text-field>
@@ -550,7 +549,6 @@
                                 :rules="[
                                   (v) => !!v || 'District name is required',
                                 ]"
-                               
                               >
                               </v-text-field>
                             </v-col>
@@ -561,7 +559,7 @@
                                 readonly
                                 outlined
                                 rounded
-                                class="rounded-xl"                          
+                                class="rounded-xl"
                               >
                               </v-text-field>
                             </v-col> </v-row
@@ -589,7 +587,6 @@
                                 readonly
                                 counter="6"
                                 maxLength="6"
-                                
                                 :rules="[
                                   (v) => !!v || 'Pincode is required',
                                   (v) =>
@@ -609,11 +606,9 @@
                                 rounded
                                 class="rounded-xl"
                               ></v-text-field>
-                           
                             </v-col>
                           </v-row>
                         </div>
-                       
                       </v-card>
                     </v-col>
                   </v-row>
@@ -622,7 +617,6 @@
 
               <v-card elevation="0">
                 <v-row>
-                 
                   <v-col cols="12">
                     <v-divider></v-divider>
                     <v-card-title class="pb-0">
@@ -714,7 +708,6 @@
                                   label="Degree/ Diploma/ Certification *"
                                   rounded
                                   class="rounded-xl"
-                                
                                   :rules="[
                                     (v) =>
                                       !!v ||
@@ -732,7 +725,7 @@
                                   rounded
                                   class="rounded-xl"
                                   counter="100"
-                                    maxLength="100"
+                                  maxLength="100"
                                 ></v-text-field
                               ></v-col>
                             </v-row>
@@ -774,7 +767,7 @@
                                   rounded
                                   class="rounded-xl"
                                   counter="500"
-                                    maxLength="500"
+                                  maxLength="500"
                                 ></v-text-field>
                               </v-col>
                             </v-row>
@@ -786,7 +779,7 @@
                                   rounded
                                   class="rounded-xl"
                                   counter="500"
-                                    maxLength="500"
+                                  maxLength="500"
                                 ></v-text-field>
                               </v-col>
                             </v-row>
@@ -802,25 +795,21 @@
                                     </div>
                                 </div> -->
                                 <v-file-input
-                                      chips                                    
-                                      outlined                                     
-                                      rounded
-                                      class="rounded-xl"
-          
-                                      append-inner-icon="mdi-attachment"
-                                    >
-                                    <template #append>
-                                    <div class="d-flex align-center">                                   
-  
-                                          <v-icon>mdi-attachment</v-icon> Attachment
-
-                                    </div>
-                                     </template
+                                  chips
+                                  outlined
+                                  rounded
+                                  class="rounded-xl"
+                                  append-inner-icon="mdi-attachment"
+                                  @change="onChange"
+                                  v-model="selectedFile[expandedPanelIndex]"
+                                
                                 >
-                                  </v-file-input>
-
-
-
+                                  <template #append>
+                                    <div class="d-flex align-center">
+                                      <v-icon>mdi-attachment</v-icon> Attachment
+                                    </div>
+                                  </template>
+                                </v-file-input>
                               </v-col>
                             </v-row>
                             <v-row v-if="index != 0">
@@ -829,7 +818,6 @@
                                   @click="openDeleteDiolog(index)"
                                   text
                                   class="d-flex justify-end red--text"
-
                                   >Remove</v-btn
                                 >
                               </v-col>
@@ -844,7 +832,7 @@
                             text
                             @click="addAcademicQualification"
                             class="textcolor--text unset-capitalize"
-                            ><v-icon>mdi-plus-circle-outline</v-icon>Add another 
+                            ><v-icon>mdi-plus-circle-outline</v-icon>Add another
                             Educational Qualification (You might have)</v-btn
                           >
                         </v-col>
@@ -898,7 +886,10 @@
                               <div class="font-weight-regular">
                                 {{ index + 1 + ". " + professional.position }}
                               </div>
-                              <div class="text-body-2 grey--text"  v-if="professional.end_date != ''" >
+                              <div
+                                class="text-body-2 grey--text"
+                                v-if="professional.end_date != ''"
+                              >
                                 {{
                                   new Date(
                                     professional.start_date
@@ -912,7 +903,8 @@
                           <v-expansion-panel-content>
                             <v-row class="py-0">
                               <v-col class="py-0">
-                                <v-card v-if="index == 0"
+                                <v-card
+                                  v-if="index == 0"
                                   width="100%"
                                   elevation="0"
                                   class="mb-10 rounded-xl"
@@ -931,7 +923,6 @@
                                           label="I have"
                                           value="Experienced"
                                           color="accent"
-
                                         >
                                         </v-radio>
 
@@ -1256,6 +1247,7 @@
   </div>
 </template>
 <script>
+import UploadController from "@/controllers/UploadController";
 import axios from "axios";
 //import ImageInput from "../components/ImageInput.vue";
 import { validationMixin } from "vuelidate";
@@ -1285,7 +1277,7 @@ export default {
   // },
   data() {
     return {
-      e1: 1,
+      e1: 2,
       experience: "Fresher",
       isCurrentlyWorking: false,
       isFetchingLocation: false,
@@ -1298,7 +1290,6 @@ export default {
       cityVillage: "",
       pinCode: "",
       address: "",
-      upload2: "",
       talukTehsil: "",
       avatar: null,
       saving: false,
@@ -1325,11 +1316,13 @@ export default {
       time: 119,
       emailBool: false,
       usingPhone: true,
-      gradesData:[],
+      gradesData: [],
       tableLevels: [],
-      isCurrentLocation:false,
+      isCurrentLocation: false,
       subjectsData: [],
       pdf: "",
+      preSignedUrl: "",
+      selectedFile: [],
 
       searchSubject: "",
       searchLevels: "",
@@ -1354,7 +1347,6 @@ export default {
             v
           ) || "E-mail must be valid",
       ],
-     upload: ["suarj","kumar"],
       personalInfo: {
         title: "",
         first_name: "",
@@ -1366,15 +1358,15 @@ export default {
         phone_no: "",
         country_id: -1,
         state_id: -1,
-        talukTehsil:-1,
+        talukTehsil: -1,
         city_id: -1,
         address: "",
         pincode: 0,
-        country_name:"",
-        state_name:"",
-        city_name:"",
-        district_name:"",
-        taluka_name:"",
+        country_name: "",
+        state_name: "",
+        city_name: "",
+        district_name: "",
+        taluka_name: "",
         is_phone_verified: false,
         is_email_verified: false,
       },
@@ -1428,8 +1420,33 @@ export default {
     };
   },
   methods: {
-   
-
+    onChange() {
+      console.log(this.selectedFile[this.expandedPanelIndex]);
+      //console.log(this.expandedPanelIndex);
+      this.getPreSignedUrl();
+    },
+    async getPreSignedUrl() {
+      const response = await UploadController.getPreSignedUrl({
+        context: "user-profiles",
+        file_name: this.selectedFile[this.expandedPanelIndex].name,
+        mime_type: this.selectedFile[this.expandedPanelIndex].type,
+        file_type: "certifcate",
+        business_type: "b2c",
+        uuid: "123-456-7",
+      });
+      this.preSignedUrl = response.data.data.signed_request;
+      this.academicQualifications[this.expandedPanelIndex].certificate_url = response.data.data.url;
+      this.uploadToS3();
+    },
+    async uploadToS3() {
+      console.log("Pre-Signed URL: ", this.preSignedUrl);
+      const uploadResponse = await UploadController.uploadFile(
+        this.preSignedUrl,
+        this.selectedFile[this.expandedPanelIndex]
+      );
+      console.log("Upload Response: ", uploadResponse);
+      console.log(this.academicQualifications[this.expandedPanelIndex]);
+    },
     isNumber: function (evt) {
       evt = evt ? evt : window.event;
       var charCode = evt.which ? evt.which : evt.keyCode;
@@ -1447,18 +1464,18 @@ export default {
           this.long = position.coords.longitude; //'80.3211793';
           var url = `https://geocode.maps.co/reverse?lat=${this.lat}&lon=${this.long}`;
           const response = await axios.get(url);
-           console.log(response);
-           if(response.status == 200){
-            this.isCurrentLocation=true;
+          console.log(response);
+          if (response.status == 200) {
+            this.isCurrentLocation = true;
             this.personalInfo.country_name = response.data.address.country;
             this.personalInfo.state_name = response.data.address.state;
-            this.personalInfo.district_name = response.data.address.state_district;
+            this.personalInfo.district_name =
+              response.data.address.state_district;
             this.personalInfo.pincode = response.data.address.postcode;
             this.personalInfo.taluka_name = response.data.address.county;
             this.personalInfo.city_name = response.data.address.neighbourhood;
             this.isFetchingLocation = false;
-           }
-         
+          }
         },
         (error) => {
           this.isFetchingLocation = false;
@@ -1477,7 +1494,11 @@ export default {
       this.indexValue = null;
     },
     async goToStep2() {
-      if (this.$refs.step1.validate() && this.personalInfo.is_email_verified && this.personalInfo.is_phone_verified) {
+      if (
+        this.$refs.step1.validate() &&
+        this.personalInfo.is_email_verified &&
+        this.personalInfo.is_phone_verified
+      ) {
         console.log("userif conditon");
         this.isCreatingUser = true;
         const response = await PersonalInfoController.createUserPersonalInfo(
@@ -1574,7 +1595,7 @@ export default {
     async getUserInfo() {
       const response = await LogedInUserInfo.getUserInfo();
       this.userInfo = response.data.user;
-      console.log("ducdfk.nc",this.userInfo);
+      //console.log("ducdfk.nc", this.userInfo);
       this.personalInfo.is_email_verified = this.userInfo.is_email_verified;
       this.personalInfo.is_phone_verified = this.userInfo.is_phone_verified;
       this.personalInfo.email = this.userInfo.email;
@@ -1583,14 +1604,7 @@ export default {
     onResize() {
       this.windowHeight = window.innerHeight;
     },
-    uploadImage() {
-      this.saving = true;
-      setTimeout(() => this.savedAvatar(), 1000);
-    },
-    savedAvatar() {
-      this.saving = false;
-      this.saved = true;
-    },
+
     async fetchCountries() {
       const response = await AddressController.getCountries();
       this.countries = response.data.data.rows;
@@ -1605,7 +1619,7 @@ export default {
       //console.log(this.states);
     },
     async fetchDistricts() {
-      console.log(this.personalInfo.state_id);
+      //console.log(this.personalInfo.state_id);
       const response = await AddressController.getDistricts(
         this.personalInfo.state_id
       );
@@ -1625,7 +1639,7 @@ export default {
     async fetchCities() {
       const response = await AddressController.getCities(
         this.personalInfo.state_id,
-        this.personalInfo.talukTehsil,
+        this.personalInfo.talukTehsil
       );
       this.cities = response.data.data.rows;
 
@@ -1636,11 +1650,10 @@ export default {
       // console.log(response);
       this.schoolData = response.data.data.rows;
       //console.log("school log", this.schoolData);
-
     },
     async getBoards() {
       const response = await BoardController.getBoards();
-       //console.log(response);
+      //console.log(response);
       this.boardsData = response.data.data.rows;
       //console.log("board log", this.boardsData);
     },
@@ -1649,20 +1662,17 @@ export default {
 
       this.tableLevels = response.data.data.rows;
       //console.log("level log", this.tableLevels);
-
     },
     async getGrades() {
       const response = await GradeController.getAllGrades();
       this.gradesData = response.data.data.rows;
       //console.log("grades log", this.gradesData);
-
     },
     async getSubjects() {
       const response = await SubjectController.getSubject();
 
       this.subjectsData = response.data.data.rows;
       //console.log("subject log", this.subjectsData);
-
     },
 
     addAcademicQualification() {
@@ -1762,7 +1772,7 @@ export default {
           mobile: this.personalInfo.phone_no,
           otp: this.otp,
           debug: false,
-          user_id:this.userInfo.id,
+          user_id: this.userInfo.id,
         });
         this.$mixpanel.track("VerifyOTP", {
           counter_secs_taken: 45,
@@ -1781,45 +1791,7 @@ export default {
       this.deleteDialog = true;
     },
   },
-  watch: {
-    avatar: {
-      handler: function () {
-        this.saved = false;
-      },
-      deep: true,
-    },
-  },
   computed: {
-    filteredLevel() {
-      if (this.searchLevels) {
-        const regex = new RegExp(this.searchLevels);
-        return this.tableLevels.filter((tableLevels) =>
-          regex.test(tableLevels.name)
-        );
-      } else {
-        return this.tableLevels;
-      }
-    },
-
-    filteredBoard() {
-      if (this.searchBoards) {
-        const regex = new RegExp(this.searchBoards);
-        return this.boardsData.filter((boardData) =>
-          regex.test(boardData.name)
-        );
-      } else {
-        return this.tableLevels;
-      }
-    },
-    filteredSubject() {
-      if (this.searchSubject) {
-        const regex = new RegExp(this.searchSubject);
-        return this.subject.filter((subject) => regex.test(subject.name));
-      } else {
-        return this.subject;
-      }
-    },
-
     getHeight() {
       return this.windowHeight;
     },
