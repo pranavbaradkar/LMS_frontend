@@ -222,6 +222,15 @@ bottom: -26px;
 left: -31px;
 z-index: 10;
 }
+.item-box {
+    width: 100%;
+    height: calc(100vh - 372px);
+   
+}
+.bottom-btn {
+    position: absolute;
+    bottom: 48px;
+}
 
 .phoneNo {
     width: 100%;
