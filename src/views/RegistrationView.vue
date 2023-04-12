@@ -1062,7 +1062,7 @@
                                   ></v-text-field
                                 ></v-col>
                               </v-row>
-                              <v-row class="py-0">
+                              <!-- <v-row class="py-0">
                                 <v-col class="py-0">
                                   <v-select
                                     label="Board"
@@ -1125,11 +1125,11 @@
                                   >
                                   </v-autocomplete>
                                 </v-col>
-                              </v-row>
+                              </v-row> -->
                             </div>
 
                             <div v-if="experience != 'Experienced'">
-                              <v-row class="py-0">
+                              <!-- <v-row class="py-0">
                                 <v-col class="py-0">
                                   <v-autocomplete
                                     clearable
@@ -1179,7 +1179,7 @@
                                   >
                                   </v-autocomplete>
                                 </v-col>
-                              </v-row>
+                              </v-row> -->
                             </div>
                             <v-row
                               v-if="experience == 'Experienced' && index != 0"
@@ -1277,7 +1277,7 @@ export default {
   // },
   data() {
     return {
-      e1: 2,
+      e1: 3,
       experience: "Fresher",
       isCurrentlyWorking: false,
       isFetchingLocation: false,
@@ -1311,23 +1311,15 @@ export default {
       districts: [],
       cities: [],
       talukas: [],
-      schoolData: "",
       otp: "",
       time: 119,
       emailBool: false,
       usingPhone: true,
-      gradesData: [],
-      tableLevels: [],
       isCurrentLocation: false,
-      subjectsData: [],
-      pdf: "",
       preSignedUrl: "",
       selectedFile: [],
 
-      searchSubject: "",
-      searchLevels: "",
-      searchBoards: "",
-      boardsData: [],
+      
       userInfo: {},
       indexValue: null,
 
@@ -1818,12 +1810,7 @@ export default {
       screen_name: "PersonalProfileInformationScreen",
     });
     this.getUserInfo();
-    this.getLevel();
-    this.getGrades();
-    this.getSubjects();
     this.fetchCountries();
-    this.getBoards();
-    this.getSchool();
   },
 };
 </script>
