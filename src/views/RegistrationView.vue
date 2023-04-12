@@ -692,8 +692,6 @@
                                       <input type="file" id="myfile" name="myfile"  @change="onChange" style="position: absolute; top:0px; width: 124px; height: 48px;opacity: 0; right: 0px; cursor: pointer">
                                     </div>
                                 </div> -->
-
-
                                 <v-file-input
                                       chips                                    
                                       outlined                                     
