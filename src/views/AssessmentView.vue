@@ -119,7 +119,7 @@
         </v-col>
         <!-- Right Card -->
         <v-col cols="9" class="pl-0">
-          <v-card :height="getHeight" class="d-flex my-2 mr-2  flex-column rounded-xl">
+          <v-card v-if="screening.length!=0" :height="getHeight" class="d-flex my-2 mr-2  flex-column rounded-xl">
             <v-card-title @click="$router.push('/')" class="pb-0">
               <v-icon>mdi-close</v-icon>
             </v-card-title>
@@ -186,10 +186,10 @@
                       <v-btn class="ma-2 text-wrap" min-height="50px" height="auto"
                         :color="questions[selectedQuestion].myAnswer == option.option_key ? 'secondaryAccent' : ''" v-for="(option, index) in questions[selectedQuestion]
                           .question_options" :key="index" @click="
-    setOption(
-      questions[selectedQuestion].question_options[index]
-    )
-  ">
+                            setOption(
+                              questions[selectedQuestion].question_options[index]
+                            )
+                          ">
                         {{ option.option_value }}
                       </v-btn>
                     </v-row>
@@ -236,6 +236,14 @@
                   </v-row></v-card-title>
               </v-container>
             </v-card>
+          </v-card>
+          <v-card v-else class="d-flex flex-column justify-center align-center my-2 mr-2 rounded-xl" :height="getHeight">
+            <v-card-title>
+              No Questions Data Found!
+            </v-card-title>
+            <v-card-title @click="$router.back()" class="pb-0">
+              <v-btn rounded color="secondary" class="black--text" width="250">Return To Home</v-btn>
+            </v-card-title>
           </v-card>
         </v-col>
       </v-row>
@@ -654,7 +662,7 @@ export default {
     setOption(option) {
       if (!this.isTimeUp) {
         this.questions[this.selectedQuestion].myAnswer = option.option_key;
-        console.log(this.questions[this.selectedQuestion]);
+        //console.log(this.questions[this.selectedQuestion]);
 
         if (this.skipped.includes(this.questions[this.selectedQuestion])) {
           let index = this.bookmarked.indexOf(
@@ -736,10 +744,14 @@ export default {
     },
     async getAssessmentInfo() {
       const response = await AssessmentsController.getSingleAssessment();
+      if (response.data.success) {
+        this.screening = response.data.data;
+      } 
       const response2 =
         await RecommendedAssessmentController.getRecommendedAssessment();
-      this.assessment = response2.data.data;
-      this.screening = response.data.data;
+      if (response2.data.success) {
+        this.assessment = response2.data.data;
+      } 
       this.seconds = this.assessment.tests[0].duration_of_assessment * 60;
       this.lastAnswerTime = this.seconds;
 
@@ -751,7 +763,7 @@ export default {
         assessment_name: this.assessment.name,
         screen_name: "AssessmentScreen",
       });
-      console.log("screening: ", this.questions);
+      //console.log("screening: ", this.questions);
     },
     handleBeforeUnload(event) {
       event.preventDefault();
