@@ -408,6 +408,27 @@
         </v-row>
       </v-container>
     </v-dialog>
+    <!-- Error Dialog -->
+    <v-dialog v-model="errorDialog" max-width="366px" persistent>
+      <v-card>
+        <v-container fluid class="pa-8">
+          <v-card-text class="text-center">
+            <v-icon color="error" size="96">mdi-close-circle-outline</v-icon>
+            <p class="text-h5 py-4">{{ errorMessage }}</p>
+            <v-btn
+            depressed
+            class="black--text"
+              color="secondary"
+              large
+              width="157px"
+              rounded
+              @click="errorDialog = false"
+              >OK</v-btn
+            >
+          </v-card-text>
+        </v-container>
+      </v-card>
+    </v-dialog>
 
   </div>
 </template>
@@ -421,6 +442,8 @@ export default {
   name: "AssessmentView",
   data() {
     return {
+      errorDialog:true,
+      errorMessage:'Failed',
       hours: "00",
       mins: "00",
       secs: "00",
@@ -743,10 +766,13 @@ export default {
       this.windowHeight = window.innerHeight;
     },
     async getAssessmentInfo() {
-      const response = await AssessmentsController.getSingleAssessment();
+      const response = await AssessmentsController.getScreeningQuestions();
       if (response.data.success) {
         this.screening = response.data.data;
-      } 
+      }else{
+        this.errorDialog=true;
+        this.errorMessage=response.data.error;
+      }
       const response2 =
         await RecommendedAssessmentController.getRecommendedAssessment();
       if (response2.data.success) {
