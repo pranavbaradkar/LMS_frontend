@@ -32,6 +32,7 @@
         <v-stepper-items>
           <!------------------------------------------ STEP 1 ------------------------------------------>
           <v-stepper-content step="1" elevation="0" class="pt-0 pb-0">
+            <v-form lazy-validation ref="step1">
             <v-card-title class="d-flex justify-center">
               Which is your preferrerd school?
             </v-card-title>
@@ -48,9 +49,12 @@
                 multiple
                 item-text="name"
                 item-value="id"
+                :rules="[(v) => !!v || 'School is required']"
+                              required
               >
               </v-autocomplete>
             </v-container>
+          </v-form>
           </v-stepper-content>
           <!------------------------------------------ STEP 2 ------------------------------------------>
 
@@ -181,7 +185,7 @@
         width="300px"
         @click="goTo(e1)"
       >
-        next
+        {{  e1 == 4 ? 'save' : 'next'}}
       </v-btn>
     </div>
   </v-card>
@@ -215,10 +219,10 @@ export default {
     goTo(step) {
       switch (step) {
         case 1:
-          // if (this.$refs.step1.validate()) {
+           if (this.$refs.step1.validate()) {
             this.e1 = 2;
             console.log("step",this.e1);
-          // }
+          }
 
           break;
         case 2:
@@ -246,8 +250,7 @@ export default {
 
 
         default:
-          this.e1++;
-          console.log("default",this.e1);
+         
       }},
    async createUserIntrest(){
     console.log('userInterst',this.userIntrestData);
