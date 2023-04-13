@@ -218,11 +218,17 @@
                     </v-btn>
 
                     <v-spacer></v-spacer>
-                    <v-btn v-if="!bookmarked.includes(questions[selectedQuestion])" large text color="primary" :disabled="isTimeUp"
+                    <v-tooltip bottom v-if="!bookmarked.includes(questions[selectedQuestion])">
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-btn  large text color="primary" :disabled="isTimeUp" v-bind="attrs" v-on="on"
                       @click="bookmarkQuestion(questions[selectedQuestion])">
                       <v-icon class="pr-2" right> mdi-bookmark-outline </v-icon>
                       BOOKMARK
                     </v-btn>
+                      </template>
+                      <span>Bookmark this question to revisit it later</span>
+                    </v-tooltip>
+                    
                     <v-btn v-else large text color="primary" @click="bookmarkQuestion(questions[selectedQuestion])" :disabled="isTimeUp">
                       <v-icon class="pr-2" right> mdi-bookmark </v-icon>
                       REMOVE BOOKMARK
