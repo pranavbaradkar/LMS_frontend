@@ -804,6 +804,7 @@
                                   chips
                                   outlined
                                   rounded
+                                  id="fileInput"
                                   class="rounded-xl"
                                   append-inner-icon="mdi-attachment"
                                   @change="onChange"
@@ -811,7 +812,7 @@
                                 
                                 >
                                   <template #append>
-                                    <div class="d-flex align-center">
+                                    <div class="d-flex align-center cursor"  @click="manualClick">
                                       <v-icon>mdi-attachment</v-icon> Attachment
                                     </div>
                                   </template>
@@ -1540,6 +1541,9 @@ export default {
           this.isCreatingUser = false;
         }
       }
+    },
+    manualClick(){
+      document.getElementById('fileInput').click();
     },
     async saveDetails() {
       //console.log("function");
