@@ -442,7 +442,7 @@ export default {
   name: "AssessmentView",
   data() {
     return {
-      errorDialog:true,
+      errorDialog:false,
       errorMessage:'Failed',
       hours: "00",
       mins: "00",
