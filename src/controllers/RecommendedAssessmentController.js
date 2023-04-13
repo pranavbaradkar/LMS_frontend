@@ -8,7 +8,7 @@ export default {
     getRecommendedAssessment: async function () {
         
         try {
-            const response = await instance.get('users/recommended-assessment?debug=176' ,{
+            const response = await instance.get('users/recommended-assessment?debug=187' ,{
                 headers: {
                     'Authorization': AuthService.getToken()
                 }

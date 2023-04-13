@@ -6,7 +6,7 @@ const instance = axios.create({
 export default {
     getSingleAssessment: async function () {
         try {
-            const response = await instance.get('assessments/176/screening/questions-list', {
+            const response = await instance.get('assessments/187/screening/questions-list', {
                 headers: {
                     'Authorization': AuthService.getToken()
                 }
