@@ -13,7 +13,7 @@
               <v-card-subtitle>
                 <span class="font-weight-light grey--text">Test Duration:</span>
                 <span v-if="assessment.tests != null">
-                  {{ assessment.tests[0].duration_of_assessment }} minutes</span>
+                  {{  formatTime(assessment.tests[0].duration_of_assessment) }} </span>
               </v-card-subtitle>
 
               <v-divider class="mx-4 mt-0"></v-divider>
@@ -451,7 +451,7 @@ export default {
       hours: "00",
       mins: "00",
       secs: "00",
-      seconds: 10,
+      seconds: 800,
       lastAnswerTime: null,
       timerId: null,
       isProgressClicked: false,
@@ -478,7 +478,7 @@ export default {
   },
   computed: {
     isTimeUp() {
-      return this.seconds <= 0;
+      return this.secondsseconds <= 0;
     },
     getHeight() {
       return this.windowHeight - 40 + "px";
@@ -514,6 +514,26 @@ export default {
   },
 
   methods: {
+    formatTime(seconds) {
+      const hours = Math.floor(seconds / 3600);
+      const minutes = Math.floor((seconds % 3600) / 60);
+      //const remainingSeconds = seconds % 60;
+      if(hours==0){
+        return (
+        
+        String(minutes).padStart(2, '0') +
+        ' minutes' 
+      );
+      }
+      else{
+        return (
+        String(hours).padStart(2, '0') +
+        ' hours and ' +
+        String(minutes).padStart(2, '0') +
+        ' minutes' 
+      );
+      }
+    },
     setSelectedQuestionFromProgress(item) {
       this.selectedQuestion=this.getQuestionIndex(item);
       this.scrollMethod("scrollId" + this.selectedQuestion);
@@ -789,8 +809,9 @@ export default {
         await RecommendedAssessmentController.getRecommendedAssessment();
       if (response2.data.success) {
         this.assessment = response2.data.data;
+        console.log(this.assessment);
       } 
-      this.seconds = this.assessment.tests[0].duration_of_assessment * 60;
+      this.seconds = this.assessment.tests[0].duration_of_assessment;
       this.lastAnswerTime = this.seconds;
 
       this.screening.forEach((element) => {
