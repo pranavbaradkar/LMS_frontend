@@ -1235,7 +1235,7 @@
                     class="primary--text my-4"
                     @click="saveDetails"
                   >
-                    SAVE & PROCEED TO ASSESSMENTS >>
+                    next
                   </v-btn>
                   <v-spacer></v-spacer>
                   <!-- <v-btn
@@ -1290,7 +1290,7 @@ export default {
   // },
   data() {
     return {
-      e1: 1,
+      e1: 2,
       experience: "Fresher",
       isCurrentlyWorking: false,
       isFetchingLocation: false,
@@ -1553,7 +1553,7 @@ export default {
           if (response.data.success) {
           this.isCreatingUser = false;
           this.successDialog = true;
-          this.$router.push("/");
+          this.$router.push("/interests");
         } else {
           this.isCreatingUser = false;
         }
