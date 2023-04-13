@@ -662,13 +662,13 @@
                               class="d-flex flex-column"
                               v-if="expandedPanelIndex != index"
                             >
-                              <div class="font-weight-regular">
+                              <div class="font-weight-regular" v-if="qualification.programme != undefined">
                                 {{ index + 1 + ". " + qualification.programme }}
                               </div>
                               <div class="text-body-2 grey--text pt-2 pb-2">
                                 {{ qualification.institution }}
                               </div>
-                              <div class="text-body-2 grey--text">
+                              <div class="text-body-2 grey--text" v-if="qualification.start_date != undefined">
                                 {{
                                   new Date(
                                     qualification.start_date
@@ -721,11 +721,17 @@
                                 ><v-text-field
                                   v-model="qualification.field_of_study"
                                   outlined
-                                  label="Field of Study"
+                                  label="Field of Study*"
                                   rounded
                                   class="rounded-xl"
                                   counter="100"
                                   maxLength="100"
+                                  required
+                                  :rules="[
+                                    (v) =>
+                                      !!v ||
+                                      'Field of Study is required',
+                                  ]"
                                 ></v-text-field
                               ></v-col>
                             </v-row>
@@ -853,6 +859,10 @@
               >
                 NEXT
               </v-btn>
+              <v-btn class="float-right mx-4 my-4 secondaryAccent primary--text" depressed rounded  to="/interests">
+                skip
+              </v-btn>
+              
             </v-stepper-content>
 
             <!------------------------------------------ STEP 3 ------------------------------------------>
@@ -1010,7 +1020,7 @@
                                 ></v-col>
                               </v-row>
 
-                              <v-row class="py-0">
+                              <!-- <v-row class="py-0">
                                 <v-col class="py-0"
                                   ><v-select
                                     label="School / Institute"
@@ -1023,7 +1033,7 @@
                                   >
                                   </v-select
                                 ></v-col>
-                              </v-row>
+                              </v-row> -->
                               <v-row class="py-0">
                                 <v-col class="py-0">
                                   <v-checkbox
@@ -1237,6 +1247,9 @@
                   >
                     PROCEED TO ASSESSMENT
                   </v-btn> -->
+                  <v-btn class="float-right mx-4 my-4 secondaryAccent primary--text" depressed rounded  to="/interests">
+                skip
+              </v-btn>
                 </v-row>
               </v-container>
             </v-stepper-content>
@@ -1257,7 +1270,7 @@ import AddressController from "@/controllers/AddressController.js";
 import PersonalInfoController from "@/controllers/PersonalInfoController.js";
 import AcademicsController from "@/controllers/AcademicsController.js";
 import ProfessionalController from "@/controllers/ProfessionalController.js";
-import SchoolController from "@/controllers/SchoolController";
+// import SchoolController from "@/controllers/SchoolController";
 import BoardController from "@/controllers/BoardController";
 import LevelController from "@/controllers/LevelController";
 import GradeController from "@/controllers/GradeController";
@@ -1277,7 +1290,7 @@ export default {
   // },
   data() {
     return {
-      e1: 1,
+      e1: 3,
       experience: "Fresher",
       isCurrentlyWorking: false,
       isFetchingLocation: false,
@@ -1382,17 +1395,8 @@ export default {
           experience_month: 0,
           position: "NA",
           employee_type_id: 0,
-          board_id: 0,
           start_date: "",
-          end_date: "",
-          level_ids: "40,41,49",
-          // level_ids: [],
-          grade_ids: "91",
-          subject_ids: "68,69,70",
-          // subject_ids: [],
-          school_id: 0,
-          other_name: "",
-          deleteIndex: null,
+          end_date: "",    
         },
       ],
       employeeType: [
@@ -1518,7 +1522,7 @@ export default {
         const response = await AcademicsController.createUserAcademicsInfo(
           this.academicQualifications
         );
-        // console.log(response);
+        console.log(response);
         if (response.data.success) {
           this.$mixpanel.track("NextButtonClicked", {
             academics_info: this.academicQualifications,
@@ -1541,6 +1545,19 @@ export default {
       //console.log("function");
       if (this.$refs.step3.validate()) {
         //console.log("userif conditon");
+        this.isCreatingUser = true;
+        const response =
+          await ProfessionalController.createUserProfessionalInfo(
+            this.professionalInfos
+          );
+          if (response.data.success) {
+          this.isCreatingUser = false;
+          this.successDialog = true;
+          this.$router.push("/");
+        } else {
+          this.isCreatingUser = false;
+        }
+        console.log(response);
         let mixpanelData = {
           personal_info: this.personalInfo,
         };
@@ -1552,19 +1569,9 @@ export default {
         });
         this.$mixpanel.track("SaveProfileDetailsClicked", mixpanelData);
 
-        this.isCreatingUser = true;
-        const response =
-          await ProfessionalController.createUserProfessionalInfo(
-            this.professionalInfos
-          );
-        //console.log(response);
-        if (response.data.success) {
-          this.isCreatingUser = false;
-          this.successDialog = true;
-          this.$router.push("/");
-        } else {
-          this.isCreatingUser = false;
-        }
+       
+        
+       
       }
     },
     async startTest() {
@@ -1637,12 +1644,12 @@ export default {
 
       //console.log(this.cities);
     },
-    async getSchool() {
-      const response = await SchoolController.getSchool();
-      // console.log(response);
-      this.schoolData = response.data.data.rows;
-      //console.log("school log", this.schoolData);
-    },
+    // async getSchool() {
+    //   const response = await SchoolController.getSchool();
+    //   console.log("school log",response);
+    //   this.schoolData = response.data.data.rows;
+    //   //console.log("school log", this.schoolData);
+    // },
     async getBoards() {
       const response = await BoardController.getBoards();
       //console.log(response);
@@ -1688,14 +1695,8 @@ export default {
         experience_month: 0,
         position: "",
         employee_type_id: 0,
-        board_id: 0,
         start_date: "",
         end_date: "",
-        level_ids: "",
-        grade_ids: "",
-        subject_ids: "",
-        school_id: 0,
-        other_name: "",
       });
       this.expandedPanelIndex = this.professionalInfos.length - 1;
     },

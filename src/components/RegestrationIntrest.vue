@@ -14,14 +14,14 @@
         <v-card-title>
           <v-row align="center" justify="center" align-content="center">
             <v-col cols="1">
-              <v-icon>mdi-arrow-left</v-icon>
+              <v-icon v-if="e1 != 1" @click="e1--">mdi-arrow-left</v-icon>
             </v-col>
             <v-col cols="8">
               <v-progress-linear
                 height="25"
                 color="secondary"
                 class="rounded-xl"
-                value="20"
+               :value="(e1/4)*100"
               ></v-progress-linear>
             </v-col>
           </v-row>
@@ -31,13 +31,13 @@
       <v-stepper v-model="e1" elevation="0" class="surface">
         <v-stepper-items>
           <!------------------------------------------ STEP 1 ------------------------------------------>
-          <v-stepper-content step="1" elevation="0">
+          <v-stepper-content step="1" elevation="0" class="pt-0 pb-0">
             <v-card-title class="d-flex justify-center">
               Which is your preferrerd school?
             </v-card-title>
             <v-container>
               <v-autocomplete
-                v-model="selectedSchools"
+                v-model="userIntrestData.school_ids"
                 clearable
                 deletable-chips
                 label="Schools"
@@ -54,7 +54,7 @@
           </v-stepper-content>
           <!------------------------------------------ STEP 2 ------------------------------------------>
 
-          <v-stepper-content step="2" class="pb-0">
+          <v-stepper-content step="2" class="pb-0 pt-0">
             <v-card-title class="d-flex justify-center">
               What level do you (want to) teach?
             </v-card-title>
@@ -62,17 +62,17 @@
               >Select one or more applicable</v-card-subtitle
             >
             <div id="myScroll">
-              <v-item-group multiple v-model="selectedLevels">
+              <v-item-group multiple v-model="userIntrestData.level_ids">
                 <v-container>
-                  <v-layout row wrap justify-space-around>
+                  <v-layout row wrap justify-center class="item-box">
                     <v-item
                       v-slot="{ active, toggle }"
                       v-for="(level, i) in levels"
                       :key="i"
                     >
                       <v-card
-                        :color="active ? 'secondaryAccent' : ''"
-                        class="d-flex align-center ma-2"
+                      :class="active ? 'selected-box ' : ''"
+                        class="d-flex align-center ma-2 rouded-xl"
                         width="145px"
                         height="158px"
                         @click="toggle"
@@ -93,23 +93,23 @@
 
           <!------------------------------------------ STEP 3 ------------------------------------------>
 
-          <v-stepper-content step="3" class="pb-0">
+          <v-stepper-content step="3" class="pb-0 pt-0">
             <v-card-title class="d-flex justify-center">
               Which board do you want to teach?
             </v-card-title>
 
             <div id="myScroll">
-              <v-item-group v-model="selectedBoards">
+              <v-item-group v-model="userIntrestData.board_ids" multiple>
                 <v-container>
-                  <v-layout row wrap justify-space-around>
+                  <v-layout row wrap justify-center class="item-box" >
                     <v-item
                       v-slot="{ active, toggle }"
                       v-for="(board, i) in boards"
                       :key="i"
                     >
                       <v-card
-                        :color="active ? 'secondaryAccent' : ''"
-                        class="d-flex align-center ma-2"
+                         class="d-flex align-center ma-2 rouded-xl"
+                        :class="active ? 'selected-box ' : ''"
                         width="145px"
                         height="158px"
                         @click="toggle"
@@ -131,27 +131,29 @@
           </v-stepper-content>
           <!------------------------------------------ STEP 4 ------------------------------------------>
 
-          <v-stepper-content step="4" class="pb-0">
+          <v-stepper-content step="4" class="pb-0 pt-0">
             <v-card-title class="d-flex justify-center">
               Which Subject(s) do you teach?
             </v-card-title>
             <v-card-subtitle class="text-center"
               >Select maximum 3 subjects</v-card-subtitle
             >
-            <div id="myScroll">
-              <v-item-group multiple v-model="selectedSubjects">
+            <div>
+              <v-item-group multiple v-model="userIntrestData.subject_ids">
                 <v-container>
-                  <v-layout row wrap justify-space-around>
+                  <v-layout row wrap justify-space-around class="item-box">
                     <v-item
                       v-slot="{ active, toggle }"
                       v-for="(subject, i) in subjects"
                       :key="i"
                     >
                       <v-card
-                        :color="active ? 'secondaryAccent' : ''"
-                        class="d-flex align-center ma-2"
+                 
+                        class="d-flex align-center ma-2 rouded-xl "
                         width="145px"
                         height="158px"
+                        :class="active ? 'selected-box ' : ''"
+
                         @click="toggle"
                       >
                         <v-col align-self="center">
@@ -177,7 +179,7 @@
         rounded
         large
         width="300px"
-        @click="e1 = e1 + 1"
+        @click="goTo(e1)"
       >
         next
       </v-btn>
@@ -189,6 +191,7 @@ import SchoolController from "@/controllers/SchoolController";
 import BoardController from "@/controllers/BoardController";
 import LevelController from "@/controllers/LevelController";
 import SubjectController from "@/controllers/SubjectController";
+import UserIntrestController from '@/controllers/UserIntrestController'; 
 
 export default {
   name: "RegestrationIntrest",
@@ -199,13 +202,59 @@ export default {
       schools: [],
       boards: [],
       levels: [],
-      selectedSubjects: [],
-      selectedSchools: [],
-      selectedBoards: [],
-      selectedLevels: [],
+     userIntrestData:  {
+    "level_ids": [],
+    "school_ids": [],
+    "board_ids": [],
+    "subject_ids": []
+    }
     };
   },
   methods: {
+
+    goTo(step) {
+      switch (step) {
+        case 1:
+          // if (this.$refs.step1.validate()) {
+            this.e1 = 2;
+            console.log("step",this.e1);
+          // }
+
+          break;
+        case 2:
+          // if (this.$refs.step1.validate())
+          console.log("step2");
+          this.e1 = 3;       
+          console.log("step",this.e1);
+          break;
+        case 3:
+            this.e1 = 4
+            console.log("step",this.e1);
+          
+          
+          break;
+          case 4:
+          console.log("step4")
+         this.createUserIntrest();
+          // if (this.$refs.step1.validate())
+          console.log("router step");
+          this.$router.push('/');
+          
+          
+          break;
+        
+
+
+        default:
+          this.e1++;
+          console.log("default",this.e1);
+      }},
+   async createUserIntrest(){
+    console.log('userInterst',this.userIntrestData);
+   const response =  await UserIntrestController.createUserIntrest(this.userIntrestData);
+   console.log(response);
+
+    },
     async getSubjects() {
       const response = await SubjectController.getSubject();
 

@@ -23,7 +23,7 @@ const routes = [
     }
   },
   {
-    path: '/skip',
+    path: '/interests',
     name: 'RegestrationIntrest',
     component :RegestrationIntrest,
     meta: {

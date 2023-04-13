@@ -168,6 +168,9 @@ body {
   .v-select__slot > .v-input__append-inner > .v-input__icon > .v-icon {
     margin-top: 24px !important
   }
+  .v-select__slot > .v-input__append-inner > .v-input__icon > .mdi-close {
+    margin-top: -16px !important
+  }
   .v-select__selection--comma {
     margin-left: 12px !important;
   }
@@ -216,6 +219,10 @@ body {
     height: 27px;
     background-color: grey;
 }
+.selected-box {
+    border: 1px solid #82d2da !important;
+ 
+}
 .camerabtn {
     position: relative !important;
 bottom: -26px;
@@ -225,6 +232,8 @@ z-index: 10;
 .item-box {
     width: 100%;
     height: calc(100vh - 372px);
+    overflow-y: scroll;
+    scrollbar-width: thin;
    
 }
 .bottom-btn {
