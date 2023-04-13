@@ -80,12 +80,15 @@
 
             </v-container>
           </v-card>
-          <!-- progress List -->
+          <!-- Progress List -->
           <v-card v-else :height="getHeight" id="myScroll" class="pa-4 ma-2 pt-0 rounded-xl"
-            @click="isProgressClicked = false">
+           >
             <v-card height="auto" id="circleCard" elevation="0">
               <v-card-title class="text-subtitle font-weight-regular accent--text testHead">
-                <p>{{ progressListTitle }}</p>
+                <p class="mb-0">{{ progressListTitle }}</p>
+                <v-spacer></v-spacer>
+              <v-icon  @click="isProgressClicked = false">mdi-close</v-icon>
+
               </v-card-title>
               <v-divider class="mx-4 mt-0"></v-divider>
 
@@ -93,17 +96,18 @@
             <v-divider class="mx-4 mt-0"></v-divider>
             <v-container>
               <v-card elevation="0" id="myScroll" height="auto">
-                <v-list-item-group mandatory v-model="selectedQuestion">
-                  <v-list-item class="grey lighten-4 pt-2" v-for="(item, i) in progressList" :key="i"
+                <v-list-item-group mandatory >
+                  <v-list-item class="grey lighten-4 pt-2" v-for="(item, i) in progressList" :key="i" v-on:click="setSelectedQuestionFromProgress(item)"
                     @click="isProgressClicked = false">
                     <v-list-item-content class="py-0">
                       <v-list-item-title :class="
                         i == selectedQuestion ? 'primary--text font-weight-regular' : 'font-weight-light'
                       "><v-icon large :color="getColor(item)">mdi-circle-medium</v-icon>
                         <img v-if="i == selectedQuestion" src="../assets/Polygonpoly.png" class="polyicon" />
-                        Question {{ i + 1 }}</v-list-item-title>
-
+                        Question {{ getQuestionIndex(item)+1 }}</v-list-item-title>
+                      <v-list-item-subtitle>
                       <v-divider class="mt-2 mb-1"></v-divider>
+                      </v-list-item-subtitle>
                     </v-list-item-content>
                     <v-list-item-action v-if="bookmarked.includes(item)">
                       <v-icon color="primary">
@@ -510,6 +514,14 @@ export default {
   },
 
   methods: {
+    setSelectedQuestionFromProgress(item) {
+      this.selectedQuestion=this.getQuestionIndex(item);
+      this.scrollMethod("scrollId" + this.selectedQuestion);
+
+    },
+    getQuestionIndex(question){
+      return this.questions.indexOf(question);
+    },
     onClickSummaryQuestionBox(index) {
       this.selectedQuestion = index;
       this.summaryDialog = false;
