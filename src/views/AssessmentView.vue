@@ -217,7 +217,11 @@
                       Previous
                     </v-btn>
 
-                    <v-btn rounded color="secondary" :disabled="selectedQuestion == questions.length - 1" @click="next"
+                    <v-btn v-if="selectedQuestion == questions.length - 1" rounded color="secondary" @click="summaryDialog=true"
+                      height="36px" class="ml-8 black--text">
+                      Proceed & View Summary
+                    </v-btn>
+                    <v-btn v-else rounded color="secondary" :disabled="questions[selectedQuestion].myAnswer!=null" @click="next"
                       width="120px" height="36px" class="ml-8 black--text">
                       NEXT
                     </v-btn>
