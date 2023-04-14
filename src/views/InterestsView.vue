@@ -145,13 +145,13 @@
             <div>
               <v-item-group multiple v-model="userIntrestData.subject_ids">
                 <v-container>
-                  <v-layout row wrap justify-space-around class="item-box">
+                  <v-layout row wrap justify-center class="item-box">
                     <v-item
                       v-slot="{ active, toggle }"
                       v-for="(subject, i) in subjects"
                       :key="i"
                     >
-                      <v-card
+                      <v-card  
                         class="d-flex align-center ma-2 rouded-xl"
                         width="145px"
                         height="158px"
@@ -223,25 +223,42 @@ export default {
             this.e1 = 2;
             console.log("step", this.e1);
           }
+          else {
+            alert('Please Select at least one school')
+          }
 
           break;
         case 2:
           // if (this.$refs.step1.validate())
           console.log("step2");
-          this.e1 = 3;
-          console.log("step", this.e1);
+          if (this.userIntrestData.level_ids.length != 0) {
+            this.e1 = 3;         
+          }
+          else {
+            alert('Please Select at least one level')
+          }
+          
           break;
         case 3:
+        if (this.userIntrestData.board_ids.length != 0) {        
           this.e1 = 4;
           console.log("step", this.e1);
-
+        }
+        else {
+          alert('Please Select at least one one board')
+        }
           break;
         case 4:
           console.log("step4");
-          this.createUserIntrest();
-          // if (this.$refs.step1.validate())
-          console.log("router step");
-          this.$router.push("/");
+          if( userIntrestData.subject_ids){
+            this.createUserIntrest();
+            this.$router.push("/");
+          }
+          else {
+          alert('Please Select at least one one subject')
+        }
+         
+          
 
           break;
 
