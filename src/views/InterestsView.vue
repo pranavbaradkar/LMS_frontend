@@ -250,7 +250,7 @@ export default {
           break;
         case 4:
           console.log("step4");
-          if( userIntrestData.subject_ids){
+          if( this.userIntrestData.subject_ids.length != 0){
             this.createUserIntrest();
             this.$router.push("/");
           }
