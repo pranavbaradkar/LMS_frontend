@@ -1,6 +1,12 @@
 <template>
   <!-- author: suraj -->
+
   <div id="app" class="myBackground">
+
+    <!-- <div class="m-loader d-flex justify-center align-center">   
+        <lottie-player src="https://assets4.lottiefiles.com/private_files/lf30_tcux3hw6.json" background="transparent"
+          speed="1" style="width: 150px; height: 150px;" loop autoplay></lottie-player>
+    </div> -->
     <v-dialog max-width="200px" v-model="sendingOtpDialog">
       <v-card>
         <div class="text-h6 d-flex justify-center">Sending OTP..</div>
@@ -14,12 +20,7 @@
       </v-list-item>
     </v-app-bar>
     <v-row align="center" justify="center" style="height: 100vh" dense>
-      <v-col
-        cols="12"
-        lg="12"
-        md="12"
-        class="fill-height d-flex flex-column justify-center align-center"
-      >
+      <v-col cols="12" lg="12" md="12" class="fill-height d-flex flex-column justify-center align-center">
         <v-card width="426px" height="auto">
           <div class="text-center pt-8 pl-8 pr-8" v-if="!isGenerateOtpClicked">
             <img src="../assets/icon.svg" width="70px" height="70px" />
@@ -27,44 +28,23 @@
               Login
             </v-card-title>
             <v-card-text class="text-center text-body-1 font-weight-light">
-              <span
-                >Welcome{{ !vibgyouBool ? " Job Seeker!" : "Teachers" }} Please enter
-                your credentials to start the journey</span
-              >
+              <span>Welcome{{ !vibgyouBool ? " Job Seeker!" : "Teachers" }} Please enter
+                your credentials to start the journey</span>
             </v-card-text>
-            <div
-              v-if="usingPhone && !vibgyouBool"
-              class="text--disabled text-start font-weight-regular pb-1"
-            >
+            <div v-if="usingPhone && !vibgyouBool" class="text--disabled text-start font-weight-regular pb-1">
               Phone Number
             </div>
-            <div
-              v-if="!usingPhone"
-              class="text--disabled text-start font-weight-regular pb-1"
-            >
+            <div v-if="!usingPhone" class="text--disabled text-start font-weight-regular pb-1">
               Email Id
             </div>
 
-            <div
-              class="rounded-xl phoneNo mb-4"
-              v-if="usingPhone && !vibgyouBool"
-            >
-            <div @click="(e)=>{e.preventDefault}">
-              <vue-country-code
-              disabled
-                class="ml-2"
-                :preferredCountries="['in']"
-                @onSelect="onSelect"
-              ></vue-country-code>
-            </div>
+            <div class="rounded-xl phoneNo mb-4" v-if="usingPhone && !vibgyouBool">
+              <div @click="(e) => { e.preventDefault }">
+                <vue-country-code disabled class="ml-2" :preferredCountries="['in']"
+                  @onSelect="onSelect"></vue-country-code>
+              </div>
               <span class="mr-2"> +{{ this.dialCode }} </span>
-              <input
-                type="text"
-                class="myinput"
-                placeholder="Phone Number"
-                v-model="phoneNumber"
-                maxlength="10"
-              />
+              <input type="text" class="myinput" placeholder="Phone Number" v-model="phoneNumber" maxlength="10" />
             </div>
             <v-form v-model="valid" v-if="!usingPhone || vibgyouBool">
               <!--<v-text-field v-if="!vibgyouBool" :label="Enter Email Id" placeholder="Enter Email Id" :rules="emailRules" solo outlined
@@ -75,101 +55,50 @@
               v-model="email" class="rounded-xl">
             </v-text-field>  -->
               <span height="40px">
-                <v-text-field
-                  label="Email address"
-                  :suffix="vibgyouBool ? '@vgos.org' : ''"
-                  :rules="vibgyouBool ? vgosRules : emailRules"
-                  class="rounded-xl"
-                  placeholder="Enter Email Id"
-                  v-model="email"
-                  solo
-                  outlined
-                  @focus="triggerEmailEvent"
-                ></v-text-field>
+                <v-text-field label="Email address" :suffix="vibgyouBool ? '@vgos.org' : ''"
+                  :rules="vibgyouBool ? vgosRules : emailRules" class="rounded-xl" placeholder="Enter Email Id"
+                  v-model="email" solo outlined @focus="triggerEmailEvent"></v-text-field>
               </span>
             </v-form>
-            <v-btn
-              v-if="usingPhone"
-              color="secondary"
-              class="textcolor--text"
-              rounded
-              large
-              width="100%"
-              @click="generatePhoneOtp"
-              :disabled="phoneNumber.length != 10"
-            >
+            <v-btn v-if="usingPhone" color="secondary" class="textcolor--text" rounded large width="100%"
+              @click="generatePhoneOtp" :disabled="phoneNumber.length != 10">
               Generate OTP
             </v-btn>
-            <v-btn
-              v-else
-              color="secondary"
-              class="black--text"
-              rounded
-              :disabled="!valid"
-              large
-              width="100%"
-              @click="generateOtp"
-              disabled:isGenerateOtpClicked
-            >
+            <v-btn v-else color="secondary" class="black--text" rounded :disabled="!valid" large width="100%"
+              @click="generateOtp" disabled:isGenerateOtpClicked>
               Generate OTP
             </v-btn>
             <v-card-title class="justify-center primary--text cursor pa-0 ma-0">
-              <v-btn
-                color="#CAECEF"
-                class="textcolor--text mt-4"
-                rounded
-                large
-                v-if="!usingPhone && !vibgyouBool"
-                @click="
-                  () => {
-                    usingPhone = true;
-                  
-                  }
-                "
-                width="auto"
-                height="36px"
-                depressed
-                >Login Using Mobile Number
+              <v-btn color="#CAECEF" class="textcolor--text mt-4" rounded large v-if="!usingPhone && !vibgyouBool" @click="
+                () => {
+                  usingPhone = true;
+
+                }
+              " width="auto" height="36px" depressed>Login Using Mobile Number
               </v-btn>
 
-              <v-btn
-                color="#CAECEF"
-                class="textcolor--text mt-4"
-                rounded
-                large
-                width="auto"
-                height="36px"
-                depressed
-                v-if="usingPhone && !vibgyouBool"
-                @click="
+              <v-btn color="#CAECEF" class="textcolor--text mt-4" rounded large width="auto" height="36px" depressed
+                v-if="usingPhone && !vibgyouBool" @click="
                   () => {
                     usingPhone = false;
                   }
-                "
-                >Login Using Email Address</v-btn
-              >
+                ">Login Using Email Address</v-btn>
             </v-card-title>
 
             <v-card-text class="pa-0 mt-8 mb-8">
               <span>
                 {{
                   !vibgyouBool
-                    ? "Already a VIBGYOR Teacher ?"
-                    : "Job Seeker at VIBGYOR Schools?"
+                  ? "Already a VIBGYOR Teacher ?"
+                  : "Job Seeker at VIBGYOR Schools?"
                 }}
               </span>
-              <v-btn
-                text
-                width="100px"
-                @click="
-                  () => {
-                    vibgyouBool = !vibgyouBool;
-                    usingPhone = !usingPhone;
-                  }
-                "
-                class="textcolor--text pl-4"
-                >LOGIN HERE</v-btn
-              >
+              <v-btn text width="100px" @click="
+                () => {
+                  vibgyouBool = !vibgyouBool;
+                  usingPhone = !usingPhone;
+                }
+              " class="textcolor--text pl-4">LOGIN HERE</v-btn>
             </v-card-text>
           </div>
           <v-card v-else height="100%" elevation="0" class="pa-8">
@@ -183,33 +112,22 @@
                 usingPhone ? "Verify Your Phone Number" : "Verify Your Email"
               }}
             </v-card-title>
-            <v-card-text class="text-center text-body-1"
-              ><span
-                >Please enter the 6-digit code you have received on your </span
-              >{{
+            <v-card-text class="text-center text-body-1"><span>Please enter the 6-digit code you have received on your
+              </span>{{
                 usingPhone ? "mobile number" : "e-mail address"
-              }}</v-card-text
-            >
+              }}</v-card-text>
 
             <v-row justify="center">
               <v-col cols="10">
-                <v-otp-input
-                  length="6"
-                  type="number"
-                  v-model="otp"
-                ></v-otp-input>
+                <v-otp-input length="6" type="number" v-model="otp"></v-otp-input>
                 <v-row justify="space-between" class="ma-0 pa-0">
                   <v-col class="ma-0 pa-0">
-                    <v-card-subtitle class="ma-0 pa-0"
-                      >0{{ Math.floor(time / 60) }}:
-                      <span v-if="time % 60 < 10">0</span
-                      >{{ time % 60 }}</v-card-subtitle
-                    >
+                    <v-card-subtitle class="ma-0 pa-0">0{{ Math.floor(time / 60) }}:
+                      <span v-if="time % 60 < 10">0</span>{{ time % 60 }}</v-card-subtitle>
                   </v-col>
                   <v-col class="ma-0 pa-0">
                     <v-card-subtitle class="ma-0 pa-0 text-end">
-                      {{ otp.length }}/6</v-card-subtitle
-                    >
+                      {{ otp.length }}/6</v-card-subtitle>
                   </v-col>
                 </v-row>
               </v-col>
@@ -227,24 +145,10 @@
                 RESEND OTP
               </span> -->
 
-              <v-btn
-                text
-                class="textcolor--text pl-4"
-                @click="generatePhoneOtp"
-                :disabled="resendBool"
-                >RESEND OTP</v-btn
-              >
+              <v-btn text class="textcolor--text pl-4" @click="generatePhoneOtp" :disabled="resendBool">RESEND OTP</v-btn>
             </v-card-text>
             <v-card-title class="justify-center">
-              <v-btn
-                color="secondary"
-                class="textcolor--text"
-                rounded
-                large
-                width="90%"
-                height="40"
-                @click="validateOTP"
-              >
+              <v-btn :disabled="otp.length < 6" color="secondary" class="textcolor--text" rounded large width="90%" height="40" @click="validateOTP">
                 VERIFY
               </v-btn>
             </v-card-title>
@@ -329,7 +233,7 @@ export default {
     },
     async generatePhoneOtp() {
       this.time = 119;
-      const status  =   await AuthService.generateOTP({
+      const status = await AuthService.generateOTP({
         mobile: this.phoneNumber,
       });
       // console.log("otp generate res",response)
@@ -339,9 +243,9 @@ export default {
         screen_name: "LoginScreen",
       });
       // console.log("opt send response", response)
-      if(status){
+      if (status) {
         this.isGenerateOtpClicked = true;
-      }      
+      }
       this.otpTimmer();
     },
     otpTimmer() {
@@ -447,11 +351,10 @@ export default {
 };
 </script>
 <style >
-.v-text-field.v-text-field--solo:not(.v-text-field--solo-flat)
-  > .v-input__control
-  > .v-input__slot {
+.v-text-field.v-text-field--solo:not(.v-text-field--solo-flat)>.v-input__control>.v-input__slot {
   box-shadow: unset;
 }
+
 /* 
 .myBackground {
   background: radial-gradient(

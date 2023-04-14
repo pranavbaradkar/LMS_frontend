@@ -103,6 +103,7 @@
             width="90%"
             height="40"
             @click="validateOTP"
+            :disabled="otp.length"
           >
             VERIFY
           </v-btn>
@@ -1291,7 +1292,7 @@ export default {
   // },
   data() {
     return {
-      e1: 2,
+      e1: 1,
       experience: "Fresher",
       isCurrentlyWorking: false,
       isFetchingLocation: false,
