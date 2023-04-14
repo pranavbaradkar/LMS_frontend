@@ -181,6 +181,7 @@
         rounded
         large
         width="300px"
+        :disabled=""
         @click="goTo(e1)"
       >
         {{ e1 == 4 ? "save" : "next" }}
@@ -217,7 +218,8 @@ export default {
     goTo(step) {
       switch (step) {
         case 1:
-          if (this.$refs.step1.validate()) {
+          if (this.userIntrestData.school_ids.length != 0) {
+            console.log("validate",this.$refs.step1.validate())
             this.e1 = 2;
             console.log("step", this.e1);
           }
