@@ -12,6 +12,7 @@ export default {
                     'Authorization': AuthService.getToken()
                 }
             })
+            console.log(response)
             return response;
         } catch (error) {
             return error.response;

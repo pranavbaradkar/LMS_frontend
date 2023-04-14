@@ -103,7 +103,7 @@
             width="90%"
             height="40"
             @click="validateOTP"
-            :disabled="otp.length"
+            :disabled="otp.length != 6"
           >
             VERIFY
           </v-btn>
@@ -286,13 +286,15 @@
                               rounded
                               class="rounded-xl"
                               @keypress="isNumber($event)"
-                              counter="10"
+                              :counter="10"
                               prefix="+91"
                               :type="
                                 !personalInfo.is_phone_verified
                                   ? 'number'
                                   : 'text'
                               "
+                              maxLength="10"
+                         
                               :rules="[
                                 (v) => !!v || 'Mobile number is required',
                                 (v) =>
@@ -315,7 +317,7 @@
                                       usingPhone
                                     "
                                     @click="
-                                      generatePhoneOtp(), (otpDialog = true)
+                                      generatePhoneOtp()
                                     "
                                   >
                                     verify
@@ -1713,29 +1715,37 @@ export default {
       await AuthService.generateOTP({
         email: this.personalInfo.email,
       });
+      this.isGenerateOtpClicked = true;
+      this.otpTimmer();
       this.$mixpanel.track("VerifyEmailClicked", {
         email_address: this.personalInfo.email,
         screen_name: "PersonalProfileInformationScreen",
       });
 
       // console.log("opt send response", response)
-      this.isGenerateOtpClicked = true;
-      this.otpTimmer();
+      
     },
     async generatePhoneOtp() {
       this.time = 119;
       this.resendBool = false;
-      await AuthService.generateOTP({
-        mobile: "+91" + this.personalInfo.phone_no,
+ const response =  await AuthService.generateOTP({
+        mobile:  this.personalInfo.phone_no,
       });
+
+      if(response){
+        this.otpDialog = true
+      }
+      
+
+      this.isGenerateOtpClicked = true;
+      this.otpTimmer();
       this.$mixpanel.track("VerifyMobileClicked", {
         phone_number: this.personalInfo.phone_no,
         screen_name: "PersonalProfileInformationScreen",
       });
 
       // console.log("opt send response", response)
-      this.isGenerateOtpClicked = true;
-      this.otpTimmer();
+      
     },
 
     otpTimmer() {
