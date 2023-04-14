@@ -13,7 +13,7 @@
               <v-card-subtitle>
                 <span class="font-weight-light grey--text">Test Duration:</span>
                 <span v-if="assessment.tests != null">
-                  {{ assessment.tests[0].duration_of_assessment }} minutes</span>
+                  {{  formatTime(assessment.tests[0].duration_of_assessment) }} </span>
               </v-card-subtitle>
 
               <v-divider class="mx-4 mt-0"></v-divider>
@@ -80,12 +80,15 @@
 
             </v-container>
           </v-card>
-          <!-- progress List -->
+          <!-- Progress List -->
           <v-card v-else :height="getHeight" id="myScroll" class="pa-4 ma-2 pt-0 rounded-xl"
-            @click="isProgressClicked = false">
+           >
             <v-card height="auto" id="circleCard" elevation="0">
               <v-card-title class="text-subtitle font-weight-regular accent--text testHead">
-                <p>{{ progressListTitle }}</p>
+                <p class="mb-0">{{ progressListTitle }}</p>
+                <v-spacer></v-spacer>
+              <v-icon  @click="isProgressClicked = false">mdi-close</v-icon>
+
               </v-card-title>
               <v-divider class="mx-4 mt-0"></v-divider>
 
@@ -93,17 +96,18 @@
             <v-divider class="mx-4 mt-0"></v-divider>
             <v-container>
               <v-card elevation="0" id="myScroll" height="auto">
-                <v-list-item-group mandatory v-model="selectedQuestion">
-                  <v-list-item class="grey lighten-4 pt-2" v-for="(item, i) in progressList" :key="i"
+                <v-list-item-group mandatory >
+                  <v-list-item class="grey lighten-4 pt-2" v-for="(item, i) in progressList" :key="i" v-on:click="setSelectedQuestionFromProgress(item)"
                     @click="isProgressClicked = false">
                     <v-list-item-content class="py-0">
                       <v-list-item-title :class="
                         i == selectedQuestion ? 'primary--text font-weight-regular' : 'font-weight-light'
                       "><v-icon large :color="getColor(item)">mdi-circle-medium</v-icon>
                         <img v-if="i == selectedQuestion" src="../assets/Polygonpoly.png" class="polyicon" />
-                        Question {{ i + 1 }}</v-list-item-title>
-
+                        Question {{ getQuestionIndex(item)+1 }}</v-list-item-title>
+                      <v-list-item-subtitle>
                       <v-divider class="mt-2 mb-1"></v-divider>
+                      </v-list-item-subtitle>
                     </v-list-item-content>
                     <v-list-item-action v-if="bookmarked.includes(item)">
                       <v-icon color="primary">
@@ -119,7 +123,7 @@
         </v-col>
         <!-- Right Card -->
         <v-col cols="9" class="pl-0">
-          <v-card :height="getHeight" class="d-flex my-2 mr-2  flex-column rounded-xl">
+          <v-card v-if="screening.length!=0" :height="getHeight" class="d-flex my-2 mr-2  flex-column rounded-xl">
             <v-card-title @click="$router.push('/')" class="pb-0">
               <v-icon>mdi-close</v-icon>
             </v-card-title>
@@ -186,10 +190,10 @@
                       <v-btn class="ma-2 text-wrap" min-height="50px" height="auto"
                         :color="questions[selectedQuestion].myAnswer == option.option_key ? 'secondaryAccent' : ''" v-for="(option, index) in questions[selectedQuestion]
                           .question_options" :key="index" @click="
-    setOption(
-      questions[selectedQuestion].question_options[index]
-    )
-  ">
+                            setOption(
+                              questions[selectedQuestion].question_options[index]
+                            )
+                          ">
                         {{ option.option_value }}
                       </v-btn>
                     </v-row>
@@ -236,6 +240,14 @@
                   </v-row></v-card-title>
               </v-container>
             </v-card>
+          </v-card>
+          <v-card v-else class="d-flex flex-column justify-center align-center my-2 mr-2 rounded-xl" :height="getHeight">
+            <v-card-title>
+              No Questions Data Found!
+            </v-card-title>
+            <v-card-title @click="$router.back()" class="pb-0">
+              <v-btn rounded color="secondary" class="black--text" width="250">Return To Home</v-btn>
+            </v-card-title>
           </v-card>
         </v-col>
       </v-row>
@@ -400,6 +412,27 @@
         </v-row>
       </v-container>
     </v-dialog>
+    <!-- Error Dialog -->
+    <v-dialog v-model="errorDialog" max-width="366px" persistent>
+      <v-card>
+        <v-container fluid class="pa-8">
+          <v-card-text class="text-center">
+            <v-icon color="error" size="96">mdi-close-circle-outline</v-icon>
+            <p class="text-h5 py-4">{{ errorMessage }}</p>
+            <v-btn
+            depressed
+            class="black--text"
+              color="secondary"
+              large
+              width="157px"
+              rounded
+              @click="errorDialog = false"
+              >OK</v-btn
+            >
+          </v-card-text>
+        </v-container>
+      </v-card>
+    </v-dialog>
 
   </div>
 </template>
@@ -413,10 +446,12 @@ export default {
   name: "AssessmentView",
   data() {
     return {
+      errorDialog:false,
+      errorMessage:'Failed',
       hours: "00",
       mins: "00",
       secs: "00",
-      seconds: 10,
+      seconds: 800,
       lastAnswerTime: null,
       timerId: null,
       isProgressClicked: false,
@@ -443,7 +478,7 @@ export default {
   },
   computed: {
     isTimeUp() {
-      return this.seconds <= 0;
+      return this.secondsseconds <= 0;
     },
     getHeight() {
       return this.windowHeight - 40 + "px";
@@ -479,6 +514,34 @@ export default {
   },
 
   methods: {
+    formatTime(seconds) {
+      const hours = Math.floor(seconds / 3600);
+      const minutes = Math.floor((seconds % 3600) / 60);
+      //const remainingSeconds = seconds % 60;
+      if(hours==0){
+        return (
+        
+        String(minutes).padStart(2, '0') +
+        ' minutes' 
+      );
+      }
+      else{
+        return (
+        String(hours).padStart(2, '0') +
+        ' hours and ' +
+        String(minutes).padStart(2, '0') +
+        ' minutes' 
+      );
+      }
+    },
+    setSelectedQuestionFromProgress(item) {
+      this.selectedQuestion=this.getQuestionIndex(item);
+      this.scrollMethod("scrollId" + this.selectedQuestion);
+
+    },
+    getQuestionIndex(question){
+      return this.questions.indexOf(question);
+    },
     onClickSummaryQuestionBox(index) {
       this.selectedQuestion = index;
       this.summaryDialog = false;
@@ -654,7 +717,7 @@ export default {
     setOption(option) {
       if (!this.isTimeUp) {
         this.questions[this.selectedQuestion].myAnswer = option.option_key;
-        console.log(this.questions[this.selectedQuestion]);
+        //console.log(this.questions[this.selectedQuestion]);
 
         if (this.skipped.includes(this.questions[this.selectedQuestion])) {
           let index = this.bookmarked.indexOf(
@@ -735,12 +798,20 @@ export default {
       this.windowHeight = window.innerHeight;
     },
     async getAssessmentInfo() {
-      const response = await AssessmentsController.getSingleAssessment();
+      const response = await AssessmentsController.getScreeningQuestions();
+      if (response.data.success) {
+        this.screening = response.data.data;
+      }else{
+        this.errorDialog=true;
+        this.errorMessage=response.data.error;
+      }
       const response2 =
         await RecommendedAssessmentController.getRecommendedAssessment();
-      this.assessment = response2.data.data;
-      this.screening = response.data.data;
-      this.seconds = this.assessment.tests[0].duration_of_assessment * 60;
+      if (response2.data.success) {
+        this.assessment = response2.data.data;
+        console.log(this.assessment);
+      } 
+      this.seconds = this.assessment.tests[0].duration_of_assessment;
       this.lastAnswerTime = this.seconds;
 
       this.screening.forEach((element) => {
@@ -751,7 +822,7 @@ export default {
         assessment_name: this.assessment.name,
         screen_name: "AssessmentScreen",
       });
-      console.log("screening: ", this.questions);
+      //console.log("screening: ", this.questions);
     },
     handleBeforeUnload(event) {
       event.preventDefault();

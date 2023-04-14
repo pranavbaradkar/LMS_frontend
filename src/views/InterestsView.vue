@@ -21,7 +21,7 @@
                 height="25"
                 color="secondary"
                 class="rounded-xl"
-               :value="(e1/4)*100"
+                :value="(e1 / 4) * 100"
               ></v-progress-linear>
             </v-col>
           </v-row>
@@ -33,28 +33,28 @@
           <!------------------------------------------ STEP 1 ------------------------------------------>
           <v-stepper-content step="1" elevation="0" class="pt-0 pb-0">
             <v-form lazy-validation ref="step1">
-            <v-card-title class="d-flex justify-center">
-              Which is your preferrerd school?
-            </v-card-title>
-            <v-container>
-              <v-autocomplete
-                v-model="userIntrestData.school_ids"
-                clearable
-                deletable-chips
-                label="Schools"
-                outlined
-                class="rounded-xl"
-                chips
-                :items="levels"
-                multiple
-                item-text="name"
-                item-value="id"
-                :rules="[(v) => !!v || 'School is required']"
-                              required
-              >
-              </v-autocomplete>
-            </v-container>
-          </v-form>
+              <v-card-title class="d-flex justify-center">
+                Which is your preferrerd school?
+              </v-card-title>
+              <v-container>
+                <v-autocomplete
+                  v-model="userIntrestData.school_ids"
+                  clearable
+                  deletable-chips
+                  label="Schools"
+                  outlined
+                  class="rounded-xl"
+                  chips
+                  :items="schools"
+                  multiple
+                  item-text="name"
+                  item-value="id"
+                  :rules="[(v) => !!v || 'School is required']"
+                  required
+                >
+                </v-autocomplete>
+              </v-container>
+            </v-form>
           </v-stepper-content>
           <!------------------------------------------ STEP 2 ------------------------------------------>
 
@@ -75,7 +75,7 @@
                       :key="i"
                     >
                       <v-card
-                      :class="active ? 'selected-box ' : ''"
+                        :class="active ? 'selected-box ' : ''"
                         class="d-flex align-center ma-2 rouded-xl"
                         width="145px"
                         height="158px"
@@ -105,14 +105,14 @@
             <div id="myScroll">
               <v-item-group v-model="userIntrestData.board_ids" multiple>
                 <v-container>
-                  <v-layout row wrap justify-center class="item-box" >
+                  <v-layout row wrap justify-center class="item-box">
                     <v-item
                       v-slot="{ active, toggle }"
                       v-for="(board, i) in boards"
                       :key="i"
                     >
                       <v-card
-                         class="d-flex align-center ma-2 rouded-xl"
+                        class="d-flex align-center ma-2 rouded-xl"
                         :class="active ? 'selected-box ' : ''"
                         width="145px"
                         height="158px"
@@ -152,12 +152,10 @@
                       :key="i"
                     >
                       <v-card
-                 
-                        class="d-flex align-center ma-2 rouded-xl "
+                        class="d-flex align-center ma-2 rouded-xl"
                         width="145px"
                         height="158px"
                         :class="active ? 'selected-box ' : ''"
-
                         @click="toggle"
                       >
                         <v-col align-self="center">
@@ -185,20 +183,21 @@
         width="300px"
         @click="goTo(e1)"
       >
-        {{  e1 == 4 ? 'save' : 'next'}}
+        {{ e1 == 4 ? "save" : "next" }}
       </v-btn>
     </div>
   </v-card>
 </template>
+
 <script>
 import SchoolController from "@/controllers/SchoolController";
 import BoardController from "@/controllers/BoardController";
 import LevelController from "@/controllers/LevelController";
 import SubjectController from "@/controllers/SubjectController";
-import UserIntrestController from '@/controllers/UserIntrestController'; 
+import UserIntrestController from "@/controllers/UserIntrestController";
 
 export default {
-  name: "RegestrationIntrest",
+  name: "InterestsView",
   data() {
     return {
       e1: 1,
@@ -206,57 +205,53 @@ export default {
       schools: [],
       boards: [],
       levels: [],
-     userIntrestData:  {
-    "level_ids": [],
-    "school_ids": [],
-    "board_ids": [],
-    "subject_ids": []
-    }
+      userIntrestData: {
+        level_ids: [],
+        school_ids: [],
+        board_ids: [],
+        subject_ids: [],
+      },
     };
   },
   methods: {
-
     goTo(step) {
       switch (step) {
         case 1:
-           if (this.$refs.step1.validate()) {
+          if (this.$refs.step1.validate()) {
             this.e1 = 2;
-            console.log("step",this.e1);
+            console.log("step", this.e1);
           }
 
           break;
         case 2:
           // if (this.$refs.step1.validate())
           console.log("step2");
-          this.e1 = 3;       
-          console.log("step",this.e1);
+          this.e1 = 3;
+          console.log("step", this.e1);
           break;
         case 3:
-            this.e1 = 4
-            console.log("step",this.e1);
-          
-          
+          this.e1 = 4;
+          console.log("step", this.e1);
+
           break;
-          case 4:
-          console.log("step4")
-         this.createUserIntrest();
+        case 4:
+          console.log("step4");
+          this.createUserIntrest();
           // if (this.$refs.step1.validate())
           console.log("router step");
-          this.$router.push('/');
-          
-          
-          break;
-        
+          this.$router.push("/");
 
+          break;
 
         default:
-         
-      }},
-   async createUserIntrest(){
-    console.log('userInterst',this.userIntrestData);
-   const response =  await UserIntrestController.createUserIntrest(this.userIntrestData);
-   console.log(response);
-
+      }
+    },
+    async createUserIntrest() {
+      console.log("userInterst", this.userIntrestData);
+      const response = await UserIntrestController.createUserIntrest(
+        this.userIntrestData
+      );
+      console.log(response);
     },
     async getSubjects() {
       const response = await SubjectController.getSubject();
@@ -291,4 +286,4 @@ export default {
   },
 };
 </script>
-     
+       

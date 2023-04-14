@@ -7,7 +7,7 @@ import AuthService from '@/services/AuthService'
 import AssessmentView from '../views/AssessmentView'
 import SucessSubmitView from '../views/SucessSubmitView'
 import FailedView from '../views/FailedView'
-import RegestrationIntrest from '../components/RegestrationIntrest'
+import InterestsView from '../views/InterestsView.vue'
 
 //import store from "../store";
 
@@ -24,8 +24,8 @@ const routes = [
   },
   {
     path: '/interests',
-    name: 'RegestrationIntrest',
-    component :RegestrationIntrest,
+    name: 'InterestsView',
+    component :InterestsView,
     meta: {
       requiresAuth: false,
     }
