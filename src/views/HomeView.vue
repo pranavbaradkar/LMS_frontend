@@ -84,7 +84,7 @@
                     v-bind="attrs"
                     v-on="on"
                     @click="recommendedTestViewEvent"
-                    >VIEW TEST</v-btn
+                    >TAKE TEST</v-btn
                   >
                 </template>
 
@@ -218,7 +218,7 @@
                         rounded
                         v-on:click="selectedAssessment = assessment"
                         @click="dialog = true"
-                        >VIEW TEST</v-btn
+                        >TAKE TEST</v-btn
                       >
                     </v-card-actions>
                   </v-expand-transition>
