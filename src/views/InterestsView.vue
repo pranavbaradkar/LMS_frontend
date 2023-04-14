@@ -181,7 +181,7 @@
         rounded
         large
         width="300px"
-        :disabled=""
+        
         @click="goTo(e1)"
       >
         {{ e1 == 4 ? "save" : "next" }}
