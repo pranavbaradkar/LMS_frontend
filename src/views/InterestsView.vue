@@ -181,6 +181,7 @@
         rounded
         large
         width="300px"
+        :disabled="  (e1 == 1 && (userIntrestData.school_ids.length  ==0 ))  || (e1 == 2 && (userIntrestData.level_ids.length == 0 ))  ||  (e1 == 3 && (userIntrestData.board_ids.length == 0)) || (e1 == 4 && (userIntrestData.subject_ids.length == 0)) "
         
         @click="goTo(e1)"
       >
@@ -218,8 +219,7 @@ export default {
     goTo(step) {
       switch (step) {
         case 1:
-          if (this.userIntrestData.school_ids.length != 0) {
-            console.log("validate",this.$refs.step1.validate())
+          if (this.userIntrestData.school_ids.length != 0) {       
             this.e1 = 2;
             console.log("step", this.e1);
           }

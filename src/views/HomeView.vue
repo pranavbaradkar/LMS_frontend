@@ -10,9 +10,7 @@
           <v-row class="align-center">
             <v-card-title class="font-weight-light pr-0">Hello,</v-card-title>
 
-            <v-card-title class="pl-2" v-if="userInfo != null"
-              >{{ userInfo.first_name }} 👋</v-card-title
-            >
+            <v-card-title class="pl-2" v-if="userInfo != null">{{ userInfo.first_name }} 👋</v-card-title>
             <v-menu offset-y>
               <template v-slot:activator="{ on, attrs }">
                 <v-btn color="primary" dark v-bind="attrs" v-on="on" text icon>
@@ -28,35 +26,14 @@
       </v-list-item>
     </v-app-bar>
     <v-container>
-      <v-card
-        color="surface"
-        class="mx-auto"
-        elevation="0"
-        width="100%"
-        :height="getHeight"
-        variant="outlined"
-      >
+      <v-card color="surface" class="mx-auto" elevation="0" width="100%" :height="getHeight" variant="outlined">
         <div class="text-h6 mb-1 text-center">Test Selection</div>
-        <v-list-item-subtitle class="text-center grey--text"
-          >Let's start your profile, connect to people you know, and engage with
-          <br />them on topics you care about.</v-list-item-subtitle
-        >
+        <v-list-item-subtitle class="text-center grey--text">Let's start your profile, connect to people you know, and
+          engage with
+          <br />them on topics you care about.</v-list-item-subtitle>
 
-        <v-img
-          width="100%"
-          height="320px"
-          src="../assets/holebanner.jpeg"
-          cover
-          class="mt-4"
-        >
-          <v-card
-            class="pa-10"
-            elevation="0"
-            width="100%"
-            height="100%"
-            variant="outlined"
-            color="#0f0d0d57"
-          >
+        <v-img width="100%" height="320px" src="../assets/holebanner.jpeg" cover class="mt-4">
+          <v-card class="pa-10" elevation="0" width="100%" height="100%" variant="outlined" color="#0f0d0d57">
             <div class="white--text" v-if="recommendedAssessment != null">
               <div class="text-caption">Recommended</div>
 
@@ -67,37 +44,22 @@
               <div class="mt-4" v-if="recommendedAssessment.tests != null">
                 <v-icon class="white--text">mdi-book</v-icon>
                 {{ recommendedAssessment.tests[0].total_no_of_questions }}
-                Questions<v-icon class="white--text">mdi-circle-small</v-icon
-                ><v-icon class="white--text">mdi-clock</v-icon> 60 mins
-                <v-icon class="white--text">mdi-circle-small</v-icon
-                ><v-icon class="white--text">mdi-book</v-icon>
+                Questions<v-icon class="white--text">mdi-circle-small</v-icon><v-icon
+                  class="white--text">mdi-clock</v-icon> 60 mins
+                <v-icon class="white--text">mdi-circle-small</v-icon><v-icon class="white--text">mdi-book</v-icon>
                 300 Users
               </div>
 
               <v-dialog v-model="dialog" max-width="650px" color="#FBF5F2">
                 <template v-slot:activator="{ on, attrs }">
-                  <v-btn
-                    color="secondary"
-                    class="black--text mt-8"
-                    rounded
-                    large
-                    v-bind="attrs"
-                    v-on="on"
-                    @click="recommendedTestViewEvent"
-                    >TAKE TEST</v-btn
-                  >
+                  <v-btn color="secondary" class="black--text mt-8" rounded large v-bind="attrs" v-on="on"
+                    @click="recommendedTestViewEvent">TAKE TEST</v-btn>
                 </template>
 
                 <v-card fluid elevation="0" class="rounded-xl" color="#FBF5F2">
-                  <v-btn class="i-close-btn" icon @click="dialog = false"
-                    ><v-icon>mdi-close</v-icon></v-btn
-                  >
+                  <v-btn class="i-close-btn" icon @click="dialog = false"><v-icon>mdi-close</v-icon></v-btn>
 
-                  <v-stepper
-                    v-model="e1"
-                    class="rounded-lg transparent elevation-0 pt-8"
-                    color="#FBF5F2"
-                  >
+                  <v-stepper v-model="e1" class="rounded-lg transparent elevation-0 pt-8" color="#FBF5F2">
                     <v-stepper-header class="text-subtitle-2 elevation-0">
                       <v-stepper-step :complete="e1 > 1" step="1">
                         Screening Test
@@ -120,15 +82,19 @@
                           <div class="d-flex flex-row text-secondry">
                             <div class="d-flex flex-row text--secondary">
                               <v-icon>mdi-note-text-outline</v-icon>
-                              <div class="m-2 mr-2">20 Questions</div>
+                              <div class="m-2 mr-2 ">
+                                {{ noOfQuestions }}
+                                Questions </div>
                               <v-icon>mdi-circle-small</v-icon>
                             </div>
-                            <div class="d-flex flex-row">
+                            <div class="d-flex flex-row text--secondary">
                               <v-icon>mdi-clock-outline</v-icon>
-                              <div class="m-2 mr-2">15 mins</div>
+                              <div class="m-2 mr-2">{{ formatTime(duration) }}</div>
+
+
                               <v-icon>mdi-circle-small</v-icon>
                             </div>
-                            <div class="d-flex flex-row">
+                            <div class="d-flex flex-row text--secondary">
                               <v-icon>mdi-map-marker-radius-outline</v-icon>
                               <div class="m-2 mr-2">Online</div>
                             </div>
@@ -136,13 +102,8 @@
                           <div class="Subtitle-1 pt-5">Sections</div>
                           <div class="w-100">
                             <!-- <v-chip-group> -->
-                            <v-chip
-                              v-for="(item, index) in selectedAssessment.skills"
-                              :key="index"
-                              class="ma-2"
-                              color="secondary"
-                              >{{ item }}</v-chip
-                            >
+                            <v-chip v-for="(item, index) in selectedAssessment.skills" :key="index" class="ma-2"
+                              color="secondary black--text">{{ item }}</v-chip>
                             <!-- </v-chip-group> -->
                           </div>
                           <v-card-title class="pl-0">Instructions</v-card-title>
@@ -152,14 +113,8 @@
                           </p>
                         </div>
                         <div class="d-flex justify-center w-100">
-                          <v-btn
-                            color="secondary"
-                            class="black--text mt-10 mb-12"
-                            rounded
-                            large
-                            @click="startTest"
-                            >START TEST</v-btn
-                          >
+                          <v-btn color="secondary" class="black--text mt-10 mb-12" rounded large @click="startTest">START
+                            TEST</v-btn>
                         </div>
                       </v-stepper-content>
                       <!------------------------------------------ STEP 2 ------------------------------------------>
@@ -176,30 +131,12 @@
         <div class="text-h6 py-4">Other Tests</div>
 
         <div class="slideparent">
-          <v-slide-group
-            v-model="model"
-            class="pa-0 ma-0 surface"
-            center-active
-            show-arrows
-          >
-            <v-slide-item
-              v-for="assessment in allAssessments"
-              :key="assessment.id"
-            >
+          <v-slide-group v-model="model" class="pa-0 ma-0 surface" center-active show-arrows>
+            <v-slide-item v-for="assessment in allAssessments" :key="assessment.id">
               <div class="mytestcard">
-                <v-card
-                  class="mx-auto mr-3 mb-4 movingcard"
-                  min-width="344"
-                  max-width="344"
-                  outlined
-                  height="180"
-                >
+                <v-card class="mx-auto mr-3 mb-4 movingcard" min-width="344" max-width="344" outlined height="180">
                   <v-list-item three-line>
-                    <v-list-item-avatar
-                      tile
-                      size="80"
-                      color="grey"
-                    ></v-list-item-avatar>
+                    <v-list-item-avatar tile size="80" color="grey"></v-list-item-avatar>
                     <v-list-item-content>
                       <v-list-item-title class="text-h7 mb-0 text-wrap">
                         {{ assessment.name }}
@@ -211,15 +148,8 @@
                   </v-list-item>
                   <v-expand-transition>
                     <v-card-actions>
-                      <v-btn
-                        block
-                        color="secondary"
-                        class="black--text"
-                        rounded
-                        v-on:click="selectedAssessment = assessment"
-                        @click="dialog = true"
-                        >TAKE TEST</v-btn
-                      >
+                      <v-btn block color="secondary" class="black--text" rounded
+                        v-on:click="selectedAssessment = assessment" @click="dialog = true">TAKE TEST</v-btn>
                     </v-card-actions>
                   </v-expand-transition>
                 </v-card>
@@ -239,6 +169,7 @@ import LogedInUserInfo from "@/controllers/LogedInUserInfo";
 import AssessmentController from "@/controllers/AssessmentController";
 import RecommendedAssessmentController from "@/controllers/RecommendedAssessmentController";
 
+
 export default {
   name: "HomeView",
   data() {
@@ -252,6 +183,9 @@ export default {
       userInfo: {},
       allAssessments: [],
       recommendedAssessment: {},
+      duration: 0,
+      noOfQuestions: 0,
+
       e1: 1,
     };
   },
@@ -270,6 +204,21 @@ export default {
     window.removeEventListener("resize", this.onResize);
   },
   methods: {
+    formatTime(seconds) {
+      const hours = Math.floor(seconds / 3600);
+      const minutes = Math.floor((seconds % 3600) / 60);
+      //const remainingSeconds = seconds % 60;
+      if (hours == 0) {
+        return String(minutes).padStart(2, "0") + " minutes";
+      } else {
+        return (
+          String(hours).padStart(2, "0") +
+          " hours and " +
+          String(minutes).padStart(2, "0") +
+          " minutes"
+        );
+      }
+    },
     startRecommendedTest() {
       this.dialog = false;
       this.$mixpanel.track("StartTestClicked", {
@@ -292,7 +241,9 @@ export default {
     },
     recommendedTestViewEvent() {
       this.selectedAssessment = this.recommendedAssessment;
-      console.log("instruction", this.selectedAssessment);
+      console.log("instruction", this.selectedAssessment.tests[0].duration_of_assessment);
+      this.duration = this.selectedAssessment.tests[0].duration_of_assessment;
+      this.noOfQuestions = this.selectedAssessment.tests[0].total_no_of_questions
       this.$mixpanel.track("RecommendedViewTestClicked", {
         assessment_id: this.recommendedAssessment.id,
         assessment_name: this.recommendedAssessment.name,

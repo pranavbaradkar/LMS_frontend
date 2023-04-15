@@ -1,3 +1,10 @@
+/* assessment css here */
+.next-prev-card {
+    position: absolute;
+    bottom: 0px;
+}
+
+
 
 .v-application .rounded-xl {
     border-radius: 12px !important;
