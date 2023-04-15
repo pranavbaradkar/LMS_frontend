@@ -489,12 +489,13 @@
 <script>
 import "../styles.css";
 import AssessmentsController from "../controllers/AssessmentsController";
-import RecommendedAssessmentController from "../controllers/RecommendedAssessmentController";
+import AssessmentController from "../controllers/AssessmentController";
 import Vue from "vue";
 export default {
   name: "AssessmentView",
   data() {
     return {
+      assessmentId:'',
       isNextButtonDisabled: true,
       confirmExitDialog: false,
       errorDialog: false,
@@ -595,7 +596,7 @@ export default {
         this.selectedQuestion = index;
         this.summaryDialog = false;
         this.scrollMethod("scrollId" + this.selectedQuestion);
-        if (this.questions[index].myAnswer!=null) {
+        if (this.questions[index].myAnswer != null) {
           this.isNextButtonDisabled = false;
         }
       }
@@ -872,7 +873,7 @@ export default {
       this.windowHeight = window.innerHeight;
     },
     async getAssessmentInfo() {
-      const response = await AssessmentsController.getScreeningQuestions();
+      const response = await AssessmentsController.getScreeningQuestions(this.assessmentId);
       if (response.data.success) {
         this.screening = response.data.data;
       } else {
@@ -880,14 +881,13 @@ export default {
         this.errorMessage = response.data.error;
       }
       const response2 =
-        await RecommendedAssessmentController.getRecommendedAssessment();
+        await AssessmentController.getSingleAssessment(this.assessmentId);
       if (response2.data.success) {
         this.assessment = response2.data.data;
-        console.log(this.assessment);
+        //console.log(this.assessment);
       }
       this.seconds = this.assessment.tests[0].duration_of_assessment;
       this.lastAnswerTime = this.seconds;
-
       this.screening.forEach((element) => {
         this.questions.push(...element.questions);
       });
@@ -896,7 +896,7 @@ export default {
         assessment_name: this.assessment.name,
         screen_name: "AssessmentScreen",
       });
-      //console.log("screening: ", this.questions);
+      console.log("screening: ", this.screening);
     },
     handleBeforeUnload(event) {
       event.preventDefault();
@@ -908,6 +908,8 @@ export default {
     },
   },
   created() {
+    this.assessmentId = this.$route.query.id;
+    console.log(this.assessmentId);
     this.getAssessmentInfo();
   },
 };

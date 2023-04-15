@@ -6,9 +6,9 @@ const instance = axios.create({
 
 export default {
     getAllAssessment: async function () {
-        
+
         try {
-            const response = await instance.get('/users/assessments' ,{
+            const response = await instance.get('/users/assessments', {
                 headers: {
                     'Authorization': AuthService.getToken()
                 }
@@ -18,5 +18,17 @@ export default {
             return error.response;
         }
     },
-   
+    getSingleAssessment: async function (id) {
+
+        try {
+            const response = await instance.get('assessments/' + id, {
+                headers: {
+                    'Authorization': AuthService.getToken()
+                }
+            })
+            return response;
+        } catch (error) {
+            return error.response;
+        }
+    },
 }

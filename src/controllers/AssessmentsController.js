@@ -4,9 +4,9 @@ const instance = axios.create({
     baseURL: 'https://lmsbackend.knoggles.ai/api/v1/'
 });
 export default {
-    getScreeningQuestions: async function () {
+    getScreeningQuestions: async function (id) {
         try {
-            const response = await instance.get('assessments/187/screening/questions-list', {
+            const response = await instance.get('assessments/'+id+'/screening/questions-list', {
                 headers: {
                     'Authorization': AuthService.getToken()
                 }
