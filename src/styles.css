@@ -159,11 +159,28 @@ body {
 .ctCode {
     padding-left: 20px
 }
-.v-text-field--filled > .v-input__control > .v-input__slot, .v-text-field--full-width > .v-input__control > .v-input__slot, .v-text-field--outlined > .v-input__control > .v-input__slot {
+/* .c-text-field > .v-text-field--outlined > .v-input__control > .v-input__slot {
    
     min-height: 48px !important;
     height: 48px !important;
  
+}
+
+.c-text-field > .v-text-field--full-width > .v-input__control > .v-input__slot, .v-text-field--outlined > .v-input__control > .v-input__slot {
+   
+    min-height: 48px !important;
+    height: 48px !important;
+ 
+}
+.c-text-field > .v-text-field--filled > .v-input__control > .v-input__slot, .v-text-field--full-width > .v-input__control > .v-input__slot, .v-text-field--outlined > .v-input__control > .v-input__slot {
+   
+    min-height: 48px !important;
+    height: 48px !important;
+ 
+} */
+.c-text-field > .v-text-field--outlined > .v-input__control > .v-input__slot {
+    min-height: 48px !important;
+    height: 48px !important;
   }
 
   .unset-capitalize {
@@ -171,10 +188,10 @@ body {
   }
   .m-btn-p > span {
 
-  }
-  .v-select__slot > .v-label {
+  } /*
+ .v-select__slot > .v-label {
     padding-left: 12px !important;
-  }
+  }  
   .v-select__slot > .v-input__append-inner > .v-input__icon > .v-icon {
     margin-top: 24px !important
   }
@@ -192,7 +209,7 @@ body {
   .v-application--is-ltr .v-text-field .v-label {
 
     top: 15px;
-  }
+  } */
   /* input {
     text-align: center;
   }

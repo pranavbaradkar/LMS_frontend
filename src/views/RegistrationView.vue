@@ -185,19 +185,19 @@
                         elevation="0"
                       >
                         <v-row class="py-0">
-                          <v-col cols="2" class="py-0"
+                          <v-col cols="2" class="py-0 c-text-field"
                             ><v-select
                               v-model="personalInfo.title"
                               label="Title *"
                               :items="['Ms', 'Mrs', 'Mr']"
                               outlined
-                              class="rounded-xl"
+                              class="rounded-xl c-text-field"
                               :rules="[(v) => !!v || 'Title is required']"
                               required
                             >
                             </v-select
                           ></v-col>
-                          <v-col cols="4" class="py-0">
+                          <v-col cols="4" class="py-0 c-text-field">
                             <div id="scrollId"></div>
                             <v-text-field
                               v-model="personalInfo.first_name"
@@ -209,7 +209,7 @@
                               required
                               persistent-counter="10"
                             ></v-text-field></v-col
-                          ><v-col cols="3" class="py-0"
+                          ><v-col cols="3" class="py-0 c-text-field"
                             ><v-text-field
                               v-model="personalInfo.middle_name"
                               outlined
@@ -217,7 +217,7 @@
                               rounded
                               class="rounded-xl"
                             ></v-text-field></v-col
-                          ><v-col cols="3" class="py-0"
+                          ><v-col cols="3" class="py-0 c-text-field"
                             ><v-text-field
                               v-model="personalInfo.last_name"
                               outlined
@@ -231,7 +231,7 @@
                         </v-row>
                         <v-row class="py-0">
                           <v-col class="py-0">
-                            <v-form v-model="emailBool">
+                            <v-form v-model="emailBool" class="c-text-field">
                               <v-text-field
                                 v-model="personalInfo.email"
                                 outlined
@@ -277,7 +277,7 @@
                           </v-col>
                         </v-row>
                         <v-row class="py-0">
-                          <v-col class="py-0">
+                          <v-col class="py-0 c-text-field">
                             <v-text-field
                               v-model="personalInfo.phone_no"
                               label="Your 10-digit mobile no."
@@ -340,7 +340,7 @@
                           </v-col>
                         </v-row>
                         <v-row class="py-0">
-                          <v-col cols="4" class="py-0"
+                          <v-col cols="4" class="py-0 c-text-field"
                             ><v-text-field
                               v-model="personalInfo.dob"
                               outlined
@@ -354,7 +354,7 @@
                               required
                             ></v-text-field
                           ></v-col>
-                          <v-col cols="3" class="py-0">
+                          <v-col cols="3" class="py-0 c-text-field">
                             <v-select
                               v-model="personalInfo.gender"
                               label="Gender*"
@@ -389,9 +389,9 @@
                             ></v-progress-circular>
                           </v-col>
                         </v-row>
-                        <div v-if="!isCurrentLocation" class="pt-5">
+                        <div v-if="!isCurrentLocation" class="pt-5 ">
                           <v-row class="py-0">
-                            <v-col cols="6" class="py-0">
+                            <v-col cols="6" class="py-0 c-text-field">
                               <v-select
                                 v-model="personalInfo.country_id"
                                 :value="country"
@@ -409,7 +409,7 @@
                               >
                               </v-select>
                             </v-col>
-                            <v-col cols="6" class="py-0">
+                            <v-col cols="6" class="py-0 c-text-field">
                               <v-select
                                 v-model="personalInfo.state_id"
                                 :value="state"
@@ -429,7 +429,7 @@
                             </v-col>
                           </v-row>
                           <v-row class="py-0">
-                            <v-col cols="6" class="py-0">
+                            <v-col cols="6" class="py-0 c-text-field">
                               <v-select
                                 v-model="personalInfo.districtId"
                                 :value="district"
@@ -439,14 +439,12 @@
                                 class="rounded-xl"
                                 item-value="id"
                                 item-text="district_name"
-                                :rules="[
-                                  (v) => !!v || 'District name is required',
-                                ]"
+                               
                                 @change="fetchTalukas"
                               >
                               </v-select>
                             </v-col>
-                            <v-col cols="6" class="py-0">
+                            <v-col cols="6" class="py-0 c-text-field">
                               <v-select
                                 v-model="personalInfo.talukTehsil"
                                 :value="talukTehsil"
@@ -461,7 +459,7 @@
                               </v-select>
                             </v-col> </v-row
                           ><v-row class="py-0">
-                            <v-col cols="6" class="py-0">
+                            <v-col cols="6" class="py-0 c-text-field">
                               <v-select
                                 v-model="personalInfo.city_id"
                                 :value="cityVillage"
@@ -474,7 +472,7 @@
                               >
                               </v-select>
                             </v-col>
-                            <v-col cols="6" class="py-0">
+                            <v-col cols="6" class="py-0 c-text-field">
                               <v-text-field
                                 v-model="personalInfo.pincode"
                                 :value="pinCode"
@@ -494,7 +492,7 @@
                                 required
                               ></v-text-field>
                             </v-col>
-                            <v-col cols="12" class="py-0">
+                            <v-col cols="12" class="py-0 c-text-field">
                               <v-text-field
                                 v-model="personalInfo.address"
                                 outlined
@@ -509,7 +507,7 @@
                         </div>
                         <div v-if="isCurrentLocation" class="pt-5">
                           <v-row class="py-0">
-                            <v-col cols="6" class="py-0">
+                            <v-col cols="6" class="py-0 c-text-field">
                               <v-text-field
                                 v-model="personalInfo.country_name"
                                 label="Country *"
@@ -524,7 +522,7 @@
                               >
                               </v-text-field>
                             </v-col>
-                            <v-col cols="6" class="py-0">
+                            <v-col cols="6" class="py-0 c-text-field">
                               <v-text-field
                                 v-model="personalInfo.state_name"
                                 readonly
@@ -541,7 +539,7 @@
                             </v-col>
                           </v-row>
                           <v-row class="py-0">
-                            <v-col cols="6" class="py-0">
+                            <v-col cols="6" class="py-0 c-text-field">
                               <v-text-field
                                 v-model="personalInfo.district_name"
                                 label="District"
@@ -555,7 +553,7 @@
                               >
                               </v-text-field>
                             </v-col>
-                            <v-col cols="6" class="py-0">
+                            <v-col cols="6" class="py-0 c-text-field">
                               <v-text-field
                                 v-model="personalInfo.taluka_name"
                                 label="Taluk / Tehsil"
@@ -567,7 +565,7 @@
                               </v-text-field>
                             </v-col> </v-row
                           ><v-row class="py-0">
-                            <v-col cols="6" class="py-0">
+                            <v-col cols="6" class="py-0 c-text-field">
                               <v-text-field
                                 v-model="personalInfo.city_name"
                                 readonly
@@ -579,7 +577,7 @@
                               >
                               </v-text-field>
                             </v-col>
-                            <v-col cols="6" class="py-0">
+                            <v-col cols="6" class="py-0 c-text-field">
                               <v-text-field
                                 v-model="personalInfo.pincode"
                                 :value="pinCode"
@@ -599,7 +597,7 @@
                                 required
                               ></v-text-field>
                             </v-col>
-                            <v-col cols="12" class="py-0">
+                            <v-col cols="12" class="py-0 c-text-field     ">
                               <v-text-field
                                 v-model="personalInfo.address"
                                 outlined
@@ -685,7 +683,7 @@
 
                           <v-expansion-panel-content>
                             <v-row class="py-0">
-                              <v-col class="py-0"
+                              <v-col class="py-0 c-text-field"
                                 ><v-text-field
                                   v-model="qualification.institution"
                                   outlined
@@ -704,7 +702,7 @@
                               ></v-col>
                             </v-row>
                             <v-row class="py-0">
-                              <v-col class="py-0"
+                              <v-col class="py-0 c-text-field"
                                 ><v-text-field
                                   v-model="qualification.programme"
                                   outlined
@@ -720,7 +718,7 @@
                                 ></v-text-field
                               ></v-col> </v-row
                             ><v-row class="py-0">
-                              <v-col class="py-0"
+                              <v-col class="py-0 c-text-field"
                                 ><v-text-field
                                   v-model="qualification.field_of_study"
                                   outlined
@@ -740,7 +738,7 @@
                             </v-row>
 
                             <v-row class="py-0">
-                              <v-col cols="6" class="py-0"
+                              <v-col cols="6" class="py-0 c-text-field"
                                 ><v-text-field
                                   v-model="qualification.start_date"
                                   outlined
@@ -753,7 +751,7 @@
                                   ]"
                                 ></v-text-field
                               ></v-col>
-                              <v-col cols="6" class="py-0"
+                              <v-col cols="6" class="py-0 c-text-field"
                                 ><v-text-field
                                   v-model="qualification.end_date"
                                   outlined
@@ -769,7 +767,7 @@
                             </v-row>
 
                             <v-row class="py-0">
-                              <v-col cols="12" class="py-0">
+                              <v-col cols="12" class="py-0 c-text-field">
                                 <v-text-field
                                   outlined
                                   label="Extra Curricular Activities"
@@ -781,7 +779,7 @@
                               </v-col>
                             </v-row>
                             <v-row class="py-0">
-                              <v-col cols="12" class="py-0">
+                              <v-col cols="12" class="py-0 c-text-field">
                                 <v-text-field
                                   outlined
                                   label="Achievements"
@@ -793,7 +791,7 @@
                               </v-col>
                             </v-row>
                             <v-row class="py-0">
-                              <v-col cols="12" class="py-0">
+                              <v-col cols="12" class="py-0 c-text-field">
                                 <!-- <div class="rounded-xl d-flex flex-row justify-space-between align-center" outline style="height:48px; width: 100%; margin-bottom: 8px;padding: 0 24px; border: 1px solid grey; position: relative">
                                     <div>
                                       <v-chip v-for="i in 5" :key="i">cetificate.jpg</v-chip>
@@ -942,9 +940,10 @@
 
                                         <v-col
                                           cols="1 center"
-                                          class="py-0 px-0"
+                                          class="py-0 px-0 c-text-field"
                                         >
                                           <v-text-field
+                                          :disabled="experience != 'Experienced'"
                                             type="number"
                                             outlined
                                             @keypress="isNumber($event)"
@@ -960,9 +959,10 @@
                                             Years
                                           </div></v-col
                                         >
-                                        <v-col cols="1" class="py-0 px-0">
+                                        <v-col cols="1" class="py-0 px-0 c-text-field">
                                           <v-text-field
                                             type="number"
+                                            :disabled="experience != 'Experienced'"
                                             @keypress="isNumber($event)"
                                             outlined
                                             class="rounded-xl"
@@ -983,6 +983,7 @@
                                           label="Fresher"
                                           value="Fresher"
                                           color="accent"
+                                          @click="professional.experience_year = 0;professional.experience_month = 0 "
                                         >
                                         </v-radio
                                       ></v-row>
@@ -992,7 +993,7 @@
                             </v-row>
                             <div v-if="experience == 'Experienced'">
                               <v-row class="py-0">
-                                <v-col class="py-0"
+                                <v-col class="py-0 c-text-field"
                                   ><v-text-field
                                     outlined
                                     label="Role/ Position *"
@@ -1010,7 +1011,7 @@
                                   ></v-text-field
                                 ></v-col> </v-row
                               ><v-row class="py-0">
-                                <v-col class="py-0"
+                                <v-col class="py-0 c-text-field"
                                   ><v-select
                                     label="Employment Type"
                                     :items="employeeType"
@@ -1048,10 +1049,10 @@
                                 </v-col>
                               </v-row>
                               <v-row class="py-0">
-                                <v-col cols="6" class="py-0"
+                                <v-col cols="6" class="py-0 c-text-field"
                                   ><v-text-field
                                     outlined
-                                    label="Start Date"
+                                    label="Start Date*"
                                     rounded
                                     class="rounded-xl"
                                     v-model="professional.start_date"
@@ -1061,18 +1062,18 @@
                                     ]"
                                   ></v-text-field
                                 ></v-col>
-                                <v-col cols="6" class="py-0"
+                                <v-col cols="6" class="py-0 c-text-field"
                                   ><v-text-field
                                     :disabled="isCurrentlyWorking"
                                     outlined
-                                    label="End Date"
+                                    label="End Date*"
                                     rounded
                                     class="rounded-xl"
                                     v-model="professional.end_date"
                                     type="date"
-                                    :rules="[
+                                    :rules="!isCurrentlyWorking ? [
                                       (v) => !!v || 'End Date is required',
-                                    ]"
+                                    ] : ''"
                                   ></v-text-field
                                 ></v-col>
                               </v-row>
@@ -1517,6 +1518,11 @@ export default {
         } else {
           this.isCreatingUser = false;
         }
+      }
+      else {
+          if(this.$refs.step1.validate()){
+            alert('Please Verify Secondry Contact')
+          }
       }
     },
     async goToStep3() {
