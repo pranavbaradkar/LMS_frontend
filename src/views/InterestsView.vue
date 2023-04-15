@@ -143,7 +143,7 @@
               >Select maximum 3 subjects</v-card-subtitle
             >
             <div>
-              <v-item-group multiple v-model="userIntrestData.subject_ids">
+              <v-item-group multiple v-model="userIntrestData.subject_ids"  max="3">
                 <v-container>
                   <v-layout row wrap justify-center class="item-box">
                     <v-item
@@ -240,7 +240,13 @@ export default {
           
           break;
         case 3:
-        if (this.userIntrestData.board_ids.length != 0) {        
+        if (this.userIntrestData.board_ids.length != 0) {    
+          
+          
+
+          // if(this.userIntrestData.board_ids.length > 3){
+          //   alert("Maxi")
+          // }
           this.e1 = 4;
           console.log("step", this.e1);
         }

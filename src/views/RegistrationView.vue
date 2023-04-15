@@ -948,6 +948,7 @@
                                             outlined
                                             @keypress="isNumber($event)"
                                             class="rounded-xl"
+                                            :rules='[minValueRule]'
                                             v-model="
                                               professional.experience_year
                                             "
@@ -964,6 +965,7 @@
                                             type="number"
                                             :disabled="experience != 'Experienced'"
                                             @keypress="isNumber($event)"
+                                            :rules='[minValueRule]'
                                             outlined
                                             class="rounded-xl"
                                             v-model="
@@ -1295,7 +1297,7 @@ export default {
   // },
   data() {
     return {
-      e1: 2,
+      e1: 1,
       experience: "Fresher",
       isCurrentlyWorking: false,
       isFetchingLocation: false,
@@ -1809,6 +1811,12 @@ export default {
     getHeight() {
       return this.windowHeight;
     },
+
+    minValueRule() {
+      return (value) =>
+        parseInt(value) >= 0 || 'Value must be greater than or equal to 0';
+    },
+
     emailErrors() {
       const errors = [];
       if (!this.$v.email.$dirty) return errors;
