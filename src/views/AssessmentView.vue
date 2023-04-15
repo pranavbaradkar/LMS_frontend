@@ -174,21 +174,21 @@
                     questions[selectedQuestion].skill.name }}</v-chip>
                 </v-col>
               </v-row>
-            </v-container>
-
-            <v-container class="px-16" >
-              <!-- Question Block -->
-              <div >
-                <v-card class="my-card pa-0 rounded-xl" height="50px" elevation="0" id="myScroll">
+              <v-card class="my-card pa-0 mt-4 rounded-xl"  elevation="0" color="grey lighten-4" id="myScroll">
                   <v-card height="auto" elevation="0" color="grey lighten-4" >
                     <v-card-title v-if="questions[selectedQuestion] != null">{{ questions[selectedQuestion].statement }}
                     </v-card-title>
                   </v-card>
                 </v-card>
-                <v-spacer></v-spacer>
+            </v-container>
+           
+            <v-container class="px-16 option-box" >
+              <!-- Question Block -->
+                 
+                <!-- <v-spacer></v-spacer> -->
               <!-- Options Card -->
-              <v-card class="option-card mt-8 rounded-xl " elevation="0">
-                <v-card height="auto" color="sufaceAccent" elevation="0">
+              <v-card class="option-card mt-8 rounded-xl w-100 float-bottom " elevation="0">
+                <v-card height="auto" color="sufaceAccent w-100" elevation="0">
                   <v-card-title>
                     <v-row v-if="questions[selectedQuestion] != null" justify="center">
                       <v-btn class="ma-2 text-wrap" min-height="50px" height="auto"
@@ -204,7 +204,7 @@
                   </v-card-title>
                 </v-card>
               </v-card>
-              </div>
+
             </v-container>
 
             <v-spacer></v-spacer>
@@ -898,9 +898,9 @@ export default {
   border-width: 2px;
 }
 
-.my-card {
-  border: 1px solid rgba(175, 175, 175, 0.342);
-}
+/* .my-card {
+  height: calc(100vh - 700px) !important;
+} */
 
 .option-card {
   border: 0.5px solid rgba(0, 0, 0, 0.26);
