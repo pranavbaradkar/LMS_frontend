@@ -73,12 +73,12 @@
                     </v-stepper-header>
                     <v-stepper-items>
                       <!------------------------------------------ STEP 1 ------------------------------------------>
-                      <v-stepper-content step="1">
+                      <v-stepper-content step="1" class="pt-0">
                         <div class="d-flex flex-column">
                           <div class="Subtitle-2 text--secondary">
                             {{ selectedAssessment.name }}
                           </div>
-                          <div class="Subtitle-1 pt-5">Screening Test</div>
+                          <div class="Subtitle-1 my-2">Screening Test</div>
                           <div class="d-flex flex-row text-secondry">
                             <div class="d-flex flex-row text--secondary">
                               <v-icon>mdi-note-text-outline</v-icon>

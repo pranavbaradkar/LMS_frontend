@@ -202,22 +202,39 @@ body {
     min-height: 48px !important;
     height: 48px !important;
   }
+  .c-text-field > .v-input > .v-input__control > .v-input__slot > .v-input__append-inner > .v-input__icon > .mdi-close {
+    margin-top: -62px !important
+  }
 
   .unset-capitalize {
     text-transform: unset !important;
   }
   .m-btn-p > span {
 
-  } /*
+  }
+  .n-mt-10 {
+    margin-top: -10px;
+  }
+  .c-text-field > .v-input > .v-input__control > .v-input__slot > .v-text-field__slot > label {
+
+    top: 13px !important;
+    }
+    
+  /* .n-mt-10 {
+    margin-top: -10px;
+  } */
+  /* .v-select__slot > .v-input__append-inner > .v-input__icon > .mdi-close {
+    margin-top: -16px !important
+  } */
+
+  /*
  .v-select__slot > .v-label {
     padding-left: 12px !important;
   }  
   .v-select__slot > .v-input__append-inner > .v-input__icon > .v-icon {
     margin-top: 24px !important
   }
-  .v-select__slot > .v-input__append-inner > .v-input__icon > .mdi-close {
-    margin-top: -16px !important
-  }
+ 
   .v-select__selection--comma {
     margin-left: 12px !important;
   }

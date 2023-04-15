@@ -245,8 +245,8 @@
                                 required
                                 @keydown.enter.prevent="submit"
                               >
-                                <template #append>
-                                  <div class="d-flex align-center">
+                                <template #append >
+                                  <div class="d-flex align-center n-mt-10">
                                     <v-btn
                                       on
                                       text
@@ -260,7 +260,7 @@
                                     <v-row
                                       v-if="personalInfo.is_email_verified"
                                     >
-                                      <v-col class="px-0">
+                                      <v-col class="px-0 mt-1">
                                         <v-img
                                           src="../assets/verifiedIcon.png"
                                           contain
@@ -304,7 +304,7 @@
                               required
                             >
                               <template #append>
-                                <div class="d-flex align-center">
+                                <div class="d-flex align-center n-mt-10">
                                   <v-btn
                                     on
                                     text
@@ -324,7 +324,7 @@
                                   </v-btn>
 
                                   <v-row v-if="personalInfo.is_phone_verified">
-                                    <v-col class="px-0">
+                                    <v-col class="px-0 mt-1">
                                       <v-img
                                         src="../assets/verifiedIcon.png"
                                         contain
@@ -813,7 +813,7 @@
                                 
                                 >
                                   <template #append>
-                                    <div class="d-flex align-center cursor"  @click="manualClick">
+                                    <div class="d-flex align-center cursor n-mt-10"  @click="manualClick">
                                       <v-icon>mdi-attachment</v-icon> Attachment
                                     </div>
                                   </template>
@@ -1295,7 +1295,7 @@ export default {
   // },
   data() {
     return {
-      e1: 1,
+      e1: 2,
       experience: "Fresher",
       isCurrentlyWorking: false,
       isFetchingLocation: false,
@@ -1836,3 +1836,6 @@ export default {
   },
 };
 </script>
+<style scoped>
+
+</style>
