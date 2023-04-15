@@ -124,12 +124,12 @@
         <!-- Right Card -->
         <v-col cols="9" class="pl-0">
           <v-card v-if="screening.length!=0" :height="getHeight" class="d-flex my-2 mr-2  flex-column rounded-xl">
-            <v-card-title @click="$router.push('/')" class="pb-0">
+            <v-card-title @click="confirmExitDialog=true" class="pb-0">
               <v-icon>mdi-close</v-icon>
             </v-card-title>
-            <!-- Progress Bar -->
             <v-container class="px-16">
-              <v-row class="align-center text-align-center px-2 pb-8">
+              <!-- Timer -->
+              <v-row class="align-center text-align-center px-2 pb-4">
                 <v-card class="pa-0" width="70" elevation="0">
                   <v-text-field hide-details="" label="HH" readonly :value=hours outlined rounded
                     class="rounded-xl centered-input " :style="seconds<=60?'background: linear-gradient(180deg, rgba(255, 59, 48, 0.076) 0%, rgba(255, 59, 48, 0.12) 100%);':'background: linear-gradient(180deg, rgba(255, 255, 255, 0.38) 0%, rgba(130, 210, 218, 0.6) 100%)'">
@@ -153,16 +153,18 @@
                   <span>Time Left</span>
                 </v-col>
                 <v-spacer></v-spacer>
+                <!-- Submit Button -->
                 <v-col cols="4" class="text-end">
                   <v-btn width="150px" height="48px" rounded color="accent" class="white--text"
                     @click="openTestSummary">SUBMIT</v-btn>
                 </v-col>
               </v-row>
+            <!-- Progress Bar -->
 
               <v-progress-linear class="rounded-xl mt-4 mb-6" rounded
                 :value="((answeredProgress + skipped.length + bookmarked.length) / questions.length) * 100" color="secondary"
-                background-color="grey lighten-2" height="25"></v-progress-linear>
-              <v-row justify="space-between" class="pt-2">
+                background-color="grey lighten-2" height="18"></v-progress-linear>
+              <v-row justify="space-between">
                 <v-col>
                   <span class="text-caption">Question
                     {{ selectedQuestion + 1 + " of " + questions.length }}</span>
@@ -174,14 +176,16 @@
               </v-row>
             </v-container>
 
-            <v-container class="px-16 " id="myScroll">
+            <v-container class="px-16" >
               <!-- Question Block -->
-              <v-card class="my-card pa-0 mt-2 rounded-xl" elevation="0">
-                <v-card height="auto" elevation="0" color="grey lighten-4" min-height="192px">
-                  <v-card-title v-if="questions[selectedQuestion] != null">{{ questions[selectedQuestion].statement }}
-                  </v-card-title>
+              <div >
+                  <v-card class="my-card pa-0 rounded-xl" elevation="0" id="myScroll">
+                  <v-card height="auto" elevation="0" color="grey lighten-4" min-height="128px">
+                    <v-card-title v-if="questions[selectedQuestion] != null">{{ questions[selectedQuestion].statement }}
+                    </v-card-title>
+                  </v-card>
                 </v-card>
-              </v-card>
+                <v-spacer></v-spacer>
               <!-- Options Card -->
               <v-card class="option-card mt-8 rounded-xl " elevation="0">
                 <v-card height="auto" color="sufaceAccent" elevation="0">
@@ -200,6 +204,7 @@
                   </v-card-title>
                 </v-card>
               </v-card>
+              </div>
             </v-container>
 
             <v-spacer></v-spacer>
@@ -439,6 +444,40 @@
         </v-container>
       </v-card>
     </v-dialog>
+    <!-- Exit Confirmation Dialog -->
+    <v-dialog v-model="confirmExitDialog" width="358px" persistent>
+      <v-card>
+        <v-container >
+          <v-card-text class="text-center">
+            <!-- <v-icon color="error" size="96">mdi-close-circle-outline</v-icon> -->
+            <p class="text-h5 mb-0">Are you sure you want to quit?</p>
+            <v-card-subtitle>
+              We will not be able to save your progress if you quit.
+            </v-card-subtitle>
+            <v-row justify="end" class="ma-2">
+              <v-btn
+            depressed
+            class="black--text"
+              color="primary"
+              large
+              text
+              rounded
+              @click="confirmExitDialog = false"
+              >NO</v-btn
+            ><v-btn
+            depressed
+            class="primary--text"
+              color="secondary"
+              large
+              rounded
+              @click="$router.back()"
+              >YES</v-btn
+            >
+            </v-row>
+          </v-card-text>
+        </v-container>
+      </v-card>
+    </v-dialog>
 
   </div>
 </template>
@@ -452,8 +491,9 @@ export default {
   name: "AssessmentView",
   data() {
     return {
-      errorDialog:false,
-      errorMessage:'Failed',
+      confirmExitDialog: false,
+      errorDialog: false,
+      errorMessage: "Failed",
       hours: "00",
       mins: "00",
       secs: "00",
@@ -524,28 +564,22 @@ export default {
       const hours = Math.floor(seconds / 3600);
       const minutes = Math.floor((seconds % 3600) / 60);
       //const remainingSeconds = seconds % 60;
-      if(hours==0){
+      if (hours == 0) {
+        return String(minutes).padStart(2, "0") + " minutes";
+      } else {
         return (
-        
-        String(minutes).padStart(2, '0') +
-        ' minutes' 
-      );
-      }
-      else{
-        return (
-        String(hours).padStart(2, '0') +
-        ' hours and ' +
-        String(minutes).padStart(2, '0') +
-        ' minutes' 
-      );
+          String(hours).padStart(2, "0") +
+          " hours and " +
+          String(minutes).padStart(2, "0") +
+          " minutes"
+        );
       }
     },
     setSelectedQuestionFromProgress(item) {
-      this.selectedQuestion=this.getQuestionIndex(item);
+      this.selectedQuestion = this.getQuestionIndex(item);
       this.scrollMethod("scrollId" + this.selectedQuestion);
-
     },
-    getQuestionIndex(question){
+    getQuestionIndex(question) {
       return this.questions.indexOf(question);
     },
     onClickSummaryQuestionBox(index) {
@@ -807,16 +841,16 @@ export default {
       const response = await AssessmentsController.getScreeningQuestions();
       if (response.data.success) {
         this.screening = response.data.data;
-      }else{
-        this.errorDialog=true;
-        this.errorMessage=response.data.error;
+      } else {
+        this.errorDialog = true;
+        this.errorMessage = response.data.error;
       }
       const response2 =
         await RecommendedAssessmentController.getRecommendedAssessment();
       if (response2.data.success) {
         this.assessment = response2.data.data;
         console.log(this.assessment);
-      } 
+      }
       this.seconds = this.assessment.tests[0].duration_of_assessment;
       this.lastAnswerTime = this.seconds;
 
