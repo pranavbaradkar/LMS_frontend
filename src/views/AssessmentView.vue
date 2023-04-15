@@ -55,8 +55,8 @@
               <v-card elevation="0" id="myScroll" :height="getQuestionsListHeight">
 
                 <!-- need to set height of this card for set  good scroll -->
-                <v-list-item-group mandatory v-model="selectedQuestion">
-                  <v-list-item class="grey lighten-4 pt-2" v-for="(item, i) in questions" :key="i"
+                <v-list-item-group mandatory >
+                  <v-list-item class="grey lighten-4 pt-2" v-for="(item, i) in questions" :key="i" 
                     @click="questionClicked(item)">
                     <v-list-item-content class="py-0" :id="scrollId + '' + i">
                       <v-list-item-title :class="
@@ -217,11 +217,11 @@
                       Previous
                     </v-btn>
 
-                    <v-btn v-if="selectedQuestion == questions.length - 1" rounded color="secondary" @click="summaryDialog=true"
+                    <v-btn :disabled="isNextButtonDisabled" v-if="selectedQuestion == questions.length - 1" rounded color="secondary" @click="summaryDialog=true"
                       height="36px" class="ml-8 black--text">
                       Proceed & View Summary
                     </v-btn>
-                    <v-btn v-else rounded color="secondary" :disabled="questions[selectedQuestion].myAnswer!=null" @click="next"
+                    <v-btn  v-else rounded color="secondary" :disabled="isNextButtonDisabled" @click="next"
                       width="120px" height="36px" class="ml-8 black--text">
                       NEXT
                     </v-btn>
@@ -296,7 +296,7 @@
                 <v-card-subtitle>
                   <span class="font-weight-light grey--text">Test Duration:</span>
                   <span v-if="assessment.tests != null">
-                    {{ assessment.tests[0].duration_of_assessment }} minutes</span>
+                    {{ formatTime(assessment.tests[0].duration_of_assessment) }} minutes</span>
                 </v-card-subtitle>
                 <v-divider class="mx-4 mt-0"></v-divider>
 
@@ -304,7 +304,7 @@
               <v-divider class="mx-4 mt-0"></v-divider>
               <v-container>
                 <v-card elevation="0" id="myScroll" height="auto">
-                  <v-list-item-group mandatory v-model="selectedQuestion">
+                  <v-list-item-group mandatory >
                     <v-list-item class="grey lighten-4 pt-2" v-for="(item, i) in questions" :key="i"
                       @click="onClickSummaryQuestionBox(i)">
                       <v-list-item-content class="py-0" :id="scrollId + '' + i">
@@ -495,6 +495,7 @@ export default {
   name: "AssessmentView",
   data() {
     return {
+      isNextButtonDisabled: true,
       confirmExitDialog: false,
       errorDialog: false,
       errorMessage: "Failed",
@@ -528,7 +529,7 @@ export default {
   },
   computed: {
     isTimeUp() {
-      return this.secondsseconds <= 0;
+      return this.seconds <= 0;
     },
     getHeight() {
       return this.windowHeight - 40 + "px";
@@ -587,9 +588,17 @@ export default {
       return this.questions.indexOf(question);
     },
     onClickSummaryQuestionBox(index) {
-      this.selectedQuestion = index;
-      this.summaryDialog = false;
-      this.scrollMethod("scrollId" + this.selectedQuestion);
+      if (
+        this.questions[index].myAnswer ||
+        this.skipped.includes(this.questions[index])
+      ) {
+        this.selectedQuestion = index;
+        this.summaryDialog = false;
+        this.scrollMethod("scrollId" + this.selectedQuestion);
+        if (this.questions[index].myAnswer!=null) {
+          this.isNextButtonDisabled = false;
+        }
+      }
     },
     getColorClass(question) {
       if (this.bookmarked.includes(question)) {
@@ -672,9 +681,7 @@ export default {
       }
     },
     getColor(item) {
-      if (this.bookmarked.includes(item)) {
-        return "bookmarked";
-      } else if (this.skipped.includes(item)) {
+      if (this.skipped.includes(item)) {
         return "skipped";
       } else if (item.myAnswer != null) {
         return "answered";
@@ -688,17 +695,18 @@ export default {
           screen_name: "AssessmentScreen",
         });
         //console.log(this.questions[this.selectedQuestion]);
-        if (this.skipped.includes(question)) {
-          let index = this.bookmarked.indexOf(question);
-          this.skipped.splice(index, 1);
-          this.$mixpanel.track("BookmarkRemoved", {
-            question_id: this.selectedQuestion.id,
-            screen_name: "AssessmentScreen",
-          });
-        }
+        // if (this.skipped.includes(question)) {
+        //   let index = this.bookmarked.indexOf(question);
+        //   this.skipped.splice(index, 1);
+
+        // }
       } else {
         let index = this.bookmarked.indexOf(question);
         this.bookmarked.splice(index, 1);
+        this.$mixpanel.track("BookmarkRemoved", {
+          question_id: this.selectedQuestion.id,
+          screen_name: "AssessmentScreen",
+        });
       }
     },
     updateProgress() {
@@ -761,8 +769,8 @@ export default {
     setOption(option) {
       if (!this.isTimeUp) {
         this.questions[this.selectedQuestion].myAnswer = option.option_key;
+        this.isNextButtonDisabled = false;
         //console.log(this.questions[this.selectedQuestion]);
-
         if (this.skipped.includes(this.questions[this.selectedQuestion])) {
           let index = this.bookmarked.indexOf(
             this.questions[this.selectedQuestion]
@@ -809,6 +817,14 @@ export default {
       this.selectedQuestion = this.selectedQuestion + 1;
       this.couter++;
       this.scrollMethod("scrollId" + this.selectedQuestion);
+      if (
+        this.questions[this.selectedQuestion].myAnswer ||
+        this.skipped.includes(this.questions[this.selectedQuestion])
+      ) {
+        this.isNextButtonDisabled = false;
+      } else {
+        this.isNextButtonDisabled = true;
+      }
     },
     previous() {
       this.$mixpanel.track("PreviousButtonClicked", {
@@ -824,11 +840,25 @@ export default {
         screen_name: "AssessmentScreen",
         time_taken_in_sec: this.lastAnswerTime - this.seconds,
       });
+
       this.selectedQuestion = this.selectedQuestion - 1;
       this.couter++;
       this.scrollMethod("scrollId" + this.selectedQuestion);
+      if (
+        this.questions[this.selectedQuestion].myAnswer ||
+        this.skipped.includes(this.questions[this.selectedQuestion])
+      ) {
+        this.isNextButtonDisabled = false;
+      }
     },
-    questionClicked() {
+    questionClicked(item) {
+      if (item.myAnswer || this.skipped.includes(item)) {
+        this.selectedQuestion = this.questions.indexOf(item);
+        this.scrollMethod("scrollId" + this.selectedQuestion);
+        if (item.myAnswer) {
+          this.isNextButtonDisabled = false;
+        }
+      }
       this.$mixpanel.track("QuestionListClicked", {
         question_id: this.selectedQuestion.id,
         question_number_in_view: this.selectedQuestion + 1,

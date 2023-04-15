@@ -215,7 +215,7 @@ export default {
       this.time = 119;
 
       await AuthService.generateOTP({
-        email: this.vibgyouBool ? this.email + "@gmail.com" : this.email,
+        email: this.vibgyouBool ? this.email + "@vgos.org" : this.email,
       });
       this.$mixpanel.track("GenerateOTPClicked", {
         email_address: this.email,

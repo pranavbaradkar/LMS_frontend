@@ -1498,9 +1498,7 @@ export default {
     },
     async goToStep2() {
       if (
-        this.$refs.step1.validate() &&
-        this.personalInfo.is_email_verified &&
-        this.personalInfo.is_phone_verified
+        this.$refs.step1.validate() 
       ) {
         console.log("userif conditon");
         this.isCreatingUser = true;
@@ -1510,7 +1508,7 @@ export default {
         console.log(response);
         if (response.data.success) {
           this.$mixpanel.track("AcademicsPageLoaded", {
-            user_type: "job_seeker",
+            user_type: this.userInfo.user_type,
             screen_name: "AcademicsScreen",
           });
           this.isCreatingUser = false;
@@ -1541,7 +1539,7 @@ export default {
             screen_name: "AcademicProfileInformationScreen",
           });
           this.$mixpanel.track("ProfessionInfoStepLoaded", {
-            user_type: "job_seeker",
+            user_type: this.userInfo.user_type,
             screen_name: "ProfessionInfoScreen",
           });
           this.isCreatingUser = false;
@@ -1583,10 +1581,6 @@ export default {
           mixpanelData[`professional_info_${index + 1}`] = item;
         });
         this.$mixpanel.track("SaveProfileDetailsClicked", mixpanelData);
-
-       
-        
-       
       }
     },
     async startTest() {
@@ -1614,6 +1608,10 @@ export default {
       this.personalInfo.is_phone_verified = this.userInfo.is_phone_verified;
       this.personalInfo.email = this.userInfo.email;
       this.personalInfo.phone_no = this.userInfo.phone_no.slice(-10);
+      this.$mixpanel.track("PersonalInformationStepLoaded", {
+      user_type: this.userInfo.user_type,
+      screen_name: "PersonalProfileInformationScreen",
+    });
     },
     onResize() {
       this.windowHeight = window.innerHeight;
@@ -1835,10 +1833,7 @@ export default {
     window.removeEventListener("resize", this.onResize);
   },
   created() {
-    this.$mixpanel.track("PersonalInformationStepLoaded", {
-      user_type: "job_seeker",
-      screen_name: "PersonalProfileInformationScreen",
-    });
+    
     this.getUserInfo();
     this.fetchCountries();
   },
