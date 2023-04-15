@@ -62,7 +62,7 @@
                       <v-list-item-title :class="
                         i == selectedQuestion ? 'primary--text font-weight-regular' : 'font-weight-light'
                       "><v-icon large :color="getColor(item)">mdi-circle-medium</v-icon>
-                        <img v-if="i == selectedQuestion" src="../assets/Polygonpoly.png" class="polyicon" />
+                        <img v-if="i == selectedQuestion" src="../assets/Polygonpoly.png"  class="polyicon" />
                         Question {{ i + 1 }}</v-list-item-title>
 
                       <v-list-item-subtitle>
@@ -211,7 +211,8 @@
             <v-divider></v-divider>
             <v-card elevation="0" class="px-12 mb-2 mt-4">
               <v-container>
-                <v-card-title><v-row>
+                <v-card-title>
+                  <v-row>
                     <v-btn rounded color="primary" @click="previous" width="120px" height="36px" outlined
                       :disabled="selectedQuestion == 0">
                       Previous
@@ -223,7 +224,7 @@
                     </v-btn>
 
                     <v-spacer></v-spacer>
-                    <v-tooltip bottom v-if="!bookmarked.includes(questions[selectedQuestion])">
+                    <v-tooltip top  v-if="!bookmarked.includes(questions[selectedQuestion])">
                       <template v-slot:activator="{ on, attrs }">
                         <v-btn  large text color="primary" :disabled="isTimeUp" v-bind="attrs" v-on="on"
                       @click="bookmarkQuestion(questions[selectedQuestion])">
@@ -239,7 +240,7 @@
                       REMOVE BOOKMARK
                     </v-btn>
 
-                    <v-tooltip bottom>
+                    <v-tooltip top>
                       <template v-slot:activator="{ on, attrs }">
                         <v-btn text large color="primary" v-bind="attrs" v-on="on" :disabled="isTimeUp"
                           @click="skipQuestion(questions[selectedQuestion])">
@@ -248,7 +249,8 @@
                       </template>
                       <span>Skip this question if you do not know the answer</span>
                     </v-tooltip>
-                  </v-row></v-card-title>
+                  </v-row>
+                </v-card-title>
               </v-container>
             </v-card>
           </v-card>
@@ -523,6 +525,13 @@ export default {
     };
   },
   computed: {
+    test() {
+      if (this.questions != []) {
+        return false;
+      } else {
+        return true;
+      }
+    },
     isTimeUp() {
       return this.secondsseconds <= 0;
     },
@@ -780,11 +789,15 @@ export default {
     skipQuestion(question) {
       if (!this.skipped.includes(question)) {
         this.skipped.push(question);
-        //console.log(this.questions[this.selectedQuestion]);
       }
       this.questions[this.selectedQuestion].myAnswer = null;
       this.updateProgress();
-      this.next();
+      if (this.selectedQuestion + 1 != this.questions.length) {
+        this.next();
+      } else {
+        this.selectedQuestion = 0;
+        this.scrollMethod("scrollId" + this.selectedQuestion);
+      }
     },
 
     next() {
@@ -849,7 +862,7 @@ export default {
         await RecommendedAssessmentController.getRecommendedAssessment();
       if (response2.data.success) {
         this.assessment = response2.data.data;
-        console.log(this.assessment);
+        //console.log(this.assessment);
       }
       this.seconds = this.assessment.tests[0].duration_of_assessment;
       this.lastAnswerTime = this.seconds;
