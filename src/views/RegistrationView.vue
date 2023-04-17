@@ -239,9 +239,7 @@
                                 rounded
                                 :readonly="personalInfo.is_email_verified"
                                 class="rounded-xl"
-                                :rules="[
-                                  (v) => !!v || 'Email Address is required',
-                                ]"
+                                :rules="emailRules"
                                 required
                                 @keydown.enter.prevent="submit"
                               >
