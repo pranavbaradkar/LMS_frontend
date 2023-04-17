@@ -38,19 +38,24 @@
               </v-card-title>
               <v-container>
                 <v-autocomplete
+                
                   v-model="userIntrestData.school_ids"
                   clearable
                   deletable-chips
                   label="Schools"
+                  prepend-inner-icon="mdi-magnify"
                   outlined
                   class="rounded-xl"
-                  chips
+                  small-chips
                   :items="schools"
                   multiple
                   item-text="name"
                   item-value="id"
                   :rules="[(v) => !!v || 'School is required']"
                   required
+                  
+                  id="schoolBox"
+                  
                 >
                 </v-autocomplete>
               </v-container>
@@ -302,6 +307,15 @@ export default {
       this.levels = response.data.data.rows;
       //console.log("level log", this.levels);
     },
+  },
+  mounted() {
+
+  
+   setTimeout(()=> {
+    document.getElementById('schoolBox').click()
+      }
+      ,1000);
+
   },
   created() {
     this.getLevel();
