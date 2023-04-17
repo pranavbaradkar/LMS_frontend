@@ -189,9 +189,9 @@
               <!-- Options Card -->
               <v-card class="option-card mt-8 rounded-xl w-100 float-bottom " elevation="0">
                 <v-card height="auto" color="sufaceAccent w-100" elevation="0">
-                  <v-card-title>
-                    <v-row v-if="questions[selectedQuestion] != null" justify="center">
-                      <v-btn class="ma-2 text-wrap" min-height="50px" height="auto"
+                  <v-card-title v-if="questions[selectedQuestion] != null" class="d-flex w-100 flex-row justify-space-around">
+              
+                      <v-btn class="ma-2 option-width"  min-height="50px" 
                         :color="questions[selectedQuestion].myAnswer == option.option_key ? 'secondaryAccent' : ''" v-for="(option, index) in questions[selectedQuestion]
                           .question_options" :key="index" @click="
                             setOption(
@@ -200,7 +200,7 @@
                           ">
                         {{ option.option_value }}
                       </v-btn>
-                    </v-row>
+           
                   </v-card-title>
                 </v-card>
               </v-card>
@@ -296,7 +296,7 @@
                 <v-card-subtitle>
                   <span class="font-weight-light grey--text">Test Duration:</span>
                   <span v-if="assessment.tests != null">
-                    {{ formatTime(assessment.tests[0].duration_of_assessment) }} minutes</span>
+                    {{ formatTime(assessment.tests[0].duration_of_assessment) }}</span>
                 </v-card-subtitle>
                 <v-divider class="mx-4 mt-0"></v-divider>
 
@@ -794,10 +794,12 @@ export default {
       if (!this.skipped.includes(question)) {
         this.skipped.push(question);
         //console.log(this.questions[this.selectedQuestion]);
+        this.questions[this.selectedQuestion].myAnswer = null;
+        this.updateProgress();
       }
-      this.questions[this.selectedQuestion].myAnswer = null;
-      this.updateProgress();
-      this.next();
+      if(this.selectedQuestion+1!=this.questions.length){
+        this.next();
+      }
     },
 
     next() {
