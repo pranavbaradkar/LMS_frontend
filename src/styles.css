@@ -15,7 +15,7 @@
 }
 .my-card {
     border: 1px solid rgba(175, 175, 175, 0.342);
-    height: calc(100vh - 520px) !important;
+    height: calc(100vh - 540px) !important;
      border: 1px solid rgba(175, 175, 175, 0.342);
 
   }
@@ -43,6 +43,9 @@
 
 }
 
+.w-50 {
+    width: 50%;
+}
 .m-q-chip {
     background-color: #82D2DA57 !important;
     border: 0.5px solid rgba(0, 0, 0, 0.38) !important;
@@ -362,6 +365,9 @@ color: rgba(0, 0, 0, 0.8);
 }
 .w-100 {
     width: 100%;
+}
+.option-width {
+    width: calc(50% - 32px) !important;
 }
 .c-b-t-m {
     width: 145.92px;
