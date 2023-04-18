@@ -2,11 +2,11 @@
   <div class="surface">
     <v-container fluid>
       <v-row>
-        <!-- Left Card -->
+      
         <!-- Left Card -->
         <v-col cols="3">
           <v-card v-if="!isProgressClicked" :height="getHeight" class="pa-4 ma-2 pt-0 rounded-xl">
-            <v-card min-height="420" id="circleCard" elevation="0">
+            <v-card min-height="380" id="circleCard" elevation="0">
               <v-card-title>
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on, attrs }">
@@ -163,10 +163,10 @@
               </v-row>
               <!-- Progress Bar -->
 
-              <v-progress-linear class="rounded-xl mt-4 mb-6" rounded
+              <v-progress-linear class="rounded-xl mt-4 mb-4" rounded
                 :value="((answeredProgress + skipped.length + bookmarked.length) / questions.length) * 100"
                 color="secondary" background-color="grey lighten-2" height="18"></v-progress-linear>
-              <v-row justify="space-between">
+              <v-row justify="space-between" align="center">
                 <v-col>
                   <span class="text-caption">Question
                     {{ selectedQuestion + 1 + " of " + questions.length }}</span>
@@ -529,7 +529,7 @@ export default {
       return this.windowHeight - 40 + "px";
     },
     getQuestionsListHeight() {
-      return this.windowHeight - 480 + "px";
+      return this.windowHeight - 440 + "px";
     },
   },
   mounted() {

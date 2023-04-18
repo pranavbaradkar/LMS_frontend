@@ -9,8 +9,6 @@
     white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  -ms-text-overflow: ellipsis;
-  -webkit-text-overflow: ellipsis;
 
 }
 .v-application .rounded-xl {
