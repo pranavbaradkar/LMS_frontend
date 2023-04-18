@@ -7,9 +7,16 @@
         <v-col cols="3">
           <v-card v-if="!isProgressClicked" :height="getHeight" class="pa-4 ma-2 pt-0 rounded-xl">
             <v-card min-height="420" id="circleCard" elevation="0">
-              <v-card-title class=" text-subtitle font-weight-regular accent--text testHead">
-                <p class="assessment-name">{{ assessment.name }}</p>
-                <span></span>
+              <v-card-title>
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on, attrs }">
+                    <div  v-bind="attrs"
+                    v-on="on" class="assessment-name text-h6 font-weight-regular accent--text">
+                    {{ assessment.name }}
+                    </div>
+                  </template>
+                <span>{{ assessment.name }}</span>
+              </v-tooltip>
               </v-card-title>
               <v-card-subtitle>
                 <span class="font-weight-light grey--text">Test Duration:</span>
@@ -423,7 +430,7 @@
 
                 <v-card-title>
                   <v-row justify="center">
-                    <v-btn color="accent" width="249px" rounded x-large @click="submitAssessment">CONFIRM
+                    <v-btn color="accent" width="249px" height="48px" rounded x-large @click="submitAssessment">CONFIRM
                       SUBMISSION</v-btn>
                   </v-row>
                 </v-card-title>
@@ -479,7 +486,7 @@ export default {
   name: "AssessmentView",
   data() {
     return {
-      assessmentId: '',
+      assessmentId: "",
       isNextButtonDisabled: true,
       confirmExitDialog: false,
       errorDialog: false,
@@ -517,15 +524,13 @@ export default {
       return this.seconds <= 0;
     },
     getHeight() {
-      console.log("Height =", window.innerHeight)
-      console.log("Width =", window.innerWidth)
+      console.log("Height =", window.innerHeight);
+      console.log("Width =", window.innerWidth);
       return this.windowHeight - 40 + "px";
     },
     getQuestionsListHeight() {
-
       return this.windowHeight - 480 + "px";
     },
-
   },
   mounted() {
     window.addEventListener("beforeunload", this.handleBeforeUnload);
@@ -863,15 +868,18 @@ export default {
       this.windowHeight = window.innerHeight;
     },
     async getAssessmentInfo() {
-      const response = await AssessmentsController.getScreeningQuestions(this.assessmentId);
+      const response = await AssessmentsController.getScreeningQuestions(
+        this.assessmentId
+      );
       if (response.data.success) {
         this.screening = response.data.data;
       } else {
         this.errorDialog = true;
         this.errorMessage = response.data.error;
       }
-      const response2 =
-        await AssessmentController.getSingleAssessment(this.assessmentId);
+      const response2 = await AssessmentController.getSingleAssessment(
+        this.assessmentId
+      );
       if (response2.data.success) {
         this.assessment = response2.data.data;
         //console.log(this.assessment);

@@ -616,9 +616,9 @@
 
               <v-card elevation="0">
                 <v-row>
-                  <v-col cols="12">
+                  <v-col cols="12" >
                     <v-divider></v-divider>
-                    <v-card-title class="pb-0">
+                    <v-card-title class="mb-2">
                       <v-btn
                         rounded
                         color="secondary"
