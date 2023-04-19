@@ -3,11 +3,12 @@
     <v-container fluid>
       <v-row>
         <!-- Left Card -->
+        <!-- Left Card -->
         <v-col cols="3">
           <v-card v-if="!isProgressClicked" :height="getHeight" class="pa-4 ma-2 pt-0 rounded-xl">
             <v-card min-height="420" id="circleCard" elevation="0">
-              <v-card-title class="text-subtitle font-weight-regular accent--text testHead">
-                <p>{{ assessment.name }}</p>
+              <v-card-title class=" text-subtitle font-weight-regular accent--text testHead">
+                <p class="assessment-name">{{ assessment.name }}</p>
                 <span></span>
               </v-card-title>
               <v-card-subtitle>
@@ -15,7 +16,6 @@
                 <span v-if="assessment.tests != null">
                   {{  formatTime(assessment.tests[0].duration_of_assessment) }} </span>
               </v-card-subtitle>
-
               <v-divider class="mx-4 mt-0"></v-divider>
               <v-card-title class="pa-x pt-8 pb-0">
                 <v-row justify="space-around">
@@ -32,7 +32,6 @@
                       :value="((skipped.length / questions.length) * 100)" color="skipped"
                       @click="openProgressList('Skipped')">
                       <h4 class="black--text">{{ this.skipped.length }}</h4>
-
                     </v-progress-circular>
                     <v-card-subtitle class="py-2">SKIPPED</v-card-subtitle>
                   </div>
@@ -44,7 +43,6 @@
                     :value="((bookmarked.length / questions.length) * 100)" color="bookmarked"
                     @click="openProgressList('Bookmark')">
                     <h4 class="black--text">{{ this.bookmarked.length }}</h4>
-
                   </v-progress-circular>
                   <v-card-subtitle class="py-2">BOOKMARK</v-card-subtitle>
                 </div>
@@ -53,10 +51,9 @@
             <v-divider class="mx-4 mt-0"></v-divider>
             <v-container class="py-0 my-0">
               <v-card elevation="0" id="myScroll" :height="getQuestionsListHeight">
-
                 <!-- need to set height of this card for set  good scroll -->
                 <v-list-item-group mandatory >
-                  <v-list-item class="grey lighten-4 pt-2" v-for="(item, i) in questions" :key="i" 
+                  <v-list-item class="grey lighten-4 pt-2" v-for="(item, i) in questions" :key="i"
                     @click="questionClicked(item)">
                     <v-list-item-content class="py-0" :id="scrollId + '' + i">
                       <v-list-item-title :class="
@@ -64,7 +61,6 @@
                       "><v-icon large :color="getColor(item)">mdi-circle-medium</v-icon>
                         <img v-if="i == selectedQuestion" src="../assets/Polygonpoly.png" class="polyicon" />
                         Question {{ i + 1 }}</v-list-item-title>
-
                       <v-list-item-subtitle>
                         <v-divider class="mt-2 mb-1"></v-divider>
                       </v-list-item-subtitle>
@@ -77,7 +73,6 @@
                   </v-list-item>
                 </v-list-item-group>
               </v-card>
-
             </v-container>
           </v-card>
           <!-- Progress List -->
@@ -88,10 +83,8 @@
                 <p class="mb-0">{{ progressListTitle }}</p>
                 <v-spacer></v-spacer>
               <v-icon  @click="isProgressClicked = false">mdi-close</v-icon>
-
               </v-card-title>
               <v-divider class="mx-4 mt-0"></v-divider>
-
             </v-card>
             <v-divider class="mx-4 mt-0"></v-divider>
             <v-container>
@@ -119,33 +112,35 @@
               </v-card>
             </v-container>
           </v-card>
-
         </v-col>
         <!-- Right Card -->
         <v-col cols="9" class="pl-0">
-          <v-card v-if="screening.length!=0" :height="getHeight" class="d-flex my-2 mr-2  flex-column rounded-xl">
-            <v-card-title @click="confirmExitDialog=true" class="pb-0">
-              <v-icon>mdi-close</v-icon>
+          <v-card v-if="screening.length != 0" :height="getHeight" class="d-flex my-2 mr-2  flex-column rounded-xl">
+            <v-card-title @click="confirmExitDialog = true" class="pb-0">
+              <v-icon class="cursor">mdi-close</v-icon>
             </v-card-title>
             <v-container class="px-16">
               <!-- Timer -->
               <v-row class="align-center text-align-center px-2 pb-4">
                 <v-card class="pa-0" width="70" elevation="0">
                   <v-text-field hide-details="" label="HH" readonly :value=hours outlined rounded
-                    class="rounded-xl centered-input " :style="seconds<=60?'background: linear-gradient(180deg, rgba(255, 59, 48, 0.076) 0%, rgba(255, 59, 48, 0.12) 100%);':'background: linear-gradient(180deg, rgba(255, 255, 255, 0.38) 0%, rgba(130, 210, 218, 0.6) 100%)'">
+                    class="rounded-xl centered-input timmer "
+                    :style="seconds <= 60 ? 'background: linear-gradient(180deg, rgba(255, 59, 48, 0.076) 0%, rgba(255, 59, 48, 0.12) 100%);' : 'background: linear-gradient(180deg, rgba(255, 255, 255, 0.38) 0%, rgba(130, 210, 218, 0.6) 100%)'">
                   </v-text-field>
                 </v-card>
                 <span class="pa-2">:</span>
                 <v-card class="pa-0" width="70" elevation="0">
                   <v-text-field hide-details="" label="MM" readonly :value=mins outlined rounded
-                  class="rounded-xl centered-input " :style="seconds<=60?'background: linear-gradient(180deg, rgba(255, 59, 48, 0.076) 0%, rgba(255, 59, 48, 0.12) 100%);':'background: linear-gradient(180deg, rgba(255, 255, 255, 0.38) 0%, rgba(130, 210, 218, 0.6) 100%)'">
+                    class="rounded-xl centered-input timmer "
+                    :style="seconds <= 60 ? 'background: linear-gradient(180deg, rgba(255, 59, 48, 0.076) 0%, rgba(255, 59, 48, 0.12) 100%);' : 'background: linear-gradient(180deg, rgba(255, 255, 255, 0.38) 0%, rgba(130, 210, 218, 0.6) 100%)'">
 
                   </v-text-field>
                 </v-card>
                 <span class="pa-2">:</span>
                 <v-card class="pa-0" width="70" elevation="0">
                   <v-text-field hide-details="" label="SS" readonly :value=secs outlined rounded
-                  class="rounded-xl centered-input " :style="seconds<=60?'background: linear-gradient(180deg, rgba(255, 59, 48, 0.076) 0%, rgba(255, 59, 48, 0.12) 100%);':'background: linear-gradient(180deg, rgba(255, 255, 255, 0.38) 0%, rgba(130, 210, 218, 0.6) 100%)'">
+                    class="rounded-xl centered-input timmer "
+                    :style="seconds <= 60 ? 'background: linear-gradient(180deg, rgba(255, 59, 48, 0.076) 0%, rgba(255, 59, 48, 0.12) 100%);' : 'background: linear-gradient(180deg, rgba(255, 255, 255, 0.38) 0%, rgba(130, 210, 218, 0.6) 100%)'">
 
                   </v-text-field>
                 </v-card>
@@ -159,11 +154,11 @@
                     @click="openTestSummary">SUBMIT</v-btn>
                 </v-col>
               </v-row>
-            <!-- Progress Bar -->
+              <!-- Progress Bar -->
 
               <v-progress-linear class="rounded-xl mt-4 mb-6" rounded
-                :value="((answeredProgress + skipped.length + bookmarked.length) / questions.length) * 100" color="secondary"
-                background-color="grey lighten-2" height="18"></v-progress-linear>
+                :value="((answeredProgress + skipped.length + bookmarked.length) / questions.length) * 100"
+                color="secondary" background-color="grey lighten-2" height="18"></v-progress-linear>
               <v-row justify="space-between">
                 <v-col>
                   <span class="text-caption">Question
@@ -174,33 +169,34 @@
                     questions[selectedQuestion].skill.name }}</v-chip>
                 </v-col>
               </v-row>
-              <v-card class="my-card pa-0 mt-4 rounded-xl"  elevation="0" color="grey lighten-4" id="myScroll">
-                  <v-card height="auto" elevation="0" color="grey lighten-4" >
-                    <v-card-title v-if="questions[selectedQuestion] != null">{{ questions[selectedQuestion].statement }}
-                    </v-card-title>
-                  </v-card>
+              <v-card class="my-card pa-0 mt-4 rounded-xl" elevation="0" color="grey lighten-4" id="myScroll">
+                <v-card height="auto" elevation="0" color="grey lighten-4">
+                  <v-card-title v-if="questions[selectedQuestion] != null">{{ questions[selectedQuestion].statement }}
+                  </v-card-title>
                 </v-card>
+              </v-card>
             </v-container>
-           
-            <v-container class="px-16 option-box" >
+
+            <v-container class="px-16 option-box">
               <!-- Question Block -->
-                 
-                <!-- <v-spacer></v-spacer> -->
+
+              <!-- <v-spacer></v-spacer> -->
               <!-- Options Card -->
               <v-card class="option-card mt-8 rounded-xl w-100 float-bottom " elevation="0">
                 <v-card height="auto" color="sufaceAccent w-100" elevation="0">
-                  <v-card-title v-if="questions[selectedQuestion] != null" class="d-flex w-100 flex-row justify-space-around">
-              
-                      <v-btn class="ma-2 option-width"  min-height="50px" 
-                        :color="questions[selectedQuestion].myAnswer == option.option_key ? 'secondaryAccent' : ''" v-for="(option, index) in questions[selectedQuestion]
-                          .question_options" :key="index" @click="
-                            setOption(
-                              questions[selectedQuestion].question_options[index]
-                            )
-                          ">
-                        {{ option.option_value }}
-                      </v-btn>
-           
+                  <v-card-title v-if="questions[selectedQuestion] != null"
+                    class="d-flex w-100 pa-1 flex-row justify-space-around">
+
+                    <v-btn class="ma-2 option-width" min-height="50px"
+                      :color="questions[selectedQuestion].myAnswer == option.option_key ? 'secondaryAccent' : ''" v-for="(option, index) in questions[selectedQuestion]
+                        .question_options" :key="index" @click="
+    setOption(
+      questions[selectedQuestion].question_options[index]
+    )
+  ">
+                      {{ option.option_value }}
+                    </v-btn>
+
                   </v-card-title>
                 </v-card>
               </v-card>
@@ -211,47 +207,52 @@
             <v-divider></v-divider>
             <v-card elevation="0" class="px-12">
               <v-container>
-                <v-card-title><v-row>
-                    <v-btn rounded color="primary" @click="previous" width="120px" height="36px" outlined
-                      :disabled="selectedQuestion == 0">
-                      Previous
-                    </v-btn>
+                <v-card-title><v-row class="d-flex flex-row justify-space-between">
+                    <div>
+                      <v-btn rounded color="primary" @click="previous" width="120px" height="36px" outlined
+                        :disabled="selectedQuestion == 0">
+                        Previous
+                      </v-btn>
 
-                    <v-btn :disabled="isNextButtonDisabled" v-if="selectedQuestion == questions.length - 1" rounded color="secondary" @click="summaryDialog=true"
-                      height="36px" class="ml-8 black--text">
-                      Proceed & View Summary
-                    </v-btn>
-                    <v-btn  v-else rounded color="secondary" :disabled="isNextButtonDisabled" @click="next"
-                      width="120px" height="36px" class="ml-8 black--text">
-                      NEXT
-                    </v-btn>
+                      <v-btn :disabled="isNextButtonDisabled" v-if="selectedQuestion == questions.length - 1" rounded
+                        color="secondary" @click="summaryDialog = true" height="36px" class="ml-8 black--text mr-0">
+                        Proceed & View Summary
+                      </v-btn>
+                      <v-btn v-else rounded color="secondary" :disabled="isNextButtonDisabled" @click="next" width="120px"
+                        height="36px" class="ml-8 mr-0 black--text">
+                        NEXT
+                      </v-btn>
+                    </div>
 
-                    <v-spacer></v-spacer>
-                    <v-tooltip bottom v-if="!bookmarked.includes(questions[selectedQuestion])">
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-btn  large text color="primary" :disabled="isTimeUp" v-bind="attrs" v-on="on"
-                      @click="bookmarkQuestion(questions[selectedQuestion])">
-                      <v-icon class="pr-2" right> mdi-bookmark-outline </v-icon>
-                      BOOKMARK
-                    </v-btn>
-                      </template>
-                      <span>Bookmark this question to revisit it later</span>
-                    </v-tooltip>
-                    
-                    <v-btn v-else large text color="primary" @click="bookmarkQuestion(questions[selectedQuestion])" :disabled="isTimeUp">
-                      <v-icon class="pr-2" right> mdi-bookmark </v-icon>
-                      REMOVE BOOKMARK
-                    </v-btn>
 
-                    <v-tooltip bottom>
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-btn text large color="primary" v-bind="attrs" v-on="on" :disabled="isTimeUp"
-                          @click="skipQuestion(questions[selectedQuestion])">
-                          >> SKIP
-                        </v-btn>
-                      </template>
-                      <span>Skip this question if you do not know the answer</span>
-                    </v-tooltip>
+                    <div>
+                      <v-tooltip bottom v-if="!bookmarked.includes(questions[selectedQuestion])">
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-btn large text color="primary" class="ml-0" :disabled="isTimeUp" v-bind="attrs" v-on="on"
+                            @click="bookmarkQuestion(questions[selectedQuestion])">
+                            <v-icon class="pr-2" right> mdi-bookmark-outline </v-icon>
+                            BOOKMARK
+                          </v-btn>
+                        </template>
+                        <span>Bookmark this question to revisit it later</span>
+                      </v-tooltip>
+
+                      <v-btn v-else large text color="primary" @click="bookmarkQuestion(questions[selectedQuestion])"
+                        :disabled="isTimeUp">
+                        <v-icon class="pr-2" right> mdi-bookmark </v-icon>
+                        REMOVE BOOKMARK
+                      </v-btn>
+
+                      <v-tooltip bottom>
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-btn text large color="primary" v-bind="attrs" v-on="on" :disabled="isTimeUp"
+                            @click="skipQuestion(questions[selectedQuestion])">
+                            >> SKIP
+                          </v-btn>
+                        </template>
+                        <span>Skip this question if you do not know the answer</span>
+                      </v-tooltip>
+                    </div>
                   </v-row></v-card-title>
               </v-container>
             </v-card>
@@ -304,7 +305,7 @@
               <v-divider class="mx-4 mt-0"></v-divider>
               <v-container>
                 <v-card elevation="0" id="myScroll" height="auto">
-                  <v-list-item-group mandatory >
+                  <v-list-item-group mandatory>
                     <v-list-item class="grey lighten-4 pt-2" v-for="(item, i) in questions" :key="i"
                       @click="onClickSummaryQuestionBox(i)">
                       <v-list-item-content class="py-0" :id="scrollId + '' + i">
@@ -344,21 +345,24 @@
                 <v-row class="align-center text-align-center px-2 pb-4">
                   <v-card class="pa-0" width="70" elevation="0">
                     <v-text-field hide-details="" label="HH" readonly :value=hours outlined rounded
-                    class="rounded-xl centered-input " :style="seconds<=60?'background: linear-gradient(180deg, rgba(255, 59, 48, 0.076) 0%, rgba(255, 59, 48, 0.12) 100%);':'background: linear-gradient(180deg, rgba(255, 255, 255, 0.38) 0%, rgba(130, 210, 218, 0.6) 100%)'">
+                      class="rounded-xl centered-input timmer "
+                      :style="seconds <= 60 ? 'background: linear-gradient(180deg, rgba(255, 59, 48, 0.076) 0%, rgba(255, 59, 48, 0.12) 100%);' : 'background: linear-gradient(180deg, rgba(255, 255, 255, 0.38) 0%, rgba(130, 210, 218, 0.6) 100%)'">
 
                     </v-text-field>
                   </v-card>
                   <span class="pa-2">:</span>
                   <v-card class="pa-0" width="70" elevation="0">
                     <v-text-field hide-details="" label="MM" readonly :value=mins outlined rounded
-                    class="rounded-xl centered-input " :style="seconds<=60?'background: linear-gradient(180deg, rgba(255, 59, 48, 0.076) 0%, rgba(255, 59, 48, 0.12) 100%);':'background: linear-gradient(180deg, rgba(255, 255, 255, 0.38) 0%, rgba(130, 210, 218, 0.6) 100%)'">
+                      class="rounded-xl centered-input timmer"
+                      :style="seconds <= 60 ? 'background: linear-gradient(180deg, rgba(255, 59, 48, 0.076) 0%, rgba(255, 59, 48, 0.12) 100%);' : 'background: linear-gradient(180deg, rgba(255, 255, 255, 0.38) 0%, rgba(130, 210, 218, 0.6) 100%)'">
 
                     </v-text-field>
                   </v-card>
                   <span class="pa-2">:</span>
                   <v-card class="pa-0" width="70" elevation="0">
                     <v-text-field hide-details="" label="SS" readonly :value=secs outlined rounded
-                    class="rounded-xl centered-input " :style="seconds<=60?'background: linear-gradient(180deg, rgba(255, 59, 48, 0.076) 0%, rgba(255, 59, 48, 0.12) 100%);':'background: linear-gradient(180deg, rgba(255, 255, 255, 0.38) 0%, rgba(130, 210, 218, 0.6) 100%)'">
+                      class="rounded-xl centered-input timmer "
+                      :style="seconds <= 60 ? 'background: linear-gradient(180deg, rgba(255, 59, 48, 0.076) 0%, rgba(255, 59, 48, 0.12) 100%);' : 'background: linear-gradient(180deg, rgba(255, 255, 255, 0.38) 0%, rgba(130, 210, 218, 0.6) 100%)'">
 
                     </v-text-field>
                   </v-card>
@@ -383,25 +387,28 @@
                   </v-col>
                 </v-row>
 
-                <v-card width="100%" color="grey lighten-2" height="25" class="rounded-xl d-flex flex-row mt-4 mb-2" elevation="0">
-                  
-                      <v-card color="answered" height="25"   :width="((answeredProgress/questions.length)*100)+'%'" elevation="0" class="rounded-xl"></v-card>
-             
+                <v-card width="100%" color="grey lighten-2" height="18" class="rounded-xl d-flex flex-row mt-4 mb-2"
+                  elevation="0">
 
-                      <v-card color="skipped" height="25" :width="((skipped.length / questions.length) * 100)+'%'"
-                        elevation="0" class="rounded-xl"></v-card>
-                      <v-card color="bookmarked" height="25"  :width="((bookmarked.length / questions.length) * 100)+'%'" elevation="0" class="rounded-xl"></v-card> 
+                  <v-card color="answered" height="18" :width="((answeredProgress / questions.length) * 100) + '%'"
+                    elevation="0" class="rounded-xl"></v-card>
+
+
+                  <v-card color="skipped" height="18" :width="((skipped.length / questions.length) * 100) + '%'"
+                    elevation="0" class="rounded-xl"></v-card>
+                  <v-card color="bookmarked" height="18" :width="((bookmarked.length / questions.length) * 100) + '%'"
+                    elevation="0" class="rounded-xl"></v-card>
                 </v-card>
               </v-container>
               <v-container class="px-16" id="myScroll">
                 <!-- Summary Questions Card -->
                 <v-layout row wrap justify-center>
-                  
+
                   <v-card v-for="(question, index) in questions" :key="index" @click="onClickSummaryQuestionBox(index)"
-                    :class="'text-center ma-2 rounded-lg' + getColorClass(question)" width="70px" height="54" elevation="4"
-                    outlined>
+                    :class="'text-center ma-2 rounded-lg' + getColorClass(question)" width="70px" height="54"
+                    elevation="4" outlined>
                     <v-card-text class="text-body-1 font-weight-bold px-1">
-                      Q {{ index+1 }}
+                      Q {{ index + 1 }}
 
                     </v-card-text>
                   </v-card>
@@ -434,16 +441,8 @@
           <v-card-text class="text-center">
             <v-icon color="error" size="96">mdi-close-circle-outline</v-icon>
             <p class="text-h5 py-4">{{ errorMessage }}</p>
-            <v-btn
-            depressed
-            class="black--text"
-              color="secondary"
-              large
-              width="157px"
-              rounded
-              @click="errorDialog = false"
-              >OK</v-btn
-            >
+            <v-btn depressed class="black--text" color="secondary" large width="157px" rounded
+              @click="errorDialog = false">OK</v-btn>
           </v-card-text>
         </v-container>
       </v-card>
@@ -451,7 +450,7 @@
     <!-- Exit Confirmation Dialog -->
     <v-dialog v-model="confirmExitDialog" width="358px" persistent>
       <v-card>
-        <v-container >
+        <v-container>
           <v-card-text class="text-center">
             <!-- <v-icon color="error" size="96">mdi-close-circle-outline</v-icon> -->
             <p class="text-h5 mb-0">Are you sure you want to quit?</p>
@@ -459,24 +458,9 @@
               We will not be able to save your progress if you quit.
             </v-card-subtitle>
             <v-row justify="end" class="ma-2">
-              <v-btn
-            depressed
-            class="black--text"
-              color="primary"
-              large
-              text
-              rounded
-              @click="confirmExitDialog = false"
-              >NO</v-btn
-            ><v-btn
-            depressed
-            class="primary--text"
-              color="secondary"
-              large
-              rounded
-              @click="$router.back()"
-              >YES</v-btn
-            >
+              <v-btn depressed class="black--text" color="primary" large text rounded
+                @click="confirmExitDialog = false">NO</v-btn><v-btn depressed class="primary--text" color="secondary"
+                large rounded @click="$router.back()">YES</v-btn>
             </v-row>
           </v-card-text>
         </v-container>
@@ -495,7 +479,7 @@ export default {
   name: "AssessmentView",
   data() {
     return {
-      assessmentId:'',
+      assessmentId: '',
       isNextButtonDisabled: true,
       confirmExitDialog: false,
       errorDialog: false,
@@ -533,11 +517,15 @@ export default {
       return this.seconds <= 0;
     },
     getHeight() {
+      console.log("Height =", window.innerHeight)
+      console.log("Width =", window.innerWidth)
       return this.windowHeight - 40 + "px";
     },
     getQuestionsListHeight() {
+
       return this.windowHeight - 480 + "px";
     },
+
   },
   mounted() {
     window.addEventListener("beforeunload", this.handleBeforeUnload);
@@ -797,7 +785,7 @@ export default {
         this.questions[this.selectedQuestion].myAnswer = null;
         this.updateProgress();
       }
-      if(this.selectedQuestion+1!=this.questions.length){
+      if (this.selectedQuestion + 1 != this.questions.length) {
         this.next();
       }
     },

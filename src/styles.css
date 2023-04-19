@@ -5,7 +5,13 @@
 }
 
 
+.assessment-name {
+    width: 100%;
+    height: 2rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
 
+}
 .v-application .rounded-xl {
     border-radius: 12px !important;
 }
@@ -15,7 +21,7 @@
 }
 .my-card {
     border: 1px solid rgba(175, 175, 175, 0.342);
-    height: calc(100vh - 540px) !important;
+    height: calc(100vh - 520px) !important;
      border: 1px solid rgba(175, 175, 175, 0.342);
 
   }
@@ -426,4 +432,16 @@ white-space: nowrap;
   }
 .v-input__append-inner .v-input__icon--clear {
     margin-top: 24px;
+}
+.timmer {
+    font-size: 18px !important;
+}
+
+
+
+@media only screen and (max-width: 986px) {
+.question-list {
+    display: none;
+}
+
 }
