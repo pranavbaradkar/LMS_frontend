@@ -130,7 +130,7 @@
       >
       <v-container>
         <v-stepper v-model="e1" class="rounded-lg">
-          <v-stepper-header class="text-subtitle-2 secondaryAccent rounded-lg">
+          <v-stepper-header class="text-subtitle-2 secondaryAccent ">
             <v-stepper-step :complete="e1 > 1" step="1">
               PERSONAL INFORMATION
             </v-stepper-step>
@@ -239,9 +239,7 @@
                                 rounded
                                 :readonly="personalInfo.is_email_verified"
                                 class="rounded-xl"
-                                :rules="[
-                                  (v) => !!v || 'Email Address is required',
-                                ]"
+                                :rules="emailRules"
                                 required
                                 @keydown.enter.prevent="submit"
                               >
