@@ -318,10 +318,9 @@ export default {
     recommendedTestViewEvent() {
       this.selectedAssessment = this.recommendedAssessment;
       this.dialog = true;
-      // console.log(
-      //   "instruction",
-      //   this.selectedAssessment.tests[0].duration_of_assessment
-      // );
+      console.log(
+        this.selectedAssessment
+      );
       this.duration = this.selectedAssessment.tests[0].duration_of_assessment;
       this.noOfQuestions =
         this.selectedAssessment.tests[0].total_no_of_questions;
@@ -366,7 +365,10 @@ export default {
       const response = await LogedInUserInfo.getUserInfo();
       this.userInfo = response.data.user;
       this.$store.state.userInfo = this.userInfo;
-      //console.log(this.userInfo);
+      console.log(this.userInfo);
+      // if(!this.userInfo.is_profile_created){
+      //   this.$router.replace('/register');
+      // }
       this.identifyUser();
     },
     identifyUser() {
@@ -387,10 +389,12 @@ export default {
     async getAllAssessment() {
       const response = await AssessmentController.getAllAssessment();
       this.allAssessments = response.data.data;
+      //console.log(this.allAssessments);
+      this.getRecommendedAssessment();
     },
     async getRecommendedAssessment() {
       const response =
-        await RecommendedAssessmentController.getRecommendedAssessment();
+        await RecommendedAssessmentController.getRecommendedAssessment('');
       //console.log("response", response);
       this.$mixpanel.track("RecommendationScreenLoaded", {
         screen_name: "RecommendationScreen",
@@ -398,14 +402,30 @@ export default {
       if (response.status == 401) {
         AuthService.logout();
       }
-      this.recommendedAssessment = response.data.data;
+      if(response.status==404){
+        const response =
+        await RecommendedAssessmentController.getRecommendedAssessment('?debug='+this.allAssessments[0].id);
+        this.recommendedAssessment = response.data.data;
+        console.log(this.allAssessments);
+        this.allAssessments=this.allAssessments.filter(function(item) {
+            return item.id !== response.data.data.id;
+          });
+      }
+      else{
+        this.recommendedAssessment = response.data.data;
+        console.log(this.allAssessments);
+
+        this.allAssessments=this.allAssessments.filter(function(item) {
+            return item.id !== response.data.data.id;
+          });
+      }
       //console.log("data", this.recommendedAssessment);
     },
   },
   created() {
     this.getUserInfo();
     this.getAllAssessment();
-    this.getRecommendedAssessment();
+    //this.getRecommendedAssessment();
   },
 };
 </script>

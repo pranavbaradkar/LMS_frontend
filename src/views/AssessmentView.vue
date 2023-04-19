@@ -197,10 +197,10 @@
                     <v-btn class="ma-2 option-width" min-height="50px"
                       :color="questions[selectedQuestion].myAnswer == option.option_key ? 'secondaryAccent' : ''" v-for="(option, index) in questions[selectedQuestion]
                         .question_options" :key="index" @click="
-    setOption(
-      questions[selectedQuestion].question_options[index]
-    )
-  ">
+                          setOption(
+                            questions[selectedQuestion].question_options[index]
+                          )
+                        ">
                       {{ option.option_value }}
                     </v-btn>
 
