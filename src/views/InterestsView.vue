@@ -202,11 +202,13 @@ import BoardController from "@/controllers/BoardController";
 import LevelController from "@/controllers/LevelController";
 import SubjectController from "@/controllers/SubjectController";
 import UserIntrestController from "@/controllers/UserIntrestController";
+import LogedInUserInfo from "@/controllers/LogedInUserInfo";
 
 export default {
   name: "InterestsView",
   data() {
     return {
+      userInfo: {},
       e1: 1,
       subjects: [],
       schools: [],
@@ -263,7 +265,7 @@ export default {
           console.log("step4");
           if( this.userIntrestData.subject_ids.length != 0){
             this.createUserIntrest();
-            this.$router.push("/");
+            this.$router.replace("/");
           }
           else {
           alert('Please Select at least one one subject')
@@ -307,6 +309,22 @@ export default {
       this.levels = response.data.data.rows;
       //console.log("level log", this.levels);
     },
+    async getUserInfo() {
+      const response = await LogedInUserInfo.getUserInfo();
+      this.userInfo = response.data.user;
+      console.log("User: ", this.userInfo);
+      if(this.userInfo.is_interest_captured){
+        this.$router.replace('/');
+      }
+      this.personalInfo.is_email_verified = this.userInfo.is_email_verified;
+      this.personalInfo.is_phone_verified = this.userInfo.is_phone_verified;
+      this.personalInfo.email = this.userInfo.email;
+      this.personalInfo.phone_no = this.userInfo.phone_no.slice(-10);
+      this.$mixpanel.track("PersonalInformationStepLoaded", {
+      user_type: this.userInfo.user_type,
+      screen_name: "PersonalProfileInformationScreen",
+    });
+    },
   },
   mounted() {
 
@@ -318,6 +336,7 @@ export default {
 
   },
   created() {
+    this.getUserInfo();
     this.getLevel();
     this.getSubjects();
     this.getBoards();

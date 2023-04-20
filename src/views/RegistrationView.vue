@@ -1564,7 +1564,7 @@ export default {
           if (response.data.success) {
           this.isCreatingUser = false;
           this.successDialog = true;
-          this.$router.push("/interests");
+          this.$router.replace("/interests");
         } else {
           this.isCreatingUser = false;
         }
@@ -1592,7 +1592,7 @@ export default {
         if (response.data.success) {
           this.isCreatingUser = false;
           this.successDialog = true;
-          this.$router.push("/");
+          this.$router.replace("/");
         } else {
           this.isCreatingUser = false;
         }
@@ -1601,7 +1601,16 @@ export default {
     async getUserInfo() {
       const response = await LogedInUserInfo.getUserInfo();
       this.userInfo = response.data.user;
-      //console.log("ducdfk.nc", this.userInfo);
+      console.log("User: ", this.userInfo);
+      if(this.userInfo.is_personal_info_captured){
+        this.e1=2;
+      }
+      if(this.userInfo.is_academic_info_captured){
+        this.e1=3;
+      }
+      if(this.userInfo.is_professional_info_captured){
+        this.$router.replace('/interests');
+      }
       this.personalInfo.is_email_verified = this.userInfo.is_email_verified;
       this.personalInfo.is_phone_verified = this.userInfo.is_phone_verified;
       this.personalInfo.email = this.userInfo.email;

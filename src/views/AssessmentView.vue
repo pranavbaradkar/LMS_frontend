@@ -172,7 +172,9 @@
                     {{ selectedQuestion + 1 + " of " + questions.length }}</span>
                 </v-col>
                 <v-col class="text-end" v-if="questions != 0">
-                  <v-chip active text-color="black" class="m-q-chip">{{
+                  <v-chip v-if="questions[selectedQuestion].skill.name=='Core Skill'" active text-color="black" class="m-q-chip">{{
+                  questions[selectedQuestion].subject.name }}</v-chip>
+                  <v-chip v-else active text-color="black" class="m-q-chip">{{
                     questions[selectedQuestion].skill.name }}</v-chip>
                 </v-col>
               </v-row>
@@ -772,12 +774,12 @@ export default {
       //console.log(response);
       if (response.data.success) {
         // this.successDialog = true;
-        this.$router.push({
+        this.$router.replace({
           path: "/success",
           query: { assessment: JSON.stringify(this.assessment) },
         });
       } else {
-        this.$router.push({
+        this.$router.replace({
           path: "/failed",
           query: { assessment: JSON.stringify(this.assessment) },
         });
@@ -785,12 +787,13 @@ export default {
     },
     setOption(option) {
       if (!this.isTimeUp) {
-        if(this.questions[this.selectedQuestion].myAnswer==option.option_key){
+        if (
+          this.questions[this.selectedQuestion].myAnswer == option.option_key
+        ) {
           this.questions[this.selectedQuestion].myAnswer = null;
           this.isNextButtonDisabled = true;
           this.updateProgress();
-        }
-        else{
+        } else {
           this.questions[this.selectedQuestion].myAnswer = option.option_key;
           this.isNextButtonDisabled = false;
           //console.log(this.questions[this.selectedQuestion]);
@@ -840,7 +843,6 @@ export default {
       });
       this.lastAnswerTime = this.seconds;
       this.selectedQuestion = this.selectedQuestion + 1;
-      this.couter++;
       this.scrollMethod("scrollId" + this.selectedQuestion);
       if (
         this.questions[this.selectedQuestion].myAnswer ||
@@ -867,11 +869,10 @@ export default {
       });
 
       this.selectedQuestion = this.selectedQuestion - 1;
-      this.couter++;
       this.scrollMethod("scrollId" + this.selectedQuestion);
       if (
-        this.questions[this.selectedQuestion].myAnswer ||
-        this.skipped.includes(this.questions[this.selectedQuestion])
+        this.questions[this.selectedQuestion].myAnswer != null ||
+        !this.skipped.includes(this.questions[this.selectedQuestion])
       ) {
         this.isNextButtonDisabled = false;
       }

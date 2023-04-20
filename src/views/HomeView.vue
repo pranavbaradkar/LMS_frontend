@@ -365,10 +365,14 @@ export default {
       const response = await LogedInUserInfo.getUserInfo();
       this.userInfo = response.data.user;
       this.$store.state.userInfo = this.userInfo;
-      console.log(this.userInfo);
-      // if(!this.userInfo.is_profile_created){
-      //   this.$router.replace('/register');
-      // }
+      //console.log(this.userInfo);
+      if(!this.userInfo.is_profile_created){
+        this.$router.replace('/register');
+      }
+      if(!this.userInfo.is_interest_captured){
+        this.$router.replace('/interests');
+
+      }
       this.identifyUser();
     },
     identifyUser() {
@@ -403,17 +407,17 @@ export default {
         AuthService.logout();
       }
       if(response.status==404){
-        const response =
+        const response2 =
         await RecommendedAssessmentController.getRecommendedAssessment('?debug='+this.allAssessments[0].id);
-        this.recommendedAssessment = response.data.data;
-        console.log(this.allAssessments);
+        this.recommendedAssessment = response2.data.data;
+        //console.log(this.allAssessments);
         this.allAssessments=this.allAssessments.filter(function(item) {
             return item.id !== response.data.data.id;
           });
       }
       else{
         this.recommendedAssessment = response.data.data;
-        console.log(this.allAssessments);
+        //console.log(this.allAssessments);
 
         this.allAssessments=this.allAssessments.filter(function(item) {
             return item.id !== response.data.data.id;
