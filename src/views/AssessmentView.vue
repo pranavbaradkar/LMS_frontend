@@ -171,7 +171,7 @@
               </v-row>
               <v-card class="my-card pa-0 mt-4 rounded-xl" elevation="0" color="grey lighten-4" id="myScroll">
                 <v-card height="auto" elevation="0" color="grey lighten-4">
-                  <v-card-title v-if="questions[selectedQuestion] != null">{{ questions[selectedQuestion].statement }}
+                  <v-card-title v-if="questions[selectedQuestion] != null"> <div v-html="questions[selectedQuestion].statement"></div>
                   </v-card-title>
                 </v-card>
               </v-card>
@@ -186,16 +186,29 @@
                 <v-card height="auto" color="sufaceAccent w-100" elevation="0">
                   <v-card-title v-if="questions[selectedQuestion] != null"
                     class="d-flex w-100 pa-1 flex-row justify-space-around">
-
-                    <v-btn class="ma-2 option-width" min-height="50px"
-                      :color="questions[selectedQuestion].myAnswer == option.option_key ? 'secondaryAccent' : ''" v-for="(option, index) in questions[selectedQuestion]
-                        .question_options" :key="index" @click="
+              
+                    <!-- <v-btn class="ma-2 option-width" min-height="50px"  v-for="(option, index) in questions[selectedQuestion].question_options"  :key="index"
+                      :color="questions[selectedQuestion].myAnswer == option.option_key ? 'secondaryAccent' : ''"
+                      
+                         @click="
     setOption(
       questions[selectedQuestion].question_options[index]
     )
   ">
-                      {{ option.option_value }}
-                    </v-btn>
+              <div class="w-100"  v-html="option.option_value"></div>     
+                    </v-btn> -->
+
+                      <div class="ma-2 option-width overflow-hidden" 
+                      v-for="(option, index) in questions[selectedQuestion].question_options" :key="index"
+                @click="
+                        setOption(
+                          questions[selectedQuestion].question_options[index]
+                        )
+                      ">
+                      <div class="w-100 d-flex justify-center cursor sub-text-option" :class="questions[selectedQuestion].myAnswer == option.option_key ? 'secondaryAccent' : ''"  v-html="option.option_value "></div>
+                    </div>
+          
+                    
 
                   </v-card-title>
                 </v-card>
@@ -757,25 +770,31 @@ export default {
     },
     setOption(option) {
       if (!this.isTimeUp) {
-        this.questions[this.selectedQuestion].myAnswer = option.option_key;
-        this.isNextButtonDisabled = false;
-        //console.log(this.questions[this.selectedQuestion]);
-        if (this.skipped.includes(this.questions[this.selectedQuestion])) {
-          let index = this.bookmarked.indexOf(
-            this.questions[this.selectedQuestion]
-          );
-          this.skipped.splice(index, 1);
+        if(this.questions[this.selectedQuestion].myAnswer==option.option_key){
+          this.questions[this.selectedQuestion].myAnswer = null;
+          this.isNextButtonDisabled = true;
+          this.updateProgress();
         }
-        this.updateProgress();
-        this.$mixpanel.track("AnswerGiven", {
-          question_id: this.selectedQuestion.id,
-
-          option_selected:
-            this.questions[this.selectedQuestion].myAnswer == null
-              ? "NA"
-              : this.questions[this.selectedQuestion].myAnswer,
-          screen_name: "AssessmentScreen",
-        });
+        else{
+          this.questions[this.selectedQuestion].myAnswer = option.option_key;
+          this.isNextButtonDisabled = false;
+          //console.log(this.questions[this.selectedQuestion]);
+          if (this.skipped.includes(this.questions[this.selectedQuestion])) {
+            let index = this.bookmarked.indexOf(
+              this.questions[this.selectedQuestion]
+            );
+            this.skipped.splice(index, 1);
+          }
+          this.updateProgress();
+          this.$mixpanel.track("AnswerGiven", {
+            question_id: this.selectedQuestion.id,
+            option_selected:
+              this.questions[this.selectedQuestion].myAnswer == null
+                ? "NA"
+                : this.questions[this.selectedQuestion].myAnswer,
+            screen_name: "AssessmentScreen",
+          });
+        }
       }
     },
     skipQuestion(question) {
