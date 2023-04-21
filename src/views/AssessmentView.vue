@@ -2,14 +2,21 @@
   <div class="surface">
     <v-container fluid>
       <v-row>
-        <!-- Left Card -->
+      
         <!-- Left Card -->
         <v-col cols="3">
           <v-card v-if="!isProgressClicked" :height="getHeight" class="pa-4 ma-2 pt-0 rounded-xl">
-            <v-card min-height="420" id="circleCard" elevation="0">
-              <v-card-title class=" text-subtitle font-weight-regular accent--text testHead">
-                <p class="assessment-name">{{ assessment.name }}</p>
-                <span></span>
+            <v-card min-height="380" id="circleCard" elevation="0">
+              <v-card-title>
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on, attrs }">
+                    <div  v-bind="attrs"
+                    v-on="on" class="assessment-name text-h6 font-weight-regular accent--text">
+                    {{ assessment.name }}
+                    </div>
+                  </template>
+                <span>{{ assessment.name }}</span>
+              </v-tooltip>
               </v-card-title>
               <v-card-subtitle>
                 <span class="font-weight-light grey--text">Test Duration:</span>
@@ -156,10 +163,10 @@
               </v-row>
               <!-- Progress Bar -->
 
-              <v-progress-linear class="rounded-xl mt-4 mb-6" rounded
+              <v-progress-linear class="rounded-xl mt-4 mb-4" rounded
                 :value="((answeredProgress + skipped.length + bookmarked.length) / questions.length) * 100"
                 color="secondary" background-color="grey lighten-2" height="18"></v-progress-linear>
-              <v-row justify="space-between">
+              <v-row justify="space-between" align="center">
                 <v-col>
                   <span class="text-caption">Question
                     {{ selectedQuestion + 1 + " of " + questions.length }}</span>
@@ -209,6 +216,16 @@
                     </div>
           
                     
+
+                    <v-btn class="ma-2 option-width" min-height="50px"
+                      :color="questions[selectedQuestion].myAnswer == option.option_key ? 'secondaryAccent' : ''" v-for="(option, index) in questions[selectedQuestion]
+                        .question_options" :key="index" @click="
+                          setOption(
+                            questions[selectedQuestion].question_options[index]
+                          )
+                        ">
+                      {{ option.option_value }}
+                    </v-btn>
 
                   </v-card-title>
                 </v-card>
@@ -436,7 +453,7 @@
 
                 <v-card-title>
                   <v-row justify="center">
-                    <v-btn color="accent" width="249px" rounded x-large @click="submitAssessment">CONFIRM
+                    <v-btn color="accent" width="249px" height="48px" rounded x-large @click="submitAssessment">CONFIRM
                       SUBMISSION</v-btn>
                   </v-row>
                 </v-card-title>
@@ -492,7 +509,7 @@ export default {
   name: "AssessmentView",
   data() {
     return {
-      assessmentId: '',
+      assessmentId: "",
       isNextButtonDisabled: true,
       confirmExitDialog: false,
       errorDialog: false,
@@ -530,15 +547,13 @@ export default {
       return this.seconds <= 0;
     },
     getHeight() {
-      console.log("Height =", window.innerHeight)
-      console.log("Width =", window.innerWidth)
+      console.log("Height =", window.innerHeight);
+      console.log("Width =", window.innerWidth);
       return this.windowHeight - 40 + "px";
     },
     getQuestionsListHeight() {
-
-      return this.windowHeight - 480 + "px";
+      return this.windowHeight - 440 + "px";
     },
-
   },
   mounted() {
     window.addEventListener("beforeunload", this.handleBeforeUnload);
@@ -882,15 +897,18 @@ export default {
       this.windowHeight = window.innerHeight;
     },
     async getAssessmentInfo() {
-      const response = await AssessmentsController.getScreeningQuestions(this.assessmentId);
+      const response = await AssessmentsController.getScreeningQuestions(
+        this.assessmentId
+      );
       if (response.data.success) {
         this.screening = response.data.data;
       } else {
         this.errorDialog = true;
         this.errorMessage = response.data.error;
       }
-      const response2 =
-        await AssessmentController.getSingleAssessment(this.assessmentId);
+      const response2 = await AssessmentController.getSingleAssessment(
+        this.assessmentId
+      );
       if (response2.data.success) {
         this.assessment = response2.data.data;
         //console.log(this.assessment);

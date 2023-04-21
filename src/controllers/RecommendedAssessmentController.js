@@ -5,10 +5,10 @@ const instance = axios.create({
 });
 
 export default {
-    getRecommendedAssessment: async function () {
+    getRecommendedAssessment: async function (debug) {
         
         try {
-            const response = await instance.get('users/recommended-assessment' ,{
+            const response = await instance.get('users/recommended-assessment'+debug ,{
                 headers: {
                     'Authorization': AuthService.getToken()
                 }

@@ -61,9 +61,7 @@
               <div class="text-caption">Recommended</div>
 
               <div class="text-h4 mb-1">{{ recommendedAssessment.name }}</div>
-              <v-list-item-subtitle class="mt-4">{{
-                recommendedAssessment.instructions
-              }}</v-list-item-subtitle>
+              <p class="mt-4">{{ recommendedAssessment.instructions }}</p>
               <div class="mt-4" v-if="recommendedAssessment.tests != null">
                 <v-icon class="white--text">mdi-book</v-icon>
                 {{ recommendedAssessment.tests[0].total_no_of_questions }}
@@ -79,8 +77,9 @@
                 300 Users
               </div>
               <v-btn
+                height="48px"
                 color="secondary"
-                class="black--text mt-8"
+                class="primary--text mt-8"
                 rounded
                 large
                 @click="recommendedTestViewEvent"
@@ -126,11 +125,13 @@
                     </v-list-item-content>
                   </v-list-item>
                   <v-expand-transition>
-                    <v-card-actions>
+                    <v-card-actions  class="mx-2">
                       <v-btn
+                     
+                        depressed
                         block
-                        color="secondary"
-                        class="black--text"
+                        color="secondaryAccent"
+                        class="primary--text"
                         rounded
                         @click="otherTestViewEvent(assessment.id)"
                         >TAKE TEST</v-btn
@@ -144,7 +145,7 @@
         </div>
       </v-card>
     </v-container>
-    <v-dialog v-model="dialog" max-width="650px" color="#FBF5F2">
+    <v-dialog v-model="dialog" max-width="461px" color="#FBF5F2">
       <v-card fluid elevation="0" class="rounded-xl" color="#FBF5F2">
         <v-btn class="i-close-btn" icon @click="dialog = false"
           ><v-icon>mdi-close</v-icon></v-btn
@@ -157,20 +158,19 @@
         >
           <v-stepper-header class="text-subtitle-2 elevation-0">
             <v-stepper-step :complete="e1 > 1" step="1">
-              Screening Test
+              SCREENING TEST
             </v-stepper-step>
-
             <v-divider></v-divider>
 
             <v-stepper-step :complete="e1 > 2" step="2">
-              Main Test
+              MAINS TEST
             </v-stepper-step>
           </v-stepper-header>
           <v-stepper-items>
             <!------------------------------------------ STEP 1 ------------------------------------------>
             <v-stepper-content step="1" class="pt-0">
               <div class="d-flex flex-column">
-                <div class="Subtitle-2 text--secondary">
+                <div class="subtitle-2 text--secondary">
                   {{ selectedAssessment.name }}
                 </div>
                 <div class="Subtitle-1 my-2">Screening Test</div>
@@ -203,7 +203,7 @@
                     v-for="(item, index) in selectedAssessment.skills"
                     :key="index"
                     class="ma-2"
-                    color="secondary black--text"
+                    color="secondaryAccent primary--text"
                     >{{ item }}</v-chip
                   >
                   <!-- </v-chip-group> -->
@@ -217,7 +217,7 @@
               <div class="d-flex justify-center w-100">
                 <v-btn
                   color="secondary"
-                  class="black--text mt-10 mb-12"
+                  class="primary--text mt-10 mb-12"
                   rounded
                   large
                   @click="startTest"
@@ -318,10 +318,9 @@ export default {
     recommendedTestViewEvent() {
       this.selectedAssessment = this.recommendedAssessment;
       this.dialog = true;
-      // console.log(
-      //   "instruction",
-      //   this.selectedAssessment.tests[0].duration_of_assessment
-      // );
+      console.log(
+        this.selectedAssessment
+      );
       this.duration = this.selectedAssessment.tests[0].duration_of_assessment;
       this.noOfQuestions =
         this.selectedAssessment.tests[0].total_no_of_questions;
@@ -366,7 +365,10 @@ export default {
       const response = await LogedInUserInfo.getUserInfo();
       this.userInfo = response.data.user;
       this.$store.state.userInfo = this.userInfo;
-      //console.log(this.userInfo);
+      console.log(this.userInfo);
+      // if(!this.userInfo.is_profile_created){
+      //   this.$router.replace('/register');
+      // }
       this.identifyUser();
     },
     identifyUser() {
@@ -387,10 +389,12 @@ export default {
     async getAllAssessment() {
       const response = await AssessmentController.getAllAssessment();
       this.allAssessments = response.data.data;
+      //console.log(this.allAssessments);
+      this.getRecommendedAssessment();
     },
     async getRecommendedAssessment() {
       const response =
-        await RecommendedAssessmentController.getRecommendedAssessment();
+        await RecommendedAssessmentController.getRecommendedAssessment('');
       //console.log("response", response);
       this.$mixpanel.track("RecommendationScreenLoaded", {
         screen_name: "RecommendationScreen",
@@ -398,14 +402,30 @@ export default {
       if (response.status == 401) {
         AuthService.logout();
       }
-      this.recommendedAssessment = response.data.data;
+      if(response.status==404){
+        const response =
+        await RecommendedAssessmentController.getRecommendedAssessment('?debug='+this.allAssessments[0].id);
+        this.recommendedAssessment = response.data.data;
+        console.log(this.allAssessments);
+        this.allAssessments=this.allAssessments.filter(function(item) {
+            return item.id !== response.data.data.id;
+          });
+      }
+      else{
+        this.recommendedAssessment = response.data.data;
+        console.log(this.allAssessments);
+
+        this.allAssessments=this.allAssessments.filter(function(item) {
+            return item.id !== response.data.data.id;
+          });
+      }
       //console.log("data", this.recommendedAssessment);
     },
   },
   created() {
     this.getUserInfo();
     this.getAllAssessment();
-    this.getRecommendedAssessment();
+    //this.getRecommendedAssessment();
   },
 };
 </script>

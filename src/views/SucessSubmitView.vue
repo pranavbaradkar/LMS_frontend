@@ -50,11 +50,11 @@
           <div>the results once they are published.</div>
         </v-card-subtitle>
 
-        <div class="d-flex justify-space-around w-100 ma-6">
+        <div class="d-flex justify-center w-100 ma-6">
           <v-card
             width="245"
             height="54"
-            class="d-flex flex-row m-center m-btn"
+            class="d-flex flex-row m-center m-btn ma-2"
             elevation="0"
             depressed
             ><v-checkbox v-model="notificationEmail"></v-checkbox
@@ -73,7 +73,7 @@
           <v-card
             width="245"
             height="54"
-            class="d-flex flex-row m-center m-btn"
+            class="d-flex flex-row m-center m-btn ma-2"
             elevation="0"
             depressed
             ><v-checkbox v-model="notificationSMS"></v-checkbox
@@ -130,10 +130,10 @@ export default {
     logout() {
       AuthService.logout();
       this.$mixpanel.track("UserLoggedOut", {
-      "session_timeout": false,
-      "screen_name": "ThankyouScreen"
-    });
-    this.$mixpanel.reset();
+        session_timeout: false,
+        screen_name: "ThankyouScreen",
+      });
+      this.$mixpanel.reset();
       this.$router.push("/login");
     },
   },
