@@ -246,11 +246,11 @@
                         Previous
                       </v-btn>
 
-                      <v-btn :disabled="isNextButtonDisabled" v-if="selectedQuestion == questions.length - 1" rounded
+                      <v-btn :disabled="questions[this.selectedQuestion].myAnswer==null" v-if="selectedQuestion == questions.length - 1" rounded
                         color="secondary" @click="summaryDialog = true" height="36px" class="ml-8 black--text mr-0">
                         Proceed & View Summary
                       </v-btn>
-                      <v-btn v-else rounded color="secondary" :disabled="isNextButtonDisabled" @click="next" width="120px"
+                      <v-btn v-else rounded color="secondary" :disabled="questions[this.selectedQuestion].myAnswer==null" @click="next" width="120px"
                         height="36px" class="ml-8 mr-0 black--text">
                         NEXT
                       </v-btn>
@@ -512,7 +512,6 @@ export default {
   data() {
     return {
       assessmentId: "",
-      isNextButtonDisabled: true,
       confirmExitDialog: false,
       errorDialog: false,
       errorMessage: "Failed",
@@ -545,12 +544,13 @@ export default {
     };
   },
   computed: {
+    
     isTimeUp() {
       return this.seconds <= 0;
     },
     getHeight() {
-      console.log("Height =", window.innerHeight);
-      console.log("Width =", window.innerWidth);
+      //console.log("Height =", window.innerHeight);
+      //console.log("Width =", window.innerWidth);
       return this.windowHeight - 40 + "px";
     },
     getQuestionsListHeight() {
@@ -614,9 +614,7 @@ export default {
         this.selectedQuestion = index;
         this.summaryDialog = false;
         this.scrollMethod("scrollId" + this.selectedQuestion);
-        if (this.questions[index].myAnswer != null) {
-          this.isNextButtonDisabled = false;
-        }
+        
       }
     },
     getColorClass(question) {
@@ -791,11 +789,9 @@ export default {
           this.questions[this.selectedQuestion].myAnswer == option.option_key
         ) {
           this.questions[this.selectedQuestion].myAnswer = null;
-          this.isNextButtonDisabled = true;
           this.updateProgress();
         } else {
           this.questions[this.selectedQuestion].myAnswer = option.option_key;
-          this.isNextButtonDisabled = false;
           //console.log(this.questions[this.selectedQuestion]);
           if (this.skipped.includes(this.questions[this.selectedQuestion])) {
             let index = this.bookmarked.indexOf(
@@ -844,14 +840,7 @@ export default {
       this.lastAnswerTime = this.seconds;
       this.selectedQuestion = this.selectedQuestion + 1;
       this.scrollMethod("scrollId" + this.selectedQuestion);
-      if (
-        this.questions[this.selectedQuestion].myAnswer ||
-        this.skipped.includes(this.questions[this.selectedQuestion])
-      ) {
-        this.isNextButtonDisabled = false;
-      } else {
-        this.isNextButtonDisabled = true;
-      }
+      
     },
     previous() {
       this.$mixpanel.track("PreviousButtonClicked", {
@@ -870,20 +859,13 @@ export default {
 
       this.selectedQuestion = this.selectedQuestion - 1;
       this.scrollMethod("scrollId" + this.selectedQuestion);
-      if (
-        this.questions[this.selectedQuestion].myAnswer != null ||
-        !this.skipped.includes(this.questions[this.selectedQuestion])
-      ) {
-        this.isNextButtonDisabled = false;
-      }
+      
     },
     questionClicked(item) {
       if (item.myAnswer || this.skipped.includes(item)) {
         this.selectedQuestion = this.questions.indexOf(item);
         this.scrollMethod("scrollId" + this.selectedQuestion);
-        if (item.myAnswer) {
-          this.isNextButtonDisabled = false;
-        }
+        
       }
       this.$mixpanel.track("QuestionListClicked", {
         question_id: this.selectedQuestion.id,
@@ -924,7 +906,7 @@ export default {
         assessment_name: this.assessment.name,
         screen_name: "AssessmentScreen",
       });
-      console.log("screening: ", this.screening);
+      //console.log("screening: ", this.screening);
     },
     handleBeforeUnload(event) {
       event.preventDefault();
@@ -937,7 +919,7 @@ export default {
   },
   created() {
     this.assessmentId = this.$route.query.id;
-    console.log(this.assessmentId);
+   // console.log(this.assessmentId);
     this.getAssessmentInfo();
   },
 };
