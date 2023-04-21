@@ -217,7 +217,7 @@
           
                     
 
-                    <v-btn class="ma-2 option-width" min-height="50px"
+                    <!-- <v-btn class="ma-2 option-width" min-height="50px"
                       :color="questions[selectedQuestion].myAnswer == option.option_key ? 'secondaryAccent' : ''" v-for="(option, index) in questions[selectedQuestion]
                         .question_options" :key="index" @click="
                           setOption(
@@ -225,7 +225,7 @@
                           )
                         ">
                       {{ option.option_value }}
-                    </v-btn>
+                    </v-btn> -->
 
                   </v-card-title>
                 </v-card>
