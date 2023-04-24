@@ -130,7 +130,7 @@
       >
       <v-container>
         <v-stepper v-model="e1" class="rounded-lg">
-          <v-stepper-header class="text-subtitle-2 secondaryAccent ">
+          <v-stepper-header class="text-subtitle-2 secondaryAccent">
             <v-stepper-step :complete="e1 > 1" step="1">
               PERSONAL INFORMATION
             </v-stepper-step>
@@ -243,7 +243,7 @@
                                 required
                                 @keydown.enter.prevent="submit"
                               >
-                                <template #append >
+                                <template #append>
                                   <div class="d-flex align-center n-mt-10">
                                     <v-btn
                                       on
@@ -292,7 +292,6 @@
                                   : 'text'
                               "
                               maxLength="10"
-                         
                               :rules="[
                                 (v) => !!v || 'Mobile number is required',
                                 (v) =>
@@ -314,9 +313,7 @@
                                       !personalInfo.is_phone_verified &&
                                       usingPhone
                                     "
-                                    @click="
-                                      generatePhoneOtp()
-                                    "
+                                    @click="generatePhoneOtp()"
                                   >
                                     verify
                                   </v-btn>
@@ -387,7 +384,7 @@
                             ></v-progress-circular>
                           </v-col>
                         </v-row>
-                        <div v-if="!isCurrentLocation" class="pt-5 ">
+                        <div v-if="!isCurrentLocation" class="pt-5">
                           <v-row class="py-0">
                             <v-col cols="6" class="py-0 c-text-field">
                               <v-select
@@ -437,7 +434,6 @@
                                 class="rounded-xl"
                                 item-value="id"
                                 item-text="district_name"
-                               
                                 @change="fetchTalukas"
                               >
                               </v-select>
@@ -595,7 +591,7 @@
                                 required
                               ></v-text-field>
                             </v-col>
-                            <v-col cols="12" class="py-0 c-text-field     ">
+                            <v-col cols="12" class="py-0 c-text-field">
                               <v-text-field
                                 v-model="personalInfo.address"
                                 outlined
@@ -616,7 +612,7 @@
 
               <v-card elevation="0">
                 <v-row>
-                  <v-col cols="12" >
+                  <v-col cols="12">
                     <v-divider></v-divider>
                     <v-card-title class="mb-2">
                       <v-btn
@@ -661,13 +657,19 @@
                               class="d-flex flex-column"
                               v-if="expandedPanelIndex != index"
                             >
-                              <div class="font-weight-regular" v-if="qualification.programme != undefined">
+                              <div
+                                class="font-weight-regular"
+                                v-if="qualification.programme != undefined"
+                              >
                                 {{ index + 1 + ". " + qualification.programme }}
                               </div>
                               <div class="text-body-2 grey--text pt-2 pb-2">
                                 {{ qualification.institution }}
                               </div>
-                              <div class="text-body-2 grey--text" v-if="qualification.start_date != undefined">
+                              <div
+                                class="text-body-2 grey--text"
+                                v-if="qualification.start_date != undefined"
+                              >
                                 {{
                                   new Date(
                                     qualification.start_date
@@ -727,9 +729,7 @@
                                   maxLength="100"
                                   required
                                   :rules="[
-                                    (v) =>
-                                      !!v ||
-                                      'Field of Study is required',
+                                    (v) => !!v || 'Field of Study is required',
                                   ]"
                                 ></v-text-field
                               ></v-col>
@@ -808,10 +808,12 @@
                                   append-inner-icon="mdi-attachment"
                                   @change="onChange"
                                   v-model="selectedFile[expandedPanelIndex]"
-                                
                                 >
                                   <template #append>
-                                    <div class="d-flex align-center cursor n-mt-10"  @click="manualClick">
+                                    <div
+                                      class="d-flex align-center cursor n-mt-10"
+                                      @click="manualClick"
+                                    >
                                       <v-icon>mdi-attachment</v-icon> Attachment
                                     </div>
                                   </template>
@@ -859,10 +861,14 @@
               >
                 NEXT
               </v-btn>
-              <v-btn class="float-right mx-4 my-4 secondaryAccent primary--text" depressed rounded  to="/interests">
+              <v-btn
+                class="float-right mx-4 my-4 secondaryAccent primary--text"
+                depressed
+                rounded
+                to="/interests"
+              >
                 skip
               </v-btn>
-              
             </v-stepper-content>
 
             <!------------------------------------------ STEP 3 ------------------------------------------>
@@ -893,7 +899,13 @@
                               v-if="expandedPanelIndex != index"
                               @click="consolee(professional.end_date)"
                             >
-                              <div class="font-weight-regular">
+                              <div
+                                v-if="experience == 'Fresher'"
+                                class="font-weight-regular"
+                              >
+                                Fresher
+                              </div>
+                              <div v-else class="font-weight-regular">
                                 {{ index + 1 + ". " + professional.position }}
                               </div>
                               <div
@@ -941,12 +953,14 @@
                                           class="py-0 px-0 c-text-field"
                                         >
                                           <v-text-field
-                                          :disabled="experience != 'Experienced'"
+                                            :disabled="
+                                              experience != 'Experienced'
+                                            "
                                             type="number"
                                             outlined
                                             @keypress="isNumber($event)"
                                             class="rounded-xl"
-                                            :rules='[minValueRule]'
+                                            :rules="[minValueRule]"
                                             v-model="
                                               professional.experience_year
                                             "
@@ -958,12 +972,17 @@
                                             Years
                                           </div></v-col
                                         >
-                                        <v-col cols="1" class="py-0 px-0 c-text-field">
+                                        <v-col
+                                          cols="1"
+                                          class="py-0 px-0 c-text-field"
+                                        >
                                           <v-text-field
                                             type="number"
-                                            :disabled="experience != 'Experienced'"
+                                            :disabled="
+                                              experience != 'Experienced'
+                                            "
                                             @keypress="isNumber($event)"
-                                            :rules='[minValueRule]'
+                                            :rules="[minValueRule]"
                                             outlined
                                             class="rounded-xl"
                                             v-model="
@@ -983,7 +1002,10 @@
                                           label="Fresher"
                                           value="Fresher"
                                           color="accent"
-                                          @click="professional.experience_year = 0;professional.experience_month = 0 "
+                                          @click="
+                                            professional.experience_year = 0;
+                                            professional.experience_month = 0;
+                                          "
                                         >
                                         </v-radio
                                       ></v-row>
@@ -1071,9 +1093,11 @@
                                     class="rounded-xl"
                                     v-model="professional.end_date"
                                     type="date"
-                                    :rules="!isCurrentlyWorking ? [
-                                      (v) => !!v || 'End Date is required',
-                                    ] : ''"
+                                    :rules="
+                                      !isCurrentlyWorking
+                                        ? [(v) => !!v || 'End Date is required']
+                                        : ''
+                                    "
                                   ></v-text-field
                                 ></v-col>
                               </v-row>
@@ -1252,9 +1276,14 @@
                   >
                     PROCEED TO ASSESSMENT
                   </v-btn> -->
-                  <v-btn class="float-right mx-4 my-4 secondaryAccent primary--text" depressed rounded  to="/interests">
-                skip
-              </v-btn>
+                  <v-btn
+                    class="float-right mx-4 my-4 secondaryAccent primary--text"
+                    depressed
+                    rounded
+                    to="/interests"
+                  >
+                    skip
+                  </v-btn>
                 </v-row>
               </v-container>
             </v-stepper-content>
@@ -1337,7 +1366,6 @@ export default {
       preSignedUrl: "",
       selectedFile: [],
 
-      
       userInfo: {},
       indexValue: null,
 
@@ -1401,7 +1429,7 @@ export default {
           position: "NA",
           employee_type_id: 0,
           start_date: "",
-          end_date: "",    
+          end_date: "",
         },
       ],
       employeeType: [
@@ -1436,7 +1464,8 @@ export default {
         uuid: "123-456-7",
       });
       this.preSignedUrl = response.data.data.signed_request;
-      this.academicQualifications[this.expandedPanelIndex].certificate_url = response.data.data.url;
+      this.academicQualifications[this.expandedPanelIndex].certificate_url =
+        response.data.data.url;
       this.uploadToS3();
     },
     async uploadToS3() {
@@ -1495,9 +1524,7 @@ export default {
       this.indexValue = null;
     },
     async goToStep2() {
-      if (
-        this.$refs.step1.validate() 
-      ) {
+      if (this.$refs.step1.validate()) {
         console.log("userif conditon");
         this.isCreatingUser = true;
         const response = await PersonalInfoController.createUserPersonalInfo(
@@ -1516,11 +1543,10 @@ export default {
         } else {
           this.isCreatingUser = false;
         }
-      }
-      else {
-          if(this.$refs.step1.validate()){
-            alert('Please Verify Secondry Contact')
-          }
+      } else {
+        if (this.$refs.step1.validate()) {
+          alert("Please Verify Secondry Contact");
+        }
       }
     },
     async goToStep3() {
@@ -1549,8 +1575,8 @@ export default {
         }
       }
     },
-    manualClick(){
-      document.getElementById('fileInput').click();
+    manualClick() {
+      document.getElementById("fileInput").click();
     },
     async saveDetails() {
       //console.log("function");
@@ -1561,7 +1587,7 @@ export default {
           await ProfessionalController.createUserProfessionalInfo(
             this.professionalInfos
           );
-          if (response.data.success) {
+        if (response.data.success) {
           this.isCreatingUser = false;
           this.successDialog = true;
           this.$router.replace("/interests");
@@ -1602,23 +1628,23 @@ export default {
       const response = await LogedInUserInfo.getUserInfo();
       this.userInfo = response.data.user;
       console.log("User: ", this.userInfo);
-      if(this.userInfo.is_personal_info_captured){
-        this.e1=2;
+      if (this.userInfo.is_personal_info_captured) {
+        this.e1 = 2;
       }
-      if(this.userInfo.is_academic_info_captured){
-        this.e1=3;
+      if (this.userInfo.is_academic_info_captured) {
+        this.e1 = 3;
       }
-      if(this.userInfo.is_professional_info_captured){
-        this.$router.replace('/interests');
+      if (this.userInfo.is_professional_info_captured) {
+        this.$router.replace("/interests");
       }
       this.personalInfo.is_email_verified = this.userInfo.is_email_verified;
       this.personalInfo.is_phone_verified = this.userInfo.is_phone_verified;
       this.personalInfo.email = this.userInfo.email;
       this.personalInfo.phone_no = this.userInfo.phone_no.slice(-10);
       this.$mixpanel.track("PersonalInformationStepLoaded", {
-      user_type: this.userInfo.user_type,
-      screen_name: "PersonalProfileInformationScreen",
-    });
+        user_type: this.userInfo.user_type,
+        screen_name: "PersonalProfileInformationScreen",
+      });
     },
     onResize() {
       this.windowHeight = window.innerHeight;
@@ -1736,19 +1762,17 @@ export default {
       });
 
       // console.log("opt send response", response)
-      
     },
     async generatePhoneOtp() {
       this.time = 119;
       this.resendBool = false;
- const response =  await AuthService.generateOTP({
-        mobile:  this.personalInfo.phone_no,
+      const response = await AuthService.generateOTP({
+        mobile: this.personalInfo.phone_no,
       });
 
-      if(response){
-        this.otpDialog = true
+      if (response) {
+        this.otpDialog = true;
       }
-      
 
       this.isGenerateOtpClicked = true;
       this.otpTimmer();
@@ -1758,7 +1782,6 @@ export default {
       });
 
       // console.log("opt send response", response)
-      
     },
 
     otpTimmer() {
@@ -1819,7 +1842,7 @@ export default {
 
     minValueRule() {
       return (value) =>
-        parseInt(value) >= 0 || 'Value must be greater than or equal to 0';
+        parseInt(value) >= 0 || "Value must be greater than or equal to 0";
     },
 
     emailErrors() {
@@ -1840,12 +1863,10 @@ export default {
     window.removeEventListener("resize", this.onResize);
   },
   created() {
-    
     this.getUserInfo();
     this.fetchCountries();
   },
 };
 </script>
 <style scoped>
-
 </style>

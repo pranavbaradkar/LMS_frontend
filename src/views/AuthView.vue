@@ -343,11 +343,17 @@ export default {
     if (AuthService.isAuthenticated()) {
       if (this.$route.path !== "/") this.$router.replace("/");
     }
-    this.$mixpanel.track("AppOpened", {
+    this.$mixpanel.track("LoginScreenLoaded", {
       app_name: "Smart Staff Selection",
       screen_name: "LoginScreen",
     });
   },
+  beforeCreate(){
+    this.$mixpanel.track("AppOpened", {
+      app_name: "Smart Staff Selection",
+      screen_name: "LoginScreen",
+    });
+  }
 };
 </script>
 <style >

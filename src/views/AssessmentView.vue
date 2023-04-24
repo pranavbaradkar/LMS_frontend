@@ -128,7 +128,7 @@
             </v-card-title>
             <v-container class="px-16">
               <!-- Timer -->
-              <v-row class="align-center text-align-center px-2 pb-4">
+              <v-row class="align-center text-align-center px-4 pb-4">
                 <v-card class="pa-0" width="70" elevation="0">
                   <v-text-field hide-details="" label="HH" readonly :value=hours outlined rounded
                     class="rounded-xl centered-input timmer "
@@ -156,7 +156,7 @@
                 </v-col>
                 <v-spacer></v-spacer>
                 <!-- Submit Button -->
-                <v-col cols="4" class="text-end">
+                <v-col cols="4" class="text-end pr-0">
                   <v-btn width="150px" height="48px" rounded color="accent" class="white--text"
                     @click="openTestSummary">SUBMIT</v-btn>
                 </v-col>
@@ -207,7 +207,7 @@
               <div class="w-100"  v-html="option.option_value"></div>     
                     </v-btn> -->
 
-                      <div class="ma-2 option-width overflow-hidden" 
+                      <div class="ma-2 option-width overflow-hidden white" 
                       v-for="(option, index) in questions[selectedQuestion].question_options" :key="index"
                 @click="
                         setOption(
@@ -544,7 +544,6 @@ export default {
     };
   },
   computed: {
-    
     isTimeUp() {
       return this.seconds <= 0;
     },
@@ -614,7 +613,6 @@ export default {
         this.selectedQuestion = index;
         this.summaryDialog = false;
         this.scrollMethod("scrollId" + this.selectedQuestion);
-        
       }
     },
     getColorClass(question) {
@@ -840,7 +838,6 @@ export default {
       this.lastAnswerTime = this.seconds;
       this.selectedQuestion = this.selectedQuestion + 1;
       this.scrollMethod("scrollId" + this.selectedQuestion);
-      
     },
     previous() {
       this.$mixpanel.track("PreviousButtonClicked", {
@@ -859,13 +856,11 @@ export default {
 
       this.selectedQuestion = this.selectedQuestion - 1;
       this.scrollMethod("scrollId" + this.selectedQuestion);
-      
     },
     questionClicked(item) {
       if (item.myAnswer || this.skipped.includes(item)) {
         this.selectedQuestion = this.questions.indexOf(item);
         this.scrollMethod("scrollId" + this.selectedQuestion);
-        
       }
       this.$mixpanel.track("QuestionListClicked", {
         question_id: this.selectedQuestion.id,
@@ -885,6 +880,10 @@ export default {
       );
       if (response.data.success) {
         this.screening = response.data.data;
+        this.screening.forEach((element) => {
+          this.questions.push(...element.questions);
+        });
+        //console.log("screening: ", this.screening);
       } else {
         this.errorDialog = true;
         this.errorMessage = response.data.error;
@@ -895,18 +894,18 @@ export default {
       if (response2.data.success) {
         this.assessment = response2.data.data;
         //console.log(this.assessment);
+        this.seconds = this.assessment.tests[0].duration_of_assessment;
+        this.lastAnswerTime = this.seconds;
+
+        this.$mixpanel.track("AssessmentLoaded", {
+          assessment_id: this.assessment.id,
+          assessment_name: this.assessment.name,
+          screen_name: "AssessmentScreen",
+        });
+      } else {
+        this.errorDialog = true;
+        this.errorMessage = response2.data.error;
       }
-      this.seconds = this.assessment.tests[0].duration_of_assessment;
-      this.lastAnswerTime = this.seconds;
-      this.screening.forEach((element) => {
-        this.questions.push(...element.questions);
-      });
-      this.$mixpanel.track("AssessmentLoaded", {
-        assessment_id: this.assessment.id,
-        assessment_name: this.assessment.name,
-        screen_name: "AssessmentScreen",
-      });
-      //console.log("screening: ", this.screening);
     },
     handleBeforeUnload(event) {
       event.preventDefault();
@@ -919,7 +918,7 @@ export default {
   },
   created() {
     this.assessmentId = this.$route.query.id;
-   // console.log(this.assessmentId);
+    // console.log(this.assessmentId);
     this.getAssessmentInfo();
   },
 };
