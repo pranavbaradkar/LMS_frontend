@@ -35,8 +35,8 @@
                     <v-icon class="blue--text">mdi-chevron-right</v-icon>
 
                     <select @change="() => { }">
-                        <option>Primary Teacher Assessment (VGOS) </option>
-                        <option>Primary Teacher Assessment (VGOS) </option>
+                        <option>{{selectedAssessment.name}} </option>
+                        <option>{{selectedAssessment.name}}</option>
                     </select>
                 </div>
 
@@ -47,15 +47,10 @@
                         <v-card class="white--text d-flex justify-center flex-column" elevation="0" width="80%"
                             height="100%" variant="outlined" color="#0f0d0d57">
                             <v-card-title>
-                                Primary Teacher Assessment (VGOS)
+                                {{selectedAssessment.name}}
                             </v-card-title>
                             <v-card-subtitle class=" white--text mt-2">
-                                This test will assess the user in all the below-mentioned sections based on the preferences
-                                of
-                                the
-                                level and subjects selected by the candidate. The candidate who clears this assessment will
-                                be
-                                eligible for the next step of the process.
+                                {{selectedAssessment.instructions}}
                             </v-card-subtitle>
                         </v-card>
                     </v-img>
@@ -94,7 +89,7 @@
                                                 <div class="d-flex flex-column">
                                                     <div class="text--secondary"> <v-icon size="20"
                                                             class="mr-2 ">mdi-clipboard-list-outline</v-icon>Questions</div>
-                                                    <div>60</div>
+                                                    <div>{{noOfQuestions}}</div>
                                                 </div>
                                                 <v-divider vertical></v-divider>
                                             </v-card>
@@ -105,7 +100,7 @@
                                                 <div class="d-flex flex-column">
                                                     <div class="text--secondary"> <v-icon size="20" class="mr-2">mdi-clock-outline</v-icon>Durations
                                                     </div>
-                                                    <div>60</div>
+                                                    <div>{{ duration }} Sec</div>
                                                 </div>
                                                 <v-divider vertical></v-divider>
                                             </v-card>
@@ -117,7 +112,7 @@
                                                 <div class="d-flex flex-column">
                                                     <div class="text--secondary"> <v-icon size="20"
                                                             class="mr-2">mdi-chart-pie-outline</v-icon>Section</div>
-                                                    <div>60</div>
+                                                    <div>{{ selectedAssessment.skills.length }}</div>
                                                 </div>
                                                 <v-divider vertical></v-divider>
                                             </v-card>
@@ -130,7 +125,7 @@
                                                     <div class="text--secondary"> <v-icon size="20"
                                                             class="mr-2">mdi-map-marker-radius-outline</v-icon>Location
                                                     </div>
-                                                    <div>60</div>
+                                                    <div>Online</div>
                                                 </div>
                                             </v-card>
                                         </v-col>
@@ -139,10 +134,12 @@
                                 </v-card>
 
                                 <div class="w-100 d-flex flex-column ml-5">
-                                    <div class="mb-2">sections</div>
+                                    <div class="mb-2">Sections</div>
                                     <div class='d-flex w-100 flex-wrap pr-5'>
-                                        <v-chip v-for="i in 6" :key="i" class="mr-2 primary--text" color="#82D2DA42">
-                                            English Language
+                                        <v-chip  v-for="(item, index) in selectedAssessment.skills"
+                                        :key="index"
+                                        class="mr-2 primary--text" color="#82D2DA42">
+                                        {{ item }}
                                         </v-chip>
                                     </div>
 
@@ -263,6 +260,7 @@
 import "../styles.css";
 import AuthService from "../services/AuthService";
 import LogedInUserInfo from "@/controllers/LogedInUserInfo";
+import AssessmentController from "@/controllers/AssessmentController";
 
 
 export default {
@@ -274,6 +272,9 @@ export default {
 
             e1: 1,
             userInfo: {},
+            selectedAssessment:{},
+            duration: 0,
+            noOfQuestions: 0,
 
         };
     },
@@ -302,6 +303,19 @@ export default {
             }
             this.identifyUser();
         },
+    async currentAssessmentDetails(id) {
+      const response = await AssessmentController.getSingleAssessment(id);
+      if (response.data.success) {
+        this.selectedAssessment = response.data.data;
+        this.duration = this.selectedAssessment.tests[0].duration_of_assessment;
+        this.noOfQuestions =this.selectedAssessment.tests[0].total_no_of_questions;
+        // this.dialog = true;
+        console.log(response)
+        console.log(this.selectedAssessment);
+      } else {
+        alert("Something went wrong!");
+      }
+    },
         identifyUser() {
             const userId = this.userInfo.id;
             const userName = this.userInfo.first_name + " " + this.userInfo.last_name;
@@ -329,6 +343,7 @@ export default {
     },
     created() {
         this.getUserInfo();
+        this.currentAssessmentDetails(201);
 
 
     },
