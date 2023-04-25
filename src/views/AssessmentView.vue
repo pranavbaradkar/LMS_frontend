@@ -878,6 +878,9 @@ export default {
       const response = await AssessmentsController.getScreeningQuestions(
         this.assessmentId
       );
+      // const response = await AssessmentsController.getMainsQuestions(
+      //   this.assessmentId
+      // );
       if (response.data.success) {
         this.screening = response.data.data;
         this.screening.forEach((element) => {
@@ -893,7 +896,7 @@ export default {
       );
       if (response2.data.success) {
         this.assessment = response2.data.data;
-        //console.log(this.assessment);
+        console.log(this.assessment);
         this.seconds = this.assessment.tests[0].duration_of_assessment;
         this.lastAnswerTime = this.seconds;
 

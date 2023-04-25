@@ -365,7 +365,7 @@ export default {
       const response = await LogedInUserInfo.getUserInfo();
       this.userInfo = response.data.user;
       this.$store.state.userInfo = this.userInfo;
-      //console.log(this.userInfo);
+      console.log(this.userInfo);
       if(!this.userInfo.is_profile_created){
         this.$router.replace('/register');
       }

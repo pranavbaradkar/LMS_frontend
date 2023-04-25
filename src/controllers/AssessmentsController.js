@@ -16,6 +16,18 @@ export default {
             return error.response;
         }
     },
+    getMainsQuestions: async function (id) {
+        try {
+            const response = await instance.get('assessments/'+id+'/mains/questions-list', {
+                headers: {
+                    'Authorization': AuthService.getToken()
+                }
+            })
+            return response;
+        } catch (error) {
+            return error.response;
+        }
+    },
     submitAssessment: async function (id,data) {
         try {
             const response = await instance.post('assessments/' + id + '/screening/submit',data, {
