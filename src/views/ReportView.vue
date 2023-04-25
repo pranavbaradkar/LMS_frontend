@@ -112,7 +112,7 @@
                                                 <div class="d-flex flex-column">
                                                     <div class="text--secondary"> <v-icon size="20"
                                                             class="mr-2">mdi-chart-pie-outline</v-icon>Section</div>
-                                                    <div>{{ selectedAssessment.skills.length }}</div>
+                                                    <div>{{ section }}</div>
                                                 </div>
                                                 <v-divider vertical></v-divider>
                                             </v-card>
@@ -275,6 +275,7 @@ export default {
             selectedAssessment:{},
             duration: 0,
             noOfQuestions: 0,
+            section:0,
 
         };
     },
@@ -309,6 +310,7 @@ export default {
         this.selectedAssessment = response.data.data;
         this.duration = this.selectedAssessment.tests[0].duration_of_assessment;
         this.noOfQuestions =this.selectedAssessment.tests[0].total_no_of_questions;
+        this.section=this.selectedAssessment.skills.length
         // this.dialog = true;
         console.log(response)
         console.log(this.selectedAssessment);
