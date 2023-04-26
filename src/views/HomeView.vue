@@ -455,9 +455,12 @@ export default {
       this.$store.state.userInfo = this.userInfo;
       console.log(this.userInfo);
       if (!this.userInfo.is_personal_info_captured) {
+        console.log('Routing to Register')
         this.$router.replace("/register");
       }
-      if (!this.userInfo.is_interest_captured) {
+     else if (!this.userInfo.is_interest_captured) {
+      console.log('Routing to Interests')
+
         this.$router.replace("/interests");
       }
       this.identifyUser();
@@ -521,10 +524,10 @@ export default {
         this.testType = "Mains";
         this.e1 = 2;
       } else {
-        //   this.$router.push({
-        //   path: "/report",
-        //   query: { id: this.recommendedAssessment.id},
-        // });
+          this.$router.push({
+          path: "/report",
+          query: { id: this.recommendedAssessment.id},
+        });
       }
       //console.log("data", this.recommendedAssessment);
     },
