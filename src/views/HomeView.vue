@@ -311,6 +311,8 @@ export default {
         source: "instruction_page/recommendation_page",
         screen_name: "RecommendedTestScreen",
       });
+      
+      // console.log('selected',this.selectedAssessment);
       this.$router.push({
         path: "/assessment",
         query: { id: this.selectedAssessment.id,test: this.testType},
@@ -322,9 +324,20 @@ export default {
       console.log(
         this.selectedAssessment
       );
-      this.duration = this.selectedAssessment.tests[0].duration_of_assessment;
+      if(this.selectedAssessment.screening_status == "PENDING"){
+        this.testType = 'Screening'
+        this.e1 = 1;
+      }
+      else if( this.selectedAssessment.screening_status != "PENDING" &&  this.selectedAssessment.mains_status == "PENDING"  ){
+        this.testType = 'Mains'
+        this.e1 = 2;
+      }
+      else {
+          this.$router.push('/report')
+      }
+      this.duration = this.selectedAssessment.tests[this.e1 - 1].duration_of_assessment;
       this.noOfQuestions =
-        this.selectedAssessment.tests[0].total_no_of_questions;
+        this.selectedAssessment.tests[this.e1 - 1].total_no_of_questions;
       this.$mixpanel.track("RecommendedViewTestClicked", {
         assessment_id: this.recommendedAssessment.id,
         assessment_name: this.recommendedAssessment.name,
@@ -340,6 +353,7 @@ export default {
       const response = await AssessmentController.getSingleAssessment(id);
       if (response.data.success) {
         this.selectedAssessment = response.data.data;
+        
         this.duration = this.selectedAssessment.tests[0].duration_of_assessment;
         this.noOfQuestions =
           this.selectedAssessment.tests[0].total_no_of_questions;
@@ -418,7 +432,7 @@ export default {
       }
       else{
         this.recommendedAssessment = response.data.data;
-        //console.log(this.allAssessments);
+        console.log("reco",this.recommendedAssessment);
 
         this.allAssessments=this.allAssessments.filter(function(item) {
             return item.id !== response.data.data.id;

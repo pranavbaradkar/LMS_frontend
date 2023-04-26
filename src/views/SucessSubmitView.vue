@@ -90,7 +90,7 @@
           rounded
           large
           depressed
-          to="/"
+         
           @click="confirm"
           >confirm</v-btn
         >
@@ -125,6 +125,10 @@ export default {
       this.$mixpanel.track("SubmissionSucceeded", {
         notification_email: this.notificationEmail,
         screen_name: "ThankyouScreen",
+      });
+      this.$router.push({
+        path: "/report",
+        query: { id: this.$route.query.assessment.id},
       });
     },
     logout() {
