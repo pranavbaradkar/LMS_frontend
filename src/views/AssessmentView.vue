@@ -511,7 +511,7 @@ export default {
   name: "AssessmentView",
   data() {
     return {
-      testType: '',
+      testType: "",
       assessmentId: "",
       confirmExitDialog: false,
       errorDialog: false,
@@ -542,7 +542,6 @@ export default {
       bookmarkedProgress: 0,
       scrollId: "scrollId",
       counter: 0,
-      
     };
   },
   computed: {
@@ -772,7 +771,7 @@ export default {
       //console.log(response);
       if (response.data.success) {
         // this.successDialog = true;
-        this.$store.state.assessmentId = this.assessment.id
+        this.$store.state.assessmentId = this.assessment.id;
         this.$router.replace({
           path: "/success",
           query: { assessment: JSON.stringify(this.assessment) },
@@ -879,17 +878,16 @@ export default {
     },
     async getAssessmentInfo() {
       var response;
-      if(this.testType == 'Screening'){
-            response = await AssessmentsController.getScreeningQuestions(
-              this.assessmentId
-            );
+      if (this.testType == "Screening") {
+        response = await AssessmentsController.getScreeningQuestions(
+          this.assessmentId
+        );
+      } else {
+        response = await AssessmentsController.getMainsQuestions(
+          this.assessmentId
+        );
       }
-      else {
-          response = await AssessmentsController.getMainsQuestions(
-              this.assessmentId
-            );
-        }      
-      
+
       if (response.data.success) {
         this.screening = response.data.data;
         this.screening.forEach((element) => {
@@ -905,14 +903,13 @@ export default {
       );
       if (response2.data.success) {
         this.assessment = response2.data.data;
-        console.log("assessmentinfo",this.assessment);
-        if(this.testType == 'Screening'){
+        console.log("assessmentinfo", this.assessment);
+        if (this.testType == "Screening") {
           this.seconds = this.assessment.tests[0].duration_of_assessment;
-        }
-        else {
+        } else {
           this.seconds = this.assessment.tests[1].duration_of_assessment;
         }
-        
+
         this.lastAnswerTime = this.seconds;
 
         this.$mixpanel.track("AssessmentLoaded", {
@@ -933,12 +930,27 @@ export default {
       event.returnValue = confirmationMessage;
       return confirmationMessage;
     },
+    async changeTestStatus() {
+      if (this.testType == "Screening") {
+        console.log('Screening started')
+        const response=  await AssessmentController.startScreening(this.assessmentId);
+      console.log(response);
+
+      } else {
+        console.log('Mains started')
+      const response=  await AssessmentController.startMains(this.assessmentId);
+      console.log(response);
+
+      }
+    },
   },
+
   created() {
     this.assessmentId = this.$route.query.id;
     this.testType = this.$route.query.test;
     // console.log(this.assessmentId);
     this.getAssessmentInfo();
+    this.changeTestStatus();
   },
 };
 </script>

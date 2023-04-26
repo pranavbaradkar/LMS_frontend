@@ -35,6 +35,7 @@
         width="100%"
         :height="getHeight"
         variant="outlined"
+        v-if="allAssessments.length != 0 || recommendedAssessment != {}"
       >
         <div class="text-h6 mb-1 text-center">Test Selection</div>
         <v-list-item-subtitle class="text-center grey--text"
@@ -125,9 +126,8 @@
                     </v-list-item-content>
                   </v-list-item>
                   <v-expand-transition>
-                    <v-card-actions  class="mx-2">
+                    <v-card-actions class="mx-2">
                       <v-btn
-                     
                         depressed
                         block
                         color="secondaryAccent"
@@ -143,6 +143,19 @@
             </v-slide-item>
           </v-slide-group>
         </div>
+      </v-card>
+      <v-card
+        v-else
+        color="surface"
+        class="mx-auto d-flex align-center justify-center"
+        elevation="0"
+        width="100%"
+        :height="getHeight"
+        variant="outlined"
+      >
+        <v-card-title class="d-flex align-center">
+          No Assessments Found!
+        </v-card-title>
       </v-card>
     </v-container>
     <v-dialog v-model="dialog" max-width="461px" color="#FBF5F2">
@@ -227,7 +240,63 @@
             </v-stepper-content>
             <!------------------------------------------ STEP 2 ------------------------------------------>
 
-            <v-stepper-content step="2" class="pb-0"> </v-stepper-content>
+            <v-stepper-content step="2" class="pt-0">
+              <div class="d-flex flex-column">
+                <div class="subtitle-2 text--secondary">
+                  {{ selectedAssessment.name }}
+                </div>
+                <div class="Subtitle-1 my-2">Mains Test</div>
+                <div class="d-flex flex-row text-secondry">
+                  <div class="d-flex flex-row text--secondary">
+                    <v-icon>mdi-note-text-outline</v-icon>
+                    <div class="m-2 mr-2">
+                      {{ noOfQuestions }}
+                      Questions
+                    </div>
+                    <v-icon>mdi-circle-small</v-icon>
+                  </div>
+                  <div class="d-flex flex-row text--secondary">
+                    <v-icon>mdi-clock-outline</v-icon>
+                    <div class="m-2 mr-2">
+                      {{ formatTime(duration) }}
+                    </div>
+
+                    <v-icon>mdi-circle-small</v-icon>
+                  </div>
+                  <div class="d-flex flex-row text--secondary">
+                    <v-icon>mdi-map-marker-radius-outline</v-icon>
+                    <div class="m-2 mr-2">Online</div>
+                  </div>
+                </div>
+                <div class="Subtitle-1 pt-5">Sections</div>
+                <div class="w-100">
+                  <!-- <v-chip-group> -->
+                  <v-chip
+                    v-for="(item, index) in selectedAssessment.skills"
+                    :key="index"
+                    class="ma-2"
+                    color="secondaryAccent primary--text"
+                    >{{ item }}</v-chip
+                  >
+                  <!-- </v-chip-group> -->
+                </div>
+                <v-card-title class="pl-0">Instructions</v-card-title>
+
+                <p class="text--secondary">
+                  {{ selectedAssessment.instructions }}
+                </p>
+              </div>
+              <div class="d-flex justify-center w-100">
+                <v-btn
+                  color="secondary"
+                  class="primary--text mt-10 mb-12"
+                  rounded
+                  large
+                  @click="startTest"
+                  >START TEST</v-btn
+                >
+              </div>
+            </v-stepper-content>
           </v-stepper-items>
         </v-stepper>
       </v-card>
@@ -260,7 +329,7 @@ export default {
       noOfQuestions: 0,
 
       e1: 1,
-      testType: "Screening"
+      testType: "Screening",
     };
   },
   computed: {
@@ -293,16 +362,17 @@ export default {
         );
       }
     },
-    startRecommendedTest() {
-      this.dialog = false;
-      this.$mixpanel.track("StartTestClicked", {
-        assessment_id: this.recommendedAssessment.id,
-        assessment_name: this.recommendedAssessment.name,
-        source: "instruction_page/recommendation_page",
-        screen_name: "RecommendedTestScreen",
-      });
-      this.$router.push("/assessment");
-    },
+    // startRecommendedTest() {
+    //   this.dialog = false;
+    //   this.$mixpanel.track("StartTestClicked", {
+    //     assessment_id: this.recommendedAssessment.id,
+    //     assessment_name: this.recommendedAssessment.name,
+    //     source: "instruction_page/recommendation_page",
+    //     screen_name: "RecommendedTestScreen",
+    //   });
+    //   this.$router.push("/assessment");
+    // },
+
     startTest() {
       this.dialog = false;
       this.$mixpanel.track("StartTestClicked", {
@@ -311,33 +381,36 @@ export default {
         source: "instruction_page/recommendation_page",
         screen_name: "RecommendedTestScreen",
       });
-      
+
       // console.log('selected',this.selectedAssessment);
       this.$router.push({
         path: "/assessment",
-        query: { id: this.selectedAssessment.id,test: this.testType},
+        query: { id: this.selectedAssessment.id, test: this.testType },
       });
     },
     recommendedTestViewEvent() {
       this.selectedAssessment = this.recommendedAssessment;
-      this.dialog = true;
-      console.log(
-        this.selectedAssessment
-      );
-      if(this.selectedAssessment.screening_status == "PENDING"){
-        this.testType = 'Screening'
+      console.log('selected assessment',this.selectedAssessment);
+      if (this.selectedAssessment.screening_status == "PENDING") {
+        this.testType = "Screening";
         this.e1 = 1;
-      }
-      else if( this.selectedAssessment.screening_status != "PENDING" &&  this.selectedAssessment.mains_status == "PENDING"  ){
-        this.testType = 'Mains'
+      } else if (
+        this.selectedAssessment.screening_status != "PENDING" &&
+        this.selectedAssessment.mains_status == "PENDING"
+      ) {
+        this.testType = "Mains";
         this.e1 = 2;
+      } else {
+        this.$router.push({
+          path: "/report",
+          query: { id: this.selectedAssessment.id },
+        });
       }
-      else {
-          this.$router.push('/report')
-      }
-      this.duration = this.selectedAssessment.tests[this.e1 - 1].duration_of_assessment;
+      this.duration =
+        this.selectedAssessment.tests[this.e1 - 1].duration_of_assessment;
       this.noOfQuestions =
         this.selectedAssessment.tests[this.e1 - 1].total_no_of_questions;
+      this.dialog = true;
       this.$mixpanel.track("RecommendedViewTestClicked", {
         assessment_id: this.recommendedAssessment.id,
         assessment_name: this.recommendedAssessment.name,
@@ -353,7 +426,7 @@ export default {
       const response = await AssessmentController.getSingleAssessment(id);
       if (response.data.success) {
         this.selectedAssessment = response.data.data;
-        
+
         this.duration = this.selectedAssessment.tests[0].duration_of_assessment;
         this.noOfQuestions =
           this.selectedAssessment.tests[0].total_no_of_questions;
@@ -381,12 +454,11 @@ export default {
       this.userInfo = response.data.user;
       this.$store.state.userInfo = this.userInfo;
       console.log(this.userInfo);
-      if(!this.userInfo.is_profile_created){
-        this.$router.replace('/register');
+      if (!this.userInfo.is_personal_info_captured) {
+        this.$router.replace("/register");
       }
-      if(!this.userInfo.is_interest_captured){
-        this.$router.replace('/interests');
-
+      if (!this.userInfo.is_interest_captured) {
+        this.$router.replace("/interests");
       }
       this.identifyUser();
     },
@@ -413,7 +485,7 @@ export default {
     },
     async getRecommendedAssessment() {
       const response =
-        await RecommendedAssessmentController.getRecommendedAssessment('');
+        await RecommendedAssessmentController.getRecommendedAssessment("");
       //console.log("response", response);
       this.$mixpanel.track("RecommendationScreenLoaded", {
         screen_name: "RecommendationScreen",
@@ -421,22 +493,38 @@ export default {
       if (response.status == 401) {
         AuthService.logout();
       }
-      if(response.status==404){
+      if (response.status == 404) {
         const response2 =
-        await RecommendedAssessmentController.getRecommendedAssessment('?debug='+this.allAssessments[0].id);
+          await RecommendedAssessmentController.getRecommendedAssessment(
+            "?debug=266"
+          );
         this.recommendedAssessment = response2.data.data;
-        //console.log(this.allAssessments);
-        this.allAssessments=this.allAssessments.filter(function(item) {
-            return item.id !== response.data.data.id;
-          });
-      }
-      else{
+        console.log(this.recommendedAssessment);
+        this.allAssessments = this.allAssessments.filter(function (item) {
+          return item.id !== response.data.data.id;
+        });
+      } else {
         this.recommendedAssessment = response.data.data;
-        console.log("reco",this.recommendedAssessment);
+        console.log("reco", this.recommendedAssessment);
 
-        this.allAssessments=this.allAssessments.filter(function(item) {
-            return item.id !== response.data.data.id;
-          });
+        this.allAssessments = this.allAssessments.filter(function (item) {
+          return item.id !== response.data.data.id;
+        });
+      }
+      if (this.recommendedAssessment.screening_status == "PENDING") {
+        this.testType = "Screening";
+        this.e1 = 1;
+      } else if (
+        this.recommendedAssessment.screening_status != "PENDING" &&
+        this.selectedAssessment.mains_status == "PENDING"
+      ) {
+        this.testType = "Mains";
+        this.e1 = 2;
+      } else {
+        //   this.$router.push({
+        //   path: "/report",
+        //   query: { id: this.recommendedAssessment.id},
+        // });
       }
       //console.log("data", this.recommendedAssessment);
     },

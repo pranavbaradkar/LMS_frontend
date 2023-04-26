@@ -148,8 +148,8 @@
                     <span class="text--secondary"> Status: </span><span class="font-weight-medium">{{ this.selectedAssessment.screening_status }}
                     </span>
                     
-                    <v-btn :disabled="this.selectedAssessment.screening_status == 'PENDING'" rounded large color="secondary" class="primary--text ml-2" elevation="0"> VIEW
-                        RESUL</v-btn>                  
+                    <!-- <v-btn :disabled="this.selectedAssessment.screening_status == 'PENDING'" rounded large color="secondary" class="primary--text ml-2" elevation="0"> VIEW
+                        RESULT</v-btn>                   -->
                 </div>
 
                             </v-stepper-content>
@@ -238,8 +238,9 @@
                                 </div>
                                 <div class="float-bottom ma-5">
                     <span class="text--secondary"> Status: </span><span class="font-weight-medium">Screening Passed
-                    </span><v-btn rounded large color="secondary" class="primary--text ml-2" elevation="0">VIEW
-                        RESULT</v-btn>
+                    </span>
+                    <!-- <v-btn rounded large color="secondary" class="primary--text ml-2" elevation="0">VIEW
+                        RESULT</v-btn> -->
                 </div>
 
                             </v-stepper-content>
