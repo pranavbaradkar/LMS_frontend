@@ -148,8 +148,7 @@
                     <span class="text--secondary"> Status: </span><span class="font-weight-medium">{{ this.selectedAssessment.screening_status }}
                     </span>
                     
-                    <v-btn :disabled="this.selectedAssessment.screening_status == 'PENDING'" rounded large color="secondary" class="primary--text ml-2" elevation="0">VIEW
-                        VIEW
+                    <v-btn :disabled="this.selectedAssessment.screening_status == 'PENDING'" rounded large color="secondary" class="primary--text ml-2" elevation="0"> VIEW
                         RESUL</v-btn>                  
                 </div>
 
