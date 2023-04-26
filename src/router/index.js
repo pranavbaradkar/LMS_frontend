@@ -8,6 +8,8 @@ import AssessmentView from '../views/AssessmentView'
 import SucessSubmitView from '../views/SucessSubmitView'
 import FailedView from '../views/FailedView'
 import InterestsView from '../views/InterestsView.vue'
+import ReportView from '../views/ReportView'
+import GraphReportView from '../views/GraphReportView'
 
 //import store from "../store";
 
@@ -42,6 +44,22 @@ const routes = [
     path: '/register',
     name: 'RegistrationView',
     component: RegistrationView,
+    meta: {
+      requiresAuth: true,
+    }
+  },
+  {
+    path: '/report',
+    name: 'ReportView',
+    component: ReportView,
+    meta: {
+      requiresAuth: true,
+    }
+  },
+  {
+    path: '/reportStatus',
+    name: 'GraphReportView',
+    component: GraphReportView,
     meta: {
       requiresAuth: true,
     }

@@ -260,6 +260,7 @@ export default {
       noOfQuestions: 0,
 
       e1: 1,
+      testType: "Screening"
     };
   },
   computed: {
@@ -312,7 +313,7 @@ export default {
       });
       this.$router.push({
         path: "/assessment",
-        query: { id: this.selectedAssessment.id },
+        query: { id: this.selectedAssessment.id,test: this.testType},
       });
     },
     recommendedTestViewEvent() {

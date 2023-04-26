@@ -21,7 +21,7 @@
               <v-card-subtitle>
                 <span class="font-weight-light grey--text">Test Duration:</span>
                 <span v-if="assessment.tests != null">
-                  {{  formatTime(assessment.tests[0].duration_of_assessment) }} </span>
+                  {{  formatTime(seconds) }} </span>
               </v-card-subtitle>
               <v-divider class="mx-4 mt-0"></v-divider>
               <v-card-title class="pa-x pt-8 pb-0">
@@ -329,7 +329,7 @@
                 <v-card-subtitle>
                   <span class="font-weight-light grey--text">Test Duration:</span>
                   <span v-if="assessment.tests != null">
-                    {{ formatTime(assessment.tests[0].duration_of_assessment) }}</span>
+                    {{ formatTime(seconds) }}</span>
                 </v-card-subtitle>
                 <v-divider class="mx-4 mt-0"></v-divider>
 
@@ -511,6 +511,7 @@ export default {
   name: "AssessmentView",
   data() {
     return {
+      testType: '',
       assessmentId: "",
       confirmExitDialog: false,
       errorDialog: false,
@@ -541,6 +542,7 @@ export default {
       bookmarkedProgress: 0,
       scrollId: "scrollId",
       counter: 0,
+      
     };
   },
   computed: {
@@ -875,12 +877,18 @@ export default {
       this.windowHeight = window.innerHeight;
     },
     async getAssessmentInfo() {
-      const response = await AssessmentsController.getScreeningQuestions(
-        this.assessmentId
-      );
-      // const response = await AssessmentsController.getMainsQuestions(
-      //   this.assessmentId
-      // );
+      var response;
+      if(this.testType == 'Screening'){
+            response = await AssessmentsController.getScreeningQuestions(
+              this.assessmentId
+            );
+      }
+      else {
+          response = await AssessmentsController.getMainsQuestions(
+              this.assessmentId
+            );
+        }      
+      
       if (response.data.success) {
         this.screening = response.data.data;
         this.screening.forEach((element) => {
@@ -896,8 +904,14 @@ export default {
       );
       if (response2.data.success) {
         this.assessment = response2.data.data;
-        console.log(this.assessment);
-        this.seconds = this.assessment.tests[0].duration_of_assessment;
+        console.log("assessmentinfo",this.assessment);
+        if(this.testType == 'Screening'){
+          this.seconds = this.assessment.tests[0].duration_of_assessment;
+        }
+        else {
+          this.seconds = this.assessment.tests[1].duration_of_assessment;
+        }
+        
         this.lastAnswerTime = this.seconds;
 
         this.$mixpanel.track("AssessmentLoaded", {
@@ -921,6 +935,7 @@ export default {
   },
   created() {
     this.assessmentId = this.$route.query.id;
+    this.testType = this.$route.query.test;
     // console.log(this.assessmentId);
     this.getAssessmentInfo();
   },
