@@ -580,6 +580,8 @@ export default {
       total_time_spent_in_sec:
         this.assessment.tests[0].duration_of_assessment * 60 - this.seconds,
       screen_name: "AssessmentScreen",
+      assessment_type: this.testType,
+      assessment_level: this.assessment.tests[1].level.name,
     });
   },
 
@@ -836,6 +838,9 @@ export default {
             : this.questions[this.selectedQuestion].myAnswer,
         screen_name: "AssessmentScreen",
         time_taken_in_sec: this.lastAnswerTime - this.seconds,
+        difficulty_level: this.questions[this.selectedQuestion].difficulty_level,
+        skill: this.questions[this.selectedQuestion].skill.name,
+        Subject: this.questions[this.selectedQuestion].subject,
       });
       this.lastAnswerTime = this.seconds;
       this.selectedQuestion = this.selectedQuestion + 1;
@@ -863,8 +868,7 @@ export default {
       if (item.myAnswer || this.skipped.includes(item)) {
         this.selectedQuestion = this.questions.indexOf(item);
         this.scrollMethod("scrollId" + this.selectedQuestion);
-      }
-      this.$mixpanel.track("QuestionListClicked", {
+        this.$mixpanel.track("QuestionListClicked", {
         question_id: this.selectedQuestion.id,
         question_number_in_view: this.selectedQuestion + 1,
         question_bookmarked: this.bookmarked.includes(
@@ -872,6 +876,8 @@ export default {
         ),
         screen_name: "AssessmentScreen",
       });
+      }
+      
     },
     onResize() {
       this.windowHeight = window.innerHeight;
@@ -893,7 +899,7 @@ export default {
         this.screening.forEach((element) => {
           this.questions.push(...element.questions);
         });
-        //console.log("screening: ", this.screening);
+        console.log("screening: ", this.screening);
       } else {
         this.errorDialog = true;
         this.errorMessage = response.data.error;
@@ -909,14 +915,10 @@ export default {
         } else {
           this.seconds = this.assessment.tests[1].duration_of_assessment;
         }
-
+        
         this.lastAnswerTime = this.seconds;
+    this.changeTestStatus();
 
-        this.$mixpanel.track("AssessmentLoaded", {
-          assessment_id: this.assessment.id,
-          assessment_name: this.assessment.name,
-          screen_name: "AssessmentScreen",
-        });
       } else {
         this.errorDialog = true;
         this.errorMessage = response2.data.error;
@@ -932,15 +934,31 @@ export default {
     },
     async changeTestStatus() {
       if (this.testType == "Screening") {
-        console.log('Screening started')
-        const response=  await AssessmentController.startScreening(this.assessmentId);
-      console.log(response);
-
+        this.$mixpanel.track("AssessmentLoaded", {
+          assessment_id: this.assessment.id,
+          assessment_name: this.assessment.name,
+          screen_name: "AssessmentScreen",
+          assessment_type: this.testType,
+          assessment_level: this.assessment.tests[0].level.name,
+        });
+        console.log("Screening started");
+        const response = await AssessmentController.startScreening(
+          this.assessmentId
+        );
+        console.log(response);
       } else {
-        console.log('Mains started')
-      const response=  await AssessmentController.startMains(this.assessmentId);
-      console.log(response);
-
+        this.$mixpanel.track("AssessmentLoaded", {
+          assessment_id: this.assessment.id,
+          assessment_name: this.assessment.name,
+          screen_name: "AssessmentScreen",
+          assessment_type: this.testType,
+          assessment_level: this.assessment.tests[1].level.name,
+        });
+        console.log("Mains started");
+        const response = await AssessmentController.startMains(
+          this.assessmentId
+        );
+        console.log(response);
       }
     },
   },
@@ -950,7 +968,6 @@ export default {
     this.testType = this.$route.query.test;
     // console.log(this.assessmentId);
     this.getAssessmentInfo();
-    this.changeTestStatus();
   },
 };
 </script>

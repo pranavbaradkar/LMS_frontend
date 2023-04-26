@@ -160,7 +160,7 @@
     </v-container>
     <v-dialog v-model="dialog" max-width="461px" color="#FBF5F2">
       <v-card fluid elevation="0" class="rounded-xl" color="#FBF5F2">
-        <v-btn class="i-close-btn" icon @click="dialog = false"
+        <v-btn class="i-close-btn" icon @click="closeDialog"
           ><v-icon>mdi-close</v-icon></v-btn
         >
 
@@ -347,6 +347,15 @@ export default {
     window.removeEventListener("resize", this.onResize);
   },
   methods: {
+    closeDialog() {
+      this.dialog = false;
+      this.$mixpanel.track("InstructionPageClosed", {
+        assessment_id: this.selectedAssessment.id,
+        assessment_name: this.selectedAssessment.name,
+        screen_name: "RecommendedTestScreen",
+        assessment_level: this.selectedAssessment.tests[this.e1 - 1].level.name,
+      });
+    },
     formatTime(seconds) {
       const hours = Math.floor(seconds / 3600);
       const minutes = Math.floor((seconds % 3600) / 60);
@@ -380,6 +389,9 @@ export default {
         assessment_name: this.selectedAssessment.name,
         source: "instruction_page/recommendation_page",
         screen_name: "RecommendedTestScreen",
+        assessment_type: this.selectedAssessment.tests[this.e1-1].assessment_type,
+        assessment_level:
+          this.selectedAssessment.tests[this.e1 - 1].level.name,
       });
 
       // console.log('selected',this.selectedAssessment);
@@ -390,7 +402,7 @@ export default {
     },
     recommendedTestViewEvent() {
       this.selectedAssessment = this.recommendedAssessment;
-      console.log('selected assessment',this.selectedAssessment);
+      console.log("selected assessment", this.selectedAssessment);
       if (this.selectedAssessment.screening_status == "PENDING") {
         this.testType = "Screening";
         this.e1 = 1;
@@ -415,11 +427,15 @@ export default {
         assessment_id: this.recommendedAssessment.id,
         assessment_name: this.recommendedAssessment.name,
         screen_name: "RecommendedTestScreen",
+        assessment_level:
+          this.recommendedAssessment.tests[this.e1 - 1].level.name,
       });
       this.$mixpanel.track("InstructionsModalLoaded", {
         assessment_id: this.recommendedAssessment.id,
         assessment_name: this.recommendedAssessment.name,
         screen_name: "AssessmentInstructionsScreen",
+        assessment_level:
+          this.recommendedAssessment.tests[this.e1 - 1].level.name,
       });
     },
     async otherTestViewEvent(id) {
@@ -431,6 +447,20 @@ export default {
         this.noOfQuestions =
           this.selectedAssessment.tests[0].total_no_of_questions;
         this.dialog = true;
+        this.$mixpanel.track("OtherViewTestClicked", {
+          assessment_id: this.selectedAssessment.id,
+          assessment_name: this.selectedAssessment.name,
+          screen_name: "RecommendedTestScreen",
+          assessment_level:
+            this.selectedAssessment.tests[this.e1 - 1].level.name,
+        });
+        this.$mixpanel.track("InstructionsModalLoaded", {
+          assessment_id: this.selectedAssessment.id,
+          assessment_name: this.selectedAssessment.name,
+          screen_name: "AssessmentInstructionsScreen",
+          assessment_level:
+            this.selectedAssessment.tests[this.e1 - 1].level.name,
+        });
         console.log(this.selectedAssessment);
       } else {
         alert("Something went wrong!");
@@ -455,11 +485,10 @@ export default {
       this.$store.state.userInfo = this.userInfo;
       console.log(this.userInfo);
       if (!this.userInfo.is_personal_info_captured) {
-        console.log('Routing to Register')
+        console.log("Routing to Register");
         this.$router.replace("/register");
-      }
-     else if (!this.userInfo.is_interest_captured) {
-      console.log('Routing to Interests')
+      } else if (!this.userInfo.is_interest_captured) {
+        console.log("Routing to Interests");
 
         this.$router.replace("/interests");
       }
@@ -524,9 +553,9 @@ export default {
         this.testType = "Mains";
         this.e1 = 2;
       } else {
-          this.$router.push({
+        this.$router.push({
           path: "/report",
-          query: { id: this.recommendedAssessment.id},
+          query: { id: this.recommendedAssessment.id },
         });
       }
       //console.log("data", this.recommendedAssessment);
