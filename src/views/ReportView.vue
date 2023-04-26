@@ -100,7 +100,7 @@
                                                 <div class="d-flex flex-column">
                                                     <div class="text--secondary"> <v-icon size="20" class="mr-2">mdi-clock-outline</v-icon>Durations
                                                     </div>
-                                                    <div>{{ duration }} Sec</div>
+                                                    <div> {{ formatTime(duration) }}</div>
                                                 </div>
                                                 <v-divider vertical></v-divider>
                                             </v-card>
@@ -144,6 +144,14 @@
                                     </div>
 
                                 </div>
+                                <div class="float-bottom ma-5">
+                    <span class="text--secondary"> Status: </span><span class="font-weight-medium">{{ this.selectedAssessment.screening_status }}
+                    </span>
+                    
+                    <v-btn :disabled="this.selectedAssessment.screening_status == 'PENDING'" rounded large color="secondary" class="primary--text ml-2" elevation="0">VIEW
+                        VIEW
+                        RESUL</v-btn>                  
+                </div>
 
                             </v-stepper-content>
                             <!------------------------------------------ STEP 2 ------------------------------------------>
@@ -229,6 +237,11 @@
                                     </div>
 
                                 </div>
+                                <div class="float-bottom ma-5">
+                    <span class="text--secondary"> Status: </span><span class="font-weight-medium">Screening Passed
+                    </span><v-btn rounded large color="secondary" class="primary--text ml-2" elevation="0">VIEW
+                        RESULT</v-btn>
+                </div>
 
                             </v-stepper-content>
 
@@ -245,11 +258,7 @@
 
 
 
-                <div class="float-bottom ma-5">
-                    <span class="text--secondary"> Status: </span><span class="font-weight-medium">Screening Passed
-                    </span><v-btn rounded large color="secondary" class="primary--text ml-2" elevation="0">VIEW
-                        RESULT</v-btn>
-                </div>
+                
 
             </v-card>
         </v-container>
@@ -289,7 +298,23 @@ export default {
     beforeDestroy() {
 
     },
+
     methods: {
+        formatTime(seconds) {
+      const hours = Math.floor(seconds / 3600);
+      const minutes = Math.floor((seconds % 3600) / 60);
+      //const remainingSeconds = seconds % 60;
+      if (hours == 0) {
+        return String(minutes).padStart(2, "0") + " minutes";
+      } else {
+        return (
+          String(hours).padStart(2, "0") +
+          " hours and " +
+          String(minutes).padStart(2, "0") +
+          " minutes"
+        );
+      }
+    },
         async getUserInfo() {
             const response = await LogedInUserInfo.getUserInfo();
             this.userInfo = response.data.user;
@@ -308,6 +333,7 @@ export default {
       const response = await AssessmentController.getSingleAssessment(id);
       if (response.data.success) {
         this.selectedAssessment = response.data.data;
+        console.log("selected assessment",this.selectedAssessment)
         this.duration = this.selectedAssessment.tests[0].duration_of_assessment;
         this.noOfQuestions =this.selectedAssessment.tests[0].total_no_of_questions;
         this.section=this.selectedAssessment.skills.length
@@ -345,10 +371,12 @@ export default {
     },
     created() {
         this.getUserInfo();
-        this.currentAssessmentDetails(201);
-
-
+        console.log("store data",this.$store.state.assessmentId)       
+        // this.$store.state.assessmentId
+        
+        this.currentAssessmentDetails(this.$route.query.id)
     },
+ 
 
 };
 </script>

@@ -772,6 +772,7 @@ export default {
       //console.log(response);
       if (response.data.success) {
         // this.successDialog = true;
+        this.$store.state.assessmentId = this.assessment.id
         this.$router.replace({
           path: "/success",
           query: { assessment: JSON.stringify(this.assessment) },

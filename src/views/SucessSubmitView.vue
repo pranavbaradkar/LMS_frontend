@@ -108,6 +108,7 @@ export default {
     return {
       notificationSMS: false,
       notificationEmail: false,
+      assessmentId: null,
     };
   },
   computed: {},
@@ -128,7 +129,7 @@ export default {
       });
       this.$router.push({
         path: "/report",
-        query: { id: this.$route.query.assessment.id},
+        query: { id: this.assessmentId},
       });
     },
     logout() {
@@ -142,8 +143,12 @@ export default {
     },
   },
   created() {
-    console.log(this.$store.state.userInfo);
+    // console.log("userInfo");
     const assessment = JSON.parse(this.$route.query.assessment);
+    // console.log("assessment data", assessment)
+
+    this.assessmentId = assessment.id
+    // console.log('assessment id',this.assessmentId)
     this.$mixpanel.track("SubmissionSucceeded", {
       assessment_id: assessment.id,
       assessment_name: assessment.name,
