@@ -10,6 +10,8 @@ import FailedView from '../views/FailedView'
 import InterestsView from '../views/InterestsView.vue'
 import ReportView from '../views/ReportView'
 import GraphReportView from '../views/GraphReportView'
+import DemoIntrest from '../views/DemoIntrest'
+import DemoIntrestcopy from '../views/DemoIntrestcopy'
 
 //import store from "../store";
 
@@ -20,6 +22,22 @@ const routes = [
     path: '/login',
     name: 'AuthView',
     component: AuthView,
+    meta: {
+      requiresAuth: false,
+    }
+  },
+  {
+    path: '/demo',
+    name: 'DemoIntrest',
+    component: DemoIntrest,
+    meta: {
+      requiresAuth: false,
+    }
+  },
+  {
+    path: '/democopy',
+    name: 'DemoIntrestcopy',
+    component: DemoIntrestcopy,
     meta: {
       requiresAuth: false,
     }
