@@ -57,7 +57,7 @@
             class="d-flex flex-row m-center m-btn ma-2"
             elevation="0"
             depressed
-            ><v-checkbox v-model="notificationEmail"></v-checkbox
+            ><v-checkbox @click="emailSelected" v-model="notificationEmail"></v-checkbox
             ><img
               class="mr-2"
               src="../assets/Gmail.svg"
@@ -76,7 +76,7 @@
             class="d-flex flex-row m-center m-btn ma-2"
             elevation="0"
             depressed
-            ><v-checkbox v-model="notificationSMS"></v-checkbox
+            ><v-checkbox @click="messageSelected" v-model="notificationSMS"></v-checkbox
             ><v-icon class="mr-2" size="25">mdi-message-reply-outline</v-icon>
             <div class="d-flex flex-column">
               <div class="c-b-t">SMS</div>
@@ -112,7 +112,13 @@ export default {
     };
   },
   computed: {},
-  mounted() {},
+  mounted() {
+    
+    this.$mixpanel.track("ThankyouPageLoaded", {
+
+        screen_name: "ThankyouScreen",
+      });
+  },
 
   beforeDestroy() {
     window.removeEventListener("resize", this.onResize);
@@ -141,6 +147,18 @@ export default {
       this.$mixpanel.reset();
       this.$router.push("/login");
     },
+    messageSelected(){
+      this.$mixpanel.track("NotificationOptionsSelected",   {
+      "method": "Message",
+      "phone_number": this.$store.state.userInfo.phone_no
+    });
+    },
+    emailSelected(){
+      this.$mixpanel.track("NotificationOptionsSelected",   {
+      "method": "Email",
+      "email_id": this.$store.state.userInfo.email
+    },);
+    }
   },
   created() {
     // console.log("userInfo");
