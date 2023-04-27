@@ -78,14 +78,7 @@ export default {
             this.userInfo = response.data.user;
             this.$store.state.userInfo = this.userInfo;
             console.log(this.userInfo);
-            if (!this.userInfo.is_profile_created) {
-                this.$router.replace('/register');
-            }
-            if (!this.userInfo.is_interest_captured) {
-                this.$router.replace('/interests');
-
-            }
-            this.identifyUser();
+           
         },
         identifyUser() {
             const userId = this.userInfo.id;

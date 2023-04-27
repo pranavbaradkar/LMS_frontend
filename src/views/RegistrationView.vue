@@ -865,7 +865,7 @@
                 class="float-right mx-4 my-4 secondaryAccent primary--text"
                 depressed
                 rounded
-                to="/interests"
+                @click="e1++"
               >
                 skip
               </v-btn>
@@ -1627,15 +1627,9 @@ export default {
     async getUserInfo() {
       const response = await LogedInUserInfo.getUserInfo();
       this.userInfo = response.data.user;
-      console.log("User: ", this.userInfo);
+      console.log("User: Registration", this.userInfo);
       if (this.userInfo.is_personal_info_captured) {
         this.e1 = 2;
-      }
-      if (this.userInfo.is_academic_info_captured) {
-        this.e1 = 3;
-      }
-      if (this.userInfo.is_professional_info_captured) {
-        this.$router.replace("/interests");
       }
       this.personalInfo.is_email_verified = this.userInfo.is_email_verified;
       this.personalInfo.is_phone_verified = this.userInfo.is_phone_verified;
