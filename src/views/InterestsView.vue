@@ -249,7 +249,7 @@ export default {
   data() {
     return {
       userInfo: {},
-      e1: 4,
+      e1: 1,
       subjects: [],
       schools: [],
       boards: [],
