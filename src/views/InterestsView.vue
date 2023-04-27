@@ -76,8 +76,10 @@
                   <v-layout row wrap justify-center class="item-box">
                     <v-item
                       v-slot="{ active, toggle }"
-                      v-for="(level, i) in levels"
+                      v-for="(level,i) in levels"
+
                       :key="i"
+                      :value="level.id"
                     >
                       <v-card
                         :class="active ? 'selected-box ' : ''"
@@ -115,6 +117,7 @@
                       v-slot="{ active, toggle }"
                       v-for="(board, i) in boards"
                       :key="i"
+                      :value="board.id"
                     >
                       <v-card
                         class="d-flex align-center ma-2 rouded-xl"
@@ -193,6 +196,7 @@
                       v-slot="{ active, toggle }"
                       v-for="(subject, i) in subjects"
                       :key="i"
+                      :value="subject.id"
                     >
                       <v-card  
                         class="d-flex align-center ma-2 rouded-xl"
