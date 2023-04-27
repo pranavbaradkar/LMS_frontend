@@ -61,7 +61,8 @@
           class="black--text mt-8"
           rounded
           large
-          depressed
+          depressed 
+          @click="resubmit"
           >Resubmit</v-btn
         >
       </v-card>
@@ -75,7 +76,9 @@ import AuthService from "../services/AuthService";
 export default {
   name: "FailedView",
   data() {
-    return {};
+    return {
+      assessment: {},
+    };
   },
   computed: {},
   mounted() {},
@@ -94,12 +97,19 @@ export default {
       this.$mixpanel.reset();
       this.$router.push("/login");
     },
+    resubmit(){
+      this.$mixpanel.track("ResubmitClicked",{
+      assessment_id: this.assessment.id,
+      assessment_name: this.assessment.name,
+      screen_name: "SubmissionFailedScreen",
+    });
+    }
   },
   created() {
-    const assessment = JSON.parse(this.$route.query.assessment);
+    this.assessment = JSON.parse(this.$route.query.assessment);
     this.$mixpanel.track("SubmissionFailed", {
-      assessment_id: assessment.id,
-      assessment_name: assessment.name,
+      assessment_id: this.assessment.id,
+      assessment_name: this.assessment.name,
       screen_name: "SubmissionFailedScreen",
     });
   },
