@@ -47,13 +47,6 @@
               <input type="text" class="myinput" placeholder="Phone Number" v-model="phoneNumber" maxlength="10" />
             </div>
             <v-form v-model="valid" v-if="!usingPhone || vibgyouBool">
-              <!--<v-text-field v-if="!vibgyouBool" :label="Enter Email Id" placeholder="Enter Email Id" :rules="emailRules" solo outlined
-                v-model="email" class="rounded-xl">
-              </v-text-field>-->
-
-              <!-- <v-text-field  :label="Enter Your Vibgyor Email Id"  placeholder="Enter Email Id" :rules="emailRules" solo outlined
-              v-model="email" class="rounded-xl">
-            </v-text-field>  -->
               <span height="40px">
                 <v-text-field label="Email address" :suffix="vibgyouBool ? '@vgos.org' : ''"
                   :rules="vibgyouBool ? vgosRules : emailRules" class="rounded-xl" placeholder="Enter Email Id"
@@ -145,7 +138,9 @@
                 RESEND OTP
               </span> -->
 
-              <v-btn text class="textcolor--text pl-4" @click="generatePhoneOtp" :disabled="resendBool">RESEND OTP</v-btn>
+              <v-btn  v-if="usingPhone" text class="textcolor--text pl-4" @click="generatePhoneOtp" :disabled="resendBool">RESEND OTP</v-btn>
+              <v-btn v-else text class="textcolor--text pl-4" @click="generateOtp" :disabled="resendBool">RESEND OTP</v-btn>
+
             </v-card-text>
             <v-card-title class="justify-center">
               <v-btn :disabled="otp.length < 6" color="secondary" class="textcolor--text" rounded large width="90%" height="40" @click="validateOTP">
