@@ -30,7 +30,7 @@
 
     <v-container>
       <div class="w-100">
-        <div class="ma-2">
+        <div class="my-4">
           <span class="cursor blue--text">Test Selection</span>
           <v-icon class="blue--text">mdi-chevron-right</v-icon>
 
@@ -73,7 +73,7 @@
             class="rounded-lg transparent elevation-0 pt-0"
             color="#FBF5F2"
           >
-            <v-stepper-header class="text-subtitle-2 elevation-0">
+            <v-stepper-header class="text-subtitle-2 elevation-0 mt-4">
               <v-stepper-step :complete="e1 > 1" step="1">
                 SCREENING TEST
               </v-stepper-step>
@@ -103,7 +103,7 @@
                         width="100%"
                         class="elevation-0 d-flex justify-space-between"
                       >
-                        <div class="d-flex flex-column">
+                        <div class="d-flex flex-column mx-2">
                           <div class="text--secondary">
                             <v-icon size="20" class="mr-2"
                               >mdi-clipboard-list-outline</v-icon
@@ -195,7 +195,8 @@
               <!------------------------------------------ STEP 2 ------------------------------------------>
 
               <v-stepper-content step="2" class="ma-0 pa-0">
-                <v-row height="100px" class="pl-5">
+                <v-card class="pa-2 ma-5" height="auto" outlined >
+                  <v-row height="100px" class="pl-5">
                   <v-col cols="3" sm="3" md="3">
                     <v-card
                       height="50px"
@@ -263,6 +264,7 @@
                     </v-card>
                   </v-col>
                 </v-row>
+                </v-card>
 
                 <div class="w-100 d-flex flex-column ml-5 mb-4 mt-4">
                   <div class="mb-2">School Address</div>
