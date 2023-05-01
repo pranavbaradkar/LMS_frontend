@@ -5,7 +5,7 @@ import jwtDecode from 'jwt-decode'
 
 const TOKEN_KEY = 'jwt'
 const instance = axios.create({
-  baseURL: 'https://lmsbackend.knoggles.ai/api/v1/'
+  baseURL: 'https://lmsbackend-dev.knoggles.ai/api/v1/'
 });
 export default {
 

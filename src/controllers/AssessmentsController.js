@@ -1,7 +1,7 @@
 import axios from 'axios'
 import AuthService from '../services/AuthService'
 const instance = axios.create({
-    baseURL: 'https://lmsbackend.knoggles.ai/api/v1/'
+    baseURL: 'https://lmsbackend-dev.knoggles.ai/api/v1/'
 });
 export default {
     getScreeningQuestions: async function (id) {

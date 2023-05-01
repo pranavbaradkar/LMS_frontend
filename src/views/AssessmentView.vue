@@ -183,15 +183,15 @@
                   <v-card-title v-if="questions[selectedQuestion] != null"> <div v-html="questions[selectedQuestion].statement"></div>
                   </v-card-title>
                   <v-card-subtitle  >
-                    <video v-if="assetType == 'VIDEO'" width="320" height="240" controls>
-                    <source src="https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4" >
+                    <video v-if="getAssetType(questions[selectedQuestion].mime_type) == 'video'" width="320" height="240"  controls>
+                    <source :src=questions[selectedQuestion].s3_asset_urls :type="questions[selectedQuestion].mime_type" >
                     Your browser does not support the video tag.
                     </video>
-                    <audio v-if="assetType == 'AUDIO'"  controls>
-                    <source src=" https://sample-videos.com/audio/mp3/crowd-cheering.mp3" type="audio/ogg">
+                    <audio v-if="getAssetType(questions[selectedQuestion].mime_type) == 'audio'"  controls>
+                    <source :src=questions[selectedQuestion].s3_asset_urls  :type="questions[selectedQuestion].mime_type">
                      Your browser does not support the audio tag.
                     </audio>
-                    <img class="mt-4" v-if="assetType =='IMAGE' " src="https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg" alt="Girl in a jacket" width="300" height="200">
+                    <img class="mt-4" v-if="getAssetType(questions[selectedQuestion].mime_type) =='image' " :src=questions[selectedQuestion].s3_asset_urls  alt="Girl in a jacket" width="300" height="200">
                   </v-card-subtitle>
                 </v-card>
               </v-card>
@@ -521,7 +521,7 @@ export default {
   name: "AssessmentView",
   data() {
     return {
-      assetType:"AUDIO",
+      assetType:"",
       testType: "",
       assessmentId: "",
       confirmExitDialog: false,
@@ -599,6 +599,17 @@ export default {
   },
 
   methods: {
+    getAssetType(assetDataType) {
+      if(assetDataType != null){
+        console.log(assetDataType);
+      const [type] = assetDataType.split("/");
+      console.log("declared type",type)
+      return type;
+      }else{
+        return "";
+      }
+     
+    },
     zoomOutFun(zoomOutImageUrl){
       this.zoomOutBool=true;
       this.zoomOutImageUrl=zoomOutImageUrl;
