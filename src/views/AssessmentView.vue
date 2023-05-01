@@ -182,6 +182,17 @@
                 <v-card height="auto" elevation="0" color="grey lighten-4">
                   <v-card-title v-if="questions[selectedQuestion] != null"> <div v-html="questions[selectedQuestion].statement"></div>
                   </v-card-title>
+                  <v-card-subtitle  >
+                    <video v-if="assetType == 'VIDEO'" width="320" height="240" controls>
+                    <source src="https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4" >
+                    Your browser does not support the video tag.
+                    </video>
+                    <audio v-if="assetType == 'AUDIO'"  controls>
+                    <source src=" https://sample-videos.com/audio/mp3/crowd-cheering.mp3" type="audio/ogg">
+                     Your browser does not support the audio tag.
+                    </audio>
+                    <img class="mt-4" v-if="assetType =='IMAGE' " src="https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg" alt="Girl in a jacket" width="300" height="200">
+                  </v-card-subtitle>
                 </v-card>
               </v-card>
             </v-container>
@@ -193,42 +204,31 @@
               <!-- Options Card -->
               <v-card class="option-card mt-8 rounded-xl w-100 float-bottom " elevation="0">
                 <v-card height="auto" color="sufaceAccent w-100" elevation="0">
-                  <v-card-title v-if="questions[selectedQuestion] != null"
+                  <v-card-title v-if="questions[selectedQuestion] != null" 
                     class="d-flex w-100 pa-1 flex-row justify-space-around">
-              
-                    <!-- <v-btn class="ma-2 option-width" min-height="50px"  v-for="(option, index) in questions[selectedQuestion].question_options"  :key="index"
-                      :color="questions[selectedQuestion].myAnswer == option.option_key ? 'secondaryAccent' : ''"
-                      
-                         @click="
-    setOption(
-      questions[selectedQuestion].question_options[index]
-    )
-  ">
-              <div class="w-100"  v-html="option.option_value"></div>     
-                    </v-btn> -->
-
-                      <div class="ma-2 option-width overflow-hidden white" 
+                      <v-card elevation="1" height="auto" width="auto" class="ma-2 option-width overflow-hidden white" 
                       v-for="(option, index) in questions[selectedQuestion].question_options" :key="index"
                 @click="
                         setOption(
                           questions[selectedQuestion].question_options[index]
                         )
                       ">
-                      <div class="w-100 d-flex justify-center cursor sub-text-option" :class="questions[selectedQuestion].myAnswer == option.option_key ? 'secondaryAccent' : ''"  v-html="option.option_value "></div>
-                    </div>
-          
-                    
+                      <!-- <v-row>
+                        <v-spacer></v-spacer>
+                        <v-icon size="20px" class="pr- pt-3" right> mdi-bookmark-outline </v-icon>
+                      </v-row> -->
+                      <v-card elevation="0" height="45px" width="100%" v-if="option.type!='text'" class="w-100 d-flex justify-center cursor sub-text-option" :class="questions[selectedQuestion].myAnswer == option.option_key ? 'secondaryAccent' : ''" >{{option.option_value}}</v-card>
+                        <v-card elevation="0"  height="30%" width="100%"  v-if="option.type =='image'" class="w-100 d-flex justify-center cursor sub-text-option" :class="questions[selectedQuestion].myAnswer == option.option_key ? 'secondaryAccent' : '' ">
+                        <input class="my-2" height="30%" width="25%" type="image" src="https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg" alt="Image not found">
+                        <v-btn @click="zoomOutFun('https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg');setOption(
+                        questions[selectedQuestion].question_options[index]
+                      )" class="zoom-out" icon>
+                        <v-icon size="20px"> mdi-arrow-expand </v-icon>
+                       </v-btn>
+                      </v-card>
 
-                    <!-- <v-btn class="ma-2 option-width" min-height="50px"
-                      :color="questions[selectedQuestion].myAnswer == option.option_key ? 'secondaryAccent' : ''" v-for="(option, index) in questions[selectedQuestion]
-                        .question_options" :key="index" @click="
-                          setOption(
-                            questions[selectedQuestion].question_options[index]
-                          )
-                        ">
-                      {{ option.option_value }}
-                    </v-btn> -->
-
+                      </v-card>
+                      
                   </v-card-title>
                 </v-card>
               </v-card>
@@ -466,6 +466,16 @@
         </v-row>
       </v-container>
     </v-dialog>
+    <v-dialog v-model="zoomOutBool" max-width="600px"  persistent>
+      <v-card>
+        <v-container fluid >
+          <v-card-text class="text-center">
+            <v-btn class="zoom-out" icon @click="zoomOutBool = false"><v-icon>mdi-close</v-icon></v-btn>
+            <input  height="350px" width="350px" type="image" :src="zoomOutImageUrl" alt="Image not found">
+          </v-card-text>
+        </v-container>
+      </v-card>
+    </v-dialog>
     <!-- Error Dialog -->
     <v-dialog v-model="errorDialog" max-width="366px" persistent>
       <v-card>
@@ -511,6 +521,7 @@ export default {
   name: "AssessmentView",
   data() {
     return {
+      assetType:"AUDIO",
       testType: "",
       assessmentId: "",
       confirmExitDialog: false,
@@ -542,6 +553,8 @@ export default {
       bookmarkedProgress: 0,
       scrollId: "scrollId",
       counter: 0,
+      zoomOutBool:false,
+      zoomOutImageUrl:'',
     };
   },
   computed: {
@@ -586,6 +599,11 @@ export default {
   },
 
   methods: {
+    zoomOutFun(zoomOutImageUrl){
+      this.zoomOutBool=true;
+      this.zoomOutImageUrl=zoomOutImageUrl;
+console.log("fun callled")
+    },
     formatTime(seconds) {
       const hours = Math.floor(seconds / 3600);
       const minutes = Math.floor((seconds % 3600) / 60);
@@ -838,9 +856,13 @@ export default {
             : this.questions[this.selectedQuestion].myAnswer,
         screen_name: "AssessmentScreen",
         time_taken_in_sec: this.lastAnswerTime - this.seconds,
-        difficulty_level: this.questions[this.selectedQuestion].difficulty_level,
+        difficulty_level:
+          this.questions[this.selectedQuestion].difficulty_level,
         skill: this.questions[this.selectedQuestion].skill.name,
         Subject: this.questions[this.selectedQuestion].subject,
+        // is_answer_correct: this.questions[this.selectedQuestion].is_correct,
+
+ 
       });
       this.lastAnswerTime = this.seconds;
       this.selectedQuestion = this.selectedQuestion + 1;
@@ -869,15 +891,14 @@ export default {
         this.selectedQuestion = this.questions.indexOf(item);
         this.scrollMethod("scrollId" + this.selectedQuestion);
         this.$mixpanel.track("QuestionListClicked", {
-        question_id: this.selectedQuestion.id,
-        question_number_in_view: this.selectedQuestion + 1,
-        question_bookmarked: this.bookmarked.includes(
-          this.questions[this.selectedQuestion]
-        ),
-        screen_name: "AssessmentScreen",
-      });
+          question_id: this.selectedQuestion.id,
+          question_number_in_view: this.selectedQuestion + 1,
+          question_bookmarked: this.bookmarked.includes(
+            this.questions[this.selectedQuestion]
+          ),
+          screen_name: "AssessmentScreen",
+        });
       }
-      
     },
     onResize() {
       this.windowHeight = window.innerHeight;
@@ -915,10 +936,9 @@ export default {
         } else {
           this.seconds = this.assessment.tests[1].duration_of_assessment;
         }
-        
-        this.lastAnswerTime = this.seconds;
-    this.changeTestStatus();
 
+        this.lastAnswerTime = this.seconds;
+        this.changeTestStatus();
       } else {
         this.errorDialog = true;
         this.errorMessage = response2.data.error;
