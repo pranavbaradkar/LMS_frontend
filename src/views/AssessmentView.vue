@@ -183,7 +183,7 @@
                   <v-card-title v-if="questions[selectedQuestion] != null"> <div v-html="questions[selectedQuestion].statement"></div>
                   </v-card-title>
                   <v-card-subtitle  >
-                    <video v-if="getAssetType(questions[selectedQuestion].mime_type) == 'video'" width="320" height="240"  controls>
+                    <video v-if="getAssetType(questions[selectedQuestion].mime_type) == 'video'"  height="180"  controls>
                     <source :src=questions[selectedQuestion].s3_asset_urls :type="questions[selectedQuestion].mime_type" >
                     Your browser does not support the video tag.
                     </video>
@@ -217,14 +217,14 @@
                         <v-spacer></v-spacer>
                         <v-icon size="20px" class="pr- pt-3" right> mdi-bookmark-outline </v-icon>
                       </v-row> -->
-                      <v-card elevation="0" height="45px" width="100%" v-if="option.type!='text'" class="w-100 d-flex justify-center cursor sub-text-option" :class="questions[selectedQuestion].myAnswer == option.option_key ? 'secondaryAccent' : ''" >{{option.option_value}}</v-card>
-                        <v-card elevation="0"  height="30%" width="100%"  v-if="option.type =='image'" class="w-100 d-flex justify-center cursor sub-text-option" :class="questions[selectedQuestion].myAnswer == option.option_key ? 'secondaryAccent' : '' ">
-                        <input class="my-2" height="30%" width="25%" type="image" src="https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg" alt="Image not found">
-                        <v-btn @click="zoomOutFun('https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg');setOption(
-                        questions[selectedQuestion].question_options[index]
-                      )" class="zoom-out" icon>
-                        <v-icon size="20px"> mdi-arrow-expand </v-icon>
-                       </v-btn>
+                      <v-card elevation="0" height="45px" width="100%" v-if="option.option_type=='TEXT'" class="w-100 d-flex justify-center cursor sub-text-option" :class="questions[selectedQuestion].myAnswer == option.option_key ? 'secondaryAccent' : ''" >
+                        {{option.option_value}}
+                      </v-card>
+                        <v-card elevation="0"  height="30%" width="100%"  v-else-if="option.option_type =='IMAGE'" class="w-100 d-flex justify-center cursor sub-text-option" :class="questions[selectedQuestion].myAnswer == option.option_key ? 'secondaryAccent' : '' ">
+                        <input class="my-2" height="70px" width="25%" type="image" :src="option.option_value" alt="Image not found">
+                        <v-btn @click="zoomOutFun(option.option_value)" class="zoom-out" icon>
+                          <v-icon size="20px"> mdi-arrow-expand </v-icon>
+                        </v-btn>
                       </v-card>
 
                       </v-card>
@@ -521,7 +521,7 @@ export default {
   name: "AssessmentView",
   data() {
     return {
-      assetType:"",
+      assetType: "",
       testType: "",
       assessmentId: "",
       confirmExitDialog: false,
@@ -553,8 +553,8 @@ export default {
       bookmarkedProgress: 0,
       scrollId: "scrollId",
       counter: 0,
-      zoomOutBool:false,
-      zoomOutImageUrl:'',
+      zoomOutBool: false,
+      zoomOutImageUrl: "",
     };
   },
   computed: {
@@ -600,20 +600,19 @@ export default {
 
   methods: {
     getAssetType(assetDataType) {
-      if(assetDataType != null){
+      if (assetDataType != null) {
         console.log(assetDataType);
-      const [type] = assetDataType.split("/");
-      console.log("declared type",type)
-      return type;
-      }else{
+        const [type] = assetDataType.split("/");
+        console.log("declared type", type);
+        return type;
+      } else {
         return "";
       }
-     
     },
-    zoomOutFun(zoomOutImageUrl){
-      this.zoomOutBool=true;
-      this.zoomOutImageUrl=zoomOutImageUrl;
-console.log("fun callled")
+    zoomOutFun(zoomOutImageUrl) {
+      this.zoomOutBool = true;
+      this.zoomOutImageUrl = zoomOutImageUrl;
+      console.log("fun callled");
     },
     formatTime(seconds) {
       const hours = Math.floor(seconds / 3600);
@@ -872,8 +871,6 @@ console.log("fun callled")
         skill: this.questions[this.selectedQuestion].skill.name,
         Subject: this.questions[this.selectedQuestion].subject,
         // is_answer_correct: this.questions[this.selectedQuestion].is_correct,
-
- 
       });
       this.lastAnswerTime = this.seconds;
       this.selectedQuestion = this.selectedQuestion + 1;
