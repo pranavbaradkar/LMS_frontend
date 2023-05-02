@@ -191,7 +191,12 @@
                     <source :src=questions[selectedQuestion].s3_asset_urls  :type="questions[selectedQuestion].mime_type">
                      Your browser does not support the audio tag.
                     </audio>
-                    <img class="mt-4" v-if="getAssetType(questions[selectedQuestion].mime_type) =='image' " :src=questions[selectedQuestion].s3_asset_urls  alt="Girl in a jacket" width="300" height="200">
+
+                      <v-img  class="mt-4" v-if="getAssetType(questions[selectedQuestion].mime_type) =='image' " :src=questions[selectedQuestion].s3_asset_urls  alt="Girl in a jacket" width="300" height="200">
+                        <v-btn icon rounded @click="zoomOutFun(questions[selectedQuestion].s3_asset_urls)" class="zoom-out rounded-xl" >
+                              <v-icon size="20px"> mdi-arrow-expand </v-icon>
+                            </v-btn>
+                      </v-img>
                   </v-card-subtitle>
                 </v-card>
               </v-card>
