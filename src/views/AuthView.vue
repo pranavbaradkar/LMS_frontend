@@ -44,7 +44,8 @@
                   @onSelect="onSelect"></vue-country-code>
               </div>
               <span class="mr-2"> +{{ this.dialCode }} </span>
-              <input type="text" class="myinput" placeholder="Phone Number" v-model="phoneNumber" maxlength="10" />
+              <input type="text" @keypress="isNumber($event)"  
+               class="myinput" placeholder="Phone Number" v-model="phoneNumber" maxlength="10" />
             </div>
             <v-form v-model="valid" v-if="!usingPhone || vibgyouBool">
               <span height="40px">
@@ -202,6 +203,15 @@ export default {
         email_address: this.email,
         screen_name: "LoginScreen",
       });
+    },
+    isNumber: function (evt) {
+      evt = evt ? evt : window.event;
+      var charCode = evt.which ? evt.which : evt.keyCode;
+      if (charCode < 48 || charCode > 57) {
+        evt.preventDefault();
+      } else {
+        return true;
+      }
     },
     selectCountry() {
       this.ctList = false;

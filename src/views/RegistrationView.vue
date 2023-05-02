@@ -19,7 +19,7 @@
             >
 
             <p class="text-h5 pt-4 pb-0">
-              Are Sure you want to delete this Info ?
+              Are You Sure You Want To Delete This Info ?
             </p>
             <p
               class="text-disabled grey--text text-subtitle-1"
@@ -278,7 +278,7 @@
                           <v-col class="py-0 c-text-field">
                             <v-text-field
                               v-model="personalInfo.phone_no"
-                              label="Your 10-digit mobile no."
+                              label="Your 10-digit mobile no.*"
                               outlined
                               :readonly="personalInfo.is_phone_verified"
                               rounded
@@ -495,6 +495,11 @@
                                 maxLength="100"
                                 rounded
                                 class="rounded-xl"
+                                required
+                                :rules="[
+                                  (v) => !!v || 'Address is required',
+                                 
+                                ]"
                               ></v-text-field>
                             </v-col>
                           </v-row>
@@ -600,6 +605,10 @@
                                 maxLength="100"
                                 rounded
                                 class="rounded-xl"
+                                :rules="[
+                                  (v) => !!v || 'Address is required',
+                                 
+                                ]"
                               ></v-text-field>
                             </v-col>
                           </v-row>
@@ -709,6 +718,8 @@
                                   label="Degree/ Diploma/ Certification *"
                                   rounded
                                   class="rounded-xl"
+                                  counter="100"
+                                  maxLength="100"
                                   :rules="[
                                     (v) =>
                                       !!v ||
@@ -807,7 +818,10 @@
                                   class="rounded-xl"
                                   append-inner-icon="mdi-attachment"
                                   @change="onChange"
+                                
+                                  
                                   v-model="selectedFile[expandedPanelIndex]"
+
                                 >
                                   <template #append>
                                     <div
@@ -1023,12 +1037,13 @@
                                     class="rounded-xl"
                                     counter="100"
                                     maxLength="100"
+                                    required
                                     :rules="[
                                       (v) =>
                                         !!v ||
-                                        'Role/ Position name is required',
+                                        'Role/ Position name is required'
                                     ]"
-                                    required
+                                   
                                     v-model="professional.position"
                                   ></v-text-field
                                 ></v-col> </v-row
@@ -1426,7 +1441,7 @@ export default {
         {
           experience_year: 0,
           experience_month: 0,
-          position: "NA",
+          position: "",
           employee_type_id: 0,
           start_date: "",
           end_date: "",
@@ -1451,8 +1466,10 @@ export default {
   methods: {
     onChange() {
       console.log(this.selectedFile[this.expandedPanelIndex]);
-      //console.log(this.expandedPanelIndex);
+      console.log("selelcted file details",this.expandedPanelIndex);
       this.getPreSignedUrl();
+      
+     
     },
     async getPreSignedUrl() {
       const response = await UploadController.getPreSignedUrl({
