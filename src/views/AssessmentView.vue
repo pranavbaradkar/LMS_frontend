@@ -464,8 +464,7 @@
 
                 <v-card-title>
                   <v-row justify="center">
-                    <v-btn color="accent" width="249px" height="48px" rounded x-large @click="submitAssessment">CONFIRM
-                      SUBMISSION</v-btn>
+                    <v-btn color="accent" width="249px" height="48px" rounded x-large @click="submitAssessment">CONFIRM SUBMISSION</v-btn>
                   </v-row>
                 </v-card-title>
 
@@ -578,6 +577,13 @@ export default {
     getQuestionsListHeight() {
       return this.windowHeight - 440 + "px";
     },
+  },
+  watch: {
+    // whenever question changes, this function will run
+    selectedQuestion() {
+     this.lastAnswerTime=this.seconds;
+     console.log(this.selectedQuestion)
+    }
   },
   mounted() {
     window.addEventListener("beforeunload", this.handleBeforeUnload);
@@ -807,6 +813,7 @@ export default {
           this.assessment.tests[0].duration_of_assessment * 60 - this.seconds,
         screen_name: "AssessmentScreen",
       });
+      this.sendAnswerGivenEvent();
       //console.log(response);
       if (response.data.success) {
         // this.successDialog = true;
@@ -831,6 +838,14 @@ export default {
           this.updateProgress();
         } else {
           this.questions[this.selectedQuestion].myAnswer = option.option_key;
+          if(this.questions[this.selectedQuestion].timeTaken==null){
+            this.questions[this.selectedQuestion].timeTaken = this.lastAnswerTime- this.seconds;
+          }
+          else{
+            this.questions[this.selectedQuestion].timeTaken += (this.lastAnswerTime- this.seconds);
+
+          }
+          console.log( this.questions[this.selectedQuestion].timeTaken);
           //console.log(this.questions[this.selectedQuestion]);
           if (this.skipped.includes(this.questions[this.selectedQuestion])) {
             let index = this.bookmarked.indexOf(
@@ -839,14 +854,6 @@ export default {
             this.skipped.splice(index, 1);
           }
           this.updateProgress();
-          this.$mixpanel.track("AnswerGiven", {
-            question_id: this.selectedQuestion.id,
-            option_selected:
-              this.questions[this.selectedQuestion].myAnswer == null
-                ? "NA"
-                : this.questions[this.selectedQuestion].myAnswer,
-            screen_name: "AssessmentScreen",
-          });
         }
       }
     },
@@ -874,14 +881,12 @@ export default {
             ? "NA"
             : this.questions[this.selectedQuestion].myAnswer,
         screen_name: "AssessmentScreen",
-        time_taken_in_sec: this.lastAnswerTime - this.seconds,
         difficulty_level:
           this.questions[this.selectedQuestion].difficulty_level,
         skill: this.questions[this.selectedQuestion].skill.name,
         Subject: this.questions[this.selectedQuestion].subject,
         // is_answer_correct: this.questions[this.selectedQuestion].is_correct,
       });
-      this.lastAnswerTime = this.seconds;
       this.selectedQuestion = this.selectedQuestion + 1;
       this.scrollMethod("scrollId" + this.selectedQuestion);
     },
@@ -897,7 +902,7 @@ export default {
             ? "NA"
             : this.questions[this.selectedQuestion].myAnswer,
         screen_name: "AssessmentScreen",
-        time_taken_in_sec: this.lastAnswerTime - this.seconds,
+     
       });
 
       this.selectedQuestion = this.selectedQuestion - 1;
@@ -916,6 +921,19 @@ export default {
           screen_name: "AssessmentScreen",
         });
       }
+    },
+    sendAnswerGivenEvent() {
+      this.questions
+        .filter((item) => item.myAnswer != null)
+        .forEach((question) => {
+          this.$mixpanel.track("AnswerGiven", {
+            question_id: question.id,
+            option_selected: question.myAnswer,
+            is_answer_correct: (question.question_options.find((option)=> option.option_key==question.myAnswer)).is_correct,
+            screen_name: "AssessmentScreen",
+            time_taken_in_sec: question.timeTaken,
+          });
+        });
     },
     onResize() {
       this.windowHeight = window.innerHeight;
