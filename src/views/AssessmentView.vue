@@ -207,27 +207,31 @@
                   <v-card-title v-if="questions[selectedQuestion] != null" 
                     class="d-flex w-100 pa-1 flex-row justify-space-around">
                       <v-card elevation="1" height="auto" width="auto" class="ma-2 option-width overflow-hidden white" 
-                      v-for="(option, index) in questions[selectedQuestion].question_options" :key="index"
-                @click="
-                        setOption(
-                          questions[selectedQuestion].question_options[index]
-                        )
-                      ">
-                      <!-- <v-row>
-                        <v-spacer></v-spacer>
-                        <v-icon size="20px" class="pr- pt-3" right> mdi-bookmark-outline </v-icon>
-                      </v-row> -->
-                      <v-card elevation="0" height="45px" width="100%" v-if="option.option_type=='TEXT'" class="w-100 d-flex justify-center cursor sub-text-option" :class="questions[selectedQuestion].myAnswer == option.option_key ? 'secondaryAccent' : ''" >
-                        {{option.option_value}}
-                      </v-card>
+                          v-for="(option, index) in questions[selectedQuestion].question_options" :key="index"
+                            >
+                            <!-- <v-row>
+                              <v-spacer></v-spacer>
+                              <v-icon size="20px" class="pr- pt-3" right> mdi-bookmark-outline </v-icon>
+                            </v-row> -->
+                            <v-card @click="
+                                    setOption(
+                                      questions[selectedQuestion].question_options[index]
+                                    )
+                                  " elevation="0" height="45px" width="100%" v-if="option.option_type=='TEXT'" class="w-100 d-flex justify-center cursor sub-text-option" :class="questions[selectedQuestion].myAnswer == option.option_key ? 'secondaryAccent' : ''" >
+                              {{option.option_value}}
+                            </v-card>
                         <v-card elevation="0"  height="30%" width="100%"  v-else-if="option.option_type =='IMAGE'" class="w-100 d-flex justify-center cursor sub-text-option" :class="questions[selectedQuestion].myAnswer == option.option_key ? 'secondaryAccent' : '' ">
-                        <input class="my-2" height="70px" width="25%" type="image" :src="option.option_value" alt="Image not found">
-                        <v-btn @click="zoomOutFun(option.option_value)" class="zoom-out" icon>
-                          <v-icon size="20px"> mdi-arrow-expand </v-icon>
-                        </v-btn>
-                      </v-card>
+                            <img @click="
+                              setOption(
+                                questions[selectedQuestion].question_options[index]
+                              )
+                            " class="my-2" height="70px" width="25%" type="image" :src="option.option_value" alt="Image not found">
+                            <v-btn @click="zoomOutFun(option.option_value)" class="zoom-out" icon>
+                              <v-icon size="20px"> mdi-arrow-expand </v-icon>
+                            </v-btn>
+                        </v-card>
 
-                      </v-card>
+                    </v-card>
                       
                   </v-card-title>
                 </v-card>
