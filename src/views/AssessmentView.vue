@@ -939,6 +939,8 @@ export default {
             is_answer_correct: question.question_options.find(
               (option) => option.option_key == question.myAnswer
             ).is_correct,
+            difficulty_level:
+              question.difficulty_level,
             screen_name: "AssessmentScreen",
             time_taken_in_sec: question.timeTaken,
           });
