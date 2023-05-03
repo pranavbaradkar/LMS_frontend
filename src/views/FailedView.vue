@@ -73,15 +73,16 @@
 <script>
 import "../styles.css";
 import AuthService from "../services/AuthService";
+import AssessmentsController from "../controllers/AssessmentsController"
 export default {
   name: "FailedView",
   data() {
     return {
-      assessment: {},
+      assessmentId:'',
+      assessmentName:'',
+      response:{}
     };
   },
-  computed: {},
-  mounted() {},
 
   beforeDestroy() {
     window.removeEventListener("resize", this.onResize);
@@ -97,19 +98,27 @@ export default {
       this.$mixpanel.reset();
       this.$router.push("/login");
     },
-    resubmit(){
+    async resubmit(){
+       await AssessmentsController.submitAssessment(
+        this.assessmentId,
+        {
+          response_json: this.response,
+        }
+      );
       this.$mixpanel.track("ResubmitClicked",{
-      assessment_id: this.assessment.id,
-      assessment_name: this.assessment.name,
+      assessment_id: this.assessmentId,
+      assessment_name: this.assessmentName,
       screen_name: "SubmissionFailedScreen",
     });
     }
   },
   created() {
-    this.assessment = JSON.parse(this.$route.query.assessment);
+    this.assessmentId = this.$route.query.assessmentId;
+    this.assessmentName = this.$route.query.assessmentName;
+    this.response = JSON.parse(this.$route.query.response);
     this.$mixpanel.track("SubmissionFailed", {
-      assessment_id: this.assessment.id,
-      assessment_name: this.assessment.name,
+      assessment_id: this.assessmentId,
+      assessment_name: this.assessmentName,
       screen_name: "SubmissionFailedScreen",
     });
   },

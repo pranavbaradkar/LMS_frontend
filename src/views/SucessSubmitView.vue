@@ -111,7 +111,6 @@ export default {
       assessmentId: null,
     };
   },
-  computed: {},
   mounted() {
     
     this.$mixpanel.track("ThankyouPageLoaded", {
@@ -162,14 +161,17 @@ export default {
   },
   created() {
     // console.log("userInfo");
-    const assessment = JSON.parse(this.$route.query.assessment);
+    const assessmentId = this.$route.query.assessmentId;
+    const assessmentName = this.$route.query.assessmentName;
+
+    
     // console.log("assessment data", assessment)
 
-    this.assessmentId = assessment.id
+    this.assessmentId = assessmentId
     // console.log('assessment id',this.assessmentId)
     this.$mixpanel.track("SubmissionSucceeded", {
-      assessment_id: assessment.id,
-      assessment_name: assessment.name,
+      assessment_id: assessmentId,
+      assessment_name: assessmentName,
       screen_name: "SubmissionSucceededScreen",
     });
   },

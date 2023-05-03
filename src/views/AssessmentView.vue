@@ -589,9 +589,9 @@ export default {
   watch: {
     // whenever question changes, this function will run
     selectedQuestion() {
-     this.lastAnswerTime=this.seconds;
-     console.log(this.selectedQuestion)
-    }
+      this.lastAnswerTime = this.seconds;
+      console.log(this.selectedQuestion);
+    },
   },
   mounted() {
     window.addEventListener("beforeunload", this.handleBeforeUnload);
@@ -828,12 +828,12 @@ export default {
         this.$store.state.assessmentId = this.assessment.id;
         this.$router.replace({
           path: "/success",
-          query: { assessment: JSON.stringify(this.assessment) },
+          query: { assessmentId: this.assessment.id, assessmentName: this.assessment.name },
         });
       } else {
         this.$router.replace({
           path: "/failed",
-          query: { assessment: JSON.stringify(this.assessment) },
+          query: { assessmentId: this.assessment.id, assessmentName: this.assessment.name, response: this.response },
         });
       }
     },
@@ -846,14 +846,14 @@ export default {
           this.updateProgress();
         } else {
           this.questions[this.selectedQuestion].myAnswer = option.option_key;
-          if(this.questions[this.selectedQuestion].timeTaken==null){
-            this.questions[this.selectedQuestion].timeTaken = this.lastAnswerTime- this.seconds;
+          if (this.questions[this.selectedQuestion].timeTaken == null) {
+            this.questions[this.selectedQuestion].timeTaken =
+              this.lastAnswerTime - this.seconds;
+          } else {
+            this.questions[this.selectedQuestion].timeTaken +=
+              this.lastAnswerTime - this.seconds;
           }
-          else{
-            this.questions[this.selectedQuestion].timeTaken += (this.lastAnswerTime- this.seconds);
-
-          }
-          console.log( this.questions[this.selectedQuestion].timeTaken);
+          console.log(this.questions[this.selectedQuestion].timeTaken);
           //console.log(this.questions[this.selectedQuestion]);
           if (this.skipped.includes(this.questions[this.selectedQuestion])) {
             let index = this.bookmarked.indexOf(
@@ -910,7 +910,6 @@ export default {
             ? "NA"
             : this.questions[this.selectedQuestion].myAnswer,
         screen_name: "AssessmentScreen",
-     
       });
 
       this.selectedQuestion = this.selectedQuestion - 1;
@@ -937,7 +936,9 @@ export default {
           this.$mixpanel.track("AnswerGiven", {
             question_id: question.id,
             option_selected: question.myAnswer,
-            is_answer_correct: (question.question_options.find((option)=> option.option_key==question.myAnswer)).is_correct,
+            is_answer_correct: question.question_options.find(
+              (option) => option.option_key == question.myAnswer
+            ).is_correct,
             screen_name: "AssessmentScreen",
             time_taken_in_sec: question.timeTaken,
           });
