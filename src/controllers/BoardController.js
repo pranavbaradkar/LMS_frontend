@@ -1,6 +1,6 @@
 import axios from 'axios'
 const instance = axios.create({
-    baseURL: 'https://lmsbackend-dev.knoggles.ai/api/v1/'
+    baseURL: process.env.VUE_APP_API_URL
 });
 export default {
     getBoards: async function () {
