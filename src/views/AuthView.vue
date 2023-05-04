@@ -270,7 +270,7 @@ export default {
       if (!this.usingPhone) {
         if (this.vibgyouBool) {
           res = await AuthService.validateOTP({
-            email: this.email + "@gmail.com",
+            email: this.email + "@vgos.org",
             otp: this.otp,
             debug: false,
           });
