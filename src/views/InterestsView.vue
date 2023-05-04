@@ -316,10 +316,10 @@ export default {
           if( this.userIntrestData.subject_ids.length != 0){
             const res = await this.createUserIntrest();
             console.log(res);
-            if(res.success) {
+            if(res.data.success) {
               this.$router.replace("/");
             } else {
-              alert(res.error)
+              alert(res.data.error)
             }
           }
           else {
@@ -372,9 +372,9 @@ export default {
       const response = await LogedInUserInfo.getUserInfo();
       this.userInfo = response.data.user;
       console.log("User: ", this.userInfo);
-      if(this.userInfo.is_interest_captured){
-        this.$router.replace('/');
-      }
+      // if(this.userInfo.is_interest_captured){
+      //   this.$router.replace('/');
+      // }
       this.personalInfo.is_email_verified = this.userInfo.is_email_verified;
       this.personalInfo.is_phone_verified = this.userInfo.is_phone_verified;
       this.personalInfo.email = this.userInfo.email;
