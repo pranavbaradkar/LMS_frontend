@@ -372,9 +372,9 @@ export default {
       const response = await LogedInUserInfo.getUserInfo();
       this.userInfo = response.data.user;
       console.log("User: ", this.userInfo);
-      // if(this.userInfo.is_interest_captured){
-      //   this.$router.replace('/');
-      // }
+      if(this.userInfo.is_interest_captured){
+        this.$router.replace('/');
+      }
       this.personalInfo.is_email_verified = this.userInfo.is_email_verified;
       this.personalInfo.is_phone_verified = this.userInfo.is_phone_verified;
       this.personalInfo.email = this.userInfo.email;
