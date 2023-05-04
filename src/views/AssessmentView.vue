@@ -21,7 +21,7 @@
               <v-card-subtitle>
                 <span class="font-weight-light grey--text">Test Duration:</span>
                 <span v-if="assessment.tests != null">
-                  {{  formatTime(seconds) }} </span>
+                  {{  formatTime(durationOfAssessment) }} </span>
               </v-card-subtitle>
               <v-divider class="mx-4 mt-0"></v-divider>
               <v-card-title class="pa-x pt-8 pb-0">
@@ -346,7 +346,7 @@
                 <v-card-subtitle>
                   <span class="font-weight-light grey--text">Test Duration:</span>
                   <span v-if="assessment.tests != null">
-                    {{ formatTime(seconds) }}</span>
+                    {{ formatTime(durationOfAssessment) }}</span>
                 </v-card-subtitle>
                 <v-divider class="mx-4 mt-0"></v-divider>
 
@@ -547,6 +547,7 @@ export default {
       mins: "00",
       secs: "00",
       seconds: 800,
+      durationOfAssessment:0,
       lastAnswerTime: null,
       timerId: null,
       isProgressClicked: false,
@@ -979,7 +980,9 @@ export default {
         console.log("assessmentinfo", this.assessment);
         if (this.testType == "Screening") {
           this.seconds = this.assessment.tests[0].duration_of_assessment;
+          this.durationOfAssessment=this.assessment.tests[0].duration_of_assessment;
         } else {
+          this.durationOfAssessment=this.assessment.tests[1].duration_of_assessment;
           this.seconds = this.assessment.tests[1].duration_of_assessment;
         }
 
