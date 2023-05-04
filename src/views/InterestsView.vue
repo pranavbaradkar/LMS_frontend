@@ -315,11 +315,11 @@ export default {
           console.log("step4");
           if( this.userIntrestData.subject_ids.length != 0){
             const res = this.createUserIntrest();
-            if(res.data.success){
+            console.log(res);
+            if(res.success) {
               this.$router.replace("/");
-            }
-            else {
-             alert(res.data.error)
+            } else {
+              alert(res.error)
             }
           }
           else {
