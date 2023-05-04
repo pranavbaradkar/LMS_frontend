@@ -1601,7 +1601,11 @@ export default {
         //console.log("userif conditon");
         this.isCreatingUser = true;
         const response =
-          await ProfessionalController.createUserProfessionalInfo(
+          this.experience=='Fresher'?  await ProfessionalController.createUserProfessionalInfo(
+            [{
+              is_fresher:true,
+            }]
+          )  : await ProfessionalController.createUserProfessionalInfo(
             this.professionalInfos
           );
         if (response.data.success) {
