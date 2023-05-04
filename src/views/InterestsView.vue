@@ -273,7 +273,7 @@ export default {
     setVmodel(data){
         this.selectedSubject = data;
     },
-    goTo(step) {
+    async goTo(step) {
       switch (step) {
         case 1:
           if (this.userIntrestData.school_ids.length != 0) {       
@@ -314,7 +314,7 @@ export default {
         case 4:
           console.log("step4");
           if( this.userIntrestData.subject_ids.length != 0){
-            const res = this.createUserIntrest();
+            const res = await this.createUserIntrest();
             console.log(res);
             if(res.success) {
               this.$router.replace("/");

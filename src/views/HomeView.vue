@@ -528,7 +528,7 @@ export default {
       if (response.status == 404) {
         const response2 =
           await RecommendedAssessmentController.getRecommendedAssessment(
-            "?debug=266"
+            "?debug=284"
           );
         this.recommendedAssessment = response2.data.data;
         console.log(this.recommendedAssessment);
