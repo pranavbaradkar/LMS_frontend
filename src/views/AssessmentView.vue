@@ -183,16 +183,16 @@
                   <v-card-title v-if="questions[selectedQuestion] != null"> <div v-html="questions[selectedQuestion].statement"></div>
                   </v-card-title>
                   <v-card-subtitle  >
-                    <video v-if="getAssetType(questions[selectedQuestion].mime_type) == 'video'"  height="180"  controls>
+                    <video v-if="questions[selectedQuestion].mime_type.includes('video')"  height="180"  controls>
                     <source :src=questions[selectedQuestion].s3_asset_urls :type="questions[selectedQuestion].mime_type" >
                     Your browser does not support the video tag.
                     </video>
-                    <audio v-if="getAssetType(questions[selectedQuestion].mime_type) == 'audio'"  controls>
+                    <audio v-if="questions[selectedQuestion].mime_type.includes('audio')"  controls>
                     <source :src=questions[selectedQuestion].s3_asset_urls  :type="questions[selectedQuestion].mime_type">
                      Your browser does not support the audio tag.
                     </audio>
 
-                      <v-img  class="mt-4" v-if="getAssetType(questions[selectedQuestion].mime_type) =='image' " :src=questions[selectedQuestion].s3_asset_urls  alt="Girl in a jacket" width="300" height="200">
+                      <v-img  class="mt-4" v-if="questions[selectedQuestion].mime_type.includes('image')" :src=questions[selectedQuestion].s3_asset_urls  alt="Girl in a jacket" width="300" height="200">
                         <v-btn icon rounded @click="zoomOutFun(questions[selectedQuestion].s3_asset_urls)" class="zoom-out rounded-xl" >
                               <v-icon size="20px"> mdi-arrow-expand </v-icon>
                             </v-btn>
