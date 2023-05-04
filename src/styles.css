@@ -3,7 +3,9 @@
     position: absolute;
     bottom: 0px;
 }
-
+.option-left {
+    width: calc(100% - 20px);
+}
 
 .assessment-name {
     white-space: nowrap;
