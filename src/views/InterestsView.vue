@@ -314,8 +314,13 @@ export default {
         case 4:
           console.log("step4");
           if( this.userIntrestData.subject_ids.length != 0){
-            this.createUserIntrest();
-            this.$router.replace("/");
+            const res = this.createUserIntrest();
+            if(res.data.success){
+              this.$router.replace("/");
+            }
+            else {
+             alert(res.data.error)
+            }
           }
           else {
           alert('Please Select at least one one subject')
@@ -333,7 +338,7 @@ export default {
       const response = await UserIntrestController.createUserIntrest(
         this.userIntrestData
       );
-      console.log(response);
+      return response;
     },
     async getSubjects() {
       const response = await SubjectController.getSubject();

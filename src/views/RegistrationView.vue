@@ -1559,6 +1559,7 @@ export default {
           this.expandedPanelIndex = 0;
         } else {
           this.isCreatingUser = false;
+          alert(response.data.error)
         }
       } else {
         if (this.$refs.step1.validate()) {
@@ -1589,6 +1590,7 @@ export default {
           this.expandedPanelIndex = 0;
         } else {
           this.isCreatingUser = false;
+          alert(response.data.error)
         }
       }
     },
@@ -1613,6 +1615,7 @@ export default {
           this.successDialog = true;
           this.$router.replace("/interests");
         } else {
+          alert(response.data.error)
           this.isCreatingUser = false;
         }
         console.log(response);
