@@ -818,7 +818,7 @@
                                   class="rounded-xl"
                                   append-inner-icon="mdi-attachment"
                                   @change="onChange"
-                                
+                                  accept="application/pdf, image/jpeg, image/jpg"
                                   
                                   v-model="selectedFile[expandedPanelIndex]"
 

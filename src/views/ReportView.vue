@@ -89,7 +89,7 @@
               <v-stepper-step step="3"> DEMO VIDEO </v-stepper-step>
               <v-divider></v-divider>
 
-              <v-stepper-step step="3"> INTERVIEW </v-stepper-step>
+              <v-stepper-step step="4"> INTERVIEW </v-stepper-step>
             </v-stepper-header>
 
             <v-stepper-items>
