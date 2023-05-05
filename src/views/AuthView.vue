@@ -187,7 +187,7 @@ export default {
       ],
       vgosRules: [
         (v) => !!v || "E-mail is required",
-        (v) => /^[a-zA-Z0-9_-]{3,25}$/.test(v) || "E-mail must be valid",
+        (v) => /^[a-zA-Z0-9_.-]{3,25}$/.test(v) || "E-mail must be valid",
       ],
     };
   },
