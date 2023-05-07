@@ -164,7 +164,7 @@
               <!-- Progress Bar -->
 
               <v-progress-linear class="rounded-xl mt-4 mb-4" rounded
-                :value="((answeredProgress + skipped.length + bookmarked.length) / questions.length) * 100"
+                :value="((answeredProgress + skipped.length) / questions.length) * 100"
                 color="secondary" background-color="grey lighten-2" height="18"></v-progress-linear>
               <v-row justify="space-between" align="center">
                 <v-col>
@@ -180,14 +180,15 @@
               </v-row>
               <v-card class="my-card pa-0 mt-4 rounded-xl" elevation="0" color="grey lighten-4" id="myScroll">
                 <v-card height="auto" elevation="0" color="grey lighten-4">
-                  <v-card-title v-if="questions[selectedQuestion] != null"> <div v-html="questions[selectedQuestion].statement"></div>
+                  <v-card-title v-if="questions[selectedQuestion] != null"> 
+                    <div v-html="questions[selectedQuestion].statement"></div>
                   </v-card-title>
                   <v-card-subtitle  >
-                    <video v-if="questions[selectedQuestion].mime_type.includes('video')"  height="180"  controls>
+                    <video id="video-option" v-if="questions[selectedQuestion].mime_type.includes('video')"  height="180"  controls>
                     <source :src=questions[selectedQuestion].s3_asset_urls :type="questions[selectedQuestion].mime_type" >
                     Your browser does not support the video tag.
                     </video>
-                    <audio v-if="questions[selectedQuestion].mime_type.includes('audio')"  controls>
+                    <audio id="audio-option" v-if="questions[selectedQuestion].mime_type.includes('audio')"  controls>
                     <source :src=questions[selectedQuestion].s3_asset_urls  :type="questions[selectedQuestion].mime_type">
                      Your browser does not support the audio tag.
                     </audio>
@@ -219,7 +220,8 @@
                                       questions[selectedQuestion].question_options[index]
                                     )
                                   " elevation="0" height="45px" width="100%" v-if="option.option_type=='TEXT'" class="w-100 d-flex justify-center cursor sub-text-option" :class="questions[selectedQuestion].myAnswer == option.option_key ? 'secondaryAccent' : ''" >
-                              {{option.option_value}}
+                                
+                                    <div class="mb-n4" v-html="option.option_value"></div>
                             </v-card>
 
 
@@ -267,7 +269,7 @@
                         color="secondary" @click="summaryDialog = true" height="36px" class="ml-8 black--text mr-0">
                         Proceed & View Summary
                       </v-btn>
-                      <v-btn v-else rounded color="secondary" :disabled="questions[this.selectedQuestion].myAnswer==null" @click="next" width="120px"
+                      <v-btn v-else rounded color="secondary" :disabled="questions[selectedQuestion].myAnswer==null" @click="next" width="120px"
                         height="36px" class="ml-8 mr-0 black--text">
                         NEXT
                       </v-btn>
@@ -639,19 +641,22 @@ export default {
       console.log("fun callled");
     },
     formatTime(seconds) {
-      const hours = Math.floor(seconds / 3600);
-      const minutes = Math.floor((seconds % 3600) / 60);
-      //const remainingSeconds = seconds % 60;
-      if (hours == 0) {
-        return String(minutes).padStart(2, "0") + " minutes";
-      } else {
-        return (
-          String(hours).padStart(2, "0") +
-          " hours and " +
-          String(minutes).padStart(2, "0") +
-          " minutes"
-        );
-      }
+      // const hours = Math.floor(seconds / 3600);
+      // const minutes = Math.floor((seconds % 3600) / 60);
+      // //const remainingSeconds = seconds % 60;
+      // if (hours == 0) {
+      //   return String(minutes).padStart(2, "0") + " minutes";
+      // } else {
+      //   return (
+      //     String(hours).padStart(2, "0") +
+      //     " hours and " +
+      //     String(minutes).padStart(2, "0") +
+      //     " minutes"
+      //   );
+      // }
+      const totalMs = seconds * 1000;
+      const result = new Date(totalMs).toISOString().slice(11, 19);
+      return result;
     },
     setSelectedQuestionFromProgress(item) {
       this.selectedQuestion = this.getQuestionIndex(item);
@@ -692,6 +697,7 @@ export default {
 
     openTestSummary() {
       this.summaryDialog = true;
+      this.pauseMedia();
       this.$mixpanel.track("TestSummaryLoaded", {
         assessment_id: this.assessment.id,
         assessment_name: this.assessment.name,
@@ -706,6 +712,7 @@ export default {
     updateTime() {
       if (this.seconds <= 0) {
         this.summaryDialog = true;
+        this.pauseMedia();
         clearInterval(this.interval);
         return;
       }
@@ -1030,6 +1037,12 @@ export default {
         console.log(response);
       }
     },
+    pauseMedia () {
+      const myVideo = document.getElementById("video-option"); 
+      const myaudio = document.getElementById("audio-option");
+      myaudio && myaudio.pause();
+      myVideo && myVideo.pause();
+    }
   },
 
   created() {
