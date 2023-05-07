@@ -4,9 +4,9 @@
       <v-row>
       
         <!-- Left Card -->
-        <v-col cols="3">
-          <v-card v-if="!isProgressClicked" :height="getHeight" class="pa-4 ma-2 pt-0 rounded-xl">
-            <v-card min-height="380" id="circleCard" elevation="0">
+        <v-col cols="3" class="p-0">
+          <v-card v-if="!isProgressClicked" :height="getHeight" class="pa-4 ma-2 pt-0 p-0 rounded-xl left-container">
+            <v-card min-height="280" id="circleCard" elevation="0">
               <v-card-title>
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on, attrs }">
@@ -32,7 +32,7 @@
                           ">
                       <h4 class="black--text">{{ answeredProgress }}</h4>
                     </v-progress-circular>
-                    <v-card-subtitle class="py-2">ANSWERED</v-card-subtitle>
+                    <v-card-subtitle class="py-2 font-size-13">ANSWERED</v-card-subtitle>
                   </div>
                   <div class="d-flex flex-column mb-6 align-center">
                     <v-progress-circular :rotate="360" :size="85" :width="15"
@@ -40,11 +40,19 @@
                       @click="openProgressList('Skipped')">
                       <h4 class="black--text">{{ this.skipped.length }}</h4>
                     </v-progress-circular>
-                    <v-card-subtitle class="py-2">SKIPPED</v-card-subtitle>
+                    <v-card-subtitle class="py-2 font-size-13">SKIPPED</v-card-subtitle>
+                  </div>
+                  <div class="d-flex flex-column mb-2 align-center">
+                    <v-progress-circular :rotate="360" :size="85" :width="15"
+                      :value="((bookmarked.length / questions.length) * 100)" color="bookmarked"
+                      @click="openProgressList('Bookmark')">
+                      <h4 class="black--text">{{ this.bookmarked.length }}</h4>
+                    </v-progress-circular>
+                    <v-card-subtitle class="py-2 font-size-13">BOOKMARK</v-card-subtitle>
                   </div>
                 </v-row>
               </v-card-title>
-              <v-card-title class="justify-center py-0">
+              <!-- <v-card-title class="justify-center py-0">
                 <div class="d-flex flex-column mb-2 align-center">
                   <v-progress-circular :rotate="360" :size="85" :width="15"
                     :value="((bookmarked.length / questions.length) * 100)" color="bookmarked"
@@ -53,7 +61,7 @@
                   </v-progress-circular>
                   <v-card-subtitle class="py-2">BOOKMARK</v-card-subtitle>
                 </div>
-              </v-card-title>
+              </v-card-title> -->
             </v-card>
             <v-divider class="mx-4 mt-0"></v-divider>
             <v-container class="py-0 my-0">
@@ -123,10 +131,10 @@
         <!-- Right Card -->
         <v-col cols="9" class="pl-0">
           <v-card v-if="screening.length != 0" :height="getHeight" class="d-flex my-2 mr-2  flex-column rounded-xl">
-            <v-card-title @click="confirmExitDialog = true" class="pb-0">
+            <v-card-title @click="confirmExitDialog = true" class="pb-0 close-right">
               <v-icon class="cursor">mdi-close</v-icon>
             </v-card-title>
-            <v-container class="px-16">
+            <v-container class="px-16 mt-2">
               <!-- Timer -->
               <v-row class="align-center text-align-center px-4 pb-4">
                 <v-card class="pa-0" width="70" elevation="0">
@@ -157,15 +165,15 @@
                 <v-spacer></v-spacer>
                 <!-- Submit Button -->
                 <v-col cols="4" class="text-end pr-0">
-                  <v-btn width="150px" height="48px" rounded color="accent" class="white--text"
+                  <v-btn width="100px" height="35px" rounded color="accent" class="white--text"
                     @click="openTestSummary">SUBMIT</v-btn>
                 </v-col>
               </v-row>
               <!-- Progress Bar -->
 
-              <v-progress-linear class="rounded-xl mt-4 mb-4" rounded
+              <v-progress-linear class="rounded-xl mt-2 mb-2" rounded
                 :value="((answeredProgress + skipped.length) / questions.length) * 100"
-                color="secondary" background-color="grey lighten-2" height="18"></v-progress-linear>
+                color="secondary" background-color="grey lighten-2" height="10"></v-progress-linear>
               <v-row justify="space-between" align="center">
                 <v-col>
                   <span class="text-caption">Question
@@ -178,17 +186,18 @@
                     questions[selectedQuestion].skill.name }}</v-chip>
                 </v-col>
               </v-row>
-              <v-card class="my-card pa-0 mt-4 rounded-xl" elevation="0" color="grey lighten-4" id="myScroll">
-                <v-card height="auto" elevation="0" color="grey lighten-4">
-                  <v-card-title v-if="questions[selectedQuestion] != null"> 
-                    <div v-html="questions[selectedQuestion].statement"></div>
+
+              <v-card class="my-card pa-0 mt-2 rounded-xl question-details" elevation="0" color="grey lighten-4" id="myScroll">
+                <v-card height="auto" class="p-0" elevation="0" color="grey lighten-4">
+                  <v-card-title class="pt-1 pl-1 pe-3 ps-3" v-if="questions[selectedQuestion] != null"> 
+                    <div class="application-statement" v-html="questions[selectedQuestion].statement"></div>
                   </v-card-title>
                   <v-card-subtitle  >
-                    <video id="video-option" v-if="questions[selectedQuestion].mime_type.includes('video')"  height="180"  controls>
+                    <video id="video-option" v-if="questions[selectedQuestion].mime_type.includes('video')"  height="180"  controls controlsList="nodownload">
                     <source :src=questions[selectedQuestion].s3_asset_urls :type="questions[selectedQuestion].mime_type" >
                     Your browser does not support the video tag.
                     </video>
-                    <audio id="audio-option" v-if="questions[selectedQuestion].mime_type.includes('audio')"  controls>
+                    <audio id="audio-option" v-if="questions[selectedQuestion].mime_type.includes('audio')"  controls controlsList="nodownload">
                     <source :src=questions[selectedQuestion].s3_asset_urls  :type="questions[selectedQuestion].mime_type">
                      Your browser does not support the audio tag.
                     </audio>
@@ -221,7 +230,7 @@
                                     )
                                   " elevation="0" height="45px" width="100%" v-if="option.option_type=='TEXT'" class="w-100 d-flex justify-center cursor sub-text-option" :class="questions[selectedQuestion].myAnswer == option.option_key ? 'secondaryAccent' : ''" >
                                 
-                                    <div class="mb-n4" v-html="option.option_value"></div>
+                                    <div class="application-statement" v-html="option.option_value"></div>
                             </v-card>
 
 
@@ -339,7 +348,7 @@
         <v-row>
           <!-- Left Card -->
           <v-col cols="3">
-            <v-card :height="getHeight" id="myScroll" class="pa-4 ma-2 pt-0 rounded-xl">
+            <v-card :height="getHeight" id="myScroll" class="pa-4 ma-2 pt-0 rounded-xl left-container">
               <v-card height="auto" id="circleCard" elevation="0">
                 <v-card-title class="text-subtitle font-weight-regular accent--text testHead">
                   <p>{{ assessment.name }}</p>
@@ -384,7 +393,7 @@
           </v-col>
           <!-- Right Card -->
           <v-col cols="9" class="pl-0">
-            <v-card :height="getHeight" class="d-flex my-2 mr-2  flex-column rounded-xl">
+            <v-card :height="getHeight" class="d-flex my-2 mr-2  flex-column rounded-xl ">
               <v-card-title v-if="seconds != 0" @click="summaryDialog = false" class="pb-0">
                 <v-icon>mdi-close</v-icon>
               </v-card-title>
@@ -659,6 +668,9 @@ export default {
       return result;
     },
     setSelectedQuestionFromProgress(item) {
+      if(this.isTimeUp) {
+        return false;
+      }
       this.selectedQuestion = this.getQuestionIndex(item);
       this.scrollMethod("scrollId" + this.selectedQuestion);
     },
@@ -666,6 +678,9 @@ export default {
       return this.questions.indexOf(question);
     },
     onClickSummaryQuestionBox(index) {
+      if(this.isTimeUp) {
+        return false;
+      }
       if (
         this.questions[index].myAnswer ||
         this.skipped.includes(this.questions[index])
@@ -693,6 +708,10 @@ export default {
       const element = document.getElementById(data);
 
       element.scrollIntoView();
+
+      let questionD = document.querySelector('.question-details');
+      questionD.scrollTop = 0;
+      
     },
 
     openTestSummary() {
@@ -735,6 +754,9 @@ export default {
       this.timerId = null;
     },
     openProgressList(type) {
+      if(this.isTimeUp) {
+        return false;
+      }
       this.isProgressClicked = true;
       switch (type) {
         case "Answered":
@@ -905,8 +927,12 @@ export default {
       });
       this.selectedQuestion = this.selectedQuestion + 1;
       this.scrollMethod("scrollId" + this.selectedQuestion);
+
     },
     previous() {
+      if (this.isTimeUp) {
+        return false;
+      }
       this.$mixpanel.track("PreviousButtonClicked", {
         question_id: this.selectedQuestion.id,
         question_number_in_view: this.selectedQuestion + 1,
@@ -924,6 +950,9 @@ export default {
       this.scrollMethod("scrollId" + this.selectedQuestion);
     },
     questionClicked(item) {
+      if(this.isTimeUp) {
+        return false;
+      }
       if (item.myAnswer || this.skipped.includes(item)) {
         this.selectedQuestion = this.questions.indexOf(item);
         this.scrollMethod("scrollId" + this.selectedQuestion);
@@ -1073,14 +1102,29 @@ export default {
   border-width: 2px;
 }
 
+.application-statement {
+  font-size: 14px;
+  line-height: 20px;
+}
+
 /* .my-card {
   height: calc(100vh - 700px) !important;
 } */
+.close-right {
+  position : absolute;
+  top: 0px;
+  left: 0px;
+}
 
+.left-container {
+  padding: 0px !important;
+}
 .option-card {
   border: 0.5px solid rgba(0, 0, 0, 0.26);
 }
-
+.font-size-13 {
+  font-size: 13px !important;
+}
 .submitButton {
   position: fixed;
   bottom: 50px;
