@@ -180,15 +180,15 @@
               </v-row>
               <v-card class="my-card pa-0 mt-4 rounded-xl" elevation="0" color="grey lighten-4" id="myScroll">
                 <v-card height="auto" elevation="0" color="grey lighten-4">
-                  <v-card-title v-if="questions[selectedQuestion] != null"> 
+                  <v-card-title v-if="questions[selectedQuestion] != null">
                     <div v-html="questions[selectedQuestion].statement"></div>
                   </v-card-title>
-                  <v-card-subtitle  >
-                    <video id="video-option" v-if="questions[selectedQuestion].mime_type.includes('video')"  height="180"  controls>
+                  <v-card-subtitle>
+                    <video id="video-option" v-if="questions[selectedQuestion].mime_type.includes('video')"  height="180"  controls controlsList="nodownload">
                     <source :src=questions[selectedQuestion].s3_asset_urls :type="questions[selectedQuestion].mime_type" >
                     Your browser does not support the video tag.
                     </video>
-                    <audio id="audio-option" v-if="questions[selectedQuestion].mime_type.includes('audio')"  controls>
+                    <audio id="audio-option" v-if="questions[selectedQuestion].mime_type.includes('audio')"  controls controlsList="nodownload">
                     <source :src=questions[selectedQuestion].s3_asset_urls  :type="questions[selectedQuestion].mime_type">
                      Your browser does not support the audio tag.
                     </audio>
