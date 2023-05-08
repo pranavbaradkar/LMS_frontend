@@ -172,7 +172,7 @@
               <!-- Progress Bar -->
 
               <v-progress-linear class="rounded-xl mt-2 mb-2" rounded
-                :value="((answeredProgress + skipped.length) / questions.length) * 100"
+                :value="((answeredProgress + skipped.length + bookmarked.length) / questions.length) * 100"
                 color="secondary" background-color="grey lighten-2" height="10"></v-progress-linear>
               <v-row justify="space-between" align="center">
                 <v-col>
@@ -274,11 +274,11 @@
                         Previous
                       </v-btn>
 
-                      <v-btn :disabled="questions[this.selectedQuestion].myAnswer==null" v-if="selectedQuestion == questions.length - 1" rounded
+                      <v-btn :disabled="!(questions[this.selectedQuestion].myAnswer!=null || this.bookmarked.includes(questions[this.selectedQuestion])) " v-if="selectedQuestion == questions.length - 1" rounded
                         color="secondary" @click="summaryDialog = true" height="36px" class="ml-8 black--text mr-0">
                         Proceed & View Summary
                       </v-btn>
-                      <v-btn v-else rounded color="secondary" :disabled="questions[selectedQuestion].myAnswer==null" @click="next" width="120px"
+                      <v-btn v-else rounded color="secondary" :disabled="!(questions[this.selectedQuestion].myAnswer!=null || this.bookmarked.includes(questions[this.selectedQuestion])) " @click="next" width="120px"
                         height="36px" class="ml-8 mr-0 black--text">
                         NEXT
                       </v-btn>
@@ -786,19 +786,18 @@ export default {
         return "answered";
       }
     },
-    bookmarkQuestion(question) {
+    handleBookmark(question) {
       if (!this.bookmarked.includes(question)) {
         this.bookmarked.push(question);
         this.$mixpanel.track("QuestionBookmarked", {
           question_id: this.selectedQuestion.id,
           screen_name: "AssessmentScreen",
         });
-        //console.log(this.questions[this.selectedQuestion]);
-        // if (this.skipped.includes(question)) {
-        //   let index = this.bookmarked.indexOf(question);
-        //   this.skipped.splice(index, 1);
+        if (this.skipped.includes(question)) {
+          let index = this.bookmarked.indexOf(question);
+          this.skipped.splice(index, 1);
 
-        // }
+        }
       } else {
         let index = this.bookmarked.indexOf(question);
         this.bookmarked.splice(index, 1);
@@ -808,11 +807,25 @@ export default {
         });
       }
     },
+    bookmarkQuestion(question) {
+      if (question.myAnswer != null) {
+        this.questions[this.getQuestionIndex(question)].myAnswer = null;
+        this.updateProgress();
+        this.handleBookmark(question);
+      }
+      else {
+        this.handleBookmark(question);
+      }
+    },
     updateProgress() {
       this.answeredProgress = 0;
       this.questions.forEach((question) => {
         if (question.myAnswer != null) {
           this.answeredProgress++;
+          if (this.bookmarked.includes(question)) {
+            let index = this.bookmarked.indexOf(question);
+            this.bookmarked.splice(index, 1);
+          }
         }
       });
     },
@@ -896,9 +909,10 @@ export default {
       }
     },
     skipQuestion(question) {
-      if (!this.skipped.includes(question)) {
+      if (!this.skipped.includes(question) && !this.bookmarked.includes(question)) {
         this.skipped.push(question);
         //console.log(this.questions[this.selectedQuestion]);
+
         this.questions[this.selectedQuestion].myAnswer = null;
         this.updateProgress();
       }
