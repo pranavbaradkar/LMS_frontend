@@ -193,11 +193,11 @@
                     <div class="application-statement" v-html="questions[selectedQuestion].statement"></div>
                   </v-card-title>
                   <v-card-subtitle  >
-                    <video id="video-option" v-if="questions[selectedQuestion].mime_type.includes('video')"  height="180"  controls controlsList="nodownload">
+                    <video id="video-option" v-if="questions[selectedQuestion].mime_type.includes('video')"  height="180"  controls controlsList="nodownload nofullscreen">
                     <source :src=questions[selectedQuestion].s3_asset_urls :type="questions[selectedQuestion].mime_type" >
                     Your browser does not support the video tag.
                     </video>
-                    <audio id="audio-option" v-if="questions[selectedQuestion].mime_type.includes('audio')"  controls controlsList="nodownload">
+                    <audio id="audio-option" v-if="questions[selectedQuestion].mime_type.includes('audio')"  controls controlsList="nodownload nofullscreen">
                     <source :src=questions[selectedQuestion].s3_asset_urls  :type="questions[selectedQuestion].mime_type">
                      Your browser does not support the audio tag.
                     </audio>
