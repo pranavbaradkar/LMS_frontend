@@ -403,12 +403,12 @@ export default {
     recommendedTestViewEvent() {
       this.selectedAssessment = this.recommendedAssessment;
       console.log("selected assessment", this.selectedAssessment);
-      if (this.selectedAssessment.screening_status == "PENDING") {
+      if (this.selectedAssessment.screening_status == "PENDING" || this.selectedAssessment.screening_status == "STARTED") {
         this.testType = "Screening";
         this.e1 = 1;
       } else if (
-        this.selectedAssessment.screening_status != "PENDING" &&
-        this.selectedAssessment.mains_status == "PENDING"
+        this.selectedAssessment.screening_status != "PENDING" && this.selectedAssessment.screening_status != "STARTED" &&
+        (this.selectedAssessment.mains_status == "PENDING" || this.selectedAssessment.mains_status == "STARTED")
       ) {
         this.testType = "Mains";
         this.e1 = 2;
@@ -543,12 +543,12 @@ export default {
           return item.id !== response.data.data.id;
         });
       }
-      if (this.recommendedAssessment.screening_status == "PENDING") {
+      if (this.recommendedAssessment.screening_status == "PENDING" || this.recommendedAssessment.screening_status == "STARTED") {
         this.testType = "Screening";
         this.e1 = 1;
       } else if (
-        this.recommendedAssessment.screening_status != "PENDING" &&
-        this.selectedAssessment.mains_status == "PENDING"
+        this.recommendedAssessment.screening_status != "PENDING" && this.recommendedAssessment.screening_status != "STARTED" &&
+        (this.recommendedAssessment.mains_status == "PENDING" || this.recommendedAssessment.mains_status == "STARTED")
       ) {
         this.testType = "Mains";
         this.e1 = 2;
