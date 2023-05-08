@@ -683,7 +683,7 @@ export default {
       }
       if (
         this.questions[index].myAnswer ||
-        this.skipped.includes(this.questions[index])
+        this.skipped.includes(this.questions[index]) || this.bookmarked.includes(this.questions[index])
       ) {
         this.selectedQuestion = index;
         this.summaryDialog = false;
