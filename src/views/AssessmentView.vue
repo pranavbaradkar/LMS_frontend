@@ -228,7 +228,7 @@
                                     setOption(
                                       questions[selectedQuestion].question_options[index]
                                     )
-                                  " elevation="0" height="45px" width="100%" v-if="option.option_type=='TEXT'" class="w-100 d-flex justify-center cursor sub-text-option" :class="questions[selectedQuestion].myAnswer == option.option_key ? 'secondaryAccent' : ''" >
+                                  " elevation="0" height="45px" width="100%" v-if="option.option_type=='TEXT'" class="w-100 d-flex justify-center cursor sub-text-option" :class="questions[selectedQuestion].myAnswer == option.option_key || (Array.isArray(questions[selectedQuestion].myAnswer) && questions[selectedQuestion].myAnswer.indexOf(option.option_key) >= 0) ? 'secondaryAccent' : ''" >
                                 
                                     <div class="application-statement" v-html="option.option_value"></div>
                             </v-card>
@@ -236,7 +236,7 @@
 
 
 
-                            <v-card elevation="0"  height="30%" width="100%"  v-else-if="option.option_type =='IMAGE'" class="w-100 d-flex justify-center cursor sub-text-option" :class="questions[selectedQuestion].myAnswer == option.option_key ? 'secondaryAccent' : '' ">
+                            <v-card elevation="0"  height="30%" width="100%"  v-else-if="option.option_type =='IMAGE'" class="w-100 d-flex justify-center cursor sub-text-option" :class="questions[selectedQuestion].myAnswer == option.option_key || (Array.isArray(questions[selectedQuestion].myAnswer) && questions[selectedQuestion].myAnswer.indexOf(option.option_key) >= 0) ? 'secondaryAccent' : '' ">
                                <div class="option-left" @click="
                                     setOption(
                                       questions[selectedQuestion].question_options[index]
@@ -881,14 +881,34 @@ export default {
       }
     },
     setOption(option) {
+      console.log(this.questions[this.selectedQuestion]);
       if (!this.isTimeUp) {
+
+        if(this.questions[this.selectedQuestion].question_type == 'MULTIPLE_CHOICE' && !Array.isArray(this.questions[this.selectedQuestion].myAnswer)) {
+          this.questions[this.selectedQuestion].myAnswer = [];
+        }   
+        
         if (
-          this.questions[this.selectedQuestion].myAnswer == option.option_key
+          this.questions[this.selectedQuestion].myAnswer == option.option_key || (Array.isArray(this.questions[this.selectedQuestion].myAnswer) && this.questions[this.selectedQuestion].myAnswer.indexOf(option.option_key) >= 0)
         ) {
-          this.questions[this.selectedQuestion].myAnswer = null;
+
+          if(this.questions[this.selectedQuestion].question_type == 'MULTIPLE_CHOICE') {
+            let indexOfQuestion = this.questions[this.selectedQuestion].myAnswer.findIndex(ele => ele == option.option_key);
+            if (indexOfQuestion > -1) { // only splice array when item is found
+              this.questions[this.selectedQuestion].myAnswer.splice(indexOfQuestion, 1); // 2nd parameter means remove one item only
+            }
+          } else {
+            this.questions[this.selectedQuestion].myAnswer = null;
+          }
           this.updateProgress();
         } else {
-          this.questions[this.selectedQuestion].myAnswer = option.option_key;
+          
+          if(this.questions[this.selectedQuestion].question_type == 'MULTIPLE_CHOICE') {
+            this.questions[this.selectedQuestion].myAnswer.push(option.option_key);
+          } else {
+            this.questions[this.selectedQuestion].myAnswer = option.option_key;
+          }
+
           if (this.questions[this.selectedQuestion].timeTaken == null) {
             this.questions[this.selectedQuestion].timeTaken =
               this.lastAnswerTime - this.seconds;
