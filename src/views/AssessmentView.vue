@@ -217,7 +217,7 @@
 
               <!-- <v-spacer></v-spacer> -->
               <!-- Options Card -->
-              <v-card class="option-card mt-8 rounded-xl w-100 float-bottom " elevation="0">
+              <v-card v-if="questions[selectedQuestion].question_type != 'MATCH_THE_FOLLOWING'" class="option-card mt-8 rounded-xl w-100 float-bottom " elevation="0">
                 <v-card height="auto" color="sufaceAccent w-100" elevation="0">
                   <v-card-title v-if="questions[selectedQuestion] != null" 
                     class="d-flex w-100 pa-1 flex-row justify-space-around">
@@ -259,6 +259,25 @@
                       
                   </v-card-title>
                 </v-card>
+              </v-card>
+
+              <v-card v-if="questions[selectedQuestion].question_type == 'MATCH_THE_FOLLOWING'" width="100%" height="30%" elevation="0" class="ml-2">
+                <v-row>
+                  <v-col cols="4" class="pa-3 mr-8 rounded-xl option-card" style="background-color: #FBF5F2;">
+                    <v-card @click="selectMtfKey(questions[selectedQuestion].question_options[index])" v-for="(option, index) in questions[selectedQuestion].question_options" :key="index" class="mb-2 d-flex justify-center pa-2">
+                      {{ option.option_value }}
+                    </v-card>
+                  </v-col>
+                  <v-col cols="4" class="pa-3 ml-8 rounded-xl option-card" style="background-color: #FBF5F2;">
+                    <v-card 
+                    @click="setOption(
+                                      questions[selectedQuestion].question_mtf_answers[index]
+                                    )" 
+                    v-for="(answer, index) in questions[selectedQuestion].question_mtf_answers" :key="index" class="mb-2 d-flex justify-center pa-2">
+                    {{ answer.answer_value }}
+                    </v-card>
+                  </v-col>
+                </v-row>
               </v-card>
 
             </v-container>
@@ -583,6 +602,11 @@ export default {
       counter: 0,
       zoomOutBool: false,
       zoomOutImageUrl: "",
+      mtfQuestions: {
+        mathOptionColors: ['rgba(75, 66, 178, 0.12)','rgba(88, 178, 66, 0.12)','rgba(178, 66, 66, 0.12)','rgba(66, 178, 178, 0.12)'],
+        selectedOption: null,
+      },
+
     };
   },
   computed: {
@@ -867,13 +891,36 @@ export default {
         });
       }
     },
+
+  isObject(value) {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    !Array.isArray(value)
+  );},
+
+    selectMtfKey (option) {
+      console.log(option.option_key);
+      this.mtfQuestions.selectedOption = option.option_key
+    },
     setOption(option) {
       console.log(this.questions[this.selectedQuestion]);
       if (!this.isTimeUp) {
 
         if(this.questions[this.selectedQuestion].question_type == 'MULTIPLE_CHOICE' && !Array.isArray(this.questions[this.selectedQuestion].myAnswer)) {
           this.questions[this.selectedQuestion].myAnswer = [];
-        }   
+        }
+        if(this.questions[this.selectedQuestion].question_type == 'MATCH_THE_FOLLOWING' && !this.isObject(this.questions[this.selectedQuestion].myAnswer)) {
+          this.questions[this.selectedQuestion].myAnswer = {};
+        }
+        if (this.mtfQuestions.selectedOption !== null || this.isObject(this.questions[this.selectedQuestion].myAnswer)) {
+           const newObj = this.questions[this.selectedQuestion].myAnswer;
+           const optionKey = this.mtfQuestions.selectedOption;
+           this.questions[this.selectedQuestion].myAnswer[optionKey] = option.answer_key;
+          //  this.questions[this.selectedQuestion].myAnswer[this.mtfQuestions.selectedOption] = option.answer_key;
+           console.log( 'answer',this.questions[this.selectedQuestion].myAnswer);
+          }
+
         
         if (
           this.questions[this.selectedQuestion].myAnswer == option.option_key || (Array.isArray(this.questions[this.selectedQuestion].myAnswer) && this.questions[this.selectedQuestion].myAnswer.indexOf(option.option_key) >= 0)
@@ -1021,6 +1068,7 @@ export default {
       if (response.data.success) {
         this.screening = response.data.data;
         this.screening.forEach((element) => {
+          console.log(...element.questions);
           this.questions.push(...element.questions);
         });
         console.log("screening: ", this.screening);
