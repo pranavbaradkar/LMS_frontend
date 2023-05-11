@@ -326,7 +326,9 @@ export default {
     };
   },
   computed: {},
-  mounted() {},
+  mounted() {
+
+  },
 
   beforeDestroy() {},
 

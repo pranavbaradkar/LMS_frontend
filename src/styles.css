@@ -26,6 +26,9 @@
      border: 1px solid rgba(175, 175, 175, 0.342);
 
   }
+  .mtf-question-card {
+    height: calc(100vh - 636px) !important;
+  }
   .zoom-out {
     position: absolute !important;
     top: 8px;

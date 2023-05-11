@@ -347,6 +347,20 @@ export default {
     window.removeEventListener("resize", this.onResize);
   },
   methods: {
+
+
+    goFullScreen() {
+      const elem = document.documentElement;
+    if (elem.requestFullscreen) {
+    elem.requestFullscreen();
+  } else if (elem.webkitRequestFullscreen) { /* Safari */
+    elem.webkitRequestFullscreen();
+  } else if (elem.msRequestFullscreen) { /* IE11 */
+    elem.msRequestFullscreen();
+  }
+    },
+
+
     closeDialog() {
       this.dialog = false;
       this.$mixpanel.track("InstructionPageClosed", {
@@ -384,6 +398,8 @@ export default {
 
     startTest() {
       this.dialog = false;
+
+      this.goFullScreen();
       this.$mixpanel.track("StartTestClicked", {
         assessment_id: this.selectedAssessment.id,
         assessment_name: this.selectedAssessment.name,

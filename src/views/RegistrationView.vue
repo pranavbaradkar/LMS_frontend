@@ -205,7 +205,8 @@
                               label="First Name *"
                               rounded
                               class="rounded-xl"
-                              :rules="[(v) => !!v || 'First Name is required']"
+                            :rules="[(v) => !!v || 'First Name is required',(v) => /^[a-zA-Z ]{3,25}$/.test(v) || 'This value must contains alphabets',]"
+
                               required
                               persistent-counter="10"
                             ></v-text-field></v-col
@@ -224,7 +225,7 @@
                               label="Last Name*"
                               rounded
                               class="rounded-xl"
-                              :rules="[(v) => !!v || 'Last Name is required']"
+                              :rules="[(v) => !!v || 'Last Name is required',(v) => /^[a-zA-Z ]{3,25}$/.test(v) || 'This value must contains alphabets',]"
                               required
                             ></v-text-field
                           ></v-col>
@@ -343,9 +344,7 @@
                               rounded
                               type="date"
                               class="rounded-xl"
-                              :rules="[
-                                (v) => !!v || 'Date of Birth is required',
-                              ]"
+                              :rules="[dateRule]"
                               required
                             ></v-text-field
                           ></v-col>
@@ -397,7 +396,8 @@
                                 outlined
                                 class="rounded-xl"
                                 :rules="[
-                                  (v) => !!v || 'Country name is required',
+                                  (v) =>  v != -1 || 'Country name is required',
+                                  
                                 ]"
                                 required
                                 @change="fetchStates"
@@ -414,8 +414,10 @@
                                 class="rounded-xl"
                                 item-value="id"
                                 item-text="state_name"
+                                
                                 :rules="[
-                                  (v) => !!v || 'State name is required',
+                                  (v) =>  v != -1 || 'State name is required',
+                                  
                                 ]"
                                 required
                                 @change="fetchDistricts"
@@ -475,6 +477,7 @@
                                 label="Pin Code *"
                                 rounded
                                 counter="6"
+                                type="text"
                                 maxLength="6"
                                 class="rounded-xl"
                                 :rules="[
@@ -584,14 +587,15 @@
                                 @keypress="isNumber($event)"
                                 label="Pin Code *"
                                 rounded
-                                readonly
+                                
                                 counter="6"
                                 maxLength="6"
                                 :rules="[
-                                  (v) => !!v || 'Pincode is required',
                                   (v) =>
-                                    (v && v.length >= 6 && v.length <= 6) ||
+                                    (v.length != 6) ||
                                     'Pincode must be 6 digit',
+                                  (v) => !!v || 'Pincode is required',
+                                  
                                 ]"
                                 required
                               ></v-text-field>
@@ -660,6 +664,7 @@
                           ) in academicQualifications"
                           :key="index"
                           elevation="0"
+                          @click="selectedFormIndex = index"
                         >
                           <v-expansion-panel-header>
                             <div
@@ -705,6 +710,7 @@
                                     (v) =>
                                       !!v ||
                                       'School/ College/ University name is required',
+                                      ,(v) => /^[a-zA-Z ]{3,25}$/.test(v) || 'This value must contains alphabets',
                                   ]"
                                   required
                                 ></v-text-field
@@ -723,7 +729,7 @@
                                   :rules="[
                                     (v) =>
                                       !!v ||
-                                      'Degree/ Diploma/ Certification name is required',
+                                      'Degree/ Diploma/ Certification name is required',(v) => /^[a-zA-Z ]{3,25}$/.test(v) || 'This value must contains alphabets',
                                   ]"
                                   required
                                 ></v-text-field
@@ -740,7 +746,7 @@
                                   maxLength="100"
                                   required
                                   :rules="[
-                                    (v) => !!v || 'Field of Study is required',
+                                    (v) => !!v || 'Field of Study is required',(v) => /^[a-zA-Z ]{3,25}$/.test(v) || 'This value must contains alphabets',
                                   ]"
                                 ></v-text-field
                               ></v-col>
@@ -755,9 +761,7 @@
                                   rounded
                                   class="rounded-xl"
                                   type="date"
-                                  :rules="[
-                                    (v) => !!v || 'Start Date is required',
-                                  ]"
+                                  :rules="[dateRule]"
                                 ></v-text-field
                               ></v-col>
                               <v-col cols="6" class="py-0 c-text-field"
@@ -768,9 +772,7 @@
                                   rounded
                                   class="rounded-xl"
                                   type="date"
-                                  :rules="[
-                                    (v) => !!v || 'End Date is required',
-                                  ]"
+                                  :rules="[endDateRule]"
                                 ></v-text-field
                               ></v-col>
                             </v-row>
@@ -906,6 +908,7 @@
                           v-for="(professional, index) in professionalInfos"
                           :key="index"
                           elevation="0"
+                          
                         >
                           <v-expansion-panel-header
                             ><div
@@ -936,8 +939,8 @@
                               </div>
                             </div></v-expansion-panel-header
                           >
-                          <v-expansion-panel-content>
-                            <v-row class="py-0">
+                          <v-expansion-panel-content @click="selectedFormIndex = index">
+                            <v-row class="py-0" >
                               <v-col class="py-0">
                                 <v-card
                                   v-if="index == 0"
@@ -1041,7 +1044,7 @@
                                     :rules="[
                                       (v) =>
                                         !!v ||
-                                        'Role/ Position name is required'
+                                        'Role/ Position name is required',(v) => /^[a-zA-Z ]{3,25}$/.test(v) || 'This value must contains alphabets',
                                     ]"
                                    
                                     v-model="professional.position"
@@ -1082,6 +1085,7 @@
                                     class="py-0"
                                     v-model="isCurrentlyWorking"
                                     label="I am currently working on this role / position."
+                                    @click="selectedFormIndex = index"
                                   ></v-checkbox>
                                 </v-col>
                               </v-row>
@@ -1094,9 +1098,7 @@
                                     class="rounded-xl"
                                     v-model="professional.start_date"
                                     type="date"
-                                    :rules="[
-                                      (v) => !!v || 'Start Date is required',
-                                    ]"
+                                    :rules="[dateRule]"
                                   ></v-text-field
                                 ></v-col>
                                 <v-col cols="6" class="py-0 c-text-field"
@@ -1106,13 +1108,10 @@
                                     label="End Date*"
                                     rounded
                                     class="rounded-xl"
+                                    @click="selectedFormIndex = index"
                                     v-model="professional.end_date"
                                     type="date"
-                                    :rules="
-                                      !isCurrentlyWorking
-                                        ? [(v) => !!v || 'End Date is required']
-                                        : ''
-                                    "
+                                    :rules="[endDateRuleProfessional]"
                                   ></v-text-field
                                 ></v-col>
                               </v-row>
@@ -1340,6 +1339,9 @@ export default {
   data() {
     return {
       e1: 1,
+      selectedFormIndex : 0,
+      date: null,
+
       experience: "Fresher",
       isCurrentlyWorking: false,
       isFetchingLocation: false,
@@ -1412,6 +1414,10 @@ export default {
         country_id: -1,
         state_id: -1,
         talukTehsil: -1,
+        textRules: [
+        (v) => !!v || "required",
+        (v) => /^[a-zA-Z]{3,25}$/.test(v) || "E-mail must be valid",
+      ],
         city_id: -1,
         address: "",
         pincode: 0,
@@ -1444,7 +1450,7 @@ export default {
           position: "",
           employee_type_id: 0,
           start_date: "",
-          end_date: "",
+          end_date: null,
         },
       ],
       employeeType: [
@@ -1651,6 +1657,9 @@ export default {
     async getUserInfo() {
       const response = await LogedInUserInfo.getUserInfo();
       this.userInfo = response.data.user;
+      this.personalInfo = this.userInfo;    
+      this.userInfo.pincode = ''+this.userInfo.pincode
+      
       console.log("User: Registration", this.userInfo);
       if (this.userInfo.is_personal_info_captured) {
         this.e1 = 2;
@@ -1760,7 +1769,7 @@ export default {
         position: "",
         employee_type_id: 0,
         start_date: "",
-        end_date: "",
+        end_date: null,
       });
       this.expandedPanelIndex = this.professionalInfos.length - 1;
     },
@@ -1853,11 +1862,70 @@ export default {
       this.deleteDialog = true;
     },
   },
+  watch: {
+    // whenever question changes, this function will run
+    isCurrentlyWorking() {
+      if(this.isCurrentlyWorking){
+        this.professionalInfos[this.selectedFormIndex].end_date = null
+      }
+    },
+  },
   computed: {
     getHeight() {
       return this.windowHeight;
     },
-
+    dateRule() {
+      return (value) => {
+        if (!value) {
+          return true;
+        }
+        const regex = /^([0-9]{4})-([0-9]{2})-([0-9]{2})$/;
+        if (!regex.test(value)) {
+          return 'Please enter a valid date (YYYY-MM-DD)';
+        }
+        const selectedDate = new Date(value);
+        const currentDate = new Date();
+        if (selectedDate > currentDate) {
+          return 'Selected date must be less than or equal to current date';
+        }
+        return true;
+      };
+    },
+    
+    endDateRule() {
+      return (value) => {
+        if (!value) {
+          return true;
+        }
+        const regex = /^([0-9]{4})-([0-9]{2})-([0-9]{2})$/;
+        if (!regex.test(value)) {
+          return 'Please enter a valid date (YYYY-MM-DD)';
+        }
+        const startDateObj = new Date(this.academicQualifications[this.selectedFormIndex].start_date);
+        const endDateObj = new Date(value);
+        if (startDateObj > endDateObj) {
+          return 'End date must be greater than start date';
+        }
+        return true;
+      };
+    },
+    endDateRuleProfessional() {
+      return (value) => {
+        if (!value) {
+          return true;
+        }
+        const regex = /^([0-9]{4})-([0-9]{2})-([0-9]{2})$/;
+        if (!regex.test(value)) {
+          return 'Please enter a valid date (YYYY-MM-DD)';
+        }
+        const startDateObj = new Date(this.professionalInfos[this.selectedFormIndex].start_date);
+        const endDateObj = new Date(value);
+        if (startDateObj > endDateObj) {
+          return 'End date must be greater than start date';
+        }
+        return true;
+      };
+    },
     minValueRule() {
       return (value) =>
         parseInt(value) >= 0 || "Value must be greater than or equal to 0";
