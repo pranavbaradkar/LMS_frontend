@@ -317,9 +317,8 @@ export default {
             const res =await this.createUserIntrest();
             if(res.data.success){
               this.$router.replace("/");
-            }
-            else {
-             alert(res.data.error)
+            } else {
+              alert(res.data.error)
             }
           }
           else {
