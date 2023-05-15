@@ -501,7 +501,7 @@
                                 :rules="[
                                   (v) => !!v || 'Pincode is required',
                                   (v) =>
-                                    (v && v.length >= 6 && v.length <= 6) ||
+                                    (v && v.length != 6) ||
                                     'Pincode must be 6 digit',
                                 ]"
                                 required
@@ -1633,8 +1633,14 @@ export default {
     async saveDetails() {
       //console.log("function");
       if (this.$refs.step3.validate()) {
-        //console.log("userif conditon");
+        console.log("userif conditon.........1", this.professionalInfos, this.isCurrentlyWorking);
         this.isCreatingUser = true;
+        if(this.isCurrentlyWorking) {
+          //console.log('profesional ednd data.........', this.professionalInfos[0].start_date)
+          delete this.professionalInfos[0].end_date;
+        }
+
+        console.log("userif conditon.........2", this.professionalInfos, this.isCurrentlyWorking);
         const response =
           this.experience == "Fresher"
             ? await ProfessionalController.createUserProfessionalInfo([
@@ -1642,7 +1648,9 @@ export default {
                   is_fresher: true,
                 },
               ])
-            : await ProfessionalController.createUserProfessionalInfo(
+            : 
+
+              await ProfessionalController.createUserProfessionalInfo(
                 this.professionalInfos
               );
         if (response.data.success) {
@@ -1693,7 +1701,23 @@ export default {
       this.personalInfo.is_email_verified = this.userInfo.is_email_verified;
       this.personalInfo.is_phone_verified = this.userInfo.is_phone_verified;
       this.personalInfo.email = this.userInfo.email;
+      this.personalInfo.first_name = this.userInfo.first_name;
+      this.personalInfo.last_name = this.userInfo.last_name;
+      this.personalInfo.title = this.userInfo.title;
+      this.personalInfo.middle_name = this.userInfo.middle_name;
+      this.personalInfo.country_id = this.userInfo.country_id;
+      this.personalInfo.gender = this.userInfo.gender;
+      this.personalInfo.state_id = this.userInfo.state_id;
       this.personalInfo.phone_no = this.userInfo.phone_no.slice(-10);
+
+      this.personalInfo.address = this.userInfo.address;
+      this.personalInfo.city_id = this.userInfo.city_id;
+      this.personalInfo.pincode = this.userInfo.pincode;
+      this.personalInfo.city_name = this.userInfo.city_name;
+      this.personalInfo.taluka_name = this.userInfo.taluka_name;
+      this.personalInfo.dob = this.userInfo.dob;
+      this.personalInfo.state_id = this.userInfo.state_id;
+
       this.$mixpanel.track("PersonalInformationStepLoaded", {
         user_type: this.userInfo.user_type,
         screen_name: "PersonalProfileInformationScreen",
