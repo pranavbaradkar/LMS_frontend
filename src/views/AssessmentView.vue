@@ -927,9 +927,9 @@ export default {
           this.questions[this.selectedQuestion].myAnswer = {};
         }
         if (this.mtfQuestions.selectedOption !== null || this.isObject(this.questions[this.selectedQuestion].myAnswer)) {
-           const newObj = this.questions[this.selectedQuestion].myAnswer;
-           const optionKey = this.mtfQuestions.selectedOption;
-           this.questions[this.selectedQuestion].myAnswer[optionKey] = option.answer_key;
+          //const newObj = this.questions[this.selectedQuestion].myAnswer;
+          const optionKey = this.mtfQuestions.selectedOption;
+          this.questions[this.selectedQuestion].myAnswer[optionKey] = option.answer_key;
           //  this.questions[this.selectedQuestion].myAnswer[this.mtfQuestions.selectedOption] = option.answer_key;
            console.log( 'answer',this.questions[this.selectedQuestion].myAnswer);
           }
