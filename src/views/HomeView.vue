@@ -109,7 +109,7 @@
                   max-width="344"
                   outlined
                   height="180"
-                  style="margin-right: 9px"
+                  style="margin-right: 8.33px"
                 >
                   <v-list-item three-line>
                     <v-list-item-avatar
