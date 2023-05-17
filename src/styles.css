@@ -43,13 +43,24 @@
 } */
 #myScroll {
   overflow-y: scroll;
-  -ms-overflow-style: none;
-  /* IE and Edge */
-  scrollbar-width: none;
 }
+
+#myScroll::-webkit-scrollbar {
+   width: 2px;
+}
+
+#myScroll::-webkit-scrollbar-track {
+   -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+   border-radius: 10px;
+}
+
+#myScroll::-webkit-scrollbar-thumb {
+   border-radius: 10px;
+   -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
+}
+
 .v-progress-circular {
   box-shadow: 0 5px 5px rgba(0, 0, 0, 0.4);
-  border-radius: 50%;
 }
 
 .w-50 {
@@ -412,9 +423,9 @@ body {
   text-overflow: ellipsis;
 }
 
-#myScroll::-webkit-scrollbar {
+/* #myScroll::-webkit-scrollbar {
   display: none;
-}
+} */
 
 .centered-input >>> input {
   text-align: center;
