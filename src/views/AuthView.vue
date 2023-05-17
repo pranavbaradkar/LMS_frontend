@@ -66,7 +66,6 @@
               <v-btn color="#CAECEF" class="textcolor--text mt-4" rounded large v-if="!usingPhone && !vibgyouBool" @click="
                 () => {
                   usingPhone = true;
-
                 }
               " width="auto" height="36px" depressed>Login Using Mobile Number
               </v-btn>
@@ -309,7 +308,7 @@ export default {
         }
 
         // console.log(res)
-        if (res.is_profile_created) {
+        if (res.is_profile_created || (!res.is_profile_created && res.is_interest_captured)) {
           this.$router.push("/");
         } else {
           this.$router.push("/register");
