@@ -342,6 +342,27 @@
                               class="rounded-xl"
                               :rules="[
                                 (v) => !!v || 'Date of Birth is required',
+                                (v) => {
+                                  const firstdate = new Date(v);
+                                  const today_date = new Date();
+                                 return (
+                                    firstdate < today_date ||
+                                    'Future date not allowed'
+                                  );
+                                },
+                               (v) => {
+                                  const firstdate = new Date(v);
+                                  const today_date = new Date();
+                                  const diffTime = Math.abs(
+                                    firstdate - today_date
+                                  );
+                                  const diffDays = Math.ceil(
+                                    diffTime / (1000 * 60 * 60 * 24 * 365)
+                                  );
+                                  return (
+                                    diffDays >= 18 || 'age is less than 18'
+                                 );
+                                },
                               ]"
                               required
                             ></v-text-field
@@ -663,20 +684,23 @@
                           <v-expansion-panel-header>
                             <div
                               class="d-flex flex-column"
-                              v-if="expandedPanelIndex != index"
+                              v-if="expandedPanelIndex != index  &&
+                                qualification.programme != ''"
                             >
                               <div
                                 class="font-weight-regular"
-                                v-if="qualification.programme != undefined"
+                                v-if="qualification.programme != ''"
                               >
                                 {{ index + 1 + ". " + qualification.programme }}
                               </div>
-                              <div class="text-body-2 grey--text pt-2 pb-2">
+                              <div 
+                              v-if="qualification.institution != ''"
+                              class="text-body-2 grey--text pt-2 pb-2">
                                 {{ qualification.institution }}
                               </div>
                               <div
                                 class="text-body-2 grey--text"
-                                v-if="qualification.start_date != undefined"
+                                v-if="qualification.start_date != ''"
                               >
                                 {{
                                   new Date(
@@ -686,6 +710,13 @@
                                   new Date(qualification.end_date).getFullYear()
                                 }}
                               </div>
+                            </div>
+                            <div
+                              class="d-flex flex-column"
+                              v-if="
+                                expandedPanelIndex != index &&
+                                qualification.programme == ''"
+                           > Add academic programme detail
                             </div>
                           </v-expansion-panel-header>
 
@@ -937,22 +968,31 @@
                               >
                                 Fresher
                               </div>
-                              <div v-else class="font-weight-regular">
-                                {{ index + 1 + ". " + professional.position }}
-                              </div>
-                              <div
-                                class="text-body-2 grey--text"
-                                v-if="professional.end_date != ''"
-                              >
-                                {{
-                                  new Date(
-                                    professional.start_date
-                                  ).getFullYear() +
-                                  " - " +
-                                  new Date(professional.end_date).getFullYear()
-                                }}
-                              </div>
-                            </div></v-expansion-panel-header
+                              <div v-if="experience !== 'Fresher' && professional.position != ''">
+                                <div class="font-weight-regular">
+                                  {{ index + 1 + ". " + professional.position }}
+                                </div>
+                                <div
+                                  class="text-body-2 grey--text"
+                                 v-if="professional.start_date != '' && isCurrentlyWorking"
+                                >
+                                  {{
+                                    new Date(
+                                      professional.start_date
+                                    ).getFullYear() +
+                                    " - " + 
+                                    (professional.end_date != '' ?
+                                    new Date(
+                                      professional.end_date
+                                    ).getFullYear() : 'Present')
+                                  }}
+                                </div>
+                               </div>
+                                <div v-if="experience !== 'Fresher' && professional.position == ''"  class="font-weight-regular">
+                                  Add position details
+                                </div>
+                            </div>
+                            </v-expansion-panel-header
                           >
                           <v-expansion-panel-content>
                             <v-row class="py-0">
