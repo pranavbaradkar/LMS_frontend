@@ -286,11 +286,7 @@
                               @keypress="isNumber($event)"
                               :counter="10"
                               prefix="+91"
-                              :type="
-                                !personalInfo.is_phone_verified
-                                  ? 'number'
-                                  : 'text'
-                              "
+                              :type="'text'"
                               maxLength="10"
                               :rules="[
                                 (v) => !!v || 'Mobile number is required',
@@ -339,37 +335,17 @@
                             ><v-text-field
                               v-model="personalInfo.dob"
                               outlined
+                              :max="new Date().toISOString().slice(0, 10)"
                               label="Date of Birth (DDMMYY)*"
                               rounded
                               type="date"
                               class="rounded-xl"
                               :rules="[
                                 (v) => !!v || 'Date of Birth is required',
-                                (v) => {
-                                  const firstdate = new Date(v);
-                                  const today_date = new Date();
-                                  return (
-                                    firstdate < today_date ||
-                                    'Future date not allowed'
-                                  );
-                                },
-                                (v) => {
-                                  const firstdate = new Date(v);
-                                  const today_date = new Date();
-                                  const diffTime = Math.abs(
-                                    firstdate - today_date
-                                  );
-                                  const diffDays = Math.ceil(
-                                    diffTime / (1000 * 60 * 60 * 24 * 365)
-                                  );
-                                  return (
-                                    diffDays >= 18 || 'age is less than 18'
-                                  );
-                                },
                               ]"
                               required
-                            ></v-text-field>
-                          </v-col>
+                            ></v-text-field
+                          ></v-col>
                           <v-col cols="3" class="py-0 c-text-field">
                             <v-select
                               v-model="personalInfo.gender"
@@ -419,6 +395,7 @@
                                 class="rounded-xl"
                                 :rules="[
                                   (v) => !!v || 'Country name is required',
+                                  (v) => v > -1 || 'country name is required'
                                 ]"
                                 required
                                 @change="fetchStates"
@@ -437,6 +414,7 @@
                                 item-text="state_name"
                                 :rules="[
                                   (v) => !!v || 'State name is required',
+                                  (v) => v > -1 || 'State name is required'
                                 ]"
                                 required
                                 @change="fetchDistricts"
@@ -517,7 +495,10 @@
                                 rounded
                                 class="rounded-xl"
                                 required
-                                :rules="[(v) => !!v || 'Address is required']"
+                                :rules="[
+                                  (v) => !!v || 'Address is required',
+                                 
+                                ]"
                               ></v-text-field>
                             </v-col>
                           </v-row>
@@ -623,7 +604,10 @@
                                 maxLength="100"
                                 rounded
                                 class="rounded-xl"
-                                :rules="[(v) => !!v || 'Address is required']"
+                                :rules="[
+                                  (v) => !!v || 'Address is required',
+                                 
+                                ]"
                               ></v-text-field>
                             </v-col>
                           </v-row>
@@ -679,10 +663,7 @@
                           <v-expansion-panel-header>
                             <div
                               class="d-flex flex-column"
-                              v-if="
-                                expandedPanelIndex != index &&
-                                qualification.programme != ''
-                              "
+                              v-if="expandedPanelIndex != index"
                             >
                               <div
                                 class="font-weight-regular"
@@ -690,15 +671,12 @@
                               >
                                 {{ index + 1 + ". " + qualification.programme }}
                               </div>
-                              <div
-                                v-if="qualification.institution != ''"
-                                class="text-body-2 grey--text pt-2 pb-2"
-                              >
+                              <div class="text-body-2 grey--text pt-2 pb-2">
                                 {{ qualification.institution }}
                               </div>
                               <div
                                 class="text-body-2 grey--text"
-                                v-if="qualification.start_date != ''"
+                                v-if="qualification.start_date != undefined"
                               >
                                 {{
                                   new Date(
@@ -708,15 +686,6 @@
                                   new Date(qualification.end_date).getFullYear()
                                 }}
                               </div>
-                            </div>
-                            <div
-                              class="d-flex flex-column"
-                              v-if="
-                                expandedPanelIndex != index &&
-                                qualification.programme == ''
-                              "
-                            >
-                              Add academic programme detail
                             </div>
                           </v-expansion-panel-header>
 
@@ -780,6 +749,7 @@
                               <v-col cols="6" class="py-0 c-text-field"
                                 ><v-text-field
                                   v-model="qualification.start_date"
+                                  :max="new Date().toISOString().slice(0, 10)"
                                   outlined
                                   label="Start Date*"
                                   rounded
@@ -787,12 +757,21 @@
                                   type="date"
                                   :rules="[
                                     (v) => !!v || 'Start Date is required',
+                                    (v) => {
+                                  const firstdate = new Date(v);
+                                  const today_date = new Date();
+                                  return (
+                                    firstdate < today_date ||
+                                    'Future date not allowed'
+                                  );
+                                },
                                   ]"
                                 ></v-text-field
                               ></v-col>
                               <v-col cols="6" class="py-0 c-text-field"
                                 ><v-text-field
                                   v-model="qualification.end_date"
+                                  :max="new Date().toISOString().slice(0, 10)"
                                   outlined
                                   label="End Date* (or expected)"
                                   rounded
@@ -800,6 +779,15 @@
                                   type="date"
                                   :rules="[
                                     (v) => !!v || 'End Date is required',
+                                    (v) => qualification.end_date > qualification.start_date || 'end date should be greater than start date',
+                                    (v) => {
+                                  const firstdate = new Date(v);
+                                  const today_date = new Date();
+                                  return (
+                                    firstdate < today_date ||
+                                    'Future date not allowed'
+                                  );
+                                },
                                   ]"
                                 ></v-text-field
                               ></v-col>
@@ -849,7 +837,9 @@
                                   append-inner-icon="mdi-attachment"
                                   @change="onChange"
                                   accept="application/pdf, image/jpeg, image/jpg"
+                                  
                                   v-model="selectedFile[expandedPanelIndex]"
+
                                 >
                                   <template #append>
                                     <div
@@ -947,29 +937,21 @@
                               >
                                 Fresher
                               </div>
-                              <div v-if="experience !== 'Fresher' && professional.position != ''">
-                                <div class="font-weight-regular">
-                                  {{ index + 1 + ". " + professional.position }}
-                                </div>
-                                <div
-                                  class="text-body-2 grey--text"
-                                  v-if="professional.start_date != '' && isCurrentlyWorking"
-                                >
-                                  {{
-                                    new Date(
-                                      professional.start_date
-                                    ).getFullYear() +
-                                    " - " + 
-                                    (professional.end_date != '' ?
-                                    new Date(
-                                      professional.end_date
-                                    ).getFullYear() : 'Present')
-                                  }}
-                                </div>
+                              <div v-else class="font-weight-regular">
+                                {{ index + 1 + ". " + professional.position }}
                               </div>
-                                <div v-if="experience !== 'Fresher' && professional.position == ''"  class="font-weight-regular">
-                                  Add position details
-                                </div>
+                              <div
+                                class="text-body-2 grey--text"
+                                v-if="professional.end_date != ''"
+                              >
+                                {{
+                                  new Date(
+                                    professional.start_date
+                                  ).getFullYear() +
+                                  " - " +
+                                  new Date(professional.end_date).getFullYear()
+                                }}
+                              </div>
                             </div></v-expansion-panel-header
                           >
                           <v-expansion-panel-content>
@@ -1077,8 +1059,9 @@
                                     :rules="[
                                       (v) =>
                                         !!v ||
-                                        'Role/ Position name is required',
+                                        'Role/ Position name is required'
                                     ]"
+                                   
                                     v-model="professional.position"
                                   ></v-text-field
                                 ></v-col> </v-row
@@ -1126,12 +1109,21 @@
                                     outlined
                                     label="Start Date*"
                                     rounded
+                                    :max="new Date().toISOString().slice(0, 10)"
                                     class="rounded-xl"
                                     v-model="professional.start_date"
                                     type="date"
                                     :rules="[
-                                      (v) => !!v || 'Start Date is required',
-                                    ]"
+                                    (v) => !!v || 'Start Date is required',
+                                    (v) => {
+                                  const firstdate = new Date(v);
+                                  const today_date = new Date();
+                                  return (
+                                    firstdate < today_date ||
+                                    'Future date not allowed'
+                                  );
+                                },
+                                  ]"
                                   ></v-text-field
                                 ></v-col>
                                 <v-col cols="6" class="py-0 c-text-field"
@@ -1140,12 +1132,22 @@
                                     outlined
                                     label="End Date*"
                                     rounded
+                                    :max="new Date().toISOString().slice(0, 10)"
                                     class="rounded-xl"
                                     v-model="professional.end_date"
                                     type="date"
                                     :rules="
                                       !isCurrentlyWorking
-                                        ? [(v) => !!v || 'End Date is required']
+                                        ? [(v) => !!v || 'End Date is required',
+                                    (v) => professional.end_date > professional.start_date || 'end date should be greater than start date',
+                                    (v) => {
+                                  const firstdate = new Date(v);
+                                  const today_date = new Date();
+                                  return (
+                                    firstdate < today_date ||
+                                    'Future date not allowed'
+                                  );
+                                },]
                                         : ''
                                     "
                                   ></v-text-field
@@ -1501,8 +1503,10 @@ export default {
   methods: {
     onChange() {
       console.log(this.selectedFile[this.expandedPanelIndex]);
-      console.log("selelcted file details", this.expandedPanelIndex);
+      console.log("selelcted file details",this.expandedPanelIndex);
       this.getPreSignedUrl();
+      
+     
     },
     async getPreSignedUrl() {
       const response = await UploadController.getPreSignedUrl({
@@ -1592,7 +1596,7 @@ export default {
           this.expandedPanelIndex = 0;
         } else {
           this.isCreatingUser = false;
-          alert(response.data.error);
+          alert(response.data.error)
         }
       } else {
         if (this.$refs.step1.validate()) {
@@ -1623,7 +1627,7 @@ export default {
           this.expandedPanelIndex = 0;
         } else {
           this.isCreatingUser = false;
-          alert(response.data.error);
+          alert(response.data.error)
         }
       }
     },
@@ -1636,21 +1640,19 @@ export default {
         //console.log("userif conditon");
         this.isCreatingUser = true;
         const response =
-          this.experience == "Fresher"
-            ? await ProfessionalController.createUserProfessionalInfo([
-                {
-                  is_fresher: true,
-                },
-              ])
-            : await ProfessionalController.createUserProfessionalInfo(
-                this.professionalInfos
-              );
+          this.experience=='Fresher'?  await ProfessionalController.createUserProfessionalInfo(
+            [{
+              is_fresher:true,
+            }]
+          )  : await ProfessionalController.createUserProfessionalInfo(
+            this.professionalInfos
+          );
         if (response.data.success) {
           this.isCreatingUser = false;
           this.successDialog = true;
           this.$router.replace("/interests");
         } else {
-          alert(response.data.error);
+          alert(response.data.error)
           this.isCreatingUser = false;
         }
         console.log(response);
@@ -1820,7 +1822,7 @@ export default {
       this.time = 119;
       this.resendBool = false;
       const response = await AuthService.generateOTP({
-        mobile: this.personalInfo.phone_no,
+        mobile: toString(this.personalInfo.phone_no),
       });
 
       if (response) {
@@ -1921,4 +1923,5 @@ export default {
   },
 };
 </script>
-<style scoped></style>
+<style scoped>
+</style>
