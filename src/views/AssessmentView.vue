@@ -264,18 +264,22 @@
               <v-card v-if="questions[selectedQuestion].question_type == 'MATCH_THE_FOLLOWING'" width="100%" height="30%" elevation="0" class="ml-2">
                 <v-row>
                   <v-col cols="4" class="pa-3 mr-8 rounded-xl option-card" style="background-color: #FBF5F2;">
-                    <v-card @click="selectMtfKey(questions[selectedQuestion].question_options[index])" v-for="(option, index) in questions[selectedQuestion].question_options" :key="index" class="mb-2 d-flex justify-center pa-2">
-                      {{ option.option_value }}
+                    <v-card :style="{'background-color': ifOptionSelected(option) ? mtfQuestions.mathOptionColors[bColorIndex(option)]: ''}" @click="selectMtfKey(questions[selectedQuestion].question_options[index])" v-for="(option, index) in questions[selectedQuestion].question_options" :key="index" class="mb-2 d-flex justify-center pa-2">
+                      {{ option.option_value }} 
                     </v-card>
                   </v-col>
                   <v-col cols="4" class="pa-3 ml-8 rounded-xl option-card" style="background-color: #FBF5F2;">
-                    <v-card 
+                    <v-card
+                    :style="{'background-color': ifAnswerSelected(answer) ? mtfQuestions.mathOptionColors[findIndexOfValue(answer.answer_key)]: ''}"
                     @click="setOption(
                                       questions[selectedQuestion].question_mtf_answers[index]
                                     )" 
                     v-for="(answer, index) in questions[selectedQuestion].question_mtf_answers" :key="index" class="mb-2 d-flex justify-center pa-2">
                     {{ answer.answer_value }}
                     </v-card>
+                  </v-col>
+                  <v-col class="pt-0">
+                    <v-btn @click="resetMTF">Reset</v-btn>
                   </v-col>
                 </v-row>
               </v-card>
@@ -293,11 +297,23 @@
                         Previous
                       </v-btn>
 
-                      <v-btn :disabled="!(questions[this.selectedQuestion].myAnswer!=null || this.bookmarked.includes(questions[this.selectedQuestion])) " v-if="selectedQuestion == questions.length - 1" rounded
+                      <v-btn :disabled="
+                      !(
+      (!this.isObject(this.questions[this.selectedQuestion].myAnswer) && this.questions[this.selectedQuestion].myAnswer != null)
+      || this.bookmarked.includes(this.questions[this.selectedQuestion]) 
+      || (this.isObject(this.questions[this.selectedQuestion].myAnswer) && Object.keys(this.questions[this.selectedQuestion].myAnswer).length === this.questions[this.selectedQuestion].question_options.length)
+      )" 
+                      v-if="selectedQuestion == questions.length - 1" rounded
                         color="secondary" @click="summaryDialog = true" height="36px" class="ml-8 black--text mr-0">
                         Proceed & View Summary
                       </v-btn>
-                      <v-btn v-else rounded color="secondary" :disabled="!(questions[this.selectedQuestion].myAnswer!=null || this.bookmarked.includes(questions[this.selectedQuestion])) " @click="next" width="120px"
+                      <v-btn v-else rounded color="secondary" :disabled="
+                      !(
+      (!this.isObject(this.questions[this.selectedQuestion].myAnswer) && this.questions[this.selectedQuestion].myAnswer != null)
+      || this.bookmarked.includes(this.questions[this.selectedQuestion]) 
+      || (this.isObject(this.questions[this.selectedQuestion].myAnswer) && Object.keys(this.questions[this.selectedQuestion].myAnswer).length === this.questions[this.selectedQuestion].question_options.length)
+      )" 
+                        @click="next" width="120px"
                         height="36px" class="ml-8 mr-0 black--text">
                         NEXT
                       </v-btn>
@@ -605,6 +621,8 @@ export default {
       mtfQuestions: {
         mathOptionColors: ['rgba(75, 66, 178, 0.12)','rgba(88, 178, 66, 0.12)','rgba(178, 66, 66, 0.12)','rgba(66, 178, 178, 0.12)'],
         selectedOption: null,
+        colorIndex: 0,
+        selectedAnswer: null,
       },
 
     };
@@ -707,7 +725,7 @@ export default {
       }
       if (
         this.questions[index].myAnswer ||
-        this.skipped.includes(this.questions[index]) || this.bookmarked.includes(this.questions[index])
+        this.skipped.includes(this.questions[index])
       ) {
         this.selectedQuestion = index;
         this.summaryDialog = false;
@@ -904,6 +922,50 @@ export default {
         });
       }
     },
+  
+  isKey (optionKey) {
+    if (this.isObject(this.questions[this.selectedQuestion].myAnswer)) {
+      const keyarray =  Object.keys(this.questions[this.selectedQuestion].myAnswer);
+      return keyarray.includes(optionKey);
+    }
+    return false;
+  },
+
+  findIndex (optionKey) {
+    if (this.isObject(this.questions[this.selectedQuestion].myAnswer)) {
+      const keyarray =  Object.keys(this.questions[this.selectedQuestion].myAnswer);
+      return keyarray.indexOf(optionKey);
+    }
+    return 0;
+  },
+  ifOptionSelected (option) {
+    console.log("is selected");
+    return (this.mtfQuestions.selectedOption === option.option_key || this.isKey(option.option_key)) 
+  },
+
+  bColorIndex(option) {
+    const cIndex = this.findIndex(option.option_key);
+    return cIndex == -1 ? this.mtfQuestions.colorIndex : cIndex;
+  },
+
+  findIndexOfValue (answerKey) {
+    if (this.isObject(this.questions[this.selectedQuestion].myAnswer)) {
+      const valuearray =  Object.values(this.questions[this.selectedQuestion].myAnswer);
+      return valuearray.indexOf(answerKey);
+    }
+    return 0;
+  },
+
+  ifAnswerSelected (answer) {
+    if (this.isObject(this.questions[this.selectedQuestion].myAnswer)) {
+    const valueArray = Object.values(this.questions[this.selectedQuestion].myAnswer);
+    if (valueArray.includes(answer.answer_key)) {
+      return true;
+    }
+    return false;
+    }
+    return false;
+  },
 
   isObject(value) {
   return (
@@ -913,9 +975,21 @@ export default {
   );},
 
     selectMtfKey (option) {
-      console.log(option.option_key);
-      this.mtfQuestions.selectedOption = option.option_key
+      if (!this.isKey(option.option_key)) {
+      this.mtfQuestions.selectedAnswer = null;
+      this.mtfQuestions.selectedOption = option.option_key;
+
+      }
     },
+
+    resetMTF () {
+      this.questions[this.selectedQuestion].myAnswer = null;
+      this.mtfQuestions.colorIndex = 0;
+      this.mtfQuestions.selectedAnswer = null;
+      this.mtfQuestions.selectedOption = null;
+      this.updateProgress();
+    },
+
     setOption(option) {
       console.log(this.questions[this.selectedQuestion]);
       if (!this.isTimeUp) {
@@ -926,12 +1000,20 @@ export default {
         if(this.questions[this.selectedQuestion].question_type == 'MATCH_THE_FOLLOWING' && !this.isObject(this.questions[this.selectedQuestion].myAnswer)) {
           this.questions[this.selectedQuestion].myAnswer = {};
         }
-        if (this.mtfQuestions.selectedOption !== null || this.isObject(this.questions[this.selectedQuestion].myAnswer)) {
-          //const newObj = this.questions[this.selectedQuestion].myAnswer;
-          const optionKey = this.mtfQuestions.selectedOption;
-          this.questions[this.selectedQuestion].myAnswer[optionKey] = option.answer_key;
-          //  this.questions[this.selectedQuestion].myAnswer[this.mtfQuestions.selectedOption] = option.answer_key;
-           console.log( 'answer',this.questions[this.selectedQuestion].myAnswer);
+        if (this.mtfQuestions.selectedOption === null && this.isObject(this.questions[this.selectedQuestion].myAnswer)) return;
+
+        if (this.mtfQuestions.selectedOption !== null && this.isObject(this.questions[this.selectedQuestion].myAnswer)) {
+           if (this.ifAnswerSelected(option)) return;
+           this.questions[this.selectedQuestion].myAnswer[this.mtfQuestions.selectedOption] = option.answer_key;
+           if (Object.keys(this.questions[this.selectedQuestion].myAnswer).length === this.questions[this.selectedQuestion].question_options.length) {
+            this.updateProgress();
+           }
+           if (this.mtfQuestions.selectedAnswer == null) {
+            this.mtfQuestions.colorIndex = this.mtfQuestions.colorIndex+1;
+           }
+           this.mtfQuestions.selectedAnswer = option.answer_key;
+           console.log(this.questions[this.selectedQuestion].myAnswer);
+           return;
           }
 
         
