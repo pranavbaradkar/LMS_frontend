@@ -286,7 +286,11 @@
                               @keypress="isNumber($event)"
                               :counter="10"
                               prefix="+91"
-                              :type="'text'"
+                              :type="
+                                !personalInfo.is_phone_verified
+                                  ? 'number'
+                                  : 'text'
+                              "
                               maxLength="10"
                               :rules="[
                                 (v) => !!v || 'Mobile number is required',
@@ -335,7 +339,6 @@
                             ><v-text-field
                               v-model="personalInfo.dob"
                               outlined
-                              :max="new Date().toISOString().slice(0, 10)"
                               label="Date of Birth (DDMMYY)*"
                               rounded
                               type="date"
@@ -395,7 +398,6 @@
                                 class="rounded-xl"
                                 :rules="[
                                   (v) => !!v || 'Country name is required',
-                                  (v) => v > -1 || 'country name is required'
                                 ]"
                                 required
                                 @change="fetchStates"
@@ -414,7 +416,6 @@
                                 item-text="state_name"
                                 :rules="[
                                   (v) => !!v || 'State name is required',
-                                  (v) => v > -1 || 'State name is required'
                                 ]"
                                 required
                                 @change="fetchDistricts"
@@ -749,7 +750,6 @@
                               <v-col cols="6" class="py-0 c-text-field"
                                 ><v-text-field
                                   v-model="qualification.start_date"
-                                  :max="new Date().toISOString().slice(0, 10)"
                                   outlined
                                   label="Start Date*"
                                   rounded
@@ -757,21 +757,12 @@
                                   type="date"
                                   :rules="[
                                     (v) => !!v || 'Start Date is required',
-                                    (v) => {
-                                  const firstdate = new Date(v);
-                                  const today_date = new Date();
-                                  return (
-                                    firstdate < today_date ||
-                                    'Future date not allowed'
-                                  );
-                                },
                                   ]"
                                 ></v-text-field
                               ></v-col>
                               <v-col cols="6" class="py-0 c-text-field"
                                 ><v-text-field
                                   v-model="qualification.end_date"
-                                  :max="new Date().toISOString().slice(0, 10)"
                                   outlined
                                   label="End Date* (or expected)"
                                   rounded
@@ -779,15 +770,6 @@
                                   type="date"
                                   :rules="[
                                     (v) => !!v || 'End Date is required',
-                                    (v) => qualification.end_date > qualification.start_date || 'end date should be greater than start date',
-                                    (v) => {
-                                  const firstdate = new Date(v);
-                                  const today_date = new Date();
-                                  return (
-                                    firstdate < today_date ||
-                                    'Future date not allowed'
-                                  );
-                                },
                                   ]"
                                 ></v-text-field
                               ></v-col>
@@ -1109,21 +1091,12 @@
                                     outlined
                                     label="Start Date*"
                                     rounded
-                                    :max="new Date().toISOString().slice(0, 10)"
                                     class="rounded-xl"
                                     v-model="professional.start_date"
                                     type="date"
                                     :rules="[
-                                    (v) => !!v || 'Start Date is required',
-                                    (v) => {
-                                  const firstdate = new Date(v);
-                                  const today_date = new Date();
-                                  return (
-                                    firstdate < today_date ||
-                                    'Future date not allowed'
-                                  );
-                                },
-                                  ]"
+                                      (v) => !!v || 'Start Date is required',
+                                    ]"
                                   ></v-text-field
                                 ></v-col>
                                 <v-col cols="6" class="py-0 c-text-field"
@@ -1132,22 +1105,12 @@
                                     outlined
                                     label="End Date*"
                                     rounded
-                                    :max="new Date().toISOString().slice(0, 10)"
                                     class="rounded-xl"
                                     v-model="professional.end_date"
                                     type="date"
                                     :rules="
                                       !isCurrentlyWorking
-                                        ? [(v) => !!v || 'End Date is required',
-                                    (v) => professional.end_date > professional.start_date || 'end date should be greater than start date',
-                                    (v) => {
-                                  const firstdate = new Date(v);
-                                  const today_date = new Date();
-                                  return (
-                                    firstdate < today_date ||
-                                    'Future date not allowed'
-                                  );
-                                },]
+                                        ? [(v) => !!v || 'End Date is required']
                                         : ''
                                     "
                                   ></v-text-field
@@ -1822,7 +1785,7 @@ export default {
       this.time = 119;
       this.resendBool = false;
       const response = await AuthService.generateOTP({
-        mobile: toString(this.personalInfo.phone_no),
+        mobile: this.personalInfo.phone_no,
       });
 
       if (response) {

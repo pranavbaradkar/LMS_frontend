@@ -104,12 +104,11 @@
             >
               <div class="mytestcard">
                 <v-card
-                  class="mb-4 movingcard"
+                  class="mx-auto mr-3 mb-4 movingcard"
                   min-width="344"
                   max-width="344"
                   outlined
                   height="180"
-                  style="margin-right: 8.33px"
                 >
                   <v-list-item three-line>
                     <v-list-item-avatar

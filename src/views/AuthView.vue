@@ -21,7 +21,7 @@
     </v-app-bar>
     <v-row align="center" justify="center" style="height: 100vh" dense>
       <v-col cols="12" lg="12" md="12" class="fill-height d-flex flex-column justify-center align-center">
-        <v-card width="426px" height="516px">
+        <v-card width="426px" height="auto">
           <div class="text-center pt-8 pl-8 pr-8" v-if="!isGenerateOtpClicked">
             <img src="../assets/icon.svg" width="70px" height="70px" />
             <v-card-title class="justify-center text-h5 font-weight-bold pt-0">
@@ -38,7 +38,7 @@
               Email Id
             </div>
 
-            <div class="rounded-xl phoneNo" style="margin-bottom: 30px;" v-if="usingPhone && !vibgyouBool">
+            <div class="rounded-xl phoneNo mb-4" v-if="usingPhone && !vibgyouBool">
               <div @click="(e) => { e.preventDefault }">
                 <vue-country-code disabled class="ml-2" :preferredCountries="['in']"
                   @onSelect="onSelect"></vue-country-code>
@@ -66,6 +66,7 @@
               <v-btn color="#CAECEF" class="textcolor--text mt-4" rounded large v-if="!usingPhone && !vibgyouBool" @click="
                 () => {
                   usingPhone = true;
+
                 }
               " width="auto" height="36px" depressed>Login Using Mobile Number
               </v-btn>
@@ -308,7 +309,7 @@ export default {
         }
 
         // console.log(res)
-        if (res.is_profile_created || (!res.is_profile_created && res.is_interest_captured)) {
+        if (res.is_profile_created) {
           this.$router.push("/");
         } else {
           this.$router.push("/register");

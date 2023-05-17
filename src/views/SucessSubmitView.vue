@@ -42,8 +42,7 @@
         elevation="0"
       >
         <img src="../assets/bgicon.svg" width="200px" height="auto" />
-        <v-card-title> Thank you
-for attempting this assessment</v-card-title>
+        <v-card-title> Thank You for Confirmation</v-card-title>
         <v-card-subtitle class="ma-0 pa-0">
           <div>Hold your breath, your school HR will announce</div>
         </v-card-subtitle>
@@ -52,10 +51,7 @@ for attempting this assessment</v-card-title>
         </v-card-subtitle>
 
         <div class="d-flex justify-center w-100 ma-6">
-          <v-card elevation="0">
-            <v-card-text class="pl-2 pb-2">Get notified for test results on</v-card-text>
-            <div class="d-flex justify-center">
-            <v-card
+          <v-card
             width="245"
             height="54"
             class="d-flex flex-row m-center m-btn ma-2"
@@ -86,8 +82,6 @@ for attempting this assessment</v-card-title>
               <div class="c-b-t">SMS</div>
               <div class="c-b-t-m">{{ $store.state.userInfo.phone_no }}</div>
             </div>
-          </v-card>
-          </div>
           </v-card>
         </div>
         <v-btn
