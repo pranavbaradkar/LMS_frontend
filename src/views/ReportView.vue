@@ -33,11 +33,7 @@
         <div class="my-4">
           <span class="cursor blue--text">Test Selection</span>
           <v-icon class="blue--text">mdi-chevron-right</v-icon>
-
-          <select @change="() => {}">
-            <option>{{ selectedAssessment.name }}</option>
-            <option>{{ selectedAssessment.name }}</option>
-          </select>
+          <span>{{ selectedAssessment.name }}</span>
         </div>
       </div>
       <v-card
