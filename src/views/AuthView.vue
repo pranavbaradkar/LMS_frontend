@@ -21,8 +21,8 @@
     </v-app-bar>
     <v-row align="center" justify="center" style="height: 100vh" dense>
       <v-col cols="12" lg="12" md="12" class="fill-height d-flex flex-row justify-center align-center">
-        <v-card width="426px" height="516px">
-          <div class="text-center pt-12 pl-12 pr-12 pb-9" v-if="!isGenerateOtpClicked">
+        <v-card v-if="!isGenerateOtpClicked" width="426px" height="516px">
+          <div class="text-center pt-12 pl-12 pr-12 pb-9">
             <div class="d-flex justify-center align-center">
               <div class="d-flex justify-center flex-row" style="width: 248px; height: 100% 
               ;">
@@ -99,7 +99,9 @@
                 ">Login Using Email Address</v-btn>
             </v-card-title>
           </div>
-          <v-card v-else height="100%" elevation="0" class="pa-8">
+        </v-card>
+        <v-card v-else width="426px" height="448px">
+          <v-card height="100%" elevation="0" class="pa-8">
             <v-card-title class="ma-0 pa-0">
               <v-icon @click="isGenerateOtpClicked = false" color="black">
                 mdi-arrow-left
@@ -110,7 +112,7 @@
                 usingPhone ? "Verify Your Phone Number" : "Verify Your Email"
               }}
             </v-card-title>
-            <v-card-text class="text-center text-body-1"><span>Please enter the 6-digit code you have received on your
+            <v-card-text class="text-center text-body-1"><span>Enter 6 digit code sent on your
               </span>{{
                 usingPhone ? "mobile number" : "e-mail address"
               }}</v-card-text>
@@ -120,7 +122,7 @@
                 <v-otp-input length="6" type="number" v-model="otp"></v-otp-input>
                 <v-row justify="space-between" class="ma-0 pa-0">
                   <v-col class="ma-0 pa-0">
-                    <v-card-subtitle class="ma-0 pa-0">0{{ Math.floor(time / 60) }}:
+                    <v-card-subtitle :style="{color: Math.floor(time/60) != 0 || time%60 != 0 ? '#03C988': ''}" class="ma-0 pa-0">0{{ Math.floor(time / 60) }}:
                       <span v-if="time % 60 < 10">0</span>{{ time % 60 }}</v-card-subtitle>
                   </v-col>
                   <v-col class="ma-0 pa-0">
@@ -131,24 +133,11 @@
               </v-col>
             </v-row>
             <v-card-text class="text-center">
-              <!-- <span
-                class="primary--text cursor"
-                :disabled="resendBool"
-                @click="
-                  () => {
-                    this.isGenerateOtpClicked = false;
-                  }
-                "
-              >
-                RESEND OTP
-              </span> -->
-
-              <v-btn  v-if="usingPhone" text class="textcolor--text pl-4" @click="generatePhoneOtp" :disabled="resendBool">RESEND OTP</v-btn>
-              <v-btn v-else text class="textcolor--text pl-4" @click="generateOtp" :disabled="resendBool">RESEND OTP</v-btn>
-
+              <v-btn  v-if="usingPhone" text class="primary--text pl-4" @click="generatePhoneOtp" :disabled="resendBool">RESEND OTP</v-btn>
+              <v-btn v-else text class="pl-4 primary--text"  @click="generateOtp" :disabled="resendBool">RESEND OTP</v-btn>
             </v-card-text>
             <v-card-title class="justify-center">
-              <v-btn :disabled="otp.length < 6" color="secondary" class="textcolor--text" rounded large width="90%" height="40" @click="validateOTP">
+              <v-btn :disabled="otp.length < 6" color="primary" class="white--text" rounded-sm large width="90%" height="36" @click="validateOTP">
                 VERIFY
               </v-btn>
             </v-card-title>
