@@ -41,6 +41,7 @@
     position: absolute;
     bottom: 100px;
 } */
+/* by kiran start */
 #myScroll {
   overflow-y: scroll;
 }
@@ -64,6 +65,75 @@
   /* box-shadow: 0 5px 5px rgba(0, 0, 0, 0.4); */
 }
 
+.assessment-name {
+  font-size: 18px;
+  line-height: 21px;
+  display: flex;
+  align-items: center;
+  letter-spacing: 0.02em;
+}
+
+.assessment-instructions {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 13px;
+  display: flex;
+  align-items: center;
+  letter-spacing: 0.02em;
+  /* Text/ Medium Empathies */
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.v-slide-group__prev {
+  align-items: center;
+  display: flex;
+  flex: 0 1 5px;
+  justify-content: center;
+  min-width: 5px!Important;
+  position: absolute;
+  left: -30px;
+  top: 50%;
+}
+
+.v-slide-group__next {
+  align-items: center;
+  display: flex;
+  flex: 0 1 5px;
+  justify-content: center;
+  min-width: 5px!Important;
+  position: absolute;
+    right: -30px;
+    top: 50%;
+}
+
+.text-container {
+  width: 50%;
+}
+
+.school-label {
+  font-size: 14px;
+  line-height: 16px;
+  /* identical to box height */
+  letter-spacing: 0.02em;
+  margin-bottom: 6px!important;
+}
+
+.school-value {
+  font-size: 16px;
+line-height: 19px;
+/* identical to box height */
+
+letter-spacing: 0.02em;
+text-decoration-line: underline;
+
+/* 11 Greys/90 */
+
+color: #2D2D2D;
+}
+
+/* by kiran end */
+
 .w-50 {
   width: 50%;
 }
@@ -82,7 +152,7 @@
 .mytestcard {
   position: relative;
   bottom: 0px;
-  height: 180px;
+  height: 360;
   width: fit-content;
   overflow: hidden;
 }
@@ -137,10 +207,11 @@
 }
 .slideparent {
   padding-bottom: 20px;
-  background-color: #faf8ed;
+  background-color: #fff;  /* by kiran  */
 }
 body {
-  background-color: #faf8ed !important;
+  background-color: #fff !important;
+  /* background-color: #faf8ed !important; */
 }
 .phoneprefix {
   width: fit-content;
