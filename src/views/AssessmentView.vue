@@ -579,6 +579,7 @@ import "../styles.css";
 import AssessmentsController from "../controllers/AssessmentsController";
 import AssessmentController from "../controllers/AssessmentController";
 import Vue from "vue";
+import "./style/assessment-view.css";
 export default {
   name: "AssessmentView",
   data() {
@@ -1284,51 +1285,3 @@ export default {
   },
 };
 </script>
-<style scoped>
-.v-list-item {
-  min-height: 32px;
-}
-
-.answered-border {
-  border-color: #009051;
-  border-width: 2px;
-}
-
-.skipped-border {
-  border-color: #f6e866;
-  border-width: 2px;
-}
-
-.bookmarked-border {
-  border-color: #e868e3;
-  border-width: 2px;
-}
-
-.application-statement {
-  font-size: 14px;
-  line-height: 20px;
-}
-
-/* .my-card {
-  height: calc(100vh - 700px) !important;
-} */
-.close-right {
-  position : absolute;
-  top: 0px;
-  left: 0px;
-}
-
-.left-container {
-  padding: 0px !important;
-}
-.option-card {
-  border: 0.5px solid rgba(0, 0, 0, 0.26);
-}
-.font-size-13 {
-  font-size: 13px !important;
-}
-.submitButton {
-  position: fixed;
-  bottom: 50px;
-}
-</style>
