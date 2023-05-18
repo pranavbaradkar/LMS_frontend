@@ -11,7 +11,7 @@ export default new Vuetify({
                 secondary: '#82d2da',
                 secondaryAccent:'#caecef',
                 //surface: '#faf8ed',
-                surface: '#fff',
+                surface: '#F8FAFC',
                 sufaceAccent: '#fbf5f2',
                 accent: '#6c367e',
                 error: '#b71c1c',

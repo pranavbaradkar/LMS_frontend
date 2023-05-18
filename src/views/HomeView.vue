@@ -1,4 +1,4 @@
-<template>
+<template height="80">
   <div class="surface">
     <v-app-bar app elevation="0" color="surface" class="justify-start">
       <v-list-item>
@@ -27,13 +27,14 @@
         </v-list-item-action>
       </v-list-item>
     </v-app-bar>
-    <v-container>
+    <v-container class="white-background">
+      <!-- :height="getHeight" -->
       <v-card
         color="surface"
         class="mx-auto"
         elevation="0"
         width="100%"
-        :height="getHeight"
+        
         variant="outlined"
         v-if="allAssessments.length != 0 || recommendedAssessment != {}"
       >
@@ -44,27 +45,63 @@
         <v-col>
           <v-sheet class="ma-2">
             <p class="school-label">School</p>
-            <p class="font-weight-medium school-value">Vibgyor High (Malad East)</p>
+            <div class="d-flex align-center">
+            <p class="font-weight-medium school-value mb-0">Vibgyor High (Malad East)</p>
+             <v-btn
+              class="mx-2"
+              fab
+              dark
+              small
+              color="#277BC0"
+            >
+             +3
+            </v-btn>
+            </div>
           </v-sheet>
         </v-col>
         <v-col>
           <v-sheet class="ma-2">
-            <p class="school-label">School</p>
-            <p class="font-weight-medium school-value">Vibgyor High (Malad East)</p>
+            <p class="school-label">Level</p>
+            <div class="d-flex align-center">
+            <p class="font-weight-medium school-value mb-0">Lower Primary , Upper Primary</p>
+             <v-btn
+              class="mx-2"
+              fab
+              dark
+              small
+              color="#277BC0"
+            >
+             +3
+            </v-btn>
+            </div>
           </v-sheet>
         </v-col>
         <v-col>
           <v-sheet class="ma-2">
-            <p class="school-label">School</p>
-            <p class="font-weight-medium school-value">Vibgyor High (Malad East)</p>
+            <p class="school-label">Board</p>
+            <p class="font-weight-medium school-value">State Board</p>
           </v-sheet>
         </v-col>
         <v-col>
           <v-sheet class="ma-2">
-            <p class="school-label">School</p>
-            <p class="font-weight-medium school-value">Vibgyor High (Malad East)</p>
+            <p class="school-label">Subject’s</p>
+            <div class="d-flex align-center">
+            <p class="font-weight-medium school-value mb-0">Hindi , French , Physics</p>
+             <v-btn
+              class="mx-2"
+              fab
+              dark
+              small
+              color="#277BC0"
+            >
+             +3
+            </v-btn>
+            </div>
           </v-sheet>
         </v-col>
+        <v-col-1 class="home-edit-icon align-self-center">
+          <v-img width="20px" src="../assets/home_edit_icon.png"></v-img>
+        </v-col-1>
       </v-row>
       <v-divider></v-divider>
         <!-- <div class="text-h6 mb-1 text-center">Test Selection</div>
@@ -78,7 +115,7 @@
         <v-img
           width="100%"
           height="331px"
-          src="../assets/holebanner.jpeg"
+          src="../assets/home_banner.png"
           cover
           class="mt-4"
         >
@@ -88,13 +125,20 @@
             width="100%"
             height="100%"
             variant="outlined"
-            color="#0f0d0d57"
+            color="transparent"
           >
           <div class="white--text text-container">
               <!-- <div class="text-caption">Recommended</div> -->
-
+              <v-btn
+                elevation="0"
+                height="32px"
+                color="#FFF0CC"
+                class="orange--text font-weight-regular text-capitalize mb-3"
+                rounded
+                >Screening Test </v-btn
+              >
               <div class="text-h6 mb-1">Primary Teacher Assessment (VGOS) </div>
-              <p class="mt-1">This test will assess the user in all the below-mentioned sections based on the preferences of the level and subjects selected by the candidate. The candidate who clears this assessment will be eligible for the next step of the process.</p>
+              <p class="mt-1 font-weight-regular">This test will assess the user in all the below-mentioned sections based on the preferences of the level and subjects selected by the candidate. The candidate who clears this assessment will be eligible for the next step of the process.</p>
               <div class="mt-1" v-if="recommendedAssessment.tests != null">
                 <v-icon class="white--text">mdi-book</v-icon>
                 {{ recommendedAssessment.tests[0].total_no_of_questions }}
@@ -115,7 +159,7 @@
                 class="white--text"
                 large
                 @click="recommendedTestViewEvent"
-                >VIEW TEST</v-btn
+                >START TEST</v-btn
               >
             </div>
             <!-- <div class="white--text" v-if="recommendedAssessment != null">
@@ -181,7 +225,7 @@
                   </v-list-item>
                   <v-list-item three-line>
                     <v-list-item-content class="pt-0">
-                      <v-list-item-title class="assessment-name mb-0 text-wrap">
+                      <v-list-item-title class="assessment-name mb-0 text-wrap mb-2">
                         {{ assessment.name }}
                       </v-list-item-title>
                       <v-list-item-subtitle class="assessment-instructions" >
@@ -198,7 +242,7 @@
                         class="primary--text"
                         height="40"
                         @click="otherTestViewEvent(assessment.id)"
-                        >VIEW TEST</v-btn
+                        >START TEST</v-btn
                       >
                     </v-card-actions>
                   </v-expand-transition>

@@ -108,7 +108,11 @@
 }
 
 .text-container {
-  width: 50%;
+  width: 60%;
+}
+
+.home-edit-icon {
+  padding: 12px;
 }
 
 .school-label {
@@ -130,6 +134,18 @@ text-decoration-line: underline;
 /* 11 Greys/90 */
 
 color: #2D2D2D;
+}
+
+.white-background {
+  background-color: #fff;
+  padding-left: 30px;
+  padding-right: 30px;
+  border: 1px solid #EBEBEB;
+border-radius: 10px 10px 0px 0px;
+}
+
+.v-application .white-background .surface {
+  background-color: #fff!important;
 }
 
 /* by kiran end */
@@ -210,7 +226,7 @@ color: #2D2D2D;
   background-color: #fff;  /* by kiran  */
 }
 body {
-  background-color: #fff !important;
+  background-color: #F8FAFC !important;
   /* background-color: #faf8ed !important; */
 }
 .phoneprefix {
