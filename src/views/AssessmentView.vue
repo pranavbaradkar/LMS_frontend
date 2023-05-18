@@ -657,7 +657,10 @@ export default {
     });
   },
 
-  beforeDestroy() {
+  destroyed() {
+    this.setLog();
+  },
+  async beforeDestroy() {
     window.removeEventListener("beforeunload", this.handleBeforeUnload);
     window.removeEventListener("resize", this.onResize);
     this.stopTimer();
@@ -673,6 +676,7 @@ export default {
       assessment_type: this.testType,
       assessment_level: this.assessment.tests[1].level.name,
     });
+    await this.setLog();
   },
 
   methods: {
@@ -766,6 +770,7 @@ export default {
       });
     },
     startTimer() {
+      this.seconds = 80;
       this.interval = setInterval(() => {
         this.updateTime();
       }, 1000);
@@ -777,6 +782,8 @@ export default {
         clearInterval(this.interval);
         return;
       }
+      
+      console.log(this.seconds);
 
       this.seconds -= 1;
 
@@ -1070,7 +1077,7 @@ export default {
       }
     },
 
-    next() {
+    async next () {
       this.$mixpanel.track("NextButtonClicked", {
         question_id: this.selectedQuestion.id,
         question_number_in_view: this.selectedQuestion + 1,
@@ -1091,6 +1098,23 @@ export default {
       this.selectedQuestion = this.selectedQuestion + 1;
       this.scrollMethod("scrollId" + this.selectedQuestion);
 
+      await this.setLog();
+      
+    },
+    async setLog() {
+      let response = {}
+      this.questions.forEach((question) => {
+        if (question.myAnswer != null) {
+          Vue.set(response, question.id, question.myAnswer);
+        }
+      });
+      let assessmentData = this.assessment.tests.find(ele=> ele.assessment_type == this.testType.toLocaleUpperCase());
+      await AssessmentController.updateScreeningStatus(
+        this.assessment.id, 
+        this.testType.toLocaleLowerCase(),
+        (assessmentData.duration_of_assessment - this.seconds),
+        response
+      );
     },
     previous() {
       if (this.isTimeUp) {
@@ -1177,13 +1201,27 @@ export default {
       if (response2.data.success) {
         this.assessment = response2.data.data;
         console.log("assessmentinfo", this.assessment);
-        if (this.testType == "Screening") {
-          this.seconds = this.assessment.tests[0].duration_of_assessment;
-          this.durationOfAssessment=this.assessment.tests[0].duration_of_assessment;
-        } else {
-          this.durationOfAssessment=this.assessment.tests[1].duration_of_assessment;
-          this.seconds = this.assessment.tests[1].duration_of_assessment;
+
+        let assessmentData = this.assessment.tests.find(ele=> ele.assessment_type == this.testType.toLocaleUpperCase());
+
+        this.seconds = assessmentData.duration_of_assessment;
+        this.durationOfAssessment = assessmentData.duration_of_assessment;
+        if(this.assessment && this.assessment.assessment_log){
+          let elapsed_time = this.assessment.assessment_log.elapsed_time;
+          this.seconds = this.seconds - elapsed_time;
+          let answeredQ = JSON.parse(this.assessment.assessment_log.answered_question);
+          let isLastQuestionItem = 0
+          this.questions = this.questions.map((question, index) => {
+            if(answeredQ[question.id]) {
+              question.myAnswer = answeredQ[question.id];
+              isLastQuestionItem = index;
+            }
+            return question;
+          });
+          this.selectedQuestion = isLastQuestionItem;
+          this.updateProgress();
         }
+
 
         this.lastAnswerTime = this.seconds;
         this.changeTestStatus();
@@ -1198,6 +1236,7 @@ export default {
       const confirmationMessage =
         "Are you sure you want to leave? Your unsaved changes will be lost.";
       event.returnValue = confirmationMessage;
+      this.setLog();
       return confirmationMessage;
     },
     async changeTestStatus() {

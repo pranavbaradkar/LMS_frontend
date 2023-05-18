@@ -20,6 +20,21 @@ export default {
             return error.response;
         }
     },
+    updateScreeningStatus: async function (id, type, elapsed_time, answered_question) {
+        try {
+            const response = await instance.post(`users/log/assessments/${id}/${type}`, {
+                "answered_question": answered_question,
+                "elapsed_time": elapsed_time
+            }, {
+                headers: {
+                    'Authorization': AuthService.getToken()
+                }
+            })
+            return response;
+        } catch (error) {
+            return error.response;
+        }
+    },
     startMains: async function (id) {
         try {
             const response = await instance.put('users/assessments/'+id+'/status', {
