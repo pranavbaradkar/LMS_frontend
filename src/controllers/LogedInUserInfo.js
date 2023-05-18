@@ -6,7 +6,6 @@ const instance = axios.create({
 
 export default {
     getUserInfo: async function () {
-        
         try {
             const response = await instance.get('/user' ,{
                 headers: {
