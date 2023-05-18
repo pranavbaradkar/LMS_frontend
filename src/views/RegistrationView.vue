@@ -1731,7 +1731,7 @@ export default {
     async getUserInfo() {
       const response = await LogedInUserInfo.getUserInfo();
       this.userInfo = response.data.user;
-      console.log("User: Registration", this.userInfo);
+      //console.log("User: Registration", this.userInfo);
       if (this.userInfo.is_personal_info_captured) {
         this.e1 = 2;
       }
