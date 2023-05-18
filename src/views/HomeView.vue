@@ -127,7 +127,7 @@
             variant="outlined"
             color="transparent"
           >
-          <div class="white--text text-container">
+          <div class="white--text text-container" v-if="recommendedAssessment != null">
               <!-- <div class="text-caption">Recommended</div> -->
               <v-btn
                 elevation="0"
@@ -137,8 +137,8 @@
                 rounded
                 >Screening Test </v-btn
               >
-              <div class="text-h6 mb-1">Primary Teacher Assessment (VGOS) </div>
-              <p class="mt-1 font-weight-regular">This test will assess the user in all the below-mentioned sections based on the preferences of the level and subjects selected by the candidate. The candidate who clears this assessment will be eligible for the next step of the process.</p>
+              <div class="text-h6 mb-1">{{ recommendedAssessment.name }}</div>
+              <p class="mt-1 font-weight-regular">{{ recommendedAssessment.instructions }}</p>
               <div class="mt-1" v-if="recommendedAssessment.tests != null">
                 <v-icon class="white--text">mdi-book</v-icon>
                 {{ recommendedAssessment.tests[0].total_no_of_questions }}
