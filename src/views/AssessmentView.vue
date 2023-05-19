@@ -3,10 +3,36 @@
     <v-container fluid>
       <v-row>
       
+
+
+
+
+
+
+
         <!-- Left Card -->
-        <v-col cols="3" class="p-0">
-          <v-card v-if="!isProgressClicked" :height="getHeight" class="pa-4 ma-2 pt-0 p-0 rounded-xl left-container">
-            <v-card min-height="280" id="circleCard" elevation="0">
+        <v-col cols="3" class="p-0 pe-0 ps-0 col-23">
+          <v-card v-if="!isProgressClicked"  variant="tonal" class="left-container elevation-0 surface">
+            <v-card-title class="pb-0 question-title" ><span>{{ assessment.name }}</span></v-card-title>
+            <v-card-title class="question-heading">Question Listing</v-card-title>
+
+            <div class="legend-flag">
+              <div class="legend-contain">
+                <span class="icon answered-bg me-2"></span>
+                <span class="label">Answered</span>
+              </div>
+              <div class="legend-contain">
+                <span class="icon skipped-bg  me-2"></span>
+                <span class="label">Skipped</span>
+              </div>
+              <div class="legend-contain">
+                <span class="icon bookmark-bg  me-2"></span>
+                <span class="label">Bookmark</span>
+              </div>
+            </div>
+
+
+            <!-- <v-card min-height="280" id="circleCard" elevation="0">
               <v-card-title>
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on, attrs }">
@@ -52,40 +78,37 @@
                   </div>
                 </v-row>
               </v-card-title>
-              <!-- <v-card-title class="justify-center py-0">
-                <div class="d-flex flex-column mb-2 align-center">
-                  <v-progress-circular :rotate="360" :size="85" :width="15"
-                    :value="((bookmarked.length / questions.length) * 100)" color="bookmarked"
-                    @click="openProgressList('Bookmark')">
-                    <h4 class="black--text">{{ this.bookmarked.length }}</h4>
-                  </v-progress-circular>
-                  <v-card-subtitle class="py-2">BOOKMARK</v-card-subtitle>
-                </div>
-              </v-card-title> -->
-            </v-card>
-            <v-divider class="mx-4 mt-0"></v-divider>
+            </v-card> -->
+           
             <v-container class="py-0 my-0">
-              <v-card elevation="0" id="myScroll" :height="getQuestionsListHeight">
+              <v-card elevation="0" class="surface">
                 <!-- need to set height of this card for set  good scroll -->
-                <v-list-item-group mandatory >
-                  <v-list-item class="grey lighten-4 pt-2" v-for="(item, i) in questions" :key="i"
+                <v-list-item-group mandatory v-model="selectedQuestion" class="d-flex flex-wrap justify-content-between" >
+                  
+                  <v-list-item  v-for="(item, i) in questions" :key="i"
+                    class="question-selection-box me-4 mt-3 lighten-4 pt-2 pb-2"
+                    :class="`${getColorBg(item)} ${i == selectedQuestion ? 'v-item--active v-list-item--active' : ''}`"
                     @click="questionClicked(item)">
+                    
                     <v-list-item-content class="py-0" :id="scrollId + '' + i">
-                      <v-list-item-title :class="
-                        i == selectedQuestion ? 'primary--text font-weight-regular' : 'font-weight-light'
-                      "><v-icon large :color="getColor(item)">mdi-circle-medium</v-icon>
-                        <img v-if="i == selectedQuestion" src="../assets/Polygonpoly.png" class="polyicon" />
-                        Question {{ i + 1 }}</v-list-item-title>
-                      <v-list-item-subtitle>
-                        <v-divider class="mt-2 mb-1"></v-divider>
-                      </v-list-item-subtitle>
+                      <v-list-item-title :border="false" class="question-box-font text-center" :class="
+                        `${i == selectedQuestion ? 'primary--text' : ''}`
+                      ">
+                        <!-- <v-icon large :color="getColor(item)">mdi-circle-medium</v-icon>
+                        <img v-if="i == selectedQuestion" src="../assets/Polygonpoly.png" class="polyicon" /> -->
+                        Q{{ i + 1 }}
+                      </v-list-item-title>
                     </v-list-item-content>
-                    <v-list-item-action v-if="bookmarked.includes(item)">
+
+                    <!-- <v-list-item-action v-if="bookmarked.includes(item)">
                       <v-icon color="primary">
                         mdi-bookmark
                       </v-icon>
-                    </v-list-item-action>
+                    </v-list-item-action> -->
                   </v-list-item>
+
+
+
                 </v-list-item-group>
               </v-card>
             </v-container>
@@ -105,7 +128,8 @@
             <v-container>
               <v-card elevation="0" id="myScroll" height="auto">
                 <v-list-item-group mandatory >
-                  <v-list-item class="grey lighten-4 pt-2" v-for="(item, i) in progressList" :key="i" v-on:click="setSelectedQuestionFromProgress(item)"
+
+                  <v-list-item class="question-selection-box grey lighten-4 pt-2" v-for="(item, i) in progressList" :key="i" v-on:click="setSelectedQuestionFromProgress(item)"
                     @click="isProgressClicked = false">
                     <v-list-item-content class="py-0">
                       <v-list-item-title :class="
@@ -129,229 +153,197 @@
           </v-card>
         </v-col>
         <!-- Right Card -->
-        <v-col cols="9" class="pl-0">
-          <v-card v-if="screening.length != 0" :height="getHeight" class="d-flex my-2 mr-2  flex-column rounded-xl">
-            <v-card-title @click="confirmExitDialog = true" class="pb-0 close-right">
-              <v-icon class="cursor">mdi-close</v-icon>
-            </v-card-title>
-            <v-container class="px-16 mt-2">
-              <!-- Timer -->
-              <v-row class="align-center text-align-center px-4 pb-4">
-                <v-card class="pa-0" width="70" elevation="0">
-                  <v-text-field hide-details="" label="HH" readonly :value=hours outlined rounded
-                    class="rounded-xl centered-input timmer "
-                    :style="seconds <= 60 ? 'background: linear-gradient(180deg, rgba(255, 59, 48, 0.076) 0%, rgba(255, 59, 48, 0.12) 100%);' : 'background: linear-gradient(180deg, rgba(255, 255, 255, 0.38) 0%, rgba(130, 210, 218, 0.6) 100%)'">
-                  </v-text-field>
-                </v-card>
-                <span class="pa-2">:</span>
-                <v-card class="pa-0" width="70" elevation="0">
-                  <v-text-field hide-details="" label="MM" readonly :value=mins outlined rounded
-                    class="rounded-xl centered-input timmer "
-                    :style="seconds <= 60 ? 'background: linear-gradient(180deg, rgba(255, 59, 48, 0.076) 0%, rgba(255, 59, 48, 0.12) 100%);' : 'background: linear-gradient(180deg, rgba(255, 255, 255, 0.38) 0%, rgba(130, 210, 218, 0.6) 100%)'">
+        <v-col cols="7" class="pl-0 col-55 pe-0" elevation="0" >
 
-                  </v-text-field>
-                </v-card>
-                <span class="pa-2">:</span>
-                <v-card class="pa-0" width="70" elevation="0">
-                  <v-text-field hide-details="" label="SS" readonly :value=secs outlined rounded
-                    class="rounded-xl centered-input timmer "
-                    :style="seconds <= 60 ? 'background: linear-gradient(180deg, rgba(255, 59, 48, 0.076) 0%, rgba(255, 59, 48, 0.12) 100%);' : 'background: linear-gradient(180deg, rgba(255, 255, 255, 0.38) 0%, rgba(130, 210, 218, 0.6) 100%)'">
-
-                  </v-text-field>
-                </v-card>
-                <v-col cols="2" class="pr-0">
-                  <span>Time Left</span>
-                </v-col>
-                <v-spacer></v-spacer>
-                <!-- Submit Button -->
-                <v-col cols="4" class="text-end pr-0">
-                  <v-btn width="100px" height="35px" rounded color="accent" class="white--text"
-                    @click="openTestSummary">SUBMIT</v-btn>
-                </v-col>
-              </v-row>
-              <!-- Progress Bar -->
-
-              <v-progress-linear class="rounded-xl mt-2 mb-2" rounded
-                :value="((answeredProgress + skipped.length + bookmarked.length) / questions.length) * 100"
-                color="secondary" background-color="grey lighten-2" height="10"></v-progress-linear>
-              <v-row justify="space-between" align="center">
-                <v-col>
-                  <span class="text-caption">Question
+          <v-card v-if="screening.length != 0" :height="getHeight" elevation="0" class="d-flex my-0 mr-2 me-0  border-with-color flex-column rounded">
+           
+            <v-card class="mx-3 my-3  border-with-color"  elevation="0" color="grey lighten-4">
+              <div class="d-flex align-center pt-2 px-3" justify="space-between" align="center" >
+                <v-col class="py-0  px-0 text-left">
+                  <span class="text-caption ">Question
                     {{ selectedQuestion + 1 + " of " + questions.length }}</span>
                 </v-col>
-                <v-col class="text-end" v-if="questions != 0">
-                  <v-chip v-if="questions[selectedQuestion].skill.name=='Core Skill'" active text-color="black" class="m-q-chip">{{
+                <v-col class="text-end  px-0 py-0" v-if="questions != 0">
+                  <v-chip v-if="questions[selectedQuestion].skill.name=='Core Skill'" active text-color="white" class="m-q-chip fs-12">{{
                   questions[selectedQuestion].subject.name }}</v-chip>
-                  <v-chip v-else active text-color="black" class="m-q-chip">{{
+                  <v-chip v-else active text-color="black" class="m-q-chip fs-12">{{
                     questions[selectedQuestion].skill.name }}</v-chip>
                 </v-col>
-              </v-row>
+              </div>
+              <v-card  elevation="0" class="px-2 py-2 mt-0 maincontainer-question" :height="questionsListHeight" color="grey lighten-4" id="myScroll">
+                <div class="my-card pa-0 question-details"  color="grey lighten-4" >
+                  <v-card height="auto" min-height="247" class="p-0 px-0" elevation="0" color="grey lighten-4" >
+                    <v-card-title class="pt-1 pl-1 px-0" v-if="questions[selectedQuestion] != null"> 
+                      <div class="application-statement" v-html="questions[selectedQuestion].statement"></div>
+                    </v-card-title>
+                    <v-card-subtitle  class="px-0">
+                      <video id="video-option" v-if="questions[selectedQuestion].mime_type.includes('video')"  height="180"  controls controlsList="nodownload nofullscreen" disablePictureInPicture>
+                      <source :src=questions[selectedQuestion].s3_asset_urls :type="questions[selectedQuestion].mime_type" >
+                      Your browser does not support the video tag.
+                      </video>
+                      <audio id="audio-option" v-if="questions[selectedQuestion].mime_type.includes('audio')"  controls controlsList="nodownload nofullscreen">
+                      <source :src=questions[selectedQuestion].s3_asset_urls  :type="questions[selectedQuestion].mime_type">
+                      Your browser does not support the audio tag.
+                      </audio>
 
-              <v-card class="my-card pa-0 mt-2 rounded-xl question-details" elevation="0" color="grey lighten-4" id="myScroll">
-                <v-card height="auto" class="p-0" elevation="0" color="grey lighten-4">
-                  <v-card-title class="pt-1 pl-1 pe-3 ps-3" v-if="questions[selectedQuestion] != null"> 
-                    <div class="application-statement" v-html="questions[selectedQuestion].statement"></div>
-                  </v-card-title>
-                  <v-card-subtitle  >
-                    <video id="video-option" v-if="questions[selectedQuestion].mime_type.includes('video')"  height="180"  controls controlsList="nodownload nofullscreen" disablePictureInPicture>
-                    <source :src=questions[selectedQuestion].s3_asset_urls :type="questions[selectedQuestion].mime_type" >
-                    Your browser does not support the video tag.
-                    </video>
-                    <audio id="audio-option" v-if="questions[selectedQuestion].mime_type.includes('audio')"  controls controlsList="nodownload nofullscreen">
-                    <source :src=questions[selectedQuestion].s3_asset_urls  :type="questions[selectedQuestion].mime_type">
-                     Your browser does not support the audio tag.
-                    </audio>
-
-                      <v-img  class="mt-4" v-if="questions[selectedQuestion].mime_type.includes('image')" :src=questions[selectedQuestion].s3_asset_urls  alt="Girl in a jacket" width="300" height="200">
-                        <v-btn icon rounded @click="zoomOutFun(questions[selectedQuestion].s3_asset_urls)" class="zoom-out rounded-xl" >
-                              <v-icon size="20px"> mdi-arrow-expand </v-icon>
-                            </v-btn>
-                      </v-img>
-                  </v-card-subtitle>
-                </v-card>
-              </v-card>
-            </v-container>
-
-            <v-container class="px-16 option-box">
-              <!-- Question Block -->
-
-              <!-- <v-spacer></v-spacer> -->
-              <!-- Options Card -->
-              <v-card v-if="questions[selectedQuestion].question_type != 'MATCH_THE_FOLLOWING'" class="option-card mt-8 rounded-xl w-100 float-bottom " elevation="0">
-                <v-card height="auto" color="sufaceAccent w-100" elevation="0">
-                  <v-card-title v-if="questions[selectedQuestion] != null" 
-                    class="d-flex w-100 pa-1 flex-row justify-space-around">
-                      <v-card elevation="1" height="auto" width="auto" class="ma-2 option-width overflow-hidden white" 
-                          v-for="(option, index) in questions[selectedQuestion].question_options" :key="index"
-                            >
-                            <v-card @click="
-                                    setOption(
-                                      questions[selectedQuestion].question_options[index]
-                                    )
-                                  " elevation="0" height="45px" width="100%" v-if="option.option_type=='TEXT'" class="w-100 d-flex justify-center cursor sub-text-option" :class="questions[selectedQuestion].myAnswer == option.option_key || (Array.isArray(questions[selectedQuestion].myAnswer) && questions[selectedQuestion].myAnswer.indexOf(option.option_key) >= 0) ? 'secondaryAccent' : ''" >
-                                
-                                    <div class="application-statement" v-html="option.option_value"></div>
-                            </v-card>
-
-
-
-
-                            <v-card elevation="0"  height="30%" width="100%"  v-else-if="option.option_type =='IMAGE'" class="w-100 d-flex justify-center cursor sub-text-option" :class="questions[selectedQuestion].myAnswer == option.option_key || (Array.isArray(questions[selectedQuestion].myAnswer) && questions[selectedQuestion].myAnswer.indexOf(option.option_key) >= 0) ? 'secondaryAccent' : '' ">
-                               <div class="option-left" @click="
-                                    setOption(
-                                      questions[selectedQuestion].question_options[index]
-                                    )
-                                  ">
-                                  <img  class="my-2" height="70px" width="auto" type="image" :src="option.option_value" alt="Image not found">
-                               </div>
-                               
-                                <v-btn @click="zoomOutFun(option.option_value)" class="zoom-out" icon>
-                                  <v-icon size="20px"> mdi-arrow-expand </v-icon>
-                                </v-btn>
-                            </v-card>
-
-
-
-
-
-
-                    </v-card>
-                      
-                  </v-card-title>
-                </v-card>
+                        <v-img  class="mt-4" v-if="questions[selectedQuestion].mime_type.includes('image')" :src=questions[selectedQuestion].s3_asset_urls  alt="Girl in a jacket" width="300" height="200">
+                          <v-btn icon rounded @click="zoomOutFun(questions[selectedQuestion].s3_asset_urls)" class="zoom-out rounded-xl" >
+                                <v-icon size="20px"> mdi-arrow-expand </v-icon>
+                              </v-btn>
+                        </v-img>
+                    </v-card-subtitle>
+                  </v-card>
+                </div>
               </v-card>
 
-              <v-card v-if="questions[selectedQuestion].question_type == 'MATCH_THE_FOLLOWING'" width="100%" height="30%" elevation="0" class="ml-2">
-                <v-row>
-                  <v-col cols="4" class="pa-3 mr-8 rounded-xl option-card" style="background-color: #FBF5F2;">
-                    <v-card :style="{'background-color': ifOptionSelected(option) ? mtfQuestions.mathOptionColors[bColorIndex(option)]: ''}" @click="selectMtfKey(questions[selectedQuestion].question_options[index])" v-for="(option, index) in questions[selectedQuestion].question_options" :key="index" class="mb-2 d-flex justify-center pa-2">
-                      {{ option.option_value }} 
-                    </v-card>
-                  </v-col>
-                  <v-col cols="4" class="pa-3 ml-8 rounded-xl option-card" style="background-color: #FBF5F2;">
-                    <v-card
-                    :style="{'background-color': ifAnswerSelected(answer) ? mtfQuestions.mathOptionColors[findIndexOfValue(answer.answer_key)]: ''}"
-                    @click="setOption(
-                                      questions[selectedQuestion].question_mtf_answers[index]
-                                    )" 
-                    v-for="(answer, index) in questions[selectedQuestion].question_mtf_answers" :key="index" class="mb-2 d-flex justify-center pa-2">
-                    {{ answer.answer_value }}
-                    </v-card>
-                  </v-col>
-                  <v-col class="pt-0">
-                    <v-btn @click="resetMTF">Reset</v-btn>
-                  </v-col>
-                </v-row>
-              </v-card>
-
-            </v-container>
-
-            <v-spacer></v-spacer>
-            <v-divider></v-divider>
-            <v-card elevation="0" class="px-12">
-              <v-container>
-                <v-card-title><v-row class="d-flex flex-row justify-space-between">
-                    <div>
-                      <v-btn rounded color="primary" @click="previous" width="120px" height="36px" outlined
-                        :disabled="selectedQuestion == 0">
-                        Previous
-                      </v-btn>
-
-                      <v-btn :disabled="
-                      !(
-      (!this.isObject(this.questions[this.selectedQuestion].myAnswer) && this.questions[this.selectedQuestion].myAnswer != null)
-      || this.bookmarked.includes(this.questions[this.selectedQuestion]) 
-      || (this.isObject(this.questions[this.selectedQuestion].myAnswer) && Object.keys(this.questions[this.selectedQuestion].myAnswer).length === this.questions[this.selectedQuestion].question_options.length)
-      )" 
-                      v-if="selectedQuestion == questions.length - 1" rounded
-                        color="secondary" @click="summaryDialog = true" height="36px" class="ml-8 black--text mr-0">
-                        Proceed & View Summary
-                      </v-btn>
-                      <v-btn v-else rounded color="secondary" :disabled="
-                      !(
-      (!this.isObject(this.questions[this.selectedQuestion].myAnswer) && this.questions[this.selectedQuestion].myAnswer != null)
-      || this.bookmarked.includes(this.questions[this.selectedQuestion]) 
-      || (this.isObject(this.questions[this.selectedQuestion].myAnswer) && Object.keys(this.questions[this.selectedQuestion].myAnswer).length === this.questions[this.selectedQuestion].question_options.length)
-      )" 
-                        @click="next" width="120px"
-                        height="36px" class="ml-8 mr-0 black--text">
-                        NEXT
-                      </v-btn>
-                    </div>
-
-
-                    <div>
-                      <v-tooltip bottom v-if="!bookmarked.includes(questions[selectedQuestion])">
-                        <template v-slot:activator="{ on, attrs }">
-                          <v-btn large text color="primary" class="ml-0" :disabled="isTimeUp" v-bind="attrs" v-on="on"
-                            @click="bookmarkQuestion(questions[selectedQuestion])">
-                            <v-icon class="pr-2" right> mdi-bookmark-outline </v-icon>
-                            BOOKMARK
-                          </v-btn>
-                        </template>
-                        <span>Bookmark this question to revisit it later</span>
-                      </v-tooltip>
-
-                      <v-btn v-else large text color="primary" @click="bookmarkQuestion(questions[selectedQuestion])"
-                        :disabled="isTimeUp">
-                        <v-icon class="pr-2" right> mdi-bookmark </v-icon>
-                        REMOVE BOOKMARK
-                      </v-btn>
-
-                      <v-tooltip bottom>
-                        <template v-slot:activator="{ on, attrs }">
-                          <v-btn text large color="primary" v-bind="attrs" v-on="on" :disabled="isTimeUp"
-                            @click="skipQuestion(questions[selectedQuestion])">
-                            >> SKIP
-                          </v-btn>
-                        </template>
-                        <span>Skip this question if you do not know the answer</span>
-                      </v-tooltip>
-                    </div>
-                  </v-row></v-card-title>
-              </v-container>
             </v-card>
+            <div id="optionHeight">
+              <v-container class="px-0 option-box">
+                <!-- Question Block -->
+
+                <!-- <v-spacer></v-spacer> -->
+                <!-- Options Card -->
+                <v-card v-if="questions[selectedQuestion].question_type != 'MATCH_THE_FOLLOWING'" class="option-card mt-0 rounded w-100 float-bottom px-3" elevation="0" >
+                  <v-card height="auto"  elevation="0" color="grey lighten-4" class="border-with-color">
+                    <v-card-title v-if="questions[selectedQuestion] != null" 
+                      class="d-flex w-100 px-2 py-0 flex-row justify-space-around"
+                      :class="questions[selectedQuestion].question_options[0].option_type == 'TEXT' ? 'flex-column' : ''"
+                      >
+                        <v-radio-group  class="w-100 radioGroup" inline >
+                          <v-card elevation="0" height="auto"   class="overflow-hidden white my-1 mx-1 border-with-color has-selected" 
+                              v-for="(option, index) in questions[selectedQuestion].question_options" :key="index"
+                              :class="questions[selectedQuestion].question_options[index].option_type == 'TEXT' ? 'w-100' : 'option-width'"
+                                >
+                                
+                                <v-card @click="
+                                        setOption(
+                                          questions[selectedQuestion].question_options[index]
+                                        )
+                                      " elevation="0" height="50px" width="100%" v-if="option.option_type=='TEXT'" class="px-4 w-100 d-flex justify-start cursor sub-text-option" :class="questions[selectedQuestion].myAnswer == option.option_key || (Array.isArray(questions[selectedQuestion].myAnswer) && questions[selectedQuestion].myAnswer.indexOf(option.option_key) >= 0) ? 'secondaryPrimaryAccent' : ''" >
+                                    
+                                      <v-radio  class="my-0" :value="questions[selectedQuestion].question_options[index].option_key" ></v-radio> <div class="application-statement" v-html="option.option_value"></div>
+                                </v-card>
+
+
+
+
+                                <v-card elevation="0"  height="100%" width="100%"  v-else-if="option.option_type =='IMAGE'" class="px-4 w-100 d-flex justify-start cursor sub-text-option" :class="questions[selectedQuestion].myAnswer == option.option_key || (Array.isArray(questions[selectedQuestion].myAnswer) && questions[selectedQuestion].myAnswer.indexOf(option.option_key) >= 0) ? 'secondaryPrimaryAccent' : '' ">
+                                  <div class="option-left" @click="
+                                        setOption(
+                                          questions[selectedQuestion].question_options[index]
+                                        )
+                                      ">
+                                      <v-radio class="my-0 image-radio" :value="questions[selectedQuestion].question_options[index].option_key" ></v-radio> <img  class="my-2" height="80px" width="auto" type="image" :src="option.option_value" alt="Image not found">
+                                  </div>
+                                  
+                                    <v-btn @click="zoomOutFun(option.option_value)" class="zoom-out" icon>
+                                      <v-icon size="20px"> mdi-arrow-expand </v-icon>
+                                    </v-btn>
+                                </v-card>
+
+
+
+
+
+
+                        </v-card>
+                          
+                      </v-radio-group>
+                    </v-card-title>
+                  </v-card>
+                </v-card>
+
+                <v-card v-if="questions[selectedQuestion].question_type == 'MATCH_THE_FOLLOWING'" width="100%" height="30%" elevation="0" class="ml-2">
+                  <v-row>
+                    <v-col cols="4" class="pa-3 mr-8 rounded-xl option-card" style="background-color: #FBF5F2;">
+                      <v-card :style="{'background-color': ifOptionSelected(option) ? mtfQuestions.mathOptionColors[bColorIndex(option)]: ''}" @click="selectMtfKey(questions[selectedQuestion].question_options[index])" v-for="(option, index) in questions[selectedQuestion].question_options" :key="index" class="mb-2 d-flex justify-center pa-2">
+                        {{ option.option_value }} 
+                      </v-card>
+                    </v-col>
+                    <v-col cols="4" class="pa-3 ml-8 rounded-xl option-card" style="background-color: #FBF5F2;">
+                      <v-card
+                      :style="{'background-color': ifAnswerSelected(answer) ? mtfQuestions.mathOptionColors[findIndexOfValue(answer.answer_key)]: ''}"
+                      @click="setOption(
+                                        questions[selectedQuestion].question_mtf_answers[index]
+                                      )" 
+                      v-for="(answer, index) in questions[selectedQuestion].question_mtf_answers" :key="index" class="mb-2 d-flex justify-center pa-2">
+                      {{ answer.answer_value }}
+                      </v-card>
+                    </v-col>
+                    <v-col class="pt-0">
+                      <v-btn @click="resetMTF">Reset</v-btn>
+                    </v-col>
+                  </v-row>
+                </v-card>
+
+              </v-container>
+              
+              <v-card elevation="0" class="px-2">
+                <v-container class="px-0 py-0">
+                  <v-card-title><v-row class="d-flex flex-row justify-space-between">
+                      <div>
+                        <v-btn color="default" @click="previous"  elevation="0"  width="120px" height="36px"
+                          :disabled="selectedQuestion == 0">
+                          Previous
+                        </v-btn>
+
+                        <v-btn :disabled="
+                        !(
+        (!this.isObject(this.questions[this.selectedQuestion].myAnswer) && this.questions[this.selectedQuestion].myAnswer != null)
+        || this.bookmarked.includes(this.questions[this.selectedQuestion]) 
+        || (this.isObject(this.questions[this.selectedQuestion].myAnswer) && Object.keys(this.questions[this.selectedQuestion].myAnswer).length === this.questions[this.selectedQuestion].question_options.length)
+        )" 
+                        v-if="selectedQuestion == questions.length - 1"
+                          color="secondPrimary" @click="summaryDialog = true" height="36px" class="ml-4 white--text mr-0">
+                          Proceed & View Summary
+                        </v-btn>
+                        <v-btn v-else color="secondPrimary" elevation="0" :disabled=" 
+                        !(
+        (!this.isObject(this.questions[this.selectedQuestion].myAnswer) && this.questions[this.selectedQuestion].myAnswer != null)
+        || this.bookmarked.includes(this.questions[this.selectedQuestion]) 
+        || (this.isObject(this.questions[this.selectedQuestion].myAnswer) && Object.keys(this.questions[this.selectedQuestion].myAnswer).length === this.questions[this.selectedQuestion].question_options.length)
+        )" 
+                          @click="next"  width="120px"
+                          height="36px" class="ml-4 mr-0 white--text">
+                          NEXT
+                        </v-btn>
+                      </div>
+
+
+                      <div>
+                        <v-tooltip bottom v-if="!bookmarked.includes(questions[selectedQuestion])">
+                          <template v-slot:activator="{ on, attrs }">
+                            <v-btn large text color="primary"  class="ml-0" :disabled="isTimeUp" v-bind="attrs" v-on="on"
+                              @click="bookmarkQuestion(questions[selectedQuestion])">
+                              <v-icon class="pr-2" right> mdi-bookmark-outline </v-icon>
+                              BOOKMARK
+                            </v-btn>
+                          </template>
+                          <span>Bookmark this question to revisit it later</span>
+                        </v-tooltip>
+
+                        <v-btn v-else large text color="primary" @click="bookmarkQuestion(questions[selectedQuestion])"
+                          :disabled="isTimeUp">
+                          <v-icon class="pr-2" right> mdi-bookmark </v-icon>
+                          REMOVE BOOKMARK
+                        </v-btn>
+
+                        <v-tooltip bottom>
+                          <template v-slot:activator="{ on, attrs }">
+                            <v-btn text large color="textButton" v-bind="attrs" v-on="on" :disabled="isTimeUp"
+                              @click="skipQuestion(questions[selectedQuestion])">
+                              >> SKIP
+                            </v-btn>
+                          </template>
+                          <span>Skip this question if you do not know the answer</span>
+                        </v-tooltip>
+                      </div>
+                    </v-row></v-card-title>
+                </v-container>
+              </v-card>
+            </div>
           </v-card>
+
           <v-card v-else class="d-flex flex-column justify-center align-center my-2 mr-2 rounded-xl" :height="getHeight">
             <v-card-title>
               No Questions Data Found!
@@ -361,6 +353,52 @@
             </v-card-title>
           </v-card>
         </v-col>
+
+        <v-col cols="2" class="p-0 col-22 right-container">
+          <!-- <v-row class="d-flex px-4 py-4"> -->
+            <!-- <v-col class="px-0 py-0"> -->
+              <v-btn variant="tonal" height="48" elevation="0" block class="white--text exit-text font-size-14" @click="confirmExitDialog">Exit Test</v-btn>
+
+              <!-- Timer -->
+              <v-row cols="12" :border="1" class="align-center text-align-center mt-4 px-3 pb-4 ">
+
+              <v-card class="d-flex align-center w-100 pa-0 timer border rounded timer-border" elevation="0">
+                <div class="pr-1">Timer</div>
+                <div class="time hour pr-2"><span class="pe-1 text-h4">{{ hours }}</span><span class="text-subtitle-1">hh</span></div>
+                <div class="time min pr-2"><span class="pe-1 text-h4">{{ mins }}</span><span class="text-subtitle-1">mm</span></div>
+                <div class="time sec"><span class="pe-1 text-h4 ">{{ secs }}</span><span class="text-subtitle-1">ss</span></div>
+              </v-card>
+
+
+
+
+              <!-- Submit Button -->
+
+              </v-row>
+            <!-- </v-col> -->
+
+            <v-btn  variant="tonal" elevation="0" block height="48px" class="w-100 submit-btn white--text" @click="openTestSummary">SUBMIT</v-btn>
+            <!-- Progress Bar -->
+          <!-- </v-row> -->
+        </v-col>
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       </v-row>
     </v-container>
     <!-- Success Dialog -->
@@ -601,6 +639,8 @@ export default {
       summaryDialog: false,
       successDialog: false,
       windowHeight: window.innerHeight,
+      optionHeight: 270,
+      questionsListHeight: "270px",
       selectedQuestion: 0,
       progressListTitle: "",
       power: 25,
@@ -635,11 +675,12 @@ export default {
     getHeight() {
       //console.log("Height =", window.innerHeight);
       //console.log("Width =", window.innerWidth);
-      return this.windowHeight - 40 + "px";
+      return this.windowHeight - 25 + "px";
     },
-    getQuestionsListHeight() {
-      return this.windowHeight - 440 + "px";
-    },
+    
+    // getQuestionsListHeight() {
+    //   return (this.windowHeight-25) - (this.optionHeight) + "px";
+    // },
   },
   watch: {
     // whenever question changes, this function will run
@@ -784,7 +825,7 @@ export default {
         return;
       }
       
-      console.log(this.seconds);
+      //console.log(this.seconds);
 
       this.seconds -= 1;
 
@@ -836,6 +877,17 @@ export default {
         return "answered";
       }
     },
+    getColorBg(item) {
+      if (this.bookmarked.includes(item)) {
+        return "bookmark-bg";
+      } if (this.skipped.includes(item)) {
+        return "skipped-bg";
+      } else if (item.myAnswer != null) {
+        return "answered-bg";
+      } else {
+        return "grey-dark"
+      }
+    },
     handleBookmark(question) {
       if (!this.bookmarked.includes(question)) {
         this.bookmarked.push(question);
@@ -866,6 +918,9 @@ export default {
       else {
         this.handleBookmark(question);
       }
+      setTimeout(() => {
+        this.onResize();
+      }, 100);
     },
     updateProgress() {
       this.answeredProgress = 0;
@@ -1064,6 +1119,7 @@ export default {
           this.updateProgress();
         }
       }
+      
     },
     skipQuestion(question) {
       if (!this.skipped.includes(question) && !this.bookmarked.includes(question)) {
@@ -1076,6 +1132,9 @@ export default {
       if (this.selectedQuestion + 1 != this.questions.length) {
         this.next();
       }
+      setTimeout(() => {
+        this.onResize();
+      }, 100);
     },
 
     async next () {
@@ -1101,6 +1160,9 @@ export default {
 
       await this.setLog();
       
+      setTimeout(() => {
+        this.onResize();
+      }, 100);
     },
     async setLog() {
       let response = {}
@@ -1136,8 +1198,12 @@ export default {
 
       this.selectedQuestion = this.selectedQuestion - 1;
       this.scrollMethod("scrollId" + this.selectedQuestion);
+      setTimeout(() => {
+        this.onResize();
+      }, 100);
     },
     questionClicked(item) {
+     
       if(this.isTimeUp) {
         return false;
       }
@@ -1153,6 +1219,10 @@ export default {
           screen_name: "AssessmentScreen",
         });
       }
+      setTimeout(() => {
+        this.onResize();
+      }, 100);
+      
     },
     sendAnswerGivenEvent() {
       this.questions
@@ -1173,6 +1243,10 @@ export default {
     },
     onResize() {
       this.windowHeight = window.innerHeight;
+      this.optionHeight = document.getElementById('optionHeight') ? document.getElementById('optionHeight').clientHeight + 80 : 270;
+      // console.log(document.getElementById('optionHeight').clientHeight);
+
+      this.questionsListHeight = (this.windowHeight-25) - (this.optionHeight) + "px";
     },
     async getAssessmentInfo() {
       var response;
@@ -1205,11 +1279,11 @@ export default {
 
         let assessmentData = this.assessment.tests.find(ele=> ele.assessment_type == this.testType.toLocaleUpperCase());
 
-        this.seconds = assessmentData.duration_of_assessment;
+        this.seconds = 8888; //assessmentData.duration_of_assessment;
         this.durationOfAssessment = assessmentData.duration_of_assessment;
         if(this.assessment && this.assessment.assessment_log){
-          let elapsed_time = this.assessment.assessment_log.elapsed_time;
-          this.seconds = this.seconds - elapsed_time;
+          // let elapsed_time = this.assessment.assessment_log.elapsed_time;
+          //this.seconds = this.seconds - elapsed_time;
           let answeredQ = JSON.parse(this.assessment.assessment_log.answered_question);
           let isLastQuestionItem = 0
           this.questions = this.questions.map((question, index) => {

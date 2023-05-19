@@ -2,6 +2,62 @@
   min-height: 32px;
 }
 
+.border-with-color,
+.v-application .v-card.border-with-color {
+  border: 1px solid rgba(218, 218, 218, 1);
+  border-color: rgba(218, 218, 218, 1) !important;
+}
+
+.v-card.timer-border {
+  border: 1px solid #EBEBEB;
+  border-color: #EBEBEB;
+}
+
+.col-23 {
+  flex: 0 0 23%;
+  max-width: 23%;
+}
+.col-55 {
+  flex: 0 0 55%;
+  max-width: 55%;
+}
+.col-22 {
+  flex: 0 0 22%;
+  max-width: 22%;
+}
+
+.v-chip.m-q-chip {
+  background: #277BC0 !important;
+  color: #fff !important;
+  border: #277BC0 !important;
+}
+
+.v-btn.submit-btn {
+  color: #fff !important;
+  line-height: 48px !important;;
+  font-family: 'Poppins', sans-serif;
+  background-color: #277BC0 !important;
+  
+  height: 48px;
+  position: absolute;
+  min-width: 92% !important;
+  left: 13px;
+  width: 92%;
+  bottom: 20px;
+}
+
+.right-container {
+  position: relative;
+}
+
+.v-btn.exit-text {
+  color: #CA5251 !important;
+  line-height: 48px !important;;
+  font-family: 'Poppins', sans-serif;
+  background-color: rgba(254, 224, 224, 1) !important;
+  width: 100%;
+}
+
 .answered-border {
   border-color: #009051;
   border-width: 2px;
@@ -31,6 +87,9 @@
   left: 0px;
 }
 
+.my-card {
+  border: none;
+}
 .left-container {
   padding: 0px !important;
 }
@@ -43,4 +102,142 @@
 .submitButton {
   position: fixed;
   bottom: 50px;
+}
+
+.sufaceAccent {
+
+}
+
+.option-box {
+  position: unset;
+  bottom: 0px;
+}
+
+/* new design incorporate */
+.surface {
+  background: #F8FAFC;
+}
+
+.question-heading { 
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  line-height: 19px;
+  font-weight: 400;
+  color: #2D2D2D;
+}
+
+.question-title {
+  font-size: 20px;
+  line-height: 23px;
+  font-family: 'Poppins', sans-serif;
+}
+
+.legend-flag {
+  display: flex;
+  justify-content: space-between;
+  padding: 0px 30px 0px 15px;
+}
+.legend-contain .icon {
+  width: 10px;
+  display: inline-block;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.question-selection-box {
+  width: 60px;
+  height: 40px;
+  flex: unset;
+  font-family: 'Poppins', sans-serif;
+  border-radius: 8px;
+  font-weight: 500;
+}
+.question-box-font {
+  font-size: 14px;
+}
+.legend-contain .label {
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 14px;
+  line-height: 16px;
+}
+
+
+body .v-application .answered-bg, body .v-application .question-selection-box .answered-bg {
+  background-color: rgba(229, 249, 243, 1) !important;
+  color: #03C988 !important;
+  border: 1px solid rgba(154, 233, 207, 1) !important;
+}
+
+body .v-application .question-selection-box .answered-bg .question-box-font {
+  color: #03C988 !important;
+}
+
+
+body .v-application .legend-contain .answered-bg {
+  background-color: #03C988 !important;
+}
+
+
+body .v-application .grey-dark, body .v-application .question-selection-box .grey-dark {
+  background-color: #EBEBEB !important;
+  color: #444;
+}
+
+body .v-application .skipped-bg, body .v-application .question-selection-box .skipped-bg {
+  background-color: rgba(255, 247, 229, 1) !important;
+  border: 1px solid rgba(255, 178, 0, 1) !important;
+}
+
+body .v-application .legend-contain .skipped-bg {
+  background-color: #FFB200 !important;
+}
+
+body .v-application .question-selection-box .skipped-bg .question-box-font {
+  color: #FFB200 !important;
+}
+
+
+body .v-application .question-selection-box.v-item--active {
+  background-color: rgba(233, 242, 249, 1) !important;
+  color: #fff;
+  border: 1px solid rgba(125, 176, 217, 1) !important;
+
+}
+
+.v-application .radioGroup .v-input--radio-group__input {
+  display: flex;
+  flex-direction: row !important;
+  flex-wrap: wrap;
+}
+
+.v-card.timer {
+  padding: 16px !important;
+}
+
+
+body .v-application .bookmark-bg, body .v-application .question-selection-box .bookmark-bg {
+  background-color: rgba(150, 64, 255, 0.1) !important;
+  border: 1px solid #9640FF !important;
+}
+
+body .v-application .legend-contain .bookmark-bg {
+  background-color: #9640FF !important;
+}
+
+
+body .v-application .question-selection-box .bookmark-bg .question-box-font {
+  color: #9640FF !important;
+}
+
+.image-radio {
+  position: absolute !important ;
+  top: 15px
+}
+
+.v-application .has-selected:has(.secondaryPrimaryAccent) {
+  border-color: #A9CAE6 !important;
+}
+
+.v-application .maincontainer-question {
+  overflow: hidden;
 }
