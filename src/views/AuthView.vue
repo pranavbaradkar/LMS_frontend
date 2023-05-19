@@ -424,8 +424,8 @@ export default {
 
 input[type="text"] {
   width: 100%;
-  padding: 12px 20px;
-  margin: 8px 0;
+  padding: 3px 20px;
+  margin: 12px 0;
   box-sizing: border-box;
   -webkit-transition: 0.2s;
   transition: 0.2s;

@@ -104,7 +104,9 @@
 
 .v-text-field__slot > input {
   padding: 0px !important;
+  margin-bottom: 16px;
 }
+
 .polyicon {
   position: absolute;
   left: -4px;
@@ -222,6 +224,9 @@ body {
 .c-text-field > .v-text-field--outlined > .v-input__control > .v-input__slot {
   min-height: 48px !important;
   height: 48px !important;
+}
+.c-text-field > .v-text-field--rounded > .v-input__control > .v-input__slot {
+  padding: 0 0px;
 }
 .c-text-field
   > .v-input

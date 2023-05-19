@@ -9,7 +9,7 @@ export default new Vuetify({
             light: {
                 primary: '#277BC0',
                 secondary: '#82d2da',
-                secondaryAccent:'#caecef',
+                primaryAccent:'#174A73',
                 surface: '#F8FAFC',
                 sufaceAccent: '#fbf5f2',
                 accent: '#6c367e',
@@ -18,6 +18,7 @@ export default new Vuetify({
                 answered:'#009051',
                 skipped:'#F6E866',
                 bookmarked:'#E868E3',
+                black60: 'rgba(0, 0, 0, 0.6)',
             },
          
         },
