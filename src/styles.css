@@ -148,6 +148,55 @@ border-radius: 10px 10px 0px 0px;
   background-color: #fff!important;
 }
 
+.thank-you-card {
+  background: #FAFAFA;
+  /* 11 Greys/50 */
+  
+  border: 1px solid #DADADA;
+  border-radius: 9px;
+}
+
+.thank-you-text {
+  font-size: 24px;
+  line-height: 28px;
+  letter-spacing: 0.02em;
+
+  color: #000000;
+  margin-bottom: 7px;
+}
+
+.thank-you-subtext {
+  font-size: 14px;
+  line-height: 16px;
+  /* identical to box height */
+
+  letter-spacing: 0.02em;
+
+  /* 11 Greys/80 */
+
+  color: #4D4D4D;
+
+}
+
+.thank-you-notified {
+  font-size: 18px;
+  line-height: 48px;
+  /* identical to box height, or 267% */
+  display: flex;
+  align-items: center;
+  text-align: center;
+  /* Pri Blue/60(Main) */
+  color: #277BC0;
+}
+
+.test-dialog-header {
+  padding: 16px;
+  gap: 10px;
+  height: 54px;
+  /* Neutral  Grey/30 */
+  background: #E2E8F0;
+}
+
 /* by kiran end */
 
 .w-50 {

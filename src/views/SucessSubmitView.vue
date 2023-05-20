@@ -34,6 +34,218 @@
         </v-list-item-action>
       </v-list-item>
     </v-app-bar>
+    <v-container class="white-background pb-5">
+      <v-card class="mx-auto mt-3" elevation="0">
+        <v-card-text
+          class="thank-you-card d-flex flex-row justify-space-between align-center"
+        >
+          <div class="d-flex flex-row align-center">
+            <div class="me-5 rounded pa-4 text-center white">
+              <v-icon class="rounded" height="82" width="82" color="#35D4A0"
+                >mdi-check-circle</v-icon
+              >
+            </div>
+            <div>
+              <div class="font-weight-bold thank-you-text">
+                Thank you for attempting this assessment
+              </div>
+              <p class="mb-0 thank-you-subtext">
+                Hold your breath, your school HR will announce the results once
+                they are published.
+              </p>
+            </div>
+          </div>
+          <div class="d-flex flex-row">
+            <v-icon class="blue--text me-4">mdi-check</v-icon>
+            <div class="font-weight-regular thank-you-notified blue--text">
+              Will Get Notified
+            </div>
+          </div>
+        </v-card-text>
+      </v-card>
+
+      <div class="text-h6 pb-0 mt-7">My Test</div>
+      <v-img
+        width="100%"
+        height="331px"
+        src="../assets/home_banner.png"
+        cover
+        class="mt-4"
+      >
+        <v-card
+          class="pa-10 d-flex align-center"
+          elevation="0"
+          width="100%"
+          height="100%"
+          variant="outlined"
+          color="transparent"
+        >
+          <div
+            class="white--text text-container"
+            v-if="recommendedAssessment != null"
+          >
+            <!-- <div class="text-caption">Recommended</div> -->
+            <v-btn
+              elevation="0"
+              height="32px"
+              color="#FFF0CC"
+              class="orange--text font-weight-regular text-capitalize mb-3"
+              rounded
+              >Screening Test
+            </v-btn>
+            <div class="text-h6 mb-1">{{ recommendedAssessment.name }}</div>
+            <p class="mt-1 font-weight-regular">
+              {{ recommendedAssessment.instructions }}
+            </p>
+            <div class="mt-1" v-if="recommendedAssessment.tests != null">
+              <v-icon class="white--text">mdi-book</v-icon>
+              {{ recommendedAssessment.tests[0].total_no_of_questions }}
+              Questions<v-icon class="white--text">mdi-circle-small</v-icon
+              ><v-icon class="white--text">mdi-clock</v-icon>
+              {{
+                formatTime(
+                  recommendedAssessment.tests[0].duration_of_assessment
+                )
+              }}
+              <v-icon class="white--text">mdi-circle-small</v-icon
+              ><v-icon class="white--text">mdi-book</v-icon>
+              300 Users
+            </div>
+            <v-btn
+              height="48px"
+              color="#277BC0"
+              class="white--text"
+              large
+              @click="recommendedTestViewEvent"
+              >START TEST</v-btn
+            >
+          </div>
+          <!-- <div class="white--text" v-if="recommendedAssessment != null">
+              <div class="text-caption">Recommended</div>
+
+              <div class="text-h4 mb-1">{{ recommendedAssessment.name }}</div>
+              <p class="mt-4">{{ recommendedAssessment.instructions }}</p>
+              <div class="mt-4" v-if="recommendedAssessment.tests != null">
+                <v-icon class="white--text">mdi-book</v-icon>
+                {{ recommendedAssessment.tests[0].total_no_of_questions }}
+                Questions<v-icon class="white--text">mdi-circle-small</v-icon
+                ><v-icon class="white--text">mdi-clock</v-icon>
+                {{
+                  formatTime(
+                    recommendedAssessment.tests[0].duration_of_assessment
+                  )
+                }}
+                <v-icon class="white--text">mdi-circle-small</v-icon
+                ><v-icon class="white--text">mdi-book</v-icon>
+                300 Users
+              </div>
+              <v-btn
+                height="48px"
+                color="#277BC0"
+                class="primary--text mt-8"
+                rounded
+                large
+                @click="recommendedTestViewEvent"
+                >VIEW TEST</v-btn
+              >
+            </div> -->
+        </v-card>
+      </v-img>
+    </v-container>
+    <v-dialog v-model="dialog" max-width="400px" color="#fff">
+      <v-card fluid elevation="0" class="rounded-xl" color="#fff">
+        <div class="test-dialog-header font-weight-bold">
+          <p>Get Notified</p>
+        </div>
+        <div class="ma-5">
+          <v-card class="mx-auto mt-3" elevation="0">
+            <v-card-text
+              class="thank-you-card pa-2 justify-space-between align-center"
+            >
+              <div class="d-flex flex-row align-center">
+                <v-checkbox
+                  v-model="checkbox"
+                ></v-checkbox>
+                <v-img
+                  max-height="24"
+                  max-width="24"
+                  class="mr-2"
+                  src="../assets/Gmail.png"
+                ></v-img>
+                <div>
+                  <div class="font-weight-bold mb-1">
+                    Email
+                  </div>
+                  <p class="mb-0 thank-you-subtext">
+                    dhrumil.ampersandgroup.in
+                  </p>
+                </div>
+              </div>
+            </v-card-text>
+          </v-card>
+          <v-card class="mx-auto mt-3" elevation="0">
+            <v-card-text
+              class="thank-you-card pa-2 justify-space-between align-center"
+            >
+              <div class="d-flex flex-row align-center">
+                <v-checkbox
+                  v-model="checkbox"
+                ></v-checkbox>
+                <v-img
+                  max-height="24"
+                  max-width="24"
+                  class="mr-2"
+                  src="../assets/Message.png"
+                ></v-img>
+                <div>
+                  <div class="font-weight-bold mb-1">
+                    SMS
+                  </div>
+                  <p class="mb-0 thank-you-subtext">
+                    902255XXXX
+                  </p>
+                </div>
+              </div>
+            </v-card-text>
+          </v-card>
+          <v-card class="mx-auto mt-3" elevation="0">
+            <v-card-text
+              class="thank-you-card pa-2 justify-space-between align-center"
+            >
+              <div class="d-flex flex-row align-center">
+                <v-checkbox
+                  v-model="checkbox"
+                ></v-checkbox>
+                <v-img
+                  max-height="24"
+                  max-width="24"
+                  class="mr-2"
+                  src="../assets/Whatsapp.png"
+                ></v-img>
+                <div>
+                  <div class="font-weight-bold mb-1">
+                    Whatsapp
+                  </div>
+                  <p class="mb-0 thank-you-subtext">
+                    902255XXXX
+                  </p>
+                </div>
+              </div>
+            </v-card-text>
+          </v-card>
+          <div class="d-flex justify-end w-100">
+            <v-btn
+              color="#277BC0"
+              depressed
+              class="white--text mt-5 mb-5"
+              large
+              @click="startTest"
+              >Confirm</v-btn
+            >
+          </div>
+        </div>
+      </v-card>
+    </v-dialog>
     <div class="d-flex m-body m-center">
       <v-card
         width="55rem"
@@ -42,8 +254,7 @@
         elevation="0"
       >
         <img src="../assets/bgicon.svg" width="200px" height="auto" />
-        <v-card-title> Thank you
-for attempting this assessment</v-card-title>
+        <v-card-title> Thank you for attempting this assessment</v-card-title>
         <v-card-subtitle class="ma-0 pa-0">
           <div>Hold your breath, your school HR will announce</div>
         </v-card-subtitle>
@@ -53,41 +264,53 @@ for attempting this assessment</v-card-title>
 
         <div class="d-flex justify-center w-100 ma-6">
           <v-card elevation="0">
-            <v-card-text class="pl-2 pb-2">Get notified for test results on</v-card-text>
+            <v-card-text class="pl-2 pb-2"
+              >Get notified for test results on</v-card-text
+            >
             <div class="d-flex justify-center">
-            <v-card
-            width="245"
-            height="54"
-            class="d-flex flex-row m-center m-btn ma-2"
-            elevation="0"
-            depressed
-            ><v-checkbox @click="emailSelected" v-model="notificationEmail"></v-checkbox
-            ><img
-              class="mr-2"
-              src="../assets/Gmail.svg"
-              width="25px"
-              height="auto"
-            />
-            <div class="d-flex flex-column">
-              <div class="c-b-t">Email</div>
-              <div class="c-b-t-m">{{ $store.state.userInfo.email }}</div>
-            </div>
-          </v-card>
+              <v-card
+                width="245"
+                height="54"
+                class="d-flex flex-row m-center m-btn ma-2"
+                elevation="0"
+                depressed
+                ><v-checkbox
+                  @click="emailSelected"
+                  v-model="notificationEmail"
+                ></v-checkbox
+                ><img
+                  class="mr-2"
+                  src="../assets/Gmail.svg"
+                  width="25px"
+                  height="auto"
+                />
+                <div class="d-flex flex-column">
+                  <div class="c-b-t">Email</div>
+                  <div class="c-b-t-m">{{ $store.state.userInfo.email }}</div>
+                </div>
+              </v-card>
 
-          <v-card
-            width="245"
-            height="54"
-            class="d-flex flex-row m-center m-btn ma-2"
-            elevation="0"
-            depressed
-            ><v-checkbox @click="messageSelected" v-model="notificationSMS"></v-checkbox
-            ><v-icon class="mr-2" size="25">mdi-message-reply-outline</v-icon>
-            <div class="d-flex flex-column">
-              <div class="c-b-t">SMS</div>
-              <div class="c-b-t-m">{{ $store.state.userInfo.phone_no }}</div>
+              <v-card
+                width="245"
+                height="54"
+                class="d-flex flex-row m-center m-btn ma-2"
+                elevation="0"
+                depressed
+                ><v-checkbox
+                  @click="messageSelected"
+                  v-model="notificationSMS"
+                ></v-checkbox
+                ><v-icon class="mr-2" size="25"
+                  >mdi-message-reply-outline</v-icon
+                >
+                <div class="d-flex flex-column">
+                  <div class="c-b-t">SMS</div>
+                  <div class="c-b-t-m">
+                    {{ $store.state.userInfo.phone_no }}
+                  </div>
+                </div>
+              </v-card>
             </div>
-          </v-card>
-          </div>
           </v-card>
         </div>
         <v-btn
@@ -96,7 +319,6 @@ for attempting this assessment</v-card-title>
           rounded
           large
           depressed
-         
           @click="confirm"
           >confirm</v-btn
         >
@@ -115,14 +337,13 @@ export default {
       notificationSMS: false,
       notificationEmail: false,
       assessmentId: null,
+      dialog: true,
     };
   },
   mounted() {
-    
     this.$mixpanel.track("ThankyouPageLoaded", {
-
-        screen_name: "ThankyouScreen",
-      });
+      screen_name: "ThankyouScreen",
+    });
   },
 
   beforeDestroy() {
@@ -140,7 +361,7 @@ export default {
       });
       this.$router.push({
         path: "/report",
-        query: { id: this.assessmentId},
+        query: { id: this.assessmentId },
       });
     },
     logout() {
@@ -152,28 +373,27 @@ export default {
       this.$mixpanel.reset();
       this.$router.push("/login");
     },
-    messageSelected(){
-      this.$mixpanel.track("NotificationOptionsSelected",   {
-      "method": "Message",
-      "phone_number": this.$store.state.userInfo.phone_no
-    });
+    messageSelected() {
+      this.$mixpanel.track("NotificationOptionsSelected", {
+        method: "Message",
+        phone_number: this.$store.state.userInfo.phone_no,
+      });
     },
-    emailSelected(){
-      this.$mixpanel.track("NotificationOptionsSelected",   {
-      "method": "Email",
-      "email_id": this.$store.state.userInfo.email
-    },);
-    }
+    emailSelected() {
+      this.$mixpanel.track("NotificationOptionsSelected", {
+        method: "Email",
+        email_id: this.$store.state.userInfo.email,
+      });
+    },
   },
   created() {
     // console.log("userInfo");
     const assessmentId = this.$route.query.assessmentId;
     const assessmentName = this.$route.query.assessmentName;
 
-    
     // console.log("assessment data", assessment)
 
-    this.assessmentId = assessmentId
+    this.assessmentId = assessmentId;
     // console.log('assessment id',this.assessmentId)
     this.$mixpanel.track("SubmissionSucceeded", {
       assessment_id: assessmentId,
