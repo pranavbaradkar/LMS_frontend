@@ -42,8 +42,7 @@
         elevation="0"
       >
         <img src="../assets/bgicon.svg" width="200px" height="auto" />
-        <v-card-title> Thank you
-for attempting this assessment</v-card-title>
+        <v-card-title> Thank you for attempting this assessment</v-card-title>
         <v-card-subtitle class="ma-0 pa-0">
           <div>Hold your breath, your school HR will announce</div>
         </v-card-subtitle>
