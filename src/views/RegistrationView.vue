@@ -125,7 +125,7 @@
               <v-img :height="getHeight + 22 + 'px'" width="100%" style="position: absolute; top: -100; z-index: 5;" src="@/assets/curl-background.svg"></v-img>
               <v-row style="z-index: 10;">
                 <v-col style="margin-top: 112px">
-                  <v-img width="90%" height="265" style="z-index: 4;" src="@/assets/Welcome.svg"></v-img>
+                  <v-img width="85%" height="290" style="z-index: 4;" src="@/assets/Welcome.svg"></v-img>
                   <div style="font-size: 39px;" class="font-weight-bold ml-8">
                     welcome
                   </div>
@@ -136,25 +136,38 @@
               </v-row>
             </div>
           </v-col>
-          <v-col cols="8" style="margin-top: 74px">
+          <v-col cols="8" style="margin-top: 84px">
             <v-stepper alt-labels v-model="e1" class="registration-stepper surface">
           <v-stepper-header class="text-subtitle-2 registration-stepper-header">
-            <v-stepper-step :complete="e1 > 1" step="1">
-              Personal info.
-            </v-stepper-step>
+            <div class="d-flex justify-center align-center flex-column">
+              <div style="height: 48px; width: 48px; border-radius: 24px;" class="pa-1" :style="{'background-color': e1 >= 1 ? '#174A73' : '#DADADA'}">
+                <v-img height="42" width="42" class="mb-n4" src="@/assets/Personal.svg"></v-img>
+              </div>
+              <div :style="{'color': e1>=1 ? '#174A73' : '#7B7A7B'}">Personal Info.</div>
+            </div>
 
-            <v-divider></v-divider>
+            <v-divider class="ma-0 mt-6"></v-divider>
 
-            <v-stepper-step :complete="e1 > 2" step="2">
-              Academic info.
-            </v-stepper-step>
+            <div class="d-flex justify-center align-center flex-column">
+              <div style="height: 48px; width: 48px; border-radius: 24px;" class="pa-1" :style="{'background-color': e1 >= 2 ? '#174A73' : '#DADADA'}">
+                <v-img v-if="e1 >= 2" height="42" width="42" class="mb-n4" src="@/assets/Academic.svg"></v-img>
+                <v-img v-else height="42" width="42" class="mb-n4" src="@/assets/non-active-academic.svg"></v-img>
+              </div>
+              <div :style="{'color': e1>=2 ? '#174A73' : '#7B7A7B'}">Academic Info.</div>
+            </div>
 
-            <v-divider></v-divider>
+            <v-divider class="ma-0 mt-6"></v-divider>
 
-            <v-stepper-step step="3"> Professional Info. </v-stepper-step>
+            <div class="d-flex justify-center align-center flex-column">
+              <div style="height: 48px; width: 48px; border-radius: 24px;" class="pa-1" :style="{'background-color': e1 >= 3 ? '#174A73' : '#DADADA'}">
+                <v-img v-if="e1 >= 3" height="42" width="42" class="mb-n4" src="@/assets/Professional.svg"></v-img>
+                <v-img v-else height="42" width="42" class="mb-n4" src="@/assets/non-active-professional.svg"></v-img>
+              </div>
+              <div :style="{'color': e1>=3 ? '#174A73' : '#7B7A7B'}">Professional Info.</div>
+            </div>
           </v-stepper-header>
 
-          <v-stepper-items class="mx-8 " style="border: 1px solid rgba(0, 0, 0, 0.05); ">
+          <v-stepper-items class="mx-8 mt-2" style="border: 1px solid rgba(0, 0, 0, 0.05); ">
             <!------------------------------------------ STEP 1 ------------------------------------------>
             <v-stepper-content step="1" class="pb-4 pa-0" style="background-color: white;">
                 <v-card 
@@ -349,7 +362,6 @@
                           <v-col cols="12" class="py-0 c-text-field">
                               <v-text-field
                                 v-model="personalInfo.address"
-                                
                                 label="Address*"
                                 counter="100"
                                 maxLength="10"
@@ -358,7 +370,33 @@
                                   (v) => !!v || 'Address is required',
                                  
                                 ]"
-                              ></v-text-field>
+                                :readonly="isCurrentLocation ? true : false"
+                              >
+                              <template #append>
+                                <div v-if="!isCurrentLocation" class="d-flex align-center">
+                                  <v-btn
+                                    class="pa-0"
+                                    color="primary"
+                                    text
+                                    @click="location"
+                                  >
+                                    <v-icon>mdi-map-marker</v-icon>
+                                    Location
+                                  </v-btn>
+                                </div>
+                                <div v-else class="d-flex align-center">
+                                  <v-btn
+                                    class="pa-0"
+                                    color="primary"
+                                    text
+                                    @click="clearLocation"
+                                  >
+                                    <v-icon>mdi-undo</v-icon>
+                                    Reset
+                                  </v-btn>
+                                </div>
+                              </template>
+                            </v-text-field>
                             </v-col>
                         </v-row>
                         <div v-if="!isCurrentLocation" class="pt-5 px-8">
@@ -419,7 +457,7 @@
                               <v-select
                                 v-model="personalInfo.talukTehsil"
                                 :value="talukTehsil"
-                                label="Taluk / Tehsil"
+                                label="Taluka / Tehsil"
                                 :items="talukas"
                                 
                                 
@@ -453,7 +491,7 @@
                                 :rules="[
                                   (v) => !!v || 'Pincode is required',
                                   (v) =>
-                                    (v && v.length == 6) ||
+                                    (v.length == 6) ||
                                     'Pincode must be 6 digit',
                                 ]"
                                 required
@@ -541,25 +579,10 @@
                                 :rules="[
                                   (v) => !!v || 'Pincode is required',
                                   (v) =>
-                                    (v && v == 6) ||
+                                    v.length == 6 ||
                                     'Pincode must be 6 digit',
                                 ]"
                                 required
-                              ></v-text-field>
-                            </v-col>
-                            <v-col cols="12" class="py-0 c-text-field">
-                              <v-text-field
-                                v-model="personalInfo.address"
-                                
-                                label="Address*"
-                                counter="100"
-                                maxLength="100"
-                                
-                                
-                                :rules="[
-                                  (v) => !!v || 'Address is required',
-                                 
-                                ]"
                               ></v-text-field>
                             </v-col>
                           </v-row>
@@ -1476,6 +1499,19 @@ export default {
         return true;
       }
     },
+    clearLocation () {
+      this.isCurrentLocation = false;
+      this.personalInfo.country_name = '';
+      this.personalInfo.state_name = '';
+      this.personalInfo.district_name = '';
+      this.personalInfo.country_id = -1;
+      this.personalInfo.state_id = -1;
+      this.personalInfo.district_id = -1;
+      this.personalInfo.pincode = '';
+      this.personalInfo.taluka_name = '';
+      this.personalInfo.city_name = '';
+      this.personalInfo.address = '';
+    },
     async location() {
       this.isFetchingLocation = true;
       navigator.geolocation.getCurrentPosition(
@@ -1494,6 +1530,7 @@ export default {
             this.personalInfo.pincode = response.data.address.postcode;
             this.personalInfo.taluka_name = response.data.address.county;
             this.personalInfo.city_name = response.data.address.neighbourhood;
+            this.personalInfo.address = response.data.address.building + ', ' + response.data.address.road;
             this.isFetchingLocation = false;
           }
         },
