@@ -217,6 +217,16 @@ border-radius: 10px 10px 0px 0px;
   border-radius: 12px;
   margin: 10px;
 }
+
+.profile-tab .v-tab {
+  margin-top: 10px!important;
+  height: 36px!important;
+}
+
+.profile-tab .v-tab.last {
+  margin-bottom: 10px!important;
+  height: 36px!important;
+}
 /* by kiran end */
 
 .w-50 {

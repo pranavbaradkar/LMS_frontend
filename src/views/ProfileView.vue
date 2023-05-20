@@ -36,16 +36,16 @@
     </v-app-bar>
     <v-container>
       <v-tabs vertical class="profile-tab">
-        <v-tab>
+        <v-tab class="justify-start">
           Personal Information
         </v-tab>
-        <v-tab>
+        <v-tab class="justify-start">
           Academic Info.
         </v-tab>
-        <v-tab>
+        <v-tab class="justify-start">
           Professional Information
         </v-tab>
-        <v-tab>
+        <v-tab class="justify-start last">
          My Results 
         </v-tab>
         <v-tab-item>
