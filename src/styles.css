@@ -148,6 +148,25 @@ border-radius: 10px 10px 0px 0px;
   background-color: #fff!important;
 }
 
+.test-dialog-header {
+  padding: 16px;
+  gap: 10px;
+  height: 54px;
+
+  /* Neutral  Grey/30 */
+
+  background: #E2E8F0;
+}
+
+.assesment-instruction {
+  font-weight: 400;
+font-size: 16px;
+line-height: 18px;
+letter-spacing: 0.02em;
+
+color: rgba(0, 0, 0, 0.6);
+}
+
 /* by kiran end */
 
 .w-50 {
