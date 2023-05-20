@@ -854,7 +854,7 @@
                 </v-form>
               </v-card>
               <v-btn
-                class="mx-4 my-4 secondaryAccent primary--text"
+                class="mx-4 my-4 primary--text"
                 depressed
                 outlined
                 @click="e1++"
