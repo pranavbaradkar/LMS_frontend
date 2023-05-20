@@ -320,6 +320,9 @@ body {
 .selected-box {
   border: 2px solid #7DB0D9 !important;
 }
+.non-selected-box {
+  border: 2px solid white !important;
+}
 .camerabtn {
   position: relative !important;
   bottom: -26px;

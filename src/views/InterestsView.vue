@@ -8,26 +8,7 @@
         </v-list-item>
       </v-app-bar>
       <!-- parent card of items -->
-
-      <!-- <v-card class="mt-14 elevation-0 surface">
-        <v-card-title>
-          <v-row align="center" justify="center" align-content="center">
-            <v-col cols="1">
-              <v-icon v-if="e1 != 1" @click="e1--">mdi-arrow-left</v-icon>
-            </v-col>
-            <v-col cols="8">
-              <v-progress-linear
-                height="25"
-                color="secondary"
-                class="rounded-xl"
-                :value="(e1 / 4) * 100"
-              ></v-progress-linear>
-            </v-col>
-          </v-row>
-        </v-card-title>
-      </v-card> -->
-      <!-- parant card of items ends here -->
-      <v-container fluid class="fill-height ma-0 pa-0">
+      <v-container fluid class="fill-height ma-0 pa-0" v-if="SetUpPreferencesClicked">
       <v-row class="fill-height">
         <v-col cols="6">
           <div style="position: relative; width:100%;">
@@ -64,6 +45,8 @@
             <v-form lazy-validation ref="step1">
               <v-container>
                 <v-autocomplete
+                auto-select-first
+                  autofocus
                   style="max-height: 70%; top: 199px; box-shadow: none"
                   v-model="userIntrestData.school_ids"
                   deletable-chips
@@ -99,17 +82,29 @@
                       :value="level.id"
                     >
                       <v-card
-                        :class="active ? 'selected-box ' : ''"
+                        :class="active ? 'selected-box ' : 'non-selected-box'"
                         class="d-flex align-center ma-2 rouded-xl"
                         width="145px"
                         height="158px"
                         @click="toggle"
                       >
-                        <v-col align-self="center">
-                          <v-card-text> </v-card-text>
-                          <p class="text-center">
-                            {{ level.name }}
-                          </p>
+            <v-col align-self="center">
+            <v-checkbox  :input-value="active" class="mt-2 mb-0"></v-checkbox>
+            <v-row>
+                <v-col class="d-flex justify-center pa-0 mb-6 mt-1" color="primary">
+                    <div style="height: 48px; width: 48px; background-color: black;"></div>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col class="d-flex justify-center pa-0 mb-2" style="font-size: 14px; font-weight: 400;">
+                    {{ level.name }}
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col class="d-flex justify-center pt-0" style="color: rgba(0, 0, 0, 0.6); font-size: 12px;">
+                    {{ level.subtext}}
+                </v-col>
+            </v-row>
                         </v-col>
                       </v-card>
                     </v-item>
@@ -140,12 +135,19 @@
                         @click="toggle"
                       >
                         <v-col align-self="center">
-                          <v-card-text>
-                            <v-img :src="board.logo"></v-img>
-                          </v-card-text>
-                          <p class="text-center">
-                            {{ board.name }}
-                          </p>
+                          <v-checkbox  :input-value="active" class="mt-0 mb-0"></v-checkbox>
+            <v-row>
+                <v-col class="d-flex justify-center pa-0 mb-6 mt-1" color="primary">
+                  <div style="height: 48px; width: 48px;">
+                    <v-img :src="board.logo"></v-img>
+                  </div>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col class="d-flex justify-center pa-0 mb-2" style="font-size: 14px; font-weight: 400;">
+                    {{ board.name }}
+                </v-col>
+            </v-row>
                         </v-col>
                       </v-card>
                     </v-item>
@@ -158,6 +160,7 @@
 
           <v-stepper-content step="4" class="pb-0 pt-0">
             <v-slide-group
+            mandatory
             show-arrows>
     <v-slide-item
     v-for="(sub, index) in Array.from(new Set(subjectCategoryNames)) " :key="index"
@@ -173,21 +176,10 @@
          id="all"
           @click="toggle"         
         >
-        
           {{ sub }}
-        
-       
         </v-btn>
       </div>
       </v-slide-item>
-            <v-chip-group
-       
-        column
-        multiple
-      >
-       
-        
-      </v-chip-group>
     </v-slide-group>
             <div class="d-flex justify-center mt-6">
               <v-item-group multiple v-model="userIntrestData.subject_ids"  max="3" style="width: 80%">
@@ -201,18 +193,27 @@
                     >
                       <v-card  
                         class="d-flex align-center ma-2 rouded-xl"
-                        width="145px"
-                        height="158px"
-                        :class="active ? 'selected-box ' : ''"
+                        width="160px"
+                        height="148px"
+                        :class="active ? 'selected-box ' : 'non-selected-box'"
                         @click="toggle"
                         v-if="selectedSubject == subject.subject_category.name || selectedSubject == 'all'"
                     
                       >
                         <v-col align-self="center">
-                          <v-card-text> </v-card-text>
-                          <p class="text-center">
-                            {{ subject.name }}
-                          </p>
+                          <v-checkbox  :input-value="active" class="mt-0 mb-0"></v-checkbox>
+            <v-row>
+                <v-col class="d-flex justify-center pa-0 mb-2 mt-1" color="primary">
+                  <div style="height: 48px; width: 48px;">
+                    <v-img :src="subject.icon"></v-img>
+                  </div>
+                </v-col>
+            </v-row>
+            <v-row class="d-flex justify-center">
+                <v-col cols="12" class="d-flex justify-center pa-0 mb-2 align-center" style="font-size: 14px; font-weight: 400;">
+                    <div style="align-self: center; text-align: center">{{ subject.name }}</div>
+                </v-col>
+            </v-row>
                         </v-col>
                       </v-card>
                     </v-item>
@@ -236,7 +237,31 @@
           </div>
         </v-col>
       </v-row>
-  </v-container>
+      </v-container>
+      <v-container fluid class="d-flex justify-center align-center" v-else>
+        <v-card rounded style="margin-top: 130px" height="446" width="463" class="pa-8 rounded-xl">
+          <v-card-title>
+            <div style="height: 150px">
+
+            </div>
+          </v-card-title>
+          <v-card-subtitle class="mt-5">
+            <v-row>
+              <v-col class="d-flex justify-center flex-column align-center pa-0">
+                <div style="font-size: 34px; line-height: 40px;" class="font-weight-bold black--text text-align-center">Welcome to your profile! </div>
+                <div style="align-self: center; text-align: center; color: #4D4D4D " class="mt-2">
+                  To make the most out of your experience, please take a moment to set your preferences. By doing so, we can tailor our recommendations to your interests and needs. Click the 'Preferences' button to get started
+                </div>
+              </v-col>
+            </v-row>
+          </v-card-subtitle>
+          <v-card-actions class="mt-5 d-flex justify-center">
+            <v-btn @click="SetUpPreferencesClicked = true;" style="align-self: center; width: 100%" color="primary">
+              Setup Preferences
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-container>
   </v-card>
 </template>
 
@@ -252,6 +277,7 @@ export default {
   name: "InterestsView",
   data() {
     return {
+      SetUpPreferencesClicked: false,
       userInfo: {},
       e1: 1,
       subjects: [],
@@ -299,6 +325,9 @@ export default {
   },
   methods: {
 
+    SetUpPreferences () {
+      
+    },
     setVmodel(data){
         this.selectedSubject = data;
     },
@@ -377,13 +406,13 @@ export default {
       this.subjectCategoryNames= this.subjects.map(item => item.subject_category.name);
      
       this.subjectCategoryNames = ['all'].concat(this.subjectCategoryNames)
-      //console.log("subject log", this.subjectsData);
+      console.log("subject log", this.subjects);
     },
     async getSchool() {
       const response = await SchoolController.getSchool();
       // console.log(response);
       this.schools = response.data.data.rows;
-      //console.log("school log", this.schoolData);
+      console.log("school log", this.schools);
     },
     async getBoards() {
       const response = await BoardController.getBoards();
@@ -415,14 +444,6 @@ export default {
     },
   },
   mounted() {
-
-  
-   setTimeout(()=> {
-    document.getElementById('schoolBox').click()
-    document.getElementById('all').click();
-      }
-      ,1000);
-
   },
   watch: {
     // whenever question changes, this function will run
@@ -431,7 +452,6 @@ export default {
     }
   },
   created() {
-    
     this.getUserInfo();
     this.getLevel();
     this.getSubjects();
