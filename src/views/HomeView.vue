@@ -34,76 +34,117 @@
         class="mx-auto"
         elevation="0"
         width="100%"
-        
         variant="outlined"
         v-if="allAssessments.length != 0 || recommendedAssessment != {}"
       >
-       <v-row
-        align="start"
-        no-gutters
-      >
-        <v-col>
-          <v-sheet class="ma-2">
-            <p class="school-label">School</p>
-            <div class="d-flex align-center">
-            <p class="font-weight-medium school-value mb-0">Vibgyor High (Malad East)</p>
-             <v-btn
-              class="mx-2"
-              fab
-              dark
-              small
-              color="#277BC0"
-            >
-             +3
-            </v-btn>
-            </div>
-          </v-sheet>
-        </v-col>
-        <v-col>
-          <v-sheet class="ma-2">
-            <p class="school-label">Level</p>
-            <div class="d-flex align-center">
-            <p class="font-weight-medium school-value mb-0">Lower Primary , Upper Primary</p>
-             <v-btn
-              class="mx-2"
-              fab
-              dark
-              small
-              color="#277BC0"
-            >
-             +3
-            </v-btn>
-            </div>
-          </v-sheet>
-        </v-col>
-        <v-col>
-          <v-sheet class="ma-2">
-            <p class="school-label">Board</p>
-            <p class="font-weight-medium school-value">State Board</p>
-          </v-sheet>
-        </v-col>
-        <v-col>
-          <v-sheet class="ma-2">
-            <p class="school-label">Subject’s</p>
-            <div class="d-flex align-center">
-            <p class="font-weight-medium school-value mb-0">Hindi , French , Physics</p>
-             <v-btn
-              class="mx-2"
-              fab
-              dark
-              small
-              color="#277BC0"
-            >
-             +3
-            </v-btn>
-            </div>
-          </v-sheet>
-        </v-col>
-        <v-col-1 class="home-edit-icon align-self-center">
-          <v-img width="20px" src="../assets/home_edit_icon.png"></v-img>
-        </v-col-1>
-      </v-row>
-      <v-divider></v-divider>
+        <v-row align="start" no-gutters>
+          <v-col>
+            <v-sheet class="ma-2">
+              <p class="school-label">School</p>
+              <div class="d-flex align-center">
+                <p class="font-weight-medium school-value mb-0">
+                  Vibgyor High (Malad East)
+                </p>
+                <v-menu transition="slide-y-transition">
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                      class="mx-2"
+                      fab
+                      dark
+                      small
+                      color="#277BC0"
+                      v-bind="attrs"
+                      v-on="on"
+                    >
+                      +3
+                    </v-btn>
+                  </template>
+                  <v-list>
+                    <v-list-item v-for="n in 5" :key="n" link>
+                      <v-list-item-title
+                        v-text="'Item ' + n"
+                      ></v-list-item-title>
+                    </v-list-item>
+                  </v-list>
+                </v-menu>
+              </div>
+            </v-sheet>
+          </v-col>
+          <v-col>
+            <v-sheet class="ma-2">
+              <p class="school-label">Level</p>
+              <div class="d-flex align-center">
+                <p class="font-weight-medium school-value mb-0">
+                  Lower Primary , Upper Primary
+                </p>
+                <v-menu transition="slide-y-transition">
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                      class="mx-2"
+                      fab
+                      dark
+                      small
+                      color="#277BC0"
+                      v-bind="attrs"
+                      v-on="on"
+                    >
+                      +3
+                    </v-btn>
+                  </template>
+                  <v-list>
+                    <v-list-item v-for="n in 5" :key="n" link>
+                      <v-list-item-title
+                        v-text="'Item ' + n"
+                      ></v-list-item-title>
+                    </v-list-item>
+                  </v-list>
+                </v-menu>
+              </div>
+            </v-sheet>
+          </v-col>
+          <v-col>
+            <v-sheet class="ma-2">
+              <p class="school-label">Board</p>
+              <p class="font-weight-medium school-value">State Board</p>
+            </v-sheet>
+          </v-col>
+          <v-col>
+            <v-sheet class="ma-2">
+              <p class="school-label">Subject’s</p>
+              <div class="d-flex align-center">
+                <p class="font-weight-medium school-value mb-0">
+                  Hindi , French , Physics
+                </p>
+                <v-menu transition="slide-y-transition">
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                      class="mx-2"
+                      fab
+                      dark
+                      small
+                      color="#277BC0"
+                      v-bind="attrs"
+                      v-on="on"
+                    >
+                      +3
+                    </v-btn>
+                  </template>
+                  <v-list>
+                    <v-list-item v-for="n in 5" :key="n" link>
+                      <v-list-item-title
+                        v-text="'Item ' + n"
+                      ></v-list-item-title>
+                    </v-list-item>
+                  </v-list>
+                </v-menu>
+              </div>
+            </v-sheet>
+          </v-col>
+          <v-col-1 class="home-edit-icon align-self-center">
+            <v-img width="20px" src="../assets/home_edit_icon.png"></v-img>
+          </v-col-1>
+        </v-row>
+        <v-divider></v-divider>
         <!-- <div class="text-h6 mb-1 text-center">Test Selection</div>
         <v-list-item-subtitle class="text-center grey--text"
           >Let's start your profile, connect to people you know, and engage with
@@ -127,7 +168,10 @@
             variant="outlined"
             color="transparent"
           >
-          <div class="white--text text-container" v-if="recommendedAssessment != null">
+            <div
+              class="white--text text-container"
+              v-if="recommendedAssessment != null"
+            >
               <!-- <div class="text-caption">Recommended</div> -->
               <v-btn
                 elevation="0"
@@ -135,10 +179,12 @@
                 color="#FFF0CC"
                 class="orange--text font-weight-regular text-capitalize mb-3"
                 rounded
-                >Screening Test </v-btn
-              >
+                >Screening Test
+              </v-btn>
               <div class="text-h6 mb-1">{{ recommendedAssessment.name }}</div>
-              <p class="mt-1 font-weight-regular">{{ recommendedAssessment.instructions }}</p>
+              <p class="mt-1 font-weight-regular">
+                {{ recommendedAssessment.instructions }}
+              </p>
               <div class="mt-1" v-if="recommendedAssessment.tests != null">
                 <v-icon class="white--text">mdi-book</v-icon>
                 {{ recommendedAssessment.tests[0].total_no_of_questions }}
@@ -225,10 +271,12 @@
                   </v-list-item>
                   <v-list-item three-line>
                     <v-list-item-content class="pt-0">
-                      <v-list-item-title class="assessment-name mb-0 text-wrap mb-2">
+                      <v-list-item-title
+                        class="assessment-name mb-0 text-wrap mb-2"
+                      >
                         {{ assessment.name }}
                       </v-list-item-title>
-                      <v-list-item-subtitle class="assessment-instructions" >
+                      <v-list-item-subtitle class="assessment-instructions">
                         {{ assessment.instructions }}
                       </v-list-item-subtitle>
                     </v-list-item-content>
@@ -266,147 +314,71 @@
         </v-card-title>
       </v-card>
     </v-container>
-    <v-dialog v-model="dialog" max-width="461px" color="#FBF5F2">
-      <v-card fluid elevation="0" class="rounded-xl" color="#FBF5F2">
-        <v-btn class="i-close-btn" icon @click="closeDialog"
-          ><v-icon>mdi-close</v-icon></v-btn
-        >
-
-        <v-stepper
-          v-model="e1"
-          class="rounded-lg transparent elevation-0 pt-8"
-          color="#FBF5F2"
-        >
-          <v-stepper-header class="text-subtitle-2 elevation-0">
-            <v-stepper-step :complete="e1 > 1" step="1">
-              SCREENING TEST
-            </v-stepper-step>
-            <v-divider></v-divider>
-
-            <v-stepper-step :complete="e1 > 2" step="2">
-              MAINS TEST
-            </v-stepper-step>
-          </v-stepper-header>
-          <v-stepper-items>
-            <!------------------------------------------ STEP 1 ------------------------------------------>
-            <v-stepper-content step="1" class="pt-0">
-              <div class="d-flex flex-column">
-                <div class="subtitle-2 text--secondary">
-                  {{ selectedAssessment.name }}
-                </div>
-                <div class="Subtitle-1 my-2">Screening Test</div>
-                <div class="d-flex flex-row text-secondry">
-                  <div class="d-flex flex-row text--secondary">
-                    <v-icon>mdi-note-text-outline</v-icon>
-                    <div class="m-2 mr-2">
-                      {{ noOfQuestions }}
-                      Questions
-                    </div>
-                    <v-icon>mdi-circle-small</v-icon>
-                  </div>
-                  <div class="d-flex flex-row text--secondary">
-                    <v-icon>mdi-clock-outline</v-icon>
-                    <div class="m-2 mr-2">
-                      {{ formatTime(duration) }}
-                    </div>
-
-                    <v-icon>mdi-circle-small</v-icon>
-                  </div>
-                  <div class="d-flex flex-row text--secondary">
-                    <v-icon>mdi-map-marker-radius-outline</v-icon>
-                    <div class="m-2 mr-2">Online</div>
-                  </div>
-                </div>
-                <div class="Subtitle-1 pt-5">Sections</div>
-                <div class="w-100">
-                  <!-- <v-chip-group> -->
-                  <v-chip
-                    v-for="(item, index) in selectedAssessment.skills"
-                    :key="index"
-                    class="ma-2"
-                    color="secondaryAccent primary--text"
-                    >{{ item }}</v-chip
-                  >
-                  <!-- </v-chip-group> -->
-                </div>
-                <v-card-title class="pl-0">Instructions</v-card-title>
-
-                <p class="text--secondary">
-                  {{ selectedAssessment.instructions }}
-                </p>
-              </div>
-              <div class="d-flex justify-center w-100">
-                <v-btn
-                  color="secondary"
-                  class="primary--text mt-10 mb-12"
-                  rounded
-                  large
-                  @click="startTest"
-                  >START TEST</v-btn
-                >
-              </div>
-            </v-stepper-content>
-            <!------------------------------------------ STEP 2 ------------------------------------------>
-
-            <v-stepper-content step="2" class="pt-0">
-              <div class="d-flex flex-column">
-                <div class="subtitle-2 text--secondary">
-                  {{ selectedAssessment.name }}
-                </div>
-                <div class="Subtitle-1 my-2">Mains Test</div>
-                <div class="d-flex flex-row text-secondry">
-                  <div class="d-flex flex-row text--secondary">
-                    <v-icon>mdi-note-text-outline</v-icon>
-                    <div class="m-2 mr-2">
-                      {{ noOfQuestions }}
-                      Questions
-                    </div>
-                    <v-icon>mdi-circle-small</v-icon>
-                  </div>
-                  <div class="d-flex flex-row text--secondary">
-                    <v-icon>mdi-clock-outline</v-icon>
-                    <div class="m-2 mr-2">
-                      {{ formatTime(duration) }}
-                    </div>
-
-                    <v-icon>mdi-circle-small</v-icon>
-                  </div>
-                  <div class="d-flex flex-row text--secondary">
-                    <v-icon>mdi-map-marker-radius-outline</v-icon>
-                    <div class="m-2 mr-2">Online</div>
-                  </div>
-                </div>
-                <div class="Subtitle-1 pt-5">Sections</div>
-                <div class="w-100">
-                  <!-- <v-chip-group> -->
-                  <v-chip
-                    v-for="(item, index) in selectedAssessment.skills"
-                    :key="index"
-                    class="ma-2"
-                    color="secondaryAccent primary--text"
-                    >{{ item }}</v-chip
-                  >
-                  <!-- </v-chip-group> -->
-                </div>
-                <v-card-title class="pl-0">Instructions</v-card-title>
-
-                <p class="text--secondary">
-                  {{ selectedAssessment.instructions }}
-                </p>
-              </div>
-              <div class="d-flex justify-center w-100">
-                <v-btn
-                  color="secondary"
-                  class="primary--text mt-10 mb-12"
-                  rounded
-                  large
-                  @click="startTest"
-                  >START TEST</v-btn
-                >
-              </div>
-            </v-stepper-content>
-          </v-stepper-items>
-        </v-stepper>
+    <v-dialog v-model="dialog" max-width="365px" color="#fff">
+      <v-card fluid elevation="0" class="rounded-xl" color="#fff">
+        <div class="test-dialog-header">
+          <p>Instructions</p>
+        </div>
+        <div class="ma-5">
+          <div class="d-flex flex-row align-start mb-5">
+            <v-icon size="6" class="me-2 mt-1">mdi-circle</v-icon>
+            <p class="mb-0 font-weight-regular assesment-instruction">
+              This assessment consists a total of {{ noOfQuestions }} questions
+            </p>
+          </div>
+          <div class="d-flex flex-row align-start mb-5">
+            <v-icon size="6" class="me-2 mt-1">mdi-circle</v-icon>
+            <p class="mb-0 font-weight-regular assesment-instruction">
+              The test assesses you in 7 different areas as can be seen in the
+              progress-bar at the top
+            </p>
+          </div>
+          <div class="d-flex flex-row align-start mb-5">
+            <v-icon size="6" class="me-2 mt-1">mdi-circle</v-icon>
+            <p class="mb-0 font-weight-regular assesment-instruction">
+              You get a maximum of 60s to answer a question in this test
+            </p>
+          </div>
+          <div class="d-flex flex-row align-start mb-5">
+            <v-icon size="6" class="me-2 mt-1">mdi-circle</v-icon>
+            <p class="mb-0 font-weight-regular assesment-instruction">
+              A timer that keeps ticking at the top indicates how much time you
+              have to answer a question
+            </p>
+          </div>
+          <div class="d-flex flex-row align-start mb-5">
+            <v-icon size="6" class="me-2 mt-1">mdi-circle</v-icon>
+            <p class="mb-0 font-weight-regular assesment-instruction">
+              There is no negative marking, some questions may have more than
+              one correct answer
+            </p>
+          </div>
+          <div class="d-flex flex-row align-start mb-5">
+            <v-icon size="6" class="me-2 mt-1">mdi-circle</v-icon>
+            <p class="mb-0 font-weight-regular assesment-instruction">
+              Upon the assessment completion, you will be notified with your
+              result.
+            </p>
+          </div>
+          <div class="d-flex justify-end w-100">
+            <v-btn
+              color="#DADADA"
+              depressed
+              class="black--text mt-5 mb-5 me-2"
+              large
+              @click="closeDialog"
+              >Cancel</v-btn
+            >
+            <v-btn
+              color="#277BC0"
+              depressed
+              class="white--text mt-5 mb-5"
+              large
+              @click="startTest"
+              >START TEST</v-btn
+            >
+          </div>
+        </div>
       </v-card>
     </v-dialog>
   </div>
@@ -497,9 +469,9 @@ export default {
         assessment_name: this.selectedAssessment.name,
         source: "instruction_page/recommendation_page",
         screen_name: "RecommendedTestScreen",
-        assessment_type: this.selectedAssessment.tests[this.e1-1].assessment_type,
-        assessment_level:
-          this.selectedAssessment.tests[this.e1 - 1].level.name,
+        assessment_type:
+          this.selectedAssessment.tests[this.e1 - 1].assessment_type,
+        assessment_level: this.selectedAssessment.tests[this.e1 - 1].level.name,
       });
 
       // console.log('selected',this.selectedAssessment);
@@ -511,12 +483,17 @@ export default {
     recommendedTestViewEvent() {
       this.selectedAssessment = this.recommendedAssessment;
       console.log("selected assessment", this.selectedAssessment);
-      if (this.selectedAssessment.screening_status == "PENDING" || this.selectedAssessment.screening_status == "STARTED") {
+      if (
+        this.selectedAssessment.screening_status == "PENDING" ||
+        this.selectedAssessment.screening_status == "STARTED"
+      ) {
         this.testType = "Screening";
         this.e1 = 1;
       } else if (
-        this.selectedAssessment.screening_status != "PENDING" && this.selectedAssessment.screening_status != "STARTED" &&
-        (this.selectedAssessment.mains_status == "PENDING" || this.selectedAssessment.mains_status == "STARTED")
+        this.selectedAssessment.screening_status != "PENDING" &&
+        this.selectedAssessment.screening_status != "STARTED" &&
+        (this.selectedAssessment.mains_status == "PENDING" ||
+          this.selectedAssessment.mains_status == "STARTED")
       ) {
         this.testType = "Mains";
         this.e1 = 2;
@@ -651,12 +628,17 @@ export default {
           return item.id !== response.data.data.id;
         });
       }
-      if (this.recommendedAssessment.screening_status == "PENDING" || this.recommendedAssessment.screening_status == "STARTED") {
+      if (
+        this.recommendedAssessment.screening_status == "PENDING" ||
+        this.recommendedAssessment.screening_status == "STARTED"
+      ) {
         this.testType = "Screening";
         this.e1 = 1;
       } else if (
-        this.recommendedAssessment.screening_status != "PENDING" && this.recommendedAssessment.screening_status != "STARTED" &&
-        (this.recommendedAssessment.mains_status == "PENDING" || this.recommendedAssessment.mains_status == "STARTED")
+        this.recommendedAssessment.screening_status != "PENDING" &&
+        this.recommendedAssessment.screening_status != "STARTED" &&
+        (this.recommendedAssessment.mains_status == "PENDING" ||
+          this.recommendedAssessment.mains_status == "STARTED")
       ) {
         this.testType = "Mains";
         this.e1 = 2;

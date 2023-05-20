@@ -193,10 +193,13 @@ border-radius: 10px 10px 0px 0px;
   padding: 16px;
   gap: 10px;
   height: 54px;
+
   /* Neutral  Grey/30 */
+
   background: #E2E8F0;
 }
 
+<<<<<<< HEAD
 .profile-tab .v-tabs-bar {
     background-color: #FFFFFF;
     border: 1px solid #DADADA;
@@ -227,6 +230,17 @@ border-radius: 10px 10px 0px 0px;
   margin-bottom: 10px!important;
   height: 36px!important;
 }
+=======
+.assesment-instruction {
+  font-weight: 400;
+font-size: 16px;
+line-height: 18px;
+letter-spacing: 0.02em;
+
+color: rgba(0, 0, 0, 0.6);
+}
+
+>>>>>>> 247c01908e0bd3a1e1c9c38cac6d5374437e1fa9
 /* by kiran end */
 
 .w-50 {
@@ -234,9 +248,8 @@ border-radius: 10px 10px 0px 0px;
 }
 .m-q-chip {
   font-weight: normal;
-
-  background-color: #82d2da57 !important;
-  border: 0.5px solid rgba(0, 0, 0, 0.38) !important;
+  background-color: #E9F2F9 !important;
+  border: 0.5px solid #174A73 !important;
 }
 .m-disabled-chip {
   font-weight: normal;
@@ -269,7 +282,9 @@ border-radius: 10px 10px 0px 0px;
 
 .v-text-field__slot > input {
   padding: 0px !important;
+  margin-bottom: 16px;
 }
+
 .polyicon {
   position: absolute;
   left: -4px;
@@ -302,11 +317,10 @@ border-radius: 10px 10px 0px 0px;
 }
 .slideparent {
   padding-bottom: 20px;
-  background-color: #fff;  /* by kiran  */
+  background-color: #F8FAFC;
 }
 body {
   background-color: #F8FAFC !important;
-  /* background-color: #faf8ed !important; */
 }
 .phoneprefix {
   width: fit-content;
@@ -388,6 +402,9 @@ body {
 .c-text-field > .v-text-field--outlined > .v-input__control > .v-input__slot {
   min-height: 48px !important;
   height: 48px !important;
+}
+.c-text-field > .v-text-field--rounded > .v-input__control > .v-input__slot {
+  padding: 0 0px;
 }
 .c-text-field
   > .v-input
@@ -480,7 +497,10 @@ body {
   background-color: grey;
 }
 .selected-box {
-  border: 4px solid #82d2da !important;
+  border: 2px solid #7DB0D9 !important;
+}
+.non-selected-box {
+  border: 2px solid white !important;
 }
 .camerabtn {
   position: relative !important;
@@ -639,12 +659,16 @@ body {
   }
 }
 
-::-webkit-scrollbar {
+::-webkit-scrollbar { 
   -webkit-appearance: none;
-  width: 7px;
+  width: 0px;
 }
 ::-webkit-scrollbar-thumb {
   border-radius: 4px;
   background-color: rgba(0, 0, 0, .5);
   -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, .5);
+}
+
+.v-btn {
+  text-transform:none !important;
 }

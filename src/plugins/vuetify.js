@@ -7,12 +7,14 @@ export default new Vuetify({
     theme: {
         themes: {
             light: {
-                primary: '#005b64',
+                primary: '#277BC0',
                 secondary: '#82d2da',
                 secondPrimary: '#277BC0',
                 secondaryAccent:'#caecef',
                 secondaryPrimaryAccent: '#D4E5F2',
                 //surface: '#faf8ed',
+                primaryAccent:'#174A73',
+                grey50: '#DADADA',
                 surface: '#F8FAFC',
                 sufaceAccent: '#fbf5f2',
                 accent: '#6c367e',
@@ -22,7 +24,8 @@ export default new Vuetify({
                 skipped:'#F6E866',
                 bookmarked:'#E868E3',
                 default: "#EBEBEB",
-                textButton:'#174A73'
+                textButton:'#174A73',
+                black60: 'rgba(0, 0, 0, 0.6)',
             },
          
         },
