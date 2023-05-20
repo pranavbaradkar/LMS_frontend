@@ -89,7 +89,21 @@
             </div>
           </v-card>
         </v-img>
-        <div class="text-h6 py-4">Other Tests</div>
+        <div class="text-h6 py-4">
+          Other Tests
+          <div class="">
+            <button @click="checkActiveStream">Check Camera Activity</button>
+            <p>{{ camera_id }}</p>
+            <button @click="captureImage">Capture Image</button>
+            <video ref="kvideoElement" autoplay></video>
+            <canvas ref="canvasElement"></canvas>
+            <img :src="capturedImageUrl" alt="Captured Image" v-if="capturedImageUrl" />
+          </div>
+          <div class="">
+            Video element
+            <video ref="videoElement" id="videoElement" width="360" height="180" autoplay></video>
+          </div>
+        </div>
 
         <div class="slideparent">
           <v-slide-group
@@ -237,6 +251,14 @@
                   @click="startTest"
                   >START TEST</v-btn
                 >
+                <v-btn
+                  color="secondary"
+                  class="primary--text mt-10 mb-12"
+                  rounded
+                  large
+                  @click="endTest"
+                  >EXIT TEST</v-btn
+                >
               </div>
             </v-stepper-content>
             <!------------------------------------------ STEP 2 ------------------------------------------>
@@ -331,6 +353,14 @@ export default {
 
       e1: 1,
       testType: "Screening",
+      camera_id: null,
+      cam_stream: null,
+      mic_stream: null,
+      capturedImageUrl: null,
+      video_container: document.getElementById('videoElement'),
+      mediaRecorder: null,
+      socket: null,
+      chunks: []
     };
   },
   computed: {
@@ -396,12 +426,107 @@ export default {
       });
 
       // console.log('selected',this.selectedAssessment);
-      this.$router.push({
-        path: "/assessment",
-        query: { id: this.selectedAssessment.id, test: this.testType },
+      // this.$router.push({
+      //   path: "/assessment",
+      //   query: { id: this.selectedAssessment.id, test: this.testType },
+      // });
+      let assessmentUrl = this.$router.resolve({
+        path: '/assessment',
+        query: { id: this.selectedAssessment.id, test: this.testType }
+      }).href;
+      // let windowSize = "width="+window.outerWidth+", height="+window.outerHeight;
+      // window.open(assessmentUrl,"_blank",windowSize);
+      window.open(assessmentUrl,"_blank");
+    },
+    endTest(){
+      this.stopCamera();
+      this.stopMic();
+    },
+    async checkMedia(){
+      // Check if the browser supports the necessary APIs
+      if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
+      this.mic_stream = await this.checkMicrophone();
+      this.cam_stream = await this.checkCamera();
+      console.log("current status of cam and mic", this.cam_stream, this.mic_stream);
+
+      this.$refs.kvideoElement.srcObject = this.cam_stream;
+
+        // Continuously check media status when device changes
+        navigator.mediaDevices.ondevicechange = (event) => {
+          // checkMediaStatus();
+          console.log("event triggered", event);
+        };
+      } else {
+        console.log('Browser does not support mediaDevices API.');
+      }
+    },
+    async checkMicrophone() {
+      return new Promise((resolve, reject)=> {
+        navigator.mediaDevices.getUserMedia({ audio: true })
+        .then(function(stream) {          
+          // Stop accessing the camera
+          stream.getTracks().forEach(function(track) {
+            // Camera access is allowed
+            console.log("Microphone is switched on.", track);
+            // this.microphoneStatus = track.label+' Switched On';
+            resolve(stream);
+          });
+        })
+        .catch(function(error) {
+          // Camera access is denied or an  occurred
+          alert("Microphone is switched off or access is denied.");
+          reject(error);
+        });
       });
     },
+    async checkCamera(){
+      return new Promise((resolve, reject)=>{
+        navigator.mediaDevices.getUserMedia({ video: true })
+        .then(function(stream) {
+          // Stop accessing the camera
+          stream.getTracks().forEach(function(track) {
+            // Camera access is allowed
+            console.log("Camera is switched on.", track);
+            resolve(stream);
+          });
+        })
+        .catch(function(error) {
+          // Camera access is denied or an  occurred
+          alert("Camera is switched off or access is denied.", error);
+          reject(error);
+        });
+      });
+    },
+    checkActiveStream(){
+      this.cam_stream.getTracks().forEach((track) => { this.camera_id = track.id; });
+      console.log("Acive stream ", this.cam_stream.getTracks());
+    },
+    stopMic() {
+      if (this.mic_stream) {
+        const tracks = this.mic_stream.getTracks();
+        tracks.forEach((track) => {
+          track.stop();
+        });
+      }
+    },
+    stopCamera() {
+      if (this.cam_stream) {
+        const tracks = this.cam_stream.getTracks();
+        tracks.forEach((track) => {
+          track.stop();
+        });
+      }
+    },
+    captureImage() {
+      const videoElement = this.$refs.kvideoElement;
+      const canvasElement = this.$refs.canvasElement;
+      const context = canvasElement.getContext('2d');
+
+      context.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
+      this.capturedImageUrl = canvasElement.toDataURL();
+    },
     recommendedTestViewEvent() {
+      // this.checkMedia();
       this.selectedAssessment = this.recommendedAssessment;
       console.log("selected assessment", this.selectedAssessment);
       if (this.selectedAssessment.screening_status == "PENDING" || this.selectedAssessment.screening_status == "STARTED") {

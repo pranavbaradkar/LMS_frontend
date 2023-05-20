@@ -423,6 +423,11 @@
                   </v-list-item-group>
                 </v-card>
               </v-container>
+              <v-divider class="mx-4 mt-0"></v-divider>
+              <v-container class="py-0 my-0">
+                Video Feed {{ rec_status }}
+                <video id="videoElement" width="300" height="168" autoplay></video>
+              </v-container>
             </v-card>
 
           </v-col>
@@ -624,7 +629,12 @@ export default {
         colorIndex: 0,
         selectedAnswer: null,
       },
-
+      mediaStream: null,
+      mediaRecorder: null,
+      socket: null,
+      chunks: [],
+      rec_status: 'idle',
+      tab_status: null,
     };
   },
   computed: {
@@ -650,13 +660,55 @@ export default {
   mounted() {
     window.addEventListener("beforeunload", this.handleBeforeUnload);
 
+
+    window.addEventListener('blur', () => {
+      console.log("current tab is blur");
+    });    
+    window.addEventListener('focus', () => {
+      console.log("current tab is focussed");
+    });
+
+    // navigating away to another domain
+    window.addEventListener('beforeunload', function(event) {
+      var currentDomain = window.location.hostname;
+      var targetDomain = new URL(event.target.location.href).hostname;
+      if (currentDomain !== targetDomain) {
+        // User is navigating away from the current domain
+        // Add your logic here to handle the event
+        console.log('User is navigating away from the current domain');
+      }
+    });
+
+    document.addEventListener('keydown', function(event) {
+      // Check if the key combination is Ctrl/Cmd + T
+      // if ((event.ctrlKey || event.metaKey) && event.key === 't') {
+      //   // Key combination detected: Ctrl/Cmd + T
+      //   // Add your logic here to handle the new tab creation
+      //   alert('You tried opening new tab!');
+      // }
+      if (event.keyCode === 27) {
+      // Do something when the ESC key is pressed.
+        alert('The ESC key was pressed.');
+      }
+    });
+    
+    document.addEventListener('copy', function(event) {
+      event.preventDefault();
+    });
+
+    document.addEventListener('paste', function(event) {
+      event.preventDefault();
+    });
+
     this.startTimer();
 
     this.$nextTick(() => {
       window.addEventListener("resize", this.onResize);
     });
   },
-
+  beforeUnmount() {
+    document.removeEventListener('visibilitychange', this.handleTabChange);
+  },
   destroyed() {
     this.setLog();
   },
@@ -678,8 +730,67 @@ export default {
     });
     await this.setLog();
   },
-
   methods: {
+    checkUserAgent(){
+      const userAgent = navigator.userAgent;
+      // Extract the browser's name and version from the user agent string.
+      const match = userAgent.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i);
+      // If the browser's name and version were found, print them to the console.
+      if (match) {
+        console.log(`The browser is ${match[1]} ${match[2]}`);
+      } else {
+        console.log(`The browser's name and version could not be found.`);
+      }
+    },
+    getVideoElement(){
+      return document.getElementById('videoElement');
+    },
+    verifyCameraStream() {
+      this.mediaStream.getTracks().forEach((track) => { 
+        this.camera_id = track.id; 
+        if(track.readyState !="live") {
+          alert("Camera Stream Stopped");
+        }
+      });     
+      // console.log("Acive stream ", this.mediaStream.getTracks());
+    },
+    cameraMedia(){
+      // Check if MediaRecorder API is supported
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        console.error('MediaRecorder API is not supported in this browser.');
+        //return;
+      }
+      // Start capturing video frames
+      navigator.mediaDevices.getUserMedia({ video: true })
+        .then((stream) => {    
+          this.mediaStream = stream;
+          this.getVideoElement().srcObject = stream;
+          this.mediaRecorder = new MediaRecorder(stream);
+
+          this.mediaRecorder.ondataavailable = (event) => {
+            if (event.data && event.data.size > 0) {
+              this.chunks.push(event.data);
+              console.log(this.chunks);
+              // socket.send(event.data);
+            }
+          };
+        this.mediaRecorder.start();
+      })
+      .catch((error) => {
+        alert('Error accessing camera:', error);
+      });
+    },
+    stopRecording() {
+      console.log("stop triggered");
+      let t = new Date();
+      this.rec_status = "recording stopped at "+ t.getSeconds();
+      // Stop capturing video frames
+      this.mediaRecorder.stop();
+      this.chunks = [];
+      // videoElement.srcObject.getTracks().forEach((track) => track.stop());
+      this.mediaRecorder.start();
+      //socket.close();
+    },
     getAssetType(assetDataType) {
       if (assetDataType != null) {
         console.log(assetDataType);
@@ -1281,6 +1392,16 @@ export default {
     this.testType = this.$route.query.test;
     // console.log(this.assessmentId);
     this.getAssessmentInfo();
+    
+    this.checkUserAgent();
+    this.cameraMedia();
+    setInterval(() => {
+      this.verifyCameraStream();
+      this.stopRecording();
+    }, 10000);
+    setInterval(()=>{
+      this.verifyCameraStream();
+    }, 5000);
   },
 };
 </script>
