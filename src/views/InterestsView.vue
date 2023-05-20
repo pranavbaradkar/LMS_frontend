@@ -1,6 +1,5 @@
 <template>
-  <v-card width="100%" height="100%" class="surface">
-    <v-container>
+  <v-card width="100%" height="100%" class="surface" depressed elevation="0" style="overflow: hidden;">
       <v-app-bar color="surface" elevation="0" fixed>
         <v-list-item>
           <v-list-item-icon class="pt-4">
@@ -9,8 +8,8 @@
         </v-list-item>
       </v-app-bar>
       <!-- parent card of items -->
-      <v-card class="mt-14 elevation-0 surface">
-        <v-card-title></v-card-title>
+
+      <!-- <v-card class="mt-14 elevation-0 surface">
         <v-card-title>
           <v-row align="center" justify="center" align-content="center">
             <v-col cols="1">
@@ -26,21 +25,47 @@
             </v-col>
           </v-row>
         </v-card-title>
-      </v-card>
+      </v-card> -->
       <!-- parant card of items ends here -->
-      <v-stepper v-model="e1" elevation="0" class="surface">
+      <v-container fluid class="fill-height ma-0 pa-0">
+      <v-row class="fill-height">
+        <v-col cols="6">
+          <div style="position: relative; width:100%;">
+              <v-img :height="getHeight - 22 + 'px'" width="100%" style="position: absolute; z-index: 5;" src="@/assets/curl-background-1.svg"></v-img>
+              <v-row class="ml-16">
+                <v-col style="margin-top: 116px" class="pa-0">
+                  <v-icon class="ml-7 mb-4" style="z-index: 6;" v-if="e1 != 1" @click="e1--">mdi-arrow-left</v-icon>
+                  <div style="font-size: 39px; width: 60%; line-height: 40px" class="font-weight-bold ml-8 mb-8">
+                    {{ getContent.heading }}
+                  </div>
+                  <div v-if="getContent.subHeading" style="font-size: 14px; color: rgba(0, 0, 0, 0.6); width: 80%" class="ml-8">
+                    {{ getContent.subHeading }}
+                  </div>
+                  <v-img v-show="e1 == 1" class="mt-4" width="33vw" height="22vw" style="z-index: 4;" src="@/assets/School.svg"></v-img>
+                  <v-img v-show="e1 == 2" class="mt-4" width="28vw" height="22vw" style="z-index: 4;" src="@/assets/Level.svg"></v-img>
+                  <v-img v-show="e1 == 3" class="mt-4" width="28vw" height="24vw" style="z-index: 4;" src="@/assets/board.svg"></v-img>
+                  <v-img v-show="e1 == 4" class="mt-4" width="26vw" height="24vw" style="z-index: 4;" src="@/assets/Subject.svg"></v-img>
+                </v-col>
+              </v-row>
+            </div>
+        </v-col>
+        <v-col cols="6" class="justify-space-between d-flex flex-column">
+        <v-stepper style="margin-top: 112px" v-model="e1" elevation="0" class="surface">
+          <v-progress-linear
+                style="width: 80%; margin-left: 10%"
+                height="16"
+                color="primary"
+                class="rounded-xl mb-4"
+                :value="(e1 / 4) * 100"
+              ></v-progress-linear>
         <v-stepper-items>
           <!------------------------------------------ STEP 1 ------------------------------------------>
           <v-stepper-content step="1" elevation="0" class="pt-0 pb-0">
             <v-form lazy-validation ref="step1">
-              <v-card-title class="d-flex justify-center">
-                Which is your preferrerd school?
-              </v-card-title>
               <v-container>
                 <v-autocomplete
-                
+                  style="max-height: 70%; top: 199px; box-shadow: none"
                   v-model="userIntrestData.school_ids"
-                  clearable
                   deletable-chips
                   label="Schools"
                   prepend-inner-icon="mdi-magnify"
@@ -53,9 +78,7 @@
                   item-value="id"
                   :rules="[(v) => !!v || 'School is required']"
                   required
-                  
                   id="schoolBox"
-                  
                 >
                 </v-autocomplete>
               </v-container>
@@ -64,14 +87,8 @@
           <!------------------------------------------ STEP 2 ------------------------------------------>
 
           <v-stepper-content step="2" class="pb-0 pt-0">
-            <v-card-title class="d-flex justify-center">
-              What level do you (want to) teach?
-            </v-card-title>
-            <v-card-subtitle class="text-center"
-              >Select one or more applicable</v-card-subtitle
-            >
-            <div id="myScroll">
-              <v-item-group multiple v-model="userIntrestData.level_ids">
+            <div id="myScroll" class="d-flex justify-center">
+              <v-item-group multiple v-model="userIntrestData.level_ids" style="width: 90%">
                 <v-container>
                   <v-layout row wrap justify-center class="item-box">
                     <v-item
@@ -105,12 +122,8 @@
           <!------------------------------------------ STEP 3 ------------------------------------------>
 
           <v-stepper-content step="3" class="pb-0 pt-0">
-            <v-card-title class="d-flex justify-center">
-              Which board do you want to teach?
-            </v-card-title>
-
-            <div id="myScroll">
-              <v-item-group v-model="userIntrestData.board_ids" multiple>
+            <div id="myScroll" class="d-flex justify-center">
+              <v-item-group v-model="userIntrestData.board_ids" multiple style="width: 60%">
                 <v-container>
                   <v-layout row wrap justify-center class="item-box">
                     <v-item
@@ -144,20 +157,8 @@
           <!------------------------------------------ STEP 4 ------------------------------------------>
 
           <v-stepper-content step="4" class="pb-0 pt-0">
-            <v-card-title class="d-flex justify-center">
-              Which Subject(s) do you teach?
-            </v-card-title>
-            <v-card-subtitle class="text-center"
-              >Select maximum 3 subjects</v-card-subtitle
-            >
             <v-slide-group
-    
-      show-arrows
-   
-    >
-  
-  
-
+            show-arrows>
     <v-slide-item
     v-for="(sub, index) in Array.from(new Set(subjectCategoryNames)) " :key="index"
         v-slot="{ active, toggle }"
@@ -166,7 +167,7 @@
         <v-btn
           class="mx-2"
           :input-value="active"
-          active-class="m-q-chip"
+          active-class="primary"
           depressed
           rounded
          id="all"
@@ -188,10 +189,10 @@
         
       </v-chip-group>
     </v-slide-group>
-            <div>
-              <v-item-group multiple v-model="userIntrestData.subject_ids"  max="3">
+            <div class="d-flex justify-center mt-6">
+              <v-item-group multiple v-model="userIntrestData.subject_ids"  max="3" style="width: 80%">
                 <v-container>
-                  <v-layout row wrap justify-center class="item-box">
+                  <v-layout row wrap justify-center class="item-box" style="height: calc(100vh - 275px)">
                     <v-item
                       v-slot="{ active, toggle }"
                       v-for="(subject, i) in subjects"
@@ -221,22 +222,21 @@
             </div>
           </v-stepper-content>
         </v-stepper-items>
-      </v-stepper>
-    </v-container>
-    <div class="d-flex w-100 justify-center bottom-btn">
+          </v-stepper>
+          <div style="align-self: center; width: 80%">
       <v-btn
-        color="secondary"
-        class="textcolor--text"
-        rounded
-        large
-        width="300px"
+        color="primary"
+        class="white--text"
+        style="width: 100%"
         :disabled="  (e1 == 1 && (userIntrestData.school_ids.length  ==0 ))  || (e1 == 2 && (userIntrestData.level_ids.length == 0 ))  ||  (e1 == 3 && (userIntrestData.board_ids.length == 0)) || (e1 == 4 && (userIntrestData.subject_ids.length == 0)) "
-        
         @click="goTo(e1)"
       >
-        {{ e1 == 4 ? "save" : "next" }}
+        {{ e1 == 4 ? "Save" : "Next" }}
       </v-btn>
-    </div>
+          </div>
+        </v-col>
+      </v-row>
+  </v-container>
   </v-card>
 </template>
 
@@ -267,6 +267,35 @@ export default {
         subjectCategoryNames: [],
       },
     };
+  },
+  computed: {
+    getHeight() {
+      return this.windowHeight;
+    },
+
+    getContent() {
+      const step = this.e1;
+      let heading;
+      let subHeading;
+      switch (step) {
+        case 1:
+          heading = 'Which is your preferred school ?';
+          break;
+        case 2:
+          heading = 'What level do you (want to) teach?';
+          subHeading='Select one or more options as applicable';
+          break;
+        case 3:
+          heading = 'Which board do you want to teach?';
+          break;
+        case 4:
+          heading = 'Which Subject(s) do you teach?';
+          subHeading = 'Select maximum 3 subjects';
+          break;
+      }
+    
+      return {heading,subHeading}
+    }
   },
   methods: {
 
@@ -411,4 +440,11 @@ export default {
   },
 };
 </script>
+
+<style>
+.v-menu__content {
+    box-shadow: none !important;
+    max-height: 60% !important;
+}
+</style>
        
