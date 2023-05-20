@@ -197,6 +197,26 @@ border-radius: 10px 10px 0px 0px;
   background: #E2E8F0;
 }
 
+.profile-tab .v-tabs-bar {
+    background-color: #FFFFFF;
+    border: 1px solid #DADADA;
+    border-radius: 12px;
+    margin: 10px;
+}
+
+.profile-tab .v-tabs-slider-wrapper {
+  width: 0px!important;
+}
+
+.profile-tab .v-tab--active {
+  background-color: #E9F2F9;
+}
+
+.profile-tab .v-tabs-items{
+  border: 1px solid #DADADA;
+  border-radius: 12px;
+  margin: 10px;
+}
 /* by kiran end */
 
 .w-50 {

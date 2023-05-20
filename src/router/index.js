@@ -10,6 +10,7 @@ import FailedView from '../views/FailedView'
 import InterestsView from '../views/InterestsView.vue'
 import ReportView from '../views/ReportView'
 import GraphReportView from '../views/GraphReportView'
+import ProfileView from '../views/ProfileView'
 
 //import store from "../store";
 
@@ -85,6 +86,14 @@ const routes = [
     path: '/assessment',
     name: 'AssessmentView',
     component: AssessmentView,
+    meta: {
+      requiresAuth: true,
+    }
+  },
+  {
+    path: '/profile',
+    name: 'ProfileView',
+    component: ProfileView,
     meta: {
       requiresAuth: true,
     }
