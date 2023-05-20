@@ -503,10 +503,12 @@ export default {
       });
 
       // console.log('selected',this.selectedAssessment);
-      this.$router.push({
-        path: "/assessment",
-        query: { id: this.selectedAssessment.id, test: this.testType },
-      });
+      let assessmentUrl = this.$router.resolve({
+        path: '/assessment',
+        query: { id: this.selectedAssessment.id, test: this.testType }
+      }).href;
+      let windowSize = "width="+window.outerWidth+", height="+window.outerHeight;
+      window.open(assessmentUrl,"_blank",windowSize);
     },
     recommendedTestViewEvent() {
       this.selectedAssessment = this.recommendedAssessment;

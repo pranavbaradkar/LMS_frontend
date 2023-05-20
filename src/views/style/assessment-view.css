@@ -241,3 +241,8 @@ body .v-application .question-selection-box .bookmark-bg .question-box-font {
 .v-application .maincontainer-question {
   overflow: hidden;
 }
+
+.v-application #videoElement {
+  width: 100%;
+  height: 100%;
+}

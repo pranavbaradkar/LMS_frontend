@@ -20,11 +20,12 @@ export default {
             return error.response;
         }
     },
-    updateScreeningStatus: async function (id, type, elapsed_time, answered_question) {
+    updateScreeningStatus: async function (id, type, elapsed_time, answered_question, violations) {
         try {
             const response = await instance.post(`users/log/assessments/${id}/${type}`, {
                 "answered_question": answered_question,
-                "elapsed_time": elapsed_time
+                "elapsed_time": elapsed_time,
+                "violations": violations
             }, {
                 headers: {
                     'Authorization': AuthService.getToken()

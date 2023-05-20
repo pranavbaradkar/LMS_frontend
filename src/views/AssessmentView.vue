@@ -368,15 +368,18 @@
                 <div class="time min pr-2"><span class="pe-1 text-h4">{{ mins }}</span><span class="text-subtitle-1">mm</span></div>
                 <div class="time sec"><span class="pe-1 text-h4 ">{{ secs }}</span><span class="text-subtitle-1">ss</span></div>
               </v-card>
-
-
-
-
-              <!-- Submit Button -->
-
+              
               </v-row>
-            <!-- </v-col> -->
 
+              <!-- Video Feed -->
+              <v-row cols="12" :border="1" class="align-center text-align-center mt-4 px-3 pb-4 ">
+                <video id="videoElement" class="rounded" autoplay></video>
+              </v-row>
+
+
+            <!-- </v-col> -->
+            
+            <!-- Submit Button -->
             <v-btn  variant="tonal" elevation="0" block height="48px" class="w-100 submit-btn white--text" @click="openTestSummary">SUBMIT</v-btn>
             <!-- Progress Bar -->
           <!-- </v-row> -->
@@ -665,7 +668,13 @@ export default {
         colorIndex: 0,
         selectedAnswer: null,
       },
-
+      mediaStream: null,
+      mediaRecorder: null,
+      socket: null,
+      chunks: [],
+      rec_status: 'idle',
+      tab_status: null,
+      violations: 0
     };
   },
   computed: {
@@ -691,6 +700,9 @@ export default {
   },
   mounted() {
     window.addEventListener("beforeunload", this.handleBeforeUnload);
+    window.addEventListener("onkeydown", this.handleKeyPress);
+    ['blur','focus'].forEach(event => { window.addEventListener(event, this.handleTabBlurFocus); });
+    ['copy','paste'].forEach(event => { window.addEventListener(event, this.handleCopyPaste); });
 
     this.startTimer();
 
@@ -705,6 +717,10 @@ export default {
   async beforeDestroy() {
     window.removeEventListener("beforeunload", this.handleBeforeUnload);
     window.removeEventListener("resize", this.onResize);
+    window.removeEventListener("onkeydown", this.handleKeyPress);
+    ['blur','focus'].forEach(event => { window.removeEventListener(event, this.handleTabBlurFocus); });
+    ['copy','paste'].forEach(event => { window.removeEventListener(event, this.handleCopyPaste); });
+
     this.stopTimer();
     this.$mixpanel.track("AssessmentClosed", {
       assessment_id: this.assessment.id,
@@ -722,6 +738,78 @@ export default {
   },
 
   methods: {
+    handleTabBlurFocus(event){
+      this.violations++;
+      console.warn("User ", event.type, " on current Tab");
+    },
+    handleCopyPaste(event){
+      event.preventDefault();
+    },
+    handleKeyPress(event){
+      if (event.keyCode === 27) {  console.log('The ESC key was pressed.'); }
+      // if (event.keyCode === 17 && event.keyCode === 84) {  console.log('User tried to create new tab'); }
+    },
+    checkUserAgent(){
+      const userAgent = navigator.userAgent;
+      const match = userAgent.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i);
+      if (match) {
+        console.log(`The browser is ${match[1]} ${match[2]}`);
+        if(match[1] != 'chrome') {
+          console.log('Please use Chrome Browser to give test');
+        }
+      } else {
+        console.log(`The browser's name and version could not be found.`);
+      }
+    },
+    getVideoElement(){
+      return document.getElementById('videoElement');
+    },
+    verifyCameraStream() {
+      this.mediaStream.getTracks().forEach((track) => { 
+        this.camera_id = track.id; 
+        if(track.readyState !="live") {
+          alert("Camera Stream Stopped");
+        }
+      });     
+      console.log("Acive stream ", this.mediaStream.getTracks());
+    },
+    cameraMedia(){
+      // Check if MediaRecorder API is supported
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        console.error('MediaRecorder API is not supported in this browser.');
+        //return;
+      }
+      // Start capturing video frames
+      navigator.mediaDevices.getUserMedia({ video: true })
+        .then((stream) => {    
+          this.mediaStream = stream;
+          this.getVideoElement().srcObject = stream;
+          this.mediaRecorder = new MediaRecorder(stream);
+
+          this.mediaRecorder.ondataavailable = (event) => {
+            if (event.data && event.data.size > 0) {
+              this.chunks.push(event.data);
+              console.log(this.chunks);
+              // socket.send(event.data);
+            }
+          };
+        this.mediaRecorder.start();
+      })
+      .catch((error) => {
+        alert('Error accessing the camera:', error);
+      });
+    },
+    stopRecording() {
+      // console.log("camera stop triggered");
+      let t = new Date();
+      this.rec_status = "recording stopped at "+ t.getSeconds();
+      // Stop capturing video frames
+      this.mediaRecorder.stop();
+      this.chunks = [];
+      // videoElement.srcObject.getTracks().forEach((track) => track.stop());
+      this.mediaRecorder.start();
+      //socket.close();
+    },
     getAssetType(assetDataType) {
       if (assetDataType != null) {
         console.log(assetDataType);
@@ -1176,7 +1264,8 @@ export default {
         this.assessment.id, 
         this.testType.toLocaleLowerCase(),
         (assessmentData.duration_of_assessment - this.seconds),
-        response
+        response,
+        this.violations
       );
     },
     previous() {
@@ -1356,6 +1445,16 @@ export default {
     this.testType = this.$route.query.test;
     // console.log(this.assessmentId);
     this.getAssessmentInfo();
+
+    this.checkUserAgent();
+    this.cameraMedia();
+    setInterval(() => {
+      this.verifyCameraStream();
+      this.stopRecording();
+    }, 10000);
+    setInterval(()=>{
+      this.verifyCameraStream();
+    }, 5000);
   },
 };
 </script>
