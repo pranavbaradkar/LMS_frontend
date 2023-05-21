@@ -854,7 +854,7 @@
                 </v-form>
               </v-card>
               <v-btn
-                class="mx-4 my-4 secondaryAccent primary--text"
+                class="mx-4 my-4 primary--text"
                 depressed
                 outlined
                 @click="e1++"
@@ -1335,7 +1335,7 @@ export default {
   // },
   data() {
     return {
-      e1: 3,
+      e1: 1,
       experience: "Experienced",
       isCurrentlyWorking: false,
       isFetchingLocation: false,
