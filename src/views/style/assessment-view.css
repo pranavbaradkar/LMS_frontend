@@ -241,3 +241,8 @@ body .v-application .question-selection-box .bookmark-bg .question-box-font {
 .v-application .maincontainer-question {
   overflow: hidden;
 }
+.icon-space span {
+  display: flex;
+  justify-content: space-around;
+  padding: 0px !important;
+}

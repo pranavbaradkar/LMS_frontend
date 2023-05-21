@@ -283,7 +283,11 @@
                   <v-card-title><v-row class="d-flex flex-row justify-space-between">
                       <div>
                         <v-btn color="default" @click="previous"  elevation="0"  width="120px" height="36px"
-                          :disabled="selectedQuestion == 0">
+                          :disabled="selectedQuestion == 0" class="icon-space">
+                          <v-icon
+                            size="small"
+                            start
+                          >mdi-arrow-left</v-icon>
                           Previous
                         </v-btn>
 
@@ -304,8 +308,12 @@
         || (this.isObject(this.questions[this.selectedQuestion].myAnswer) && Object.keys(this.questions[this.selectedQuestion].myAnswer).length === this.questions[this.selectedQuestion].question_options.length)
         )" 
                           @click="next"  width="120px"
-                          height="36px" class="ml-4 mr-0 white--text">
-                          NEXT
+                          height="36px" class="ml-4 mr-0 white--text icon-space">
+                         
+                          NEXT   <v-icon
+                            size="small"
+                            start
+                          >mdi-arrow-right</v-icon>
                         </v-btn>
                       </div>
 
@@ -357,7 +365,7 @@
         <v-col cols="2" class="p-0 col-22 right-container">
           <!-- <v-row class="d-flex px-4 py-4"> -->
             <!-- <v-col class="px-0 py-0"> -->
-              <v-btn variant="tonal" height="48" elevation="0" block class="white--text exit-text font-size-14" @click="confirmExitDialog">Exit Test</v-btn>
+              <v-btn variant="tonal" height="48" elevation="0" block class="white--text exit-text font-size-14" @click="confirmExitDialog = true">Exit Test</v-btn>
 
               <!-- Timer -->
               <v-row cols="12" :border="1" class="align-center text-align-center mt-4 px-3 pb-4 ">
@@ -377,7 +385,7 @@
               </v-row>
             <!-- </v-col> -->
 
-            <v-btn  variant="tonal" elevation="0" block height="48px" class="w-100 submit-btn white--text" @click="openTestSummary">SUBMIT</v-btn>
+            <v-btn  variant="tonal" elevation="0" block height="48px" class="w-100 submit-btn white--text" @click="confirmSubmission =true">Submit Test</v-btn>
             <!-- Progress Bar -->
           <!-- </v-row> -->
         </v-col>
@@ -595,14 +603,45 @@
         <v-container>
           <v-card-text class="text-center">
             <!-- <v-icon color="error" size="96">mdi-close-circle-outline</v-icon> -->
-            <p class="text-h5 mb-0">Are you sure you want to quit?</p>
-            <v-card-subtitle>
+            <p class="text-h5 mb-5"><strong>Are you sure you want to quit?</strong></p>
+          
+            <div class="d-flex justify-space-between w-100">
+              <v-btn
+                color="#DADADA"
+                depressed
+                class="black--text mt-5 mb-5 me-2 w-50"
+                large
+                @click="confirmExitDialog = false"
+                >NO</v-btn
+              >
+              <v-btn
+                color="#277BC0"
+                depressed
+                class="white--text mt-5 mb-5 w-50"
+                large
+                @click="$router.back()"
+                >YES</v-btn
+              >
+            </div>
+
+          </v-card-text>
+        </v-container>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="confirmSubmission" width="358px" persistent>
+      <v-card>
+        <v-container>
+          <v-card-text class="text-center">
+            <!-- <v-icon color="error" size="96">mdi-close-circle-outline</v-icon> -->
+            <p class="text-h5 mb-0">Are you sure you submit your assessment</p>
+            <!-- <v-card-subtitle>
               We will not be able to save your progress if you quit.
-            </v-card-subtitle>
+            </v-card-subtitle> -->
             <v-row justify="end" class="ma-2">
-              <v-btn depressed class="black--text" color="primary" large text rounded
-                @click="confirmExitDialog = false">NO</v-btn><v-btn depressed class="primary--text" color="secondary"
-                large rounded @click="$router.back()">YES</v-btn>
+              <v-btn depressed class="black--text" color="primary" large text
+                @click="confirmSubmission = false">NO</v-btn><v-btn depressed class="primary--text" color="secondary"
+                large @click="submitAssessment">YES</v-btn>
             </v-row>
           </v-card-text>
         </v-container>
@@ -626,6 +665,7 @@ export default {
       testType: "",
       assessmentId: "",
       confirmExitDialog: false,
+      confirmSubmission: false,
       errorDialog: false,
       errorMessage: "Failed",
       hours: "00",
@@ -1279,12 +1319,12 @@ export default {
 
         let assessmentData = this.assessment.tests.find(ele=> ele.assessment_type == this.testType.toLocaleUpperCase());
 
-        this.seconds = 8888; //assessmentData.duration_of_assessment;
+        this.seconds = assessmentData.duration_of_assessment;
         this.durationOfAssessment = assessmentData.duration_of_assessment;
         if(this.assessment && this.assessment.assessment_log){
           // let elapsed_time = this.assessment.assessment_log.elapsed_time;
           //this.seconds = this.seconds - elapsed_time;
-          let answeredQ = JSON.parse(this.assessment.assessment_log.answered_question);
+          let answeredQ = this.assessment.assessment_log && this.assessment.assessment_log.answered_question ? JSON.parse(this.assessment.assessment_log.answered_question) : {};
           let isLastQuestionItem = 0
           this.questions = this.questions.map((question, index) => {
             if(answeredQ[question.id]) {

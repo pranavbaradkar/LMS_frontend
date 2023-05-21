@@ -202,7 +202,7 @@
               <v-btn
                 height="48px"
                 color="#277BC0"
-                class="white--text"
+                class="white--text mt-4"
                 large
                 @click="recommendedTestViewEvent"
                 >START TEST</v-btn
@@ -314,12 +314,13 @@
         </v-card-title>
       </v-card>
     </v-container>
+
     <v-dialog v-model="dialog" max-width="365px" color="#fff">
       <v-card fluid elevation="0" class="rounded-xl" color="#fff">
         <div class="test-dialog-header">
           <p>Instructions</p>
         </div>
-        <div class="ma-5">
+        <div class="mx-5 mt-5">
           <div class="d-flex flex-row align-start mb-5">
             <v-icon size="6" class="me-2 mt-1">mdi-circle</v-icon>
             <p class="mb-0 font-weight-regular assesment-instruction">
