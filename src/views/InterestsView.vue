@@ -1,6 +1,6 @@
 <template>
   <v-card width="100%" height="100%" class="surface" depressed elevation="0" style="overflow: hidden;">
-      <v-app-bar color="surface" elevation="0" fixed>
+      <v-app-bar style="background-color: transparent" elevation="0" fixed>
         <v-list-item>
           <v-list-item-icon class="pt-4">
             <v-img src="../assets/logo.svg" contain max-width="16rem"></v-img>
@@ -8,7 +8,7 @@
         </v-list-item>
       </v-app-bar>
       <!-- parent card of items -->
-      <v-container fluid class="fill-height ma-0 pa-0" v-if="SetUpPreferencesClicked">
+      <v-container fluid class="fill-height ma-0 pa-0" v-if="SetUpPreferencesClicked && !showAIScreen">
       <v-row class="fill-height">
         <v-col cols="6">
           <div style="position: relative; width:100%;">
@@ -236,14 +236,13 @@
         </v-col>
       </v-row>
       </v-container>
-      <v-container fluid class="d-flex justify-center align-center" v-else>
+      <v-container fluid class="d-flex justify-center align-center" v-else-if="!SetUpPreferencesClicked && !showAIScreen">
         <v-card rounded style="margin-top: 130px" height="446" width="463" class="pa-8 rounded-xl">
-          <v-card-title>
-            <div style="height: 150px">
-
+            <div style="height: 150px" class="d-flex justify-center flex-column">
+              <!-- <lottie-player src='../assets/Animation/welcome.json' speed="1"  loop autoplay></lottie-player> -->
+              <v-img style="align-self: center" src="../assets/welcome.gif" height="150" width="150"></v-img>
             </div>
-          </v-card-title>
-          <v-card-subtitle class="mt-5">
+          <v-card-subtitle>
             <v-row>
               <v-col class="d-flex justify-center flex-column align-center pa-0">
                 <div style="font-size: 34px; line-height: 40px;" class="font-weight-bold black--text text-align-center">Welcome to your profile! </div>
@@ -260,6 +259,30 @@
           </v-card-actions>
         </v-card>
       </v-container>
+      <v-container fluid class="d-flex surface justify-center align-center" v-else-if="showAIScreen">
+        <v-row class="fill-height">
+        <v-col cols="7">
+          <div style="position: relative; width:100%;">
+              <v-img :height="getHeight - 22 + 'px'" width="100%" style="position: absolute; z-index: 0;" src="@/assets/curl-background-2.svg"></v-img>
+              <v-row class="d-flex justify-center ml-16">
+                <v-col style="margin-top: 132px" class="pa-0">
+                  <v-img class="mt-4" width="360" height="360" style="z-index: 1;" src="@/assets/AI-loader.gif"></v-img>
+                </v-col>
+              </v-row>
+            </div>
+        </v-col>
+        <v-col cols="5" class="justify-space-between d-flex flex-column">
+          <div style="margin-top: 48%">
+          <div style="font-size: 39px; width: 80%; line-height: 40px" class="font-weight-bold ml-8 mb-2">
+            Unleashing AI's Power
+          </div>
+          <div style="font-size: 14px; color: rgba(0, 0, 0, 0.87); width: 80%" class="ml-8">
+            Unlocking AI's potential for unparalleled  recommendation..
+          </div>
+        </div>
+        </v-col>
+      </v-row>
+      </v-container>
   </v-card>
 </template>
 
@@ -275,7 +298,8 @@ export default {
   name: "InterestsView",
   data() {
     return {
-      SetUpPreferencesClicked: false,
+      showAIScreen: true,
+      SetUpPreferencesClicked: true,
       userInfo: {},
       e1: 1,
       subjects: [],
@@ -334,7 +358,6 @@ export default {
         case 1:
           if (this.userIntrestData.school_ids.length != 0) {       
             this.e1 = 2;
-            console.log("step", this.e1);
           }
           else {
             alert('Please Select at least one school')
@@ -343,7 +366,6 @@ export default {
           break;
         case 2:
           // if (this.$refs.step1.validate())
-          console.log("step2");
           if (this.userIntrestData.level_ids.length != 0) {
             this.e1 = 3;         
           }
@@ -361,19 +383,21 @@ export default {
           //   alert("Maxi")
           // }
           this.e1 = 4;
-          console.log("step", this.e1);
         }
         else {
           alert('Please Select at least one one board')
         }
           break;
         case 4:
-          console.log("step4");
           if( this.userIntrestData.subject_ids.length != 0){
             const res = await this.createUserIntrest();
             console.log(res);
             if(res.data.success) {
-              this.$router.replace("/");
+              this.showAIScreen = true;
+              this.SetUpPreferencesClicked = false;
+              setTimeout(() => {
+                this.$router.replace("/");
+              }, 3000);
             } else {
               alert(res.data.error)
             }
@@ -390,7 +414,6 @@ export default {
       }
     },
     async createUserIntrest() {
-      console.log("userInterst", this.userIntrestData);
       const response = await UserIntrestController.createUserIntrest(
         this.userIntrestData
       );
@@ -404,19 +427,16 @@ export default {
       this.subjectCategoryNames= this.subjects.map(item => item.subject_category.name);
      
       this.subjectCategoryNames = ['all'].concat(this.subjectCategoryNames)
-      console.log("subject log", this.subjects);
     },
     async getSchool() {
       const response = await SchoolController.getSchool();
       // console.log(response);
       this.schools = response.data.data.rows;
-      console.log("school log", this.schools);
     },
     async getBoards() {
       const response = await BoardController.getBoards();
       //console.log(response);
       this.boards = response.data.data.rows;
-      console.log("board log", this.boards);
     },
     async getLevel() {
       const response = await LevelController.getLevel();
@@ -427,7 +447,6 @@ export default {
     async getUserInfo() {
       const response = await LogedInUserInfo.getUserInfo();
       this.userInfo = response.data.user;
-      console.log("User: ", this.userInfo);
       if(this.userInfo.is_interest_captured){
         this.$router.replace('/');
       }
