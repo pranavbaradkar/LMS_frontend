@@ -46,6 +46,10 @@
   overflow-y: scroll;
 }
 
+.scroll-y {
+  overflow-y: scroll;
+}
+
 #myScroll::-webkit-scrollbar {
    width: 2px;
    height: 2px;

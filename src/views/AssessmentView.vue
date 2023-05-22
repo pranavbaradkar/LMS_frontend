@@ -12,7 +12,7 @@
 
         <!-- Left Card -->
         <v-col cols="3" class="p-0 pe-0 ps-0 col-23">
-          <v-card v-if="!isProgressClicked"  variant="tonal" class="left-container elevation-0 surface">
+          <v-card v-if="!isProgressClicked"  variant="tonal" class="left-container elevation-0 surface"  :height="getHeight">
             <v-card-title class="pb-0 question-title" ><span>{{ assessment.name }}</span></v-card-title>
             <v-card-title class="question-heading">Question Listing</v-card-title>
 
@@ -80,13 +80,13 @@
               </v-card-title>
             </v-card> -->
            
-            <v-container class="py-0 my-0">
-              <v-card elevation="0" class="surface">
+            <v-container class="py-0 my-0 scroll-y"  >
+              <v-card elevation="0" class="surface" :height="getLeftHeight" :minHeight="getLeftHeight">
                 <!-- need to set height of this card for set  good scroll -->
                 <v-list-item-group mandatory v-model="selectedQuestion" class="d-flex flex-wrap justify-content-between" >
                   
                   <v-list-item  v-for="(item, i) in questions" :key="i"
-                    class="question-selection-box me-4 mt-3 lighten-4 pt-2 pb-2"
+                    class="question-selection-box me-2 mt-3 lighten-4 pt-2 pb-2"
                     :class="`${getColorBg(item)} ${i == selectedQuestion ? 'v-item--active v-list-item--active' : ''}`"
                     @click="questionClicked(item)">
                     
@@ -699,6 +699,7 @@ export default {
       assessmentId: "",
       confirmExitDialog: false,
       confirmSubmission: false,
+      genericDialog: false,
       errorDialog: false,
       errorMessage: "Failed",
       hours: "00",
@@ -757,6 +758,11 @@ export default {
       //console.log("Height =", window.innerHeight);
       //console.log("Width =", window.innerWidth);
       return this.windowHeight - 25 + "px";
+    },
+    getLeftHeight() {
+      //console.log("Height =", window.innerHeight);
+      //console.log("Width =", window.innerWidth);
+      return this.windowHeight - 170 + "px";
     },
     
     // getQuestionsListHeight() {
@@ -984,7 +990,7 @@ export default {
     },
     updateTime() {
       if (this.seconds <= 0) {
-        this.summaryDialog = true;
+        this.genericDialog = true;
         this.pauseMedia();
         clearInterval(this.interval);
         return;
@@ -1447,7 +1453,7 @@ export default {
 
         this.seconds = assessmentData.duration_of_assessment;
         this.durationOfAssessment = assessmentData.duration_of_assessment ? assessmentData.duration_of_assessment : 0 ;
-        if(this.assessment && this.assessment.assessment_log){
+        if(this.assessment && this.assessment.assessment_log && this.assessment.assessment_log.length > 0) {
           let elapsed_time = this.assessment.assessment_log.elapsed_time;
           this.seconds = this.seconds - elapsed_time;
           let answeredQ = this.assessment.assessment_log && this.assessment.assessment_log.answered_question ? JSON.parse(this.assessment.assessment_log.answered_question) : {};
