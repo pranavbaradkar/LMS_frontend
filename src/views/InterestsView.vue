@@ -70,8 +70,8 @@
           <v-stepper-content step="2" class="pb-0 pt-0">
             <div id="myScroll" class="d-flex justify-center">
               <v-item-group multiple v-model="userIntrestData.level_ids" style="width: 90%">
-                <v-container>
-                  <v-layout row wrap justify-center class="item-box">
+                <v-container fluid>
+                  <v-layout row wrap justify-center class="item-box" fill-height>
                     <v-item
                       v-slot="{ active, toggle }"
                       v-for="(level,i) in levels"
@@ -118,7 +118,7 @@
             <div id="myScroll" class="d-flex justify-center">
               <v-item-group v-model="userIntrestData.board_ids" multiple style="width: 60%">
                 <v-container>
-                  <v-layout row wrap justify-center class="item-box">
+                  <v-layout row wrap justify-center class="item-box" fill-height>
                     <v-item
                       v-slot="{ active, toggle }"
                       v-for="(board, i) in boards"
@@ -182,7 +182,7 @@
             <div class="d-flex justify-center mt-6">
               <v-item-group multiple v-model="userIntrestData.subject_ids"  max="3" style="width: 80%">
                 <v-container>
-                  <v-layout row wrap justify-center class="item-box" style="height: calc(100vh - 275px)">
+                  <v-layout row wrap justify-center class="item-box" style="height: calc(100vh - 300px)">
                     <v-item
                       v-slot="{ active, toggle }"
                       v-for="(subject, i) in subjects"
