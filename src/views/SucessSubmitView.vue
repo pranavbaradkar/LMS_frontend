@@ -84,6 +84,7 @@
             class="white--text text-container"
             v-if="recommendedAssessment != null"
           >
+          
             <!-- <div class="text-caption">Recommended</div> -->
             <v-btn
               elevation="0"
@@ -97,28 +98,20 @@
             <p class="mt-1 font-weight-regular">
               {{ recommendedAssessment.instructions }}
             </p>
-            <div class="mt-1" v-if="recommendedAssessment.tests != null">
+            <div class="mt-1" v-if="assessmentConfigData != null">
               <v-icon class="white--text">mdi-book</v-icon>
-              {{ recommendedAssessment.tests[0].total_no_of_questions }}
+              {{ assessmentConfigData.total_no_of_questions }}
               Questions<v-icon class="white--text">mdi-circle-small</v-icon
               ><v-icon class="white--text">mdi-clock</v-icon>
-              {{
+              {{ assessmentConfigData.duration_of_assessment ?  
                 formatTime(
-                  recommendedAssessment.tests[0].duration_of_assessment
-                )
+                  assessmentConfigData.duration_of_assessment
+                ) : formatTime(0)
               }}
               <v-icon class="white--text">mdi-circle-small</v-icon
               ><v-icon class="white--text">mdi-book</v-icon>
               300 Users
             </div>
-            <v-btn
-              height="48px"
-              color="#277BC0"
-              class="white--text"
-              large
-              @click="recommendedTestViewEvent"
-              >START TEST</v-btn
-            >
           </div>
           <!-- <div class="white--text" v-if="recommendedAssessment != null">
               <div class="text-caption">Recommended</div>
@@ -164,7 +157,8 @@
             >
               <div class="d-flex flex-row align-center">
                 <v-checkbox
-                  v-model="checkbox"
+                  @click="emailSelected"
+                  v-model="notificationEmail"
                 ></v-checkbox>
                 <v-img
                   max-height="24"
@@ -177,7 +171,7 @@
                     Email
                   </div>
                   <p class="mb-0 thank-you-subtext">
-                    dhrumil.ampersandgroup.in
+                    {{ $store.state.userInfo.email }}
                   </p>
                 </div>
               </div>
@@ -189,7 +183,8 @@
             >
               <div class="d-flex flex-row align-center">
                 <v-checkbox
-                  v-model="checkbox"
+                  @click="messageSelected"
+                  v-model="notificationSMS"
                 ></v-checkbox>
                 <v-img
                   max-height="24"
@@ -202,7 +197,7 @@
                     SMS
                   </div>
                   <p class="mb-0 thank-you-subtext">
-                    902255XXXX
+                    {{ $store.state.userInfo.phone_no }}
                   </p>
                 </div>
               </div>
@@ -214,7 +209,6 @@
             >
               <div class="d-flex flex-row align-center">
                 <v-checkbox
-                  v-model="checkbox"
                 ></v-checkbox>
                 <v-img
                   max-height="24"
@@ -227,7 +221,7 @@
                     Whatsapp
                   </div>
                   <p class="mb-0 thank-you-subtext">
-                    902255XXXX
+                    {{ $store.state.userInfo.phone_no }}
                   </p>
                 </div>
               </div>
@@ -239,14 +233,14 @@
               depressed
               class="white--text mt-5 mb-5"
               large
-              @click="startTest"
+              @click="confirm"
               >Confirm</v-btn
             >
           </div>
         </div>
       </v-card>
     </v-dialog>
-    <div class="d-flex m-body m-center">
+    <!-- <div class="d-flex m-body m-center">
       <v-card
         width="55rem"
         height="auto"
@@ -323,13 +317,15 @@
           >confirm</v-btn
         >
       </v-card>
-    </div>
+    </div> -->
   </div>
 </template>
     
 <script>
 import "../styles.css";
+import AssessmentController from "../controllers/AssessmentController";
 import AuthService from "../services/AuthService";
+import LogedInUserInfo from "@/controllers/LogedInUserInfo";
 export default {
   name: "HomeView",
   data() {
@@ -338,6 +334,8 @@ export default {
       notificationEmail: false,
       assessmentId: null,
       dialog: true,
+      recommendedAssessment: {},
+      assessmentConfigData: {}
     };
   },
   mounted() {
@@ -359,10 +357,16 @@ export default {
         notification_email: this.notificationEmail,
         screen_name: "ThankyouScreen",
       });
-      this.$router.push({
-        path: "/report",
-        query: { id: this.assessmentId },
-      });
+      this.dialog = false;
+      // this.$router.push({
+      //   path: "/report",
+      //   query: { id: this.assessmentId },
+      // });
+    },
+    formatTime(seconds) {
+      const totalMs = seconds * 1000;
+      const result = new Date(totalMs).toISOString().slice(11, 19);
+      return result;
     },
     logout() {
       AuthService.logout();
@@ -385,6 +389,21 @@ export default {
         email_id: this.$store.state.userInfo.email,
       });
     },
+    async getAssessmentInfo (assessmentId) {
+
+      const response2 = await LogedInUserInfo.getUserInfo();
+      this.userInfo = response2.data && response2.data.user ? response2.data.user : {};
+      this.$store.state.userInfo = this.userInfo;
+    
+      let response = await AssessmentController.getSingleAssessment(
+        assessmentId
+      );
+      if(response && response.data && response.data.data) {
+        this.recommendedAssessment = response.data.data;
+        this.assessmentConfigData = this.recommendedAssessment.tests.find(ele=> ele.assessment_type == 'SCREENING');
+        console.log(this.recommendedAssessment);
+      }
+    },
   },
   created() {
     // console.log("userInfo");
@@ -392,15 +411,17 @@ export default {
     const assessmentName = this.$route.query.assessmentName;
 
     // console.log("assessment data", assessment)
-
     this.assessmentId = assessmentId;
+    this.getAssessmentInfo(assessmentId);
     // console.log('assessment id',this.assessmentId)
     this.$mixpanel.track("SubmissionSucceeded", {
       assessment_id: assessmentId,
       assessment_name: assessmentName,
       screen_name: "SubmissionSucceededScreen",
     });
-  },
+
+    
+  }
 };
 </script>
      

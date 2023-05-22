@@ -246,3 +246,13 @@ body .v-application .question-selection-box .bookmark-bg .question-box-font {
   justify-content: space-around;
   padding: 0px !important;
 }
+
+.procting {
+  width: 100%;
+}
+
+#videoElement {
+  width: 100%;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}

@@ -298,8 +298,8 @@
         || (this.isObject(this.questions[this.selectedQuestion].myAnswer) && Object.keys(this.questions[this.selectedQuestion].myAnswer).length === this.questions[this.selectedQuestion].question_options.length)
         )" 
                         v-if="selectedQuestion == questions.length - 1"
-                          color="secondPrimary" @click="summaryDialog = true" height="36px" class="ml-4 white--text mr-0">
-                          Proceed & View Summary
+                          color="secondPrimary" @click="confirmSubmission = true" height="36px" class="ml-4 white--text mr-0">
+                          Proceed & Submit
                         </v-btn>
                         <v-btn v-else color="secondPrimary" elevation="0" :disabled=" 
                         !(
@@ -378,14 +378,16 @@
               </v-card>
 
 
-
+              <div class="procting" >
+                <video id="videoElement" class="rounded" autoplay></video>
+              </div>
 
               <!-- Submit Button -->
 
               </v-row>
             <!-- </v-col> -->
 
-            <v-btn  variant="tonal" elevation="0" block height="48px" class="w-100 submit-btn white--text" @click="confirmSubmission =true">Submit Test</v-btn>
+            <v-btn  variant="tonal" elevation="0" block height="48px" class="w-100 submit-btn white--text" @click="confirmSubmission = true">Submit Test</v-btn>
             <!-- Progress Bar -->
           <!-- </v-row> -->
         </v-col>
@@ -634,15 +636,46 @@
         <v-container>
           <v-card-text class="text-center">
             <!-- <v-icon color="error" size="96">mdi-close-circle-outline</v-icon> -->
-            <p class="text-h5 mb-0">Are you sure you submit your assessment</p>
-            <!-- <v-card-subtitle>
-              We will not be able to save your progress if you quit.
-            </v-card-subtitle> -->
-            <v-row justify="end" class="ma-2">
-              <v-btn depressed class="black--text" color="primary" large text
-                @click="confirmSubmission = false">NO</v-btn><v-btn depressed class="primary--text" color="secondary"
-                large @click="submitAssessment">YES</v-btn>
-            </v-row>
+            <p class="text-h5 mb-0"><strong>Are you sure, you want to submit your assessment.</strong></p>
+            <div class="d-flex justify-space-between w-100">
+              <v-btn
+                color="#DADADA"
+                depressed
+                class="black--text mt-5 mb-5 me-2 w-50"
+                large
+                @click="confirmSubmission = false"
+                >NO</v-btn
+              >
+              <v-btn
+                color="#277BC0"
+                depressed
+                class="white--text mt-5 mb-5 w-50"
+                large
+                @click="submitAssessment"
+                >YES</v-btn
+              >
+            </div>
+          </v-card-text>
+        </v-container>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="genericDialog" width="358px" persistent>
+      <v-card>
+        <v-container>
+          <v-card-text class="text-center">
+            <!-- <v-icon color="error" size="96">mdi-close-circle-outline</v-icon> -->
+            <p class="text-h5 mb-0"><strong>Candidate can't switch the tab, use copy and paste, ESC and other voilation activtity during exam</strong></p>
+            <div class="d-flex justify-space-between w-100">
+              <v-btn
+                color="#DADADA"
+                depressed
+                class="black--text mt-5 mb-5 me-2 w-50"
+                large
+                @click="genericDialog = false"
+                >Continue</v-btn
+              >
+            </div>
           </v-card-text>
         </v-container>
       </v-card>
@@ -706,6 +739,14 @@ export default {
         selectedAnswer: null,
       },
 
+      mediaStream: null,
+      mediaRecorder: null,
+      socket: null,
+      chunks: [],
+      rec_status: 'idle',
+      tab_status: null,
+      violations: 0
+
     };
   },
   computed: {
@@ -731,12 +772,18 @@ export default {
   },
   mounted() {
     window.addEventListener("beforeunload", this.handleBeforeUnload);
+    window.addEventListener("onkeydown", this.handleKeyPress);
+    ['blur','focus'].forEach(event => { window.addEventListener(event, this.handleTabBlurFocus); });
+    ['copy','paste'].forEach(event => { window.addEventListener(event, this.handleCopyPaste); });
 
     this.startTimer();
 
     this.$nextTick(() => {
       window.addEventListener("resize", this.onResize);
     });
+    setTimeout(() => {
+      this.onResize();
+    }, 300);
   },
 
   destroyed() {
@@ -744,6 +791,9 @@ export default {
   },
   async beforeDestroy() {
     window.removeEventListener("beforeunload", this.handleBeforeUnload);
+    window.removeEventListener("onkeydown", this.handleKeyPress);
+    ['blur','focus'].forEach(event => { window.removeEventListener(event, this.handleTabBlurFocus); });
+    ['copy','paste'].forEach(event => { window.removeEventListener(event, this.handleCopyPaste); });
     window.removeEventListener("resize", this.onResize);
     this.stopTimer();
     this.$mixpanel.track("AssessmentClosed", {
@@ -762,6 +812,81 @@ export default {
   },
 
   methods: {
+    handleTabBlurFocus(event){
+      this.violations++;
+      console.warn("User ", event.type, " on current Tab");
+      this.genericDialog = false;
+    },
+    handleCopyPaste(event){
+      this.genericDialog = false;
+      event.preventDefault();
+      
+    },
+    handleKeyPress(event){
+      this.genericDialog = false;
+      if (event.keyCode === 27) {  console.log('The ESC key was pressed.'); }
+      // if (event.keyCode === 17 && event.keyCode === 84) {  console.log('User tried to create new tab'); }
+    },
+    checkUserAgent() {
+      const userAgent = navigator.userAgent;
+      const match = userAgent.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i);
+      if (match) {
+        console.log(`The browser is ${match[1]} ${match[2]}`);
+        if(match[1] != 'chrome') {
+          console.log('Please use Chrome Browser to give test');
+        }
+      } else {
+        console.log(`The browser's name and version could not be found.`);
+      }
+    },
+    getVideoElement(){
+      return document.getElementById('videoElement');
+    },
+    verifyCameraStream() {
+      this.mediaStream.getTracks().forEach((track) => { 
+        this.camera_id = track.id; 
+        if(track.readyState != "live") {
+          alert("Camera Stream Stopped");
+        }
+      });     
+      console.log("Acive stream ", this.mediaStream.getTracks());
+    },
+    cameraMedia(){
+      // Check if MediaRecorder API is supported
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        console.error('MediaRecorder API is not supported in this browser.');
+        //return;
+      }
+      // Start capturing video frames
+      navigator.mediaDevices.getUserMedia({ video: true })
+        .then((stream) => {    
+          this.mediaStream = stream;
+          this.getVideoElement().srcObject = stream;
+          this.mediaRecorder = new MediaRecorder(stream);
+          this.mediaRecorder.ondataavailable = (event) => {
+            if (event.data && event.data.size > 0) {
+              this.chunks.push(event.data);
+              console.log(this.chunks);
+              // socket.send(event.data);
+            }
+          };
+        this.mediaRecorder.start();
+      })
+      .catch((error) => {
+        alert('Error accessing the camera:', error);
+      });
+    },
+    stopRecording() {
+      // console.log("camera stop triggered");
+      let t = new Date();
+      this.rec_status = "recording stopped at "+ t.getSeconds();
+      // Stop capturing video frames
+      this.mediaRecorder.stop();
+      this.chunks = [];
+      // videoElement.srcObject.getTracks().forEach((track) => track.stop());
+      this.mediaRecorder.start();
+      //socket.close();
+    },
     getAssetType(assetDataType) {
       if (assetDataType != null) {
         console.log(assetDataType);
@@ -960,7 +1085,7 @@ export default {
       }
       setTimeout(() => {
         this.onResize();
-      }, 100);
+      }, 500);
     },
     updateProgress() {
       this.answeredProgress = 0;
@@ -1174,7 +1299,7 @@ export default {
       }
       setTimeout(() => {
         this.onResize();
-      }, 100);
+      }, 300);
     },
 
     async next () {
@@ -1216,7 +1341,8 @@ export default {
         this.assessment.id, 
         this.testType.toLocaleLowerCase(),
         (assessmentData.duration_of_assessment - this.seconds),
-        response
+        response,
+        this.violations
       );
     },
     previous() {
@@ -1320,10 +1446,10 @@ export default {
         let assessmentData = this.assessment.tests.find(ele=> ele.assessment_type == this.testType.toLocaleUpperCase());
 
         this.seconds = assessmentData.duration_of_assessment;
-        this.durationOfAssessment = assessmentData.duration_of_assessment;
+        this.durationOfAssessment = assessmentData.duration_of_assessment ? assessmentData.duration_of_assessment : 0 ;
         if(this.assessment && this.assessment.assessment_log){
-          // let elapsed_time = this.assessment.assessment_log.elapsed_time;
-          //this.seconds = this.seconds - elapsed_time;
+          let elapsed_time = this.assessment.assessment_log.elapsed_time;
+          this.seconds = this.seconds - elapsed_time;
           let answeredQ = this.assessment.assessment_log && this.assessment.assessment_log.answered_question ? JSON.parse(this.assessment.assessment_log.answered_question) : {};
           let isLastQuestionItem = 0
           this.questions = this.questions.map((question, index) => {
@@ -1396,6 +1522,17 @@ export default {
     this.testType = this.$route.query.test;
     // console.log(this.assessmentId);
     this.getAssessmentInfo();
+
+    this.checkUserAgent();
+    this.cameraMedia();
+    setInterval(() => {
+      this.verifyCameraStream();
+      this.stopRecording();
+    }, 10000);
+    setInterval(()=>{
+      this.verifyCameraStream();
+    }, 5000);
+
   },
 };
 </script>
