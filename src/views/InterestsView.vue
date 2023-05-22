@@ -43,10 +43,8 @@
           <!------------------------------------------ STEP 1 ------------------------------------------>
           <v-stepper-content step="1" elevation="0" class="pt-0 pb-0">
             <v-form lazy-validation ref="step1">
-              <v-container>
+              <div>
                 <v-autocomplete
-                auto-select-first
-                  autofocus
                   style="max-height: 70%; top: 199px; box-shadow: none"
                   v-model="userIntrestData.school_ids"
                   deletable-chips
@@ -64,7 +62,7 @@
                   id="schoolBox"
                 >
                 </v-autocomplete>
-              </v-container>
+              </div>
             </v-form>
           </v-stepper-content>
           <!------------------------------------------ STEP 2 ------------------------------------------>
@@ -228,7 +226,7 @@
       <v-btn
         color="primary"
         class="white--text"
-        style="width: 100%"
+        style="width: 100%; z-index: 10"
         :disabled="  (e1 == 1 && (userIntrestData.school_ids.length  ==0 ))  || (e1 == 2 && (userIntrestData.level_ids.length == 0 ))  ||  (e1 == 3 && (userIntrestData.board_ids.length == 0)) || (e1 == 4 && (userIntrestData.subject_ids.length == 0)) "
         @click="goTo(e1)"
       >
@@ -256,7 +254,7 @@
             </v-row>
           </v-card-subtitle>
           <v-card-actions class="mt-5 d-flex justify-center">
-            <v-btn @click="SetUpPreferencesClicked = true;" style="align-self: center; width: 100%" color="primary">
+            <v-btn @click="clickSetUpPreference" style="align-self: center; width: 100%" color="primary">
               Setup Preferences
             </v-btn>
           </v-card-actions>
@@ -442,6 +440,13 @@ export default {
       screen_name: "PersonalProfileInformationScreen",
     });
     },
+
+    clickSetUpPreference () {
+      this.SetUpPreferencesClicked = true;
+      setTimeout(() => {
+      document.getElementById('schoolBox').click();
+    }, 1000);
+    }
   },
   mounted() {
   },
@@ -464,7 +469,7 @@ export default {
 <style>
 .v-menu__content {
     box-shadow: none !important;
-    max-height: 60% !important;
+    max-height: 55% !important;
 }
 </style>
        
