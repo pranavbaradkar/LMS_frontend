@@ -16,6 +16,30 @@ export default {
             return error.response;
         }
     },
+    getUserInterests: async function () {
+        try {
+            const response = await instance.get('users/teaching-interests-names', {
+                headers: {
+                    'Authorization': AuthService.getToken()
+                }
+            })
+            return response;
+        } catch (error) {
+            return error.response;
+        }
+    },
+    getUserInterestsForEdit : async function () {
+        try {
+            const response = await instance.get('users/teaching-interests', {
+                headers: {
+                    'Authorization': AuthService.getToken()
+                }
+            })
+            return response;
+        } catch (error) {
+            return error.response;
+        }
+    },
 
 
 
