@@ -429,8 +429,12 @@ input[type="text"] {
   box-sizing: border-box;
   -webkit-transition: 0.2s;
   transition: 0.2s;
+  outline-color: #277BC0;
+}
 
-  outline-color: #82d2da;
+.v-otp-input > .v-input > .v-input__control > .v-input__slot > .v-text-field__slot > input {
+  padding: 0px !important;
+  margin-bottom: 0px;
 }
 </style>
 
