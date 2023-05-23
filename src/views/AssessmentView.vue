@@ -674,7 +674,11 @@ export default {
       chunks: [],
       rec_status: 'idle',
       tab_status: null,
-      violations: 0
+      violations: {},
+      changeTab_violations: 0,
+      keypress_violoations:0,
+      copyPaste_violations:0,
+      cameraStream_violations:0
     };
   },
   computed: {
@@ -739,14 +743,18 @@ export default {
 
   methods: {
     handleTabBlurFocus(event){
-      this.violations++;
+      this.violations.changeTab_violations++;
       console.warn("User ", event.type, " on current Tab");
     },
     handleCopyPaste(event){
+      this.violations.copyPaste_violations++;
       event.preventDefault();
     },
     handleKeyPress(event){
-      if (event.keyCode === 27) {  console.log('The ESC key was pressed.'); }
+      if (event.keyCode === 27 || event.keyCode === 17) {  
+        this.violations.keypress_violations++;
+        console.log('The ESC, Ctrl key was pressed.'); 
+      }
       // if (event.keyCode === 17 && event.keyCode === 84) {  console.log('User tried to create new tab'); }
     },
     checkUserAgent(){
@@ -768,6 +776,7 @@ export default {
       this.mediaStream.getTracks().forEach((track) => { 
         this.camera_id = track.id; 
         if(track.readyState !="live") {
+          this.violations.cameraStream_violations++;
           alert("Camera Stream Stopped");
         }
       });     
@@ -1454,6 +1463,7 @@ export default {
     }, 10000);
     setInterval(()=>{
       this.verifyCameraStream();
+
     }, 5000);
   },
 };
