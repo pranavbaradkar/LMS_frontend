@@ -171,7 +171,7 @@
             <!------------------------------------------ STEP 1 ------------------------------------------>
             <v-stepper-content step="1" class="pb-4 pa-0" style="background-color: white;">
                 <v-card 
-                :height="getHeight - 300 + 'px'"
+                :height="getHeight - 250 + 'px'"
                 id="myScroll"
                 elevation="0"
                 style="overflow-x: hidden;"
@@ -183,6 +183,7 @@
                         <v-row class="py-0 px-8 pt-8">
                           <v-col cols="2" class="py-0"
                             ><v-select
+                              style="margin-top: 10px"
                               v-model="personalInfo.title"
                               label="Title *"
                               :items="['Ms', 'Mrs', 'Mr']"
@@ -229,7 +230,7 @@
                                 @keydown.enter.prevent="submit"
                               >
                                 <template #append>
-                                  <div class="d-flex align-center n-mt-10">
+                                  <div class="d-flex align-center">
                                     <v-btn
                                       on
                                       text
@@ -243,7 +244,7 @@
                                     <v-row
                                       v-if="personalInfo.is_email_verified"
                                     >
-                                      <v-col class="px-0 mt-1">
+                                      <v-col class="px-0 mt-1 mr-4">
                                         <v-img
                                           src="../assets/verifiedIcon.png"
                                           contain
@@ -280,7 +281,7 @@
                               required
                             >
                               <template #append>
-                                <div class="d-flex align-center n-mt-10">
+                                <div class="d-flex align-center">
                                   <v-btn
                                     on
                                     text
@@ -298,7 +299,7 @@
                                   </v-btn>
 
                                   <v-row v-if="personalInfo.is_phone_verified">
-                                    <v-col class="px-0 mt-1">
+                                    <v-col class="px-0 mr-4">
                                       <v-img
                                         src="../assets/verifiedIcon.png"
                                         contain
@@ -483,7 +484,7 @@
                               <v-text-field
                                 v-model="personalInfo.pincode"
                                 :value="pinCode"
-                                
+                                style="margin-top: -2px"
                                 @keypress="isNumber($event)"
                                 label="Pin Code *"
                                 counter="6"
@@ -570,7 +571,6 @@
                               <v-text-field
                                 v-model="personalInfo.pincode"
                                 :value="pinCode"
-                                
                                 @keypress="isNumber($event)"
                                 label="Pin Code *"
                                 readonly
@@ -593,7 +593,7 @@
                       <v-btn
                         depressed
                         color="primary"
-                        class="float-right white--text mx-8 mt-12"
+                        class="float-right white--text mx-8 mt-0"
                         @click="goToStep2"
                       >
                         NEXT
@@ -627,7 +627,7 @@
                           :key="index"
                           elevation="0"
                         >
-                          <v-expansion-panel-header>
+                          <v-expansion-panel-header :style="{'min-height': expandedPanelIndex == index ? '12px' : '', 'padding': expandedPanelIndex == index ? '0px' : ''}" class="pr-4">
                             <div
                               class="d-flex flex-column"
                               v-if="expandedPanelIndex != index  &&
@@ -727,7 +727,7 @@
                                 ><v-text-field
                                   v-model="qualification.start_date"
                                   :max="new Date().toISOString().slice(0, 10)"
-                                  
+                                  class="date-field"
                                   label="Start Date*"
                                   
                                   
@@ -749,10 +749,7 @@
                                 ><v-text-field
                                   v-model="qualification.end_date"
                                   :max="new Date().toISOString().slice(0, 10)"
-                                  
                                   label="End Date* (or expected)"
-                                  
-                                  
                                   type="date"
                                   :rules="[
                                     (v) => !!v || 'End Date is required',
@@ -1551,6 +1548,7 @@ export default {
       this.indexValue = null;
     },
     async goToStep2() {
+      console.log("clicked step 2")
       if (this.$refs.step1.validate()) {
         console.log("userif conditon");
         this.isCreatingUser = true;
@@ -1902,7 +1900,9 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
+      console.log("clicked step 2")
       window.addEventListener("resize", this.onResize);
+      console.log("clicked step 2")
     });
   },
 
@@ -1924,6 +1924,12 @@ export default {
    }
    .registration-stepper.v-sheet.v-stepper:not(.v-sheet--) {
     box-shadow: none;
+}
+
+.v-input.date-field > .v-input__control > .v-input__slot > .v-text-field__slot > input {
+  padding: 0px !important;
+  margin-bottom: 16px;
+  margin-top: 12px !important;
 }
 
 </style>
