@@ -12,7 +12,7 @@
 
             <v-card-title class="pl-2" v-if="userInfo != null"
               >{{ userInfo.first_name }} 👋</v-card-title
-            >
+            > 
             <v-menu offset-y>
               <template v-slot:activator="{ on, attrs }">
                 <v-btn color="primary" dark v-bind="attrs" v-on="on" text icon>
@@ -612,6 +612,27 @@ export default {
         path: "/assessment",
         query: { id: this.selectedAssessment.id, test: this.testType },
       });
+      // let url = `/#/assessment?id=${this.selectedAssessment.id}&test=${this.testType}`;
+      // this.Full_W_P(url);
+    },
+    Full_W_P(url) {
+      let params  = 'width='+screen.width;
+      params += ', height='+screen.height;
+      params += ', top=0, left=0'
+      params += ', fullscreen=yes';
+      params += ', minimizable=no';
+      params += ', directories=no';
+      params += ', location=no';
+      params += ', menubar=no';
+      params += ', resizable=no';
+      params += ', scrollbars=yes';
+      params += ', status=no';
+      params += ', toolbar=no';
+
+
+      let newwin = window.open(url,'FullWindowAll', params);
+      if (window.focus) {newwin.focus()}
+      return false;
     },
     recommendedTestViewEvent() {
       this.selectedAssessment = this.recommendedAssessment;
@@ -808,7 +829,7 @@ export default {
       if (response.status == 404) {
         const response2 =
           await RecommendedAssessmentController.getRecommendedAssessment(
-            "?debug=284"
+            "?debug=187"
           );
         this.recommendedAssessment = response2.data.data;
         console.log(this.recommendedAssessment);

@@ -660,17 +660,21 @@
       </v-card>
     </v-dialog>
 
-    <v-dialog v-model="genericDialog" width="358px" persistent>
+    <v-dialog v-model="genericDialog" width="450px" persistent>
       <v-card>
         <v-container>
           <v-card-text class="text-center">
             <!-- <v-icon color="error" size="96">mdi-close-circle-outline</v-icon> -->
-            <p class="text-h5 mb-0"><strong>Candidate can't switch the tab, use copy and paste, ESC and other voilation activtity during exam</strong></p>
+            <p class="text-h6 mb-0">Candidate can't switch the tab or minimize, use copy and paste, ESC and other voilation activtity during exam.</p>
             <div class="d-flex justify-space-between w-100">
-              <v-btn
-                color="#DADADA"
-                depressed
+              <div
                 class="black--text mt-5 mb-5 me-2 w-50"
+                ></div
+              >
+              <v-btn
+                color="#277BC0"
+                depressed
+                class="white--text mt-5 mb-5 me-2 w-50"
                 large
                 @click="genericDialog = false"
                 >Continue</v-btn
@@ -778,8 +782,9 @@ export default {
   },
   mounted() {
     window.addEventListener("beforeunload", this.handleBeforeUnload);
-    window.addEventListener("onkeydown", this.handleKeyPress);
-    ['blur','focus'].forEach(event => { window.addEventListener(event, this.handleTabBlurFocus); });
+    document.addEventListener('keydown',  this.handleKeyPress);
+
+    ['focus'].forEach(event => { window.addEventListener(event, this.handleTabBlurFocus); });
     ['copy','paste'].forEach(event => { window.addEventListener(event, this.handleCopyPaste); });
 
     this.startTimer();
@@ -797,8 +802,8 @@ export default {
   },
   async beforeDestroy() {
     window.removeEventListener("beforeunload", this.handleBeforeUnload);
-    window.removeEventListener("onkeydown", this.handleKeyPress);
-    ['blur','focus'].forEach(event => { window.removeEventListener(event, this.handleTabBlurFocus); });
+    document.removeEventListener("keydown", this.handleKeyPress);
+    ['focus'].forEach(event => { window.removeEventListener(event, this.handleTabBlurFocus); });
     ['copy','paste'].forEach(event => { window.removeEventListener(event, this.handleCopyPaste); });
     window.removeEventListener("resize", this.onResize);
     this.stopTimer();
@@ -821,25 +826,32 @@ export default {
     handleTabBlurFocus(event){
       this.violations++;
       console.warn("User ", event.type, " on current Tab");
-      this.genericDialog = false;
+      this.genericDialog = true;
     },
     handleCopyPaste(event){
-      this.genericDialog = false;
+      this.violations++;
+      this.genericDialog = true;
+      console.log("testet");
       event.preventDefault();
       
     },
     handleKeyPress(event){
-      this.genericDialog = false;
-      if (event.keyCode === 27) {  console.log('The ESC key was pressed.'); }
-      // if (event.keyCode === 17 && event.keyCode === 84) {  console.log('User tried to create new tab'); }
+     if (event.key === 'Escape') {
+        //if esc key was not pressed in combination with ctrl or alt or shift
+        const isNotCombinedKey = !(event.ctrlKey || event.altKey || event.shiftKey);
+        if (isNotCombinedKey) {
+          this.violations++;
+          this.genericDialog = true;
+        }
+      }
     },
     checkUserAgent() {
       const userAgent = navigator.userAgent;
       const match = userAgent.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i);
       if (match) {
         console.log(`The browser is ${match[1]} ${match[2]}`);
-        if(match[1] != 'chrome') {
-          console.log('Please use Chrome Browser to give test');
+        if(match[1].toLocaleLowerCase() != 'chrome') {
+          alert('Please use Chrome Browser to give test');
         }
       } else {
         console.log(`The browser's name and version could not be found.`);
@@ -1537,7 +1549,7 @@ export default {
     }, 10000);
     setInterval(()=>{
       this.verifyCameraStream();
-    }, 5000);
+    }, 10000);
 
   },
 };
