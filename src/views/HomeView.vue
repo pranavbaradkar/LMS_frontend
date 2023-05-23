@@ -37,33 +37,30 @@
         variant="outlined"
         v-if="allAssessments.length != 0 || recommendedAssessment != {}"
       >
-        <v-row align="start" no-gutters>
+        <v-row align="start" no-gutters v-if="isEdit == false">
           <v-col>
             <v-sheet class="ma-2">
               <p class="school-label">School</p>
               <div class="d-flex align-center">
                 <p class="font-weight-medium school-value mb-0">
-                  Vibgyor High (Malad East)
+                  {{ userInterests.schools[0].name }}
                 </p>
-                <v-menu transition="slide-y-transition">
+                <v-menu offset-y>
                   <template v-slot:activator="{ on, attrs }">
-                    <v-btn
-                      class="mx-2"
-                      fab
-                      dark
-                      small
-                      color="#277BC0"
+                    <v-btn 
                       v-bind="attrs"
                       v-on="on"
-                    >
-                      +3
+                      v-if="userInterests.schools.length - 1 > 0" 
+                      class="mx-2" fab dark small 
+                      color="#277BC0"> + {{ userInterests.schools.length - 1 }} 
                     </v-btn>
                   </template>
                   <v-list>
-                    <v-list-item v-for="n in 5" :key="n" link>
-                      <v-list-item-title
-                        v-text="'Item ' + n"
-                      ></v-list-item-title>
+                    <v-list-item
+                      v-for="(item, index) in userInterests.schools"
+                      :key="index"
+                    >
+                      <v-list-item-title>{{ item.name }}</v-list-item-title>
                     </v-list-item>
                   </v-list>
                 </v-menu>
@@ -75,27 +72,24 @@
               <p class="school-label">Level</p>
               <div class="d-flex align-center">
                 <p class="font-weight-medium school-value mb-0">
-                  Lower Primary , Upper Primary
+                  {{ userInterests.levels[0].name }}
                 </p>
-                <v-menu transition="slide-y-transition">
+                <v-menu offset-y>
                   <template v-slot:activator="{ on, attrs }">
-                    <v-btn
-                      class="mx-2"
-                      fab
-                      dark
-                      small
-                      color="#277BC0"
+                    <v-btn 
                       v-bind="attrs"
                       v-on="on"
-                    >
-                      +3
+                      v-if="userInterests.levels.length - 1 > 0" 
+                      class="mx-2" fab dark small 
+                      color="#277BC0"> + {{ userInterests.levels.length - 1 }} 
                     </v-btn>
                   </template>
                   <v-list>
-                    <v-list-item v-for="n in 5" :key="n" link>
-                      <v-list-item-title
-                        v-text="'Item ' + n"
-                      ></v-list-item-title>
+                    <v-list-item
+                      v-for="(item, index) in userInterests.levels"
+                      :key="index"
+                    >
+                      <v-list-item-title>{{ item.name }}</v-list-item-title>
                     </v-list-item>
                   </v-list>
                 </v-menu>
@@ -105,7 +99,31 @@
           <v-col>
             <v-sheet class="ma-2">
               <p class="school-label">Board</p>
-              <p class="font-weight-medium school-value">State Board</p>
+
+              <div class="d-flex align-center">
+                <p class="font-weight-medium school-value mb-0">
+                  {{ userInterests.boards[0].name }}
+                </p>
+                <v-menu offset-y>
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn 
+                      v-bind="attrs"
+                      v-on="on"
+                      v-if="userInterests.boards.length - 1 > 0" 
+                      class="mx-2" fab dark small 
+                      color="#277BC0"> + {{ userInterests.boards.length - 1 }} 
+                    </v-btn>
+                  </template>
+                  <v-list>
+                    <v-list-item
+                      v-for="(item, index) in userInterests.boards"
+                      :key="index"
+                    >
+                      <v-list-item-title>{{ item.name }}</v-list-item-title>
+                    </v-list-item>
+                  </v-list>
+                </v-menu>
+              </div>
             </v-sheet>
           </v-col>
           <v-col>
@@ -113,27 +131,24 @@
               <p class="school-label">Subject’s</p>
               <div class="d-flex align-center">
                 <p class="font-weight-medium school-value mb-0">
-                  Hindi , French , Physics
+                  {{ userInterests.subjects[0].name }}
                 </p>
-                <v-menu transition="slide-y-transition">
+                <v-menu offset-y>
                   <template v-slot:activator="{ on, attrs }">
-                    <v-btn
-                      class="mx-2"
-                      fab
-                      dark
-                      small
-                      color="#277BC0"
+                    <v-btn 
                       v-bind="attrs"
                       v-on="on"
-                    >
-                      +3
+                      v-if="userInterests.subjects.length - 1 > 0" 
+                      class="mx-2" fab dark small 
+                      color="#277BC0"> + {{ userInterests.subjects.length - 1 }} 
                     </v-btn>
                   </template>
                   <v-list>
-                    <v-list-item v-for="n in 5" :key="n" link>
-                      <v-list-item-title
-                        v-text="'Item ' + n"
-                      ></v-list-item-title>
+                    <v-list-item
+                      v-for="(item, index) in userInterests.subjects"
+                      :key="index"
+                    >
+                      <v-list-item-title>{{ item.name }}</v-list-item-title>
                     </v-list-item>
                   </v-list>
                 </v-menu>
@@ -141,9 +156,97 @@
             </v-sheet>
           </v-col>
           <v-col-1 class="home-edit-icon align-self-center">
-            <v-img width="20px" src="../assets/home_edit_icon.png"></v-img>
+            <v-btn
+              class="mx-2 black--text"
+              fab
+              dark
+              small
+              color="transparent"
+              @click="toggleEdit"
+            >
+              <v-icon> mdi-pencil </v-icon>
+            </v-btn>
           </v-col-1>
         </v-row>
+
+        <v-row align="start" no-gutters v-if="isEdit == true">
+          <v-col>
+            <v-sheet class="ma-2">
+              <p class="school-label">School</p>
+              <div class="d-flex align-center">
+                <!-- <p class="font-weight-medium school-value mb-0">Vibgyor High (Malad East)</p> -->
+                <v-select
+                  v-model="schoolSelected"
+                  :items="schools"
+                  item-text="name"
+                  item-value="id"
+                  :menu-props="{ maxHeight: '400' }"
+                  multiple
+                  persistent-hint
+                ></v-select>
+              </div>
+            </v-sheet>
+          </v-col>
+          <v-col>
+            <v-sheet class="ma-2">
+              <p class="school-label">Level</p>
+              <div class="d-flex align-center">
+                <v-select
+                  v-model="levelSelected"
+                  :items="levels"
+                  item-text="name"
+                  item-value="id"
+                  :menu-props="{ maxHeight: '400' }"
+                  multiple
+                  persistent-hint
+                ></v-select>
+              </div>
+            </v-sheet>
+          </v-col>
+          <v-col>
+            <v-sheet class="ma-2">
+              <p class="school-label">Board</p>
+              <v-select
+                v-model="boardSelected"
+                :items="boards"
+                item-text="name"
+                item-value="id"
+                :menu-props="{ maxHeight: '400' }"
+                multiple
+                persistent-hint
+              ></v-select>
+            </v-sheet>
+          </v-col>
+          <v-col>
+            <v-sheet class="ma-2">
+              <p class="school-label">Subject’s</p>
+              <div class="d-flex align-center">
+                <v-select
+                  v-model="subjectSelected"
+                  :items="subjects"
+                  item-text="name"
+                  item-value="id"
+                  :menu-props="{ maxHeight: '400' }"
+                  multiple
+                  persistent-hint
+                ></v-select>
+              </div>
+            </v-sheet>
+          </v-col>
+          <v-col-1 class="align-self-center">
+            <v-btn
+              class="mx-2 primary--text"
+              fab
+              dark
+              small
+              color="#E9F2F9"
+              @click="createUserIntrest"
+            >
+              <v-icon dark> mdi-check </v-icon>
+            </v-btn>
+          </v-col-1>
+        </v-row>
+
         <v-divider></v-divider>
         <!-- <div class="text-h6 mb-1 text-center">Test Selection</div>
         <v-list-item-subtitle class="text-center grey--text"
@@ -389,8 +492,13 @@
 import "../styles.css";
 import AuthService from "../services/AuthService";
 import LogedInUserInfo from "@/controllers/LogedInUserInfo";
+import UserIntrestController from "@/controllers/UserIntrestController";
 import AssessmentController from "@/controllers/AssessmentController";
 import RecommendedAssessmentController from "@/controllers/RecommendedAssessmentController";
+import SchoolController from "@/controllers/SchoolController";
+import BoardController from "@/controllers/BoardController";
+import LevelController from "@/controllers/LevelController";
+import SubjectController from "@/controllers/SubjectController";
 
 export default {
   name: "HomeView",
@@ -408,7 +516,17 @@ export default {
       recommendedAssessment: {},
       duration: 0,
       noOfQuestions: 0,
-
+      userInterests: [],
+      userInterestsEdit: [],
+      schoolSelected: [],
+      levelSelected: [],
+      boardSelected: [],
+      subjectSelected: [],
+      subjects: [],
+      schools: [],
+      boards: [],
+      levels: [],
+      isEdit: false,
       e1: 1,
       testType: "Screening",
     };
@@ -428,6 +546,20 @@ export default {
     window.removeEventListener("resize", this.onResize);
   },
   methods: {
+    toggleEdit() {
+      if (this.isEdit == true) {
+        this.isEdit = false;
+      } else {
+        this.isEdit = true;
+      }
+    },
+    editSubmit() {
+      this.isEdit = false;
+      // this.schoolSelected = [];
+      // this.levelSelected = [];
+      // this.boardSelected = [];
+      // this.subjectSelected = [];
+    },
     closeDialog() {
       this.dialog = false;
       this.$mixpanel.track("InstructionPageClosed", {
@@ -565,6 +697,68 @@ export default {
       this.$mixpanel.reset();
       this.$router.push("/login");
     },
+    async getSchool() {
+      const response = await SchoolController.getSchool();
+      // console.log(response);
+      this.schools = response.data.data.rows;
+      //console.log("school log", this.schoolData);
+    },
+    async getSubjects() {
+      const response = await SubjectController.getSubject();
+
+      this.subjects = response.data.data.rows;
+
+      this.subjectCategoryNames = this.subjects.map(
+        (item) => item.subject_category.name
+      );
+
+      this.subjectCategoryNames = ["all"].concat(this.subjectCategoryNames);
+      //console.log("subject log", this.subjectsData);
+    },
+    async createUserIntrest() {
+      let data = {
+        "level_ids": this.levelSelected,
+        "school_ids": this.schoolSelected,
+        "board_ids": this.boardSelected,
+        "subject_ids": this.subjectSelected
+      }
+      console.log("userInterst", this.userIntrestData);
+      const response = await UserIntrestController.createUserIntrest(
+        data
+      );
+      this.isEdit = false;
+      this.getUserInterests();
+      this.getUserInterestEdit();   
+      return response;
+    },
+    async getBoards() {
+      const response = await BoardController.getBoards();
+      //console.log(response);
+      this.boards = response.data.data.rows;
+      console.log("board log", this.boards);
+    },
+    async getLevel() {
+      const response = await LevelController.getLevel();
+
+      this.levels = response.data.data.rows;
+      //console.log("level log", this.levels);
+    },
+    async getUserInterests() {
+      const response = await UserIntrestController.getUserInterests();
+
+      this.userInterests = response.data.data;
+      //console.log("userInterests log", this.userInterests);
+    },
+    async getUserInterestEdit() {
+      const response = await UserIntrestController.getUserInterestsForEdit();
+
+      this.userInterestsEdit = response.data.data;
+      this.boardSelected = this.userInterestsEdit.board_ids;
+      this.subjectSelected = this.userInterestsEdit.subject_ids;
+      this.levelSelected = this.userInterestsEdit.level_ids;
+      this.schoolSelected = this.userInterestsEdit.school_ids;
+      //console.log("userInterests log", this.userInterests);
+    },
     async getUserInfo() {
       const response = await LogedInUserInfo.getUserInfo();
       this.userInfo = response.data.user;
@@ -655,6 +849,12 @@ export default {
   created() {
     this.getUserInfo();
     this.getAllAssessment();
+    this.getLevel();
+    this.getSubjects();
+    this.getBoards();
+    this.getSchool();
+    this.getUserInterests();
+    this.getUserInterestEdit();
     //this.getRecommendedAssessment();
   },
 };
