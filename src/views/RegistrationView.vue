@@ -1527,7 +1527,7 @@ export default {
             this.personalInfo.state_name = response.data.address.state;
             this.personalInfo.district_name =
               response.data.address.state_district;
-            this.personalInfo.pincode = response.data.address.postcode;
+            this.personalInfo.pincode = response.data.address.postcode.toString();
             this.personalInfo.taluka_name = response.data.address.county;
             this.personalInfo.city_name = response.data.address.neighbourhood;
             this.personalInfo.address = response.data.address.building + ', ' + response.data.address.road;
