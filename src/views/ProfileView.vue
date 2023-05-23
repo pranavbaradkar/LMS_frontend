@@ -326,12 +326,10 @@
                           <v-row class="py-0">
                             <v-col cols="6" class="py-0 c-text-field">
                               <v-select
-                                v-model="personalInfo.districtId"
+                                v-model="personalInfo.district_id"
                                 :value="district"
                                 label="District"
                                 :items="districts"
-                                
-                                
                                 item-value="id"
                                 item-text="district_name"
                                 @change="fetchTalukas"
@@ -1236,6 +1234,7 @@ export default {
         phone_no: "",
         country_id: -1,
         state_id: -1,
+        district_id: -1,
         talukTehsil: -1,
         city_id: -1,
         address: "",
@@ -1381,7 +1380,7 @@ export default {
     },
     async savePersonal() {
       if (this.$refs.step1.validate()) {
-        console.log("userif conditon");
+        console.log("userif conditon,",this.personalInfo);
         this.isCreatingUser = true;
         const response = await PersonalInfoController.createUserPersonalInfo(
           this.personalInfo
@@ -1504,6 +1503,8 @@ export default {
       this.personalInfo.title = this.userInfo.title;
       this.personalInfo.middle_name = this.userInfo.middle_name;
       this.personalInfo.country_id = this.userInfo.country_id;
+      this.fetchStates(this.userInfo.country_id);
+      this.fetchDistricts(this.userInfo.state_id);
       this.personalInfo.gender = this.userInfo.gender;
       this.personalInfo.state_id = this.userInfo.state_id;
       this.personalInfo.address = this.userInfo.address;
@@ -1513,7 +1514,7 @@ export default {
       this.personalInfo.taluka_name = this.userInfo.taluka_name;
       this.personalInfo.dob = this.userInfo.dob;
       this.personalInfo.state_id = this.userInfo.state_id;
-
+      this.personalInfo.district_name = this.userInfo.district_name;
       this.$mixpanel.track("PersonalInformationStepLoaded", {
         user_type: this.userInfo.user_type,
         screen_name: "PersonalProfileInformationScreen",
@@ -1529,17 +1530,17 @@ export default {
 
       //console.log(this.countries);
     },
-    async fetchStates() {
+    async fetchStates(country_id) {
       const response = await AddressController.getStates(
-        this.personalInfo.country_id
+        country_id ? country_id : this.personalInfo.country_id
       );
       this.states = response.data.data.rows;
       //console.log(this.states);
     },
-    async fetchDistricts() {
-      //console.log(this.personalInfo.state_id);
+    async fetchDistricts(state_id) {
+      console.log("fetchD",this.personalInfo.state_id);
       const response = await AddressController.getDistricts(
-        this.personalInfo.state_id
+        state_id ? state_id : this.personalInfo.state_id
       );
       this.districts = response.data.data.rows;
 
@@ -1548,7 +1549,7 @@ export default {
     },
     async fetchTalukas() {
       const response = await AddressController.getTalukas(
-        this.personalInfo.districtId
+        this.personalInfo.district_id
       );
       this.talukas = response.data.data.rows;
 
@@ -1752,7 +1753,7 @@ export default {
 
 </script>
 
-<style scoped>
+<style>
    .registration-stepper-header.v-stepper__header {
     box-shadow: none;
     margin-left: 140px;
@@ -1762,10 +1763,9 @@ export default {
    .registration-stepper.v-sheet.v-stepper:not(.v-sheet--) {
     box-shadow: none;
 }
-.v-tabs--vertical > .v-tabs-bar {
+.v-application .profile-tab .v-tabs-bar{
     flex: 1 0 auto;
-    height: 120px !important;
-    max-height: 120px !important;
+    height: min-content;
 }
 
 </style>
