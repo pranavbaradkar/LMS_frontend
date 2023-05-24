@@ -298,8 +298,8 @@ export default {
   name: "InterestsView",
   data() {
     return {
-      showAIScreen: true,
-      SetUpPreferencesClicked: true,
+      showAIScreen: false,
+      SetUpPreferencesClicked: false,
       userInfo: {},
       e1: 1,
       subjects: [],
@@ -391,12 +391,12 @@ export default {
         case 4:
           if( this.userIntrestData.subject_ids.length != 0){
             const res = await this.createUserIntrest();
-            console.log(res);
             if(res.data.success) {
               this.showAIScreen = true;
               this.SetUpPreferencesClicked = false;
               setTimeout(() => {
                 this.$router.replace("/");
+                console.log("navigating to homescreen")
               }, 3000);
             } else {
               alert(res.data.error)
