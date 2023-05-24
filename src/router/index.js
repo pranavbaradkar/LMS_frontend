@@ -12,6 +12,8 @@ import ReportView from '../views/ReportView'
 import GraphReportView from '../views/GraphReportView'
 import ProfileView from '../views/ProfileView'
 import PreMain from '../views/PreMain'
+import SlotSelection from '../views/SlotSelectionView'
+import Pcad from '../views/PcadView'
 
 //import store from "../store";
 
@@ -103,6 +105,22 @@ const routes = [
     path: '/preMain',
     name: 'PreMain',
     component: PreMain,
+    meta: {
+      requiresAuth: true,
+    }
+  },
+  {
+    path: '/slotSelection',
+    name: 'SlotSelection',
+    component: SlotSelection,
+    meta: {
+      requiresAuth: true,
+    }
+  },
+  {
+    path: '/pcad',
+    name: 'Pcad',
+    component: Pcad,
     meta: {
       requiresAuth: true,
     }
