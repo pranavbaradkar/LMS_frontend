@@ -36,7 +36,6 @@
                 color="#0000001a"
                 large
                 width="157px"
-                
                 @click="deleteDialog = false"
                 >CANCEL</v-btn
               >
@@ -44,7 +43,6 @@
                 class="primary white--text"
                 large
                 width="157px"
-                
                 @click="removeDataFromSteps()"
                 >DELETE</v-btn
               >
@@ -98,7 +96,6 @@
           <v-btn
             color="primary"
             class="textcolor--text"
-            
             large
             width="90%"
             height="40"
@@ -119,93 +116,50 @@
     >
       <v-row class="mb-n0">
         <v-col class="pa-0">
-        <v-row class="mb-0 pb-0">
-          <v-col cols="6">
-            <div style="position: relative; width: 110%; height: 100%;">
-              <v-img :height="getHeight + 22 + 'px'" width="100%" style="position: absolute; top: -100; z-index: 5;" src="@/assets/premain-background.svg"></v-img>
-               <v-row style="z-index: 10; width: 75%">
+          <v-row class="mb-0 pb-0">
+            <v-col cols="6">
+              <div style="position: relative; width: 100%; height: 100%">
+                <v-img
+                  :height="getHeight + 22 + 'px'"
+                  width="100%"
+                  style="position: absolute; top: -100; z-index: 5"
+                  src="@/assets/premain-background.svg"
+                ></v-img>
+                <v-row style="z-index: 10; width: 75%">
                   <v-col style="margin-top: 112px">
+                    <div class="ml-8" style="margin-bottom: 20px">
+                      <v-icon>mdi-arrow-left</v-icon>
+                    </div>
                     <div style="font-size: 39px" class="font-weight-bold ml-8">
-                      Congratulations on Clearing Screening, Let’s Setup Main’s
-                      Test
+                      PCAD
                     </div>
                     <div
-                      style="
-                        font-size: 14px;
-                        color: #000;
-                        width: 80%;
-                      "
+                      style="font-size: 14px; color: #000; width: 80%"
                       class="ml-8"
                     >
-                      Finish your 2 steps to confirm your mains test
+                      Record a short video of yourself while speaking to the scipit given below 👇 
                     </div>
-                    <v-img
-                      width="320"
-                      height="290"
-                      style="z-index: 4; margin-top: 30px; margin-right: 30px"
-                      src="@/assets/premain.svg"
-                    ></v-img>
+                    <v-card
+                      :height="'400px'"
+                      id="myScroll"
+                      elevation="0"
+                      style="overflow-x: hidden; margin-left: 30px"
+                      class="pa-5 mt-2"
+                      depressed
+                      outlined
+                    >
+                      <p style="color: #7B7A7B;font-size:22px;line-height: 26px;">Hello, I am &lt;Name&gt; and the account is registered under my email address 
+                      &lt;email id&gt;, my date of birth&lt;DD/MM/YY&gt;</p>
+                    </v-card>
                   </v-col>
                 </v-row>
-            </div>
-          </v-col>
-            <v-col cols="6" class="d-flex align-center justify-center">
-              <v-card
-                class="d-flex align-center flex-column rounded-lg justify-center"
-                height="200"
-                width="185"
-                elevation="0"
-                outlined
-                style="margin-right: 20px; border: 1px solid #277BC0"
-                @click="selectItem('slot')"
-              >
-                <v-btn 
-                  v-if="selectedType == 'slot'"
-                  fab
-                  small
-                  color="#277BC0"
-                  style="position: absolute; top: 10px; left: 10px; width: 20px; height: 20px"
-                  >
-                  <v-icon color="#fff" size="12">mdi-check</v-icon>
-                </v-btn>
-                <v-img
-                  contain
-                  width="64px"
-                  max-height="64px"
-                  style="margin-bottom: 10px"
-                  src="@/assets/calendar.svg"
-                ></v-img>
-                <p class="mb-0 subtitle-2">Slot Selection</p>
-              </v-card>
-              <v-card
-                elevation="0"
-                outlined
-                class="d-flex align-center flex-column rounded-lg justify-center"
-                height="200"
-                width="185"
-                @click="selectItem('pacd')"
-              >
-                <v-btn 
-                  v-if="selectedType == 'pacd'"
-                  fab
-                  small
-                  color="#277BC0"
-                  style="position: absolute; top: 10px; left: 10px; width: 20px; height: 20px"
-                  >
-                  <v-icon color="#fff" size="12">mdi-check</v-icon>
-                </v-btn>
-                <v-img
-                  contain
-                  width="64px"
-                  max-height="64px"
-                  style="margin-bottom: 20px"
-                  src="@/assets/video-call.svg"
-                ></v-img>
-                <p class="mb-0 subtitle-2">PACD</p>
-              </v-card>
+              </div>
             </v-col>
-        </v-row>
-      </v-col>
+            <v-col cols="5" style="margin-top: 84px; margin-right: 20px">
+              
+            </v-col>
+          </v-row>
+        </v-col>
       </v-row>
     </v-card>
   </div>
@@ -243,7 +197,6 @@ export default {
     return {
       e1: 1,
       experience: "Experienced",
-      selectedType: 'slot', //pacd
       isCurrentlyWorking: false,
       isFetchingLocation: false,
       windowHeight: window.innerHeight,
@@ -369,13 +322,8 @@ export default {
   methods: {
     onChange() {
       console.log(this.selectedFile[this.expandedPanelIndex]);
-      console.log("selelcted file details",this.expandedPanelIndex);
+      console.log("selelcted file details", this.expandedPanelIndex);
       this.getPreSignedUrl();
-      
-     
-    },
-    selectItem(param) {
-      this.selectedType = param;
     },
     async getPreSignedUrl() {
       const response = await UploadController.getPreSignedUrl({
@@ -409,18 +357,18 @@ export default {
         return true;
       }
     },
-    clearLocation () {
+    clearLocation() {
       this.isCurrentLocation = false;
-      this.personalInfo.country_name = '';
-      this.personalInfo.state_name = '';
-      this.personalInfo.district_name = '';
+      this.personalInfo.country_name = "";
+      this.personalInfo.state_name = "";
+      this.personalInfo.district_name = "";
       this.personalInfo.country_id = -1;
       this.personalInfo.state_id = -1;
       this.personalInfo.district_id = -1;
-      this.personalInfo.pincode = '';
-      this.personalInfo.taluka_name = '';
-      this.personalInfo.city_name = '';
-      this.personalInfo.address = '';
+      this.personalInfo.pincode = "";
+      this.personalInfo.taluka_name = "";
+      this.personalInfo.city_name = "";
+      this.personalInfo.address = "";
     },
     async location() {
       this.isFetchingLocation = true;
@@ -440,7 +388,10 @@ export default {
             this.personalInfo.pincode = response.data.address.postcode;
             this.personalInfo.taluka_name = response.data.address.county;
             this.personalInfo.city_name = response.data.address.neighbourhood;
-            this.personalInfo.address = response.data.address.building + ', ' + response.data.address.road;
+            this.personalInfo.address =
+              response.data.address.building +
+              ", " +
+              response.data.address.road;
             this.isFetchingLocation = false;
           }
         },
@@ -461,7 +412,7 @@ export default {
       this.indexValue = null;
     },
     async goToStep2() {
-      console.log("clicked step 2")
+      console.log("clicked step 2");
       if (this.$refs.step1.validate()) {
         console.log("userif conditon");
         this.isCreatingUser = true;
@@ -480,7 +431,7 @@ export default {
           this.expandedPanelIndex = 0;
         } else {
           this.isCreatingUser = false;
-          alert(response.data.error)
+          alert(response.data.error);
         }
       } else {
         if (this.$refs.step1.validate()) {
@@ -511,7 +462,7 @@ export default {
           this.expandedPanelIndex = 0;
         } else {
           this.isCreatingUser = false;
-          alert(response.data.error)
+          alert(response.data.error);
         }
       }
     },
@@ -523,23 +474,25 @@ export default {
       if (this.$refs.step3.validate()) {
         //console.log("userif conditon");
         this.isCreatingUser = true;
-        if(this.isCurrentlyWorking) {
+        if (this.isCurrentlyWorking) {
           delete this.professionalInfos[0].end_date;
         }
         const response =
-          this.experience=='Fresher'?  await ProfessionalController.createUserProfessionalInfo(
-            [{
-              is_fresher:true,
-            }]
-          )  : await ProfessionalController.createUserProfessionalInfo(
-            this.professionalInfos
-          );
+          this.experience == "Fresher"
+            ? await ProfessionalController.createUserProfessionalInfo([
+                {
+                  is_fresher: true,
+                },
+              ])
+            : await ProfessionalController.createUserProfessionalInfo(
+                this.professionalInfos
+              );
         if (response.data.success) {
           this.isCreatingUser = false;
           this.successDialog = true;
           this.$router.replace("/interests");
         } else {
-          alert(response.data.error)
+          alert(response.data.error);
           this.isCreatingUser = false;
         }
         console.log(response);
@@ -813,9 +766,9 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      console.log("clicked step 2")
+      console.log("clicked step 2");
       window.addEventListener("resize", this.onResize);
-      console.log("clicked step 2")
+      console.log("clicked step 2");
     });
   },
 
@@ -829,20 +782,23 @@ export default {
 };
 </script>
 <style scoped>
-   .registration-stepper-header.v-stepper__header {
-    box-shadow: none;
-    margin-left: 140px;
-    margin-right: 140px;
-    margin-bottom: 0px;
-   }
-   .registration-stepper.v-sheet.v-stepper:not(.v-sheet--) {
-    box-shadow: none;
+.registration-stepper-header.v-stepper__header {
+  box-shadow: none;
+  margin-left: 140px;
+  margin-right: 140px;
+  margin-bottom: 0px;
+}
+.registration-stepper.v-sheet.v-stepper:not(.v-sheet--) {
+  box-shadow: none;
 }
 
-.v-input.date-field > .v-input__control > .v-input__slot > .v-text-field__slot > input {
+.v-input.date-field
+  > .v-input__control
+  > .v-input__slot
+  > .v-text-field__slot
+  > input {
   padding: 0px !important;
   margin-bottom: 16px;
   margin-top: 12px !important;
 }
-
 </style>
