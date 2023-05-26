@@ -15,6 +15,7 @@ import PreMain from '../views/PreMain'
 import SlotSelection from '../views/SlotSelectionView'
 import Pcad from '../views/PcadView'
 import ScreeningStatus from '../views/ScreeningStatusView'
+import MainScreeningSetupStatus from '../views/MainScreeningSetupStatusView';
 
 //import store from "../store";
 
@@ -130,6 +131,14 @@ const routes = [
     path: '/screeningStatus',
     name: 'ScreeningStatus',
     component: ScreeningStatus,
+    meta: {
+      requiresAuth: true,
+    }
+  },
+  {
+    path: '/mainScreeningSetupStatus',
+    name: 'MainScreeningSetupStatus',
+    component: MainScreeningSetupStatus,
     meta: {
       requiresAuth: true,
     }
