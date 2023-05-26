@@ -376,6 +376,7 @@
                               <template #append>
                                 <div v-if="!isCurrentLocation" class="d-flex align-center">
                                   <v-btn
+                                    :loading="isFetchingLocation"
                                     class="pa-0"
                                     color="primary"
                                     text
