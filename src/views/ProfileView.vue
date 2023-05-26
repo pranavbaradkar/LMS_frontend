@@ -1063,185 +1063,51 @@
             <div class="text-h6 mb-2">My Results</div>
             <div class="d-flex flex-wrap">
             <div class="mytestcard">
-                  <v-card
-                    class="mb-4 movingcard"
-                    min-width="333"
-                    max-width="333"
-                    outlined
-                    height="360"
-                    style="margin-right: 8.33px"
-                  >
-                    <v-list-item three-line class="mb-0">
-                      <v-list-item-avatar
-                        tile
-                        size="300"
-                        height="173"
-                        color="grey"
-                      ></v-list-item-avatar>
-                    </v-list-item>
-                    <v-list-item three-line>
-                      <v-list-item-content class="pt-0">
-                        <v-list-item-title
-                          class="assessment-name mb-0 text-wrap mb-2"
-                        >
-                          Trained Graduate Teacher Assessment (VGOS)
-                        </v-list-item-title>
-                        <v-list-item-subtitle class="assessment-instructions">
-                          This course will provide you with in-depth knowledge
-                          of child development. It will take you through all of
-                          the developmental domains.
-                        </v-list-item-subtitle>
-                      </v-list-item-content>
-                    </v-list-item>
-                    <v-expand-transition>
-                      <v-card-actions class="mx-2">
-                        <v-btn
-                          depressed
-                          block
-                          color="#E9F2F9"
-                          class="primary--text"
-                          height="40"
-                          >View Test Result</v-btn
-                        >
-                      </v-card-actions>
-                    </v-expand-transition>
-                  </v-card>
-                </div> 
-                <div class="mytestcard">
-                  <v-card
-                    class="mb-4 movingcard"
-                    min-width="333"
-                    max-width="333"
-                    outlined
-                    height="360"
-                    style="margin-right: 8.33px"
-                  >
-                    <v-list-item three-line class="mb-0">
-                      <v-list-item-avatar
-                        tile
-                        size="300"
-                        height="173"
-                        color="grey"
-                      ></v-list-item-avatar>
-                    </v-list-item>
-                    <v-list-item three-line>
-                      <v-list-item-content class="pt-0">
-                        <v-list-item-title
-                          class="assessment-name mb-0 text-wrap mb-2"
-                        >
-                          Trained Graduate Teacher Assessment (VGOS)
-                        </v-list-item-title>
-                        <v-list-item-subtitle class="assessment-instructions">
-                          This course will provide you with in-depth knowledge
-                          of child development. It will take you through all of
-                          the developmental domains.
-                        </v-list-item-subtitle>
-                      </v-list-item-content>
-                    </v-list-item>
-                    <v-expand-transition>
-                      <v-card-actions class="mx-2">
-                        <v-btn
-                          depressed
-                          block
-                          color="#E9F2F9"
-                          class="primary--text"
-                          height="40"
-                          >View Test Result</v-btn
-                        >
-                      </v-card-actions>
-                    </v-expand-transition>
-                  </v-card>
-                </div> 
-                <div class="mytestcard">
-                  <v-card
-                    class="mb-4 movingcard"
-                    min-width="333"
-                    max-width="333"
-                    outlined
-                    height="360"
-                    style="margin-right: 8.33px"
-                  >
-                    <v-list-item three-line class="mb-0">
-                      <v-list-item-avatar
-                        tile
-                        size="300"
-                        height="173"
-                        color="grey"
-                      ></v-list-item-avatar>
-                    </v-list-item>
-                    <v-list-item three-line>
-                      <v-list-item-content class="pt-0">
-                        <v-list-item-title
-                          class="assessment-name mb-0 text-wrap mb-2"
-                        >
-                          Trained Graduate Teacher Assessment (VGOS)
-                        </v-list-item-title>
-                        <v-list-item-subtitle class="assessment-instructions">
-                          This course will provide you with in-depth knowledge
-                          of child development. It will take you through all of
-                          the developmental domains.
-                        </v-list-item-subtitle>
-                      </v-list-item-content>
-                    </v-list-item>
-                    <v-expand-transition>
-                      <v-card-actions class="mx-2">
-                        <v-btn
-                          depressed
-                          block
-                          color="#E9F2F9"
-                          class="primary--text"
-                          height="40"
-                          >View Test Result</v-btn
-                        >
-                      </v-card-actions>
-                    </v-expand-transition>
-                  </v-card>
-                </div> 
-                <div class="mytestcard">
-                  <v-card
-                    class="mb-4 movingcard"
-                    min-width="333"
-                    max-width="333"
-                    outlined
-                    height="360"
-                    style="margin-right: 8.33px"
-                  >
-                    <v-list-item three-line class="mb-0">
-                      <v-list-item-avatar
-                        tile
-                        size="300"
-                        height="173"
-                        color="grey"
-                      ></v-list-item-avatar>
-                    </v-list-item>
-                    <v-list-item three-line>
-                      <v-list-item-content class="pt-0">
-                        <v-list-item-title
-                          class="assessment-name mb-0 text-wrap mb-2"
-                        >
-                          Trained Graduate Teacher Assessment (VGOS)
-                        </v-list-item-title>
-                        <v-list-item-subtitle class="assessment-instructions">
-                          This course will provide you with in-depth knowledge
-                          of child development. It will take you through all of
-                          the developmental domains.
-                        </v-list-item-subtitle>
-                      </v-list-item-content>
-                    </v-list-item>
-                    <v-expand-transition>
-                      <v-card-actions class="mx-2">
-                        <v-btn
-                          depressed
-                          block
-                          color="#E9F2F9"
-                          class="primary--text"
-                          height="40"
-                          >View Test Result</v-btn
-                        >
-                      </v-card-actions>
-                    </v-expand-transition>
-                  </v-card>
-                </div>
+              <v-card
+                class="mb-4 movingcard"
+                min-width="333"
+                max-width="333"
+                outlined
+                height="360"
+                style="margin-right: 8.33px"
+              >
+                <v-list-item three-line class="mb-0">
+                  <v-list-item-avatar
+                    tile
+                    size="300"
+                    height="173"
+                    color="grey"
+                  ></v-list-item-avatar>
+                </v-list-item>
+                <v-list-item three-line>
+                  <v-list-item-content class="pt-0">
+                    <v-list-item-title
+                      class="assessment-name mb-0 text-wrap mb-2"
+                    >
+                      Trained Graduate Teacher Assessment (VGOS)
+                    </v-list-item-title>
+                    <v-list-item-subtitle class="assessment-instructions">
+                      This course will provide you with in-depth knowledge
+                      of child development. It will take you through all of
+                      the developmental domains.
+                    </v-list-item-subtitle>
+                  </v-list-item-content>
+                </v-list-item>
+                <v-expand-transition>
+                  <v-card-actions class="mx-2">
+                    <v-btn
+                      depressed
+                      block
+                      @click="viewResult(12)"
+                      color="#E9F2F9"
+                      class="primary--text"
+                      height="40"
+                      >View Test Result</v-btn
+                    >
+                  </v-card-actions>
+                </v-expand-transition>
+              </v-card>
+            </div> 
           </div>
           </div>
         </v-tab-item>
@@ -1446,6 +1312,9 @@ export default {
       } else {
         return true;
       }
+    },
+    viewResult(assessmentId) {
+      this.$router.push(`assessment/${assessmentId}/status`);
     },
     clearLocation() {
       this.isCurrentLocation = false;

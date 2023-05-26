@@ -77,7 +77,7 @@
                   class="primary--text mt-4 mr-4"
                   large
                   elevation="0"
-                  @click="() => {}"
+                  @click="viewResult(12)"
                   >View Result</v-btn
                 >
 
@@ -208,6 +208,11 @@ ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale, LinearScale,
         ],
       },
       }
+    },
+    methods: {
+      viewResult() {
+      
+      },
     }
   };
   </script>

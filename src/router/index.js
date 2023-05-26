@@ -104,7 +104,7 @@ const routes = [
     }
   },
   {
-    path: '/preMain',
+    path: '/assessment/:id/mains/setup',
     name: 'PreMain',
     component: PreMain,
     meta: {
@@ -112,7 +112,7 @@ const routes = [
     }
   },
   {
-    path: '/slotSelection',
+    path: '/assessment/:id/mains/slot',
     name: 'SlotSelection',
     component: SlotSelection,
     meta: {
@@ -120,7 +120,7 @@ const routes = [
     }
   },
   {
-    path: '/pcad',
+    path: '/assessment/:id/mains/pcad',
     name: 'Pcad',
     component: Pcad,
     meta: {
@@ -128,12 +128,15 @@ const routes = [
     }
   },
   {
-    path: '/screeningStatus',
+    path: '/assessment/:id/status',
     name: 'ScreeningStatus',
     component: ScreeningStatus,
+    meta: {
+      requiresAuth: true,
+    }
   },
   {
-    path: '/result',
+    path: '/assessment/:id/result',
     name: 'ResultView',
     component: ResultView,
     meta: {
