@@ -11,6 +11,7 @@ import InterestsView from '../views/InterestsView.vue'
 import ReportView from '../views/ReportView'
 import GraphReportView from '../views/GraphReportView'
 import ProfileView from '../views/ProfileView'
+import ResultView from '../views/ResultView'
 
 //import store from "../store";
 
@@ -30,7 +31,7 @@ const routes = [
     name: 'InterestsView',
     component :InterestsView,
     meta: {
-      requiresAuth: false,
+      requiresAuth: true,
     }
   },
   {
@@ -94,6 +95,14 @@ const routes = [
     path: '/profile',
     name: 'ProfileView',
     component: ProfileView,
+    meta: {
+      requiresAuth: true,
+    }
+  },
+  {
+    path: '/result',
+    name: 'ResultView',
+    component: ResultView,
     meta: {
       requiresAuth: true,
     }

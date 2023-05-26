@@ -15,20 +15,12 @@
             >
             <v-menu offset-y>
               <template v-slot:activator="{ on, attrs }">
-                <v-btn color="primary" dark v-bind="attrs" v-on="on" text icon>
+                <v-btn color="primary" dark v-bind="attrs" v-on="on" @click="goToProfile" text icon>
                   <v-avatar>
                     <v-img src="../assets/user.png"></v-img>
                   </v-avatar>
                 </v-btn>
               </template>
-              <!-- <v-list>
-        <v-list-item      
-        >
-          <v-list-item-title >Log out</v-list-item-title>
-        </v-list-item>
-
-      </v-list> -->
-              <v-btn @click="logout">logout</v-btn>
             </v-menu>
           </v-row>
         </v-list-item-action>
@@ -53,6 +45,9 @@
         <v-tab class="justify-start last">
          My Results 
         </v-tab>
+        <v-btn color="red" @click="logout" text class="d-flex justify-start px-2 my-0 mb-2">
+          Logout
+        </v-btn>
         <v-tab-item>
           <v-card 
                 :height="getHeight - 200 + 'px'"
@@ -1717,6 +1712,9 @@ export default {
   this.$mixpanel.reset();
   this.$router.push("/login");
 },
+   goToProfile () {
+    this.$router.push("/Profile");
+   }
   },
   computed: {
     getHeight() {

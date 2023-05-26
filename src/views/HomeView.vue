@@ -15,13 +15,12 @@
             > 
             <v-menu offset-y>
               <template v-slot:activator="{ on, attrs }">
-                <v-btn color="primary" dark v-bind="attrs" v-on="on" text icon>
+                <v-btn color="primary" dark v-bind="attrs" v-on="on" @click="goToProfile" text icon>
                   <v-avatar>
                     <v-img src="../assets/user.png"></v-img>
                   </v-avatar>
                 </v-btn>
               </template>
-              <v-btn @click="logout">logout</v-btn>
             </v-menu>
           </v-row>
         </v-list-item-action>
@@ -258,8 +257,8 @@
 
         <v-img
           width="100%"
-          height="331px"
-          src="../assets/home_banner.png"
+          height="327px"
+          src="../assets/home_banner.svg"
           cover
           class="mt-4"
         >
@@ -718,6 +717,9 @@ export default {
       this.$mixpanel.reset();
       this.$router.push("/login");
     },
+    goToProfile () {
+    this.$router.push("/Profile");
+   },
     async getSchool() {
       const response = await SchoolController.getSchool();
       // console.log(response);
