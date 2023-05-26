@@ -27,7 +27,7 @@
           </v-list-item-action>
         </v-list-item>
       </v-app-bar>
-      <v-container class="white-background">
+      <v-container class="white-background pa-0" style="width: 75vw">
         <!-- :height="getHeight" -->
         <v-card
           color="surface"
@@ -36,14 +36,33 @@
           width="100%"
           variant="outlined"
         >
-          <div class="text-h6 py-1">My Test</div>
-  
+          <v-card width="75%" class="pa-0" style="position: fixed; z-index: 10; top: 62px">
+            <v-card-title  style="width: 100%">
+              <div class="d-flex flex-row justify-space-between" style="width: 100%">
+                <div class="d-flex flex-row justify-center">
+                  <v-icon class="mr-4">mdi-arrow-left</v-icon>
+                  <div>
+                    <div style="font-size: 12px;line-height:14px ;">SCREENING RESULT</div>
+                    <div>Your Screening Test Report</div>
+                  </div>
+                </div>
+                <div class="d-flex flex-row justify-center">
+                  <v-icon color="black" class="mr-5">
+                    mdi-share-variant-outline
+                  </v-icon>
+                  <v-icon color="black">
+                    mdi-tray-arrow-down
+                  </v-icon>
+                </div>
+              </div>
+            </v-card-title>
+          </v-card>
           <v-img
             width="100%"
-            height="40%"
+            height="390"
             src="../assets/home_banner.svg"
             cover
-            class="mt-4"
+            style="margin-top: 76px"
           >
             <v-card
               class="pa-10 d-flex align-center"
@@ -95,7 +114,7 @@
             </v-card>
           </v-img>
 
-          <div class="resultParent d-flex flex-row justify-center mt-4">
+          <div class="resultParent d-flex flex-row justify-center mt-4 px-8">
             <v-card elevation="0" height="303" width="298" style="background-color: #F8FAFC; border: 1px solid #DADADA; position: relative;" class="mr-4 pa-8 pt-6">
               <Doughnut
                     :options="chartOptions"
@@ -135,6 +154,19 @@
              </v-card>
           </div>
 
+          <v-row class="pa-8">
+            <v-col v-for="(item,index) in chartDataSkills.labels" :key="index" cols="4">
+              <div style="border: 1px solid #DADADA;" :style="{'background-color': chartDataSkills.datasets[0].dotBgColor[index]}" class="d-flex flex-row justify-space-between align-center pa-4 rounded-xl">
+                <div class="d-flex align-center">
+                  <div style="border-radius: 8px; height: 15px; width: 15px;" :style="{'background-color': chartDataSkills.datasets[0].backgroundColor[index]}"></div>
+                  <div style="font-size: 16px; line-height: 19px; font-weight: 500;" class="ml-2">{{ item }}</div>
+                </div>
+                <div style="font-size: 32px; line-height: 38px; font-weight: 500;">
+                  6/10
+                </div>
+              </div>
+            </v-col>
+          </v-row>
         </v-card>
       </v-container>
     </div>
@@ -202,6 +234,13 @@ ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale, LinearScale,
         labels: ["IQ/EQ", "Pedagogy", "English", "Psychometry", "Subject", "Computer"],
         datasets: [
           {
+            dotBgColor: [
+              "rgba(255, 40, 26, 0.1)", 
+              " rgba(245, 200, 40, 0.1)", 
+              ' rgba(16, 185, 129, 0.1)',
+              'rgba(26, 173, 255, 0.1)',
+              'rgba(26, 98, 255, 0.1)', 
+              'rgba(129, 26, 255, 0.1)'],
             backgroundColor: ["#FF281A", " #F5C828", '#10B981','#1AADFF','#1A62FF', '#811AFF'],
             data: [20, 35, 50, 60, 100,45, 120],
           },
