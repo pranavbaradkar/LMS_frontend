@@ -15,6 +15,7 @@ import PreMain from '../views/PreMain'
 import SlotSelection from '../views/SlotSelectionView'
 import Pcad from '../views/PcadView'
 import ScreeningStatus from '../views/ScreeningStatusView'
+import ResultView from '../views/ResultView'
 
 //import store from "../store";
 
@@ -34,7 +35,7 @@ const routes = [
     name: 'InterestsView',
     component :InterestsView,
     meta: {
-      requiresAuth: false,
+      requiresAuth: true,
     }
   },
   {
@@ -130,6 +131,11 @@ const routes = [
     path: '/screeningStatus',
     name: 'ScreeningStatus',
     component: ScreeningStatus,
+  },
+  {
+    path: '/result',
+    name: 'ResultView',
+    component: ResultView,
     meta: {
       requiresAuth: true,
     }
