@@ -11,6 +11,10 @@ import InterestsView from '../views/InterestsView.vue'
 import ReportView from '../views/ReportView'
 import GraphReportView from '../views/GraphReportView'
 import ProfileView from '../views/ProfileView'
+import PreMain from '../views/PreMain'
+import SlotSelection from '../views/SlotSelectionView'
+import Pcad from '../views/PcadView'
+import ScreeningStatus from '../views/ScreeningStatusView'
 
 //import store from "../store";
 
@@ -94,6 +98,38 @@ const routes = [
     path: '/profile',
     name: 'ProfileView',
     component: ProfileView,
+    meta: {
+      requiresAuth: true,
+    }
+  },
+  {
+    path: '/preMain',
+    name: 'PreMain',
+    component: PreMain,
+    meta: {
+      requiresAuth: true,
+    }
+  },
+  {
+    path: '/slotSelection',
+    name: 'SlotSelection',
+    component: SlotSelection,
+    meta: {
+      requiresAuth: true,
+    }
+  },
+  {
+    path: '/pcad',
+    name: 'Pcad',
+    component: Pcad,
+    meta: {
+      requiresAuth: true,
+    }
+  },
+  {
+    path: '/screeningStatus',
+    name: 'ScreeningStatus',
+    component: ScreeningStatus,
     meta: {
       requiresAuth: true,
     }

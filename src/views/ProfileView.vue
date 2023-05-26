@@ -3,7 +3,12 @@
     <v-app-bar app elevation="0" color="surface" class="justify-start px-4">
       <v-list-item>
         <v-list-item-icon to="/">
-          <v-img src="../assets/logo.svg" contain height="64" width="178"></v-img>
+          <v-img
+            src="../assets/logo.svg"
+            contain
+            height="64"
+            width="178"
+          ></v-img>
         </v-list-item-icon>
         <v-list-item-content> </v-list-item-content>
         <v-list-item-action>
@@ -37,640 +42,575 @@
     <v-container fluid class="pa-8">
       <v-row>
         <v-col class="py-0">
-          <v-icon class="ml-2 mb-1" @click="() => this.$router.replace('/')">mdi-arrow-left</v-icon>
+          <v-icon class="ml-2 mb-1" @click="() => this.$router.replace('/')"
+            >mdi-arrow-left</v-icon
+          >
         </v-col>
       </v-row>
       <v-tabs vertical class="profile-tab">
-        <v-tab class="justify-start">
-          Personal Information
-        </v-tab>
-        <v-tab class="justify-start">
-          Academic Info.
-        </v-tab>
-        <v-tab class="justify-start">
-          Professional Information
-        </v-tab>
-        <v-tab class="justify-start last">
-         My Results 
-        </v-tab>
+        <v-tab class="justify-start"> Personal Information </v-tab>
+        <v-tab class="justify-start"> Academic Info. </v-tab>
+        <v-tab class="justify-start"> Professional Information </v-tab>
+        <v-tab class="justify-start last"> My Results </v-tab>
         <v-tab-item>
-          <v-card 
-                :height="getHeight - 200 + 'px'"
-                id="myScroll"
-                elevation="0"
-                style="overflow-x: hidden;"
-                depressed>
-                <v-form lazy-validation ref="step1">
-                      <v-card
-                        elevation="0"
+          <v-card
+            :height="getHeight - 200 + 'px'"
+            id="myScroll"
+            elevation="0"
+            style="overflow-x: hidden"
+            depressed
+          >
+            <v-form lazy-validation ref="step1">
+              <v-card elevation="0">
+                <v-row class="py-0 px-8 pt-8">
+                  <v-col cols="2" class="py-0"
+                    ><v-select
+                      v-model="personalInfo.title"
+                      label="Title *"
+                      :items="['Ms', 'Mrs', 'Mr']"
+                      class="c-text-field"
+                      :rules="[(v) => !!v || 'Title is required']"
+                      required
+                    >
+                    </v-select
+                  ></v-col>
+                  <v-col cols="4" class="py-0 c-text-field">
+                    <div id="scrollId"></div>
+                    <v-text-field
+                      v-model="personalInfo.first_name"
+                      label="First Name *"
+                      :rules="[(v) => !!v || 'First Name is required']"
+                      required
+                      persistent-counter="10"
+                    ></v-text-field></v-col
+                  ><v-col cols="3" class="py-0 c-text-field"
+                    ><v-text-field
+                      v-model="personalInfo.middle_name"
+                      label="Middle Name"
+                    ></v-text-field></v-col
+                  ><v-col cols="3" class="py-0 c-text-field"
+                    ><v-text-field
+                      v-model="personalInfo.last_name"
+                      label="Last Name*"
+                      :rules="[(v) => !!v || 'Last Name is required']"
+                      required
+                    ></v-text-field
+                  ></v-col>
+                </v-row>
+                <v-row class="py-0 px-8">
+                  <v-col class="py-0">
+                    <v-form v-model="emailBool" class="c-text-field">
+                      <v-text-field
+                        v-model="personalInfo.email"
+                        label="Email Address *"
+                        :readonly="personalInfo.is_email_verified"
+                        :rules="emailRules"
+                        required
+                        @keydown.enter.prevent="submit"
                       >
-                        <v-row class="py-0 px-8 pt-8">
-                          <v-col cols="2" class="py-0"
-                            ><v-select
-                              v-model="personalInfo.title"
-                              label="Title *"
-                              :items="['Ms', 'Mrs', 'Mr']"
-                              class="c-text-field"
-                              :rules="[(v) => !!v || 'Title is required']"
-                              required
+                        <template #append>
+                          <div class="d-flex align-center n-mt-10">
+                            <v-btn
+                              on
+                              text
+                              :disabled="!emailBool"
+                              v-if="!personalInfo.is_email_verified"
+                              @click="generateOtp(), (otpDialog = true)"
                             >
-                            </v-select
-                          ></v-col>
-                          <v-col cols="4" class="py-0 c-text-field">
-                            <div id="scrollId"></div>
-                            <v-text-field
-                              v-model="personalInfo.first_name"
-                              label="First Name *"
-                              :rules="[(v) => !!v || 'First Name is required']"
-                              required
-                              persistent-counter="10"
-                            ></v-text-field></v-col
-                          ><v-col cols="3" class="py-0 c-text-field"
-                            ><v-text-field
-                              v-model="personalInfo.middle_name"
-                              label="Middle Name"
-                            ></v-text-field></v-col
-                          ><v-col cols="3" class="py-0 c-text-field"
-                            ><v-text-field
-                              v-model="personalInfo.last_name"
-                              
-                              label="Last Name*"
-                              :rules="[(v) => !!v || 'Last Name is required']"
-                              required
-                            ></v-text-field
-                          ></v-col>
-                        </v-row>
-                        <v-row class="py-0 px-8">
-                          <v-col class="py-0">
-                            <v-form v-model="emailBool" class="c-text-field">
-                              <v-text-field
-                                v-model="personalInfo.email"
-                                
-                                label="Email Address *"
-                                :readonly="personalInfo.is_email_verified"
-                                :rules="emailRules"
-                                required
-                                @keydown.enter.prevent="submit"
-                              >
-                                <template #append>
-                                  <div class="d-flex align-center n-mt-10">
-                                    <v-btn
-                                      on
-                                      text
-                                      :disabled="!emailBool"
-                                      v-if="!personalInfo.is_email_verified"
-                                      @click="generateOtp(), (otpDialog = true)"
-                                    >
-                                      Verify
-                                    </v-btn>
+                              Verify
+                            </v-btn>
 
-                                    <v-row
-                                      v-if="personalInfo.is_email_verified"
-                                    >
-                                      <v-col class="px-0 mt-1">
-                                        <v-img
-                                          src="../assets/verifiedIcon.png"
-                                          contain
-                                          max-width="24"
-                                        ></v-img>
-                                      </v-col>
-                                      <v-col class="px-0"> </v-col>
-                                    </v-row>
-                                  </div>
-                                </template>
-                                ></v-text-field
-                              >
-                            </v-form>
-                          </v-col>
-                        </v-row>
-                        <v-row class="py-0 px-8">
-                          <v-col class="py-0 c-text-field">
-                            <v-text-field
-                              v-model="personalInfo.phone_no"
-                              label="Your 10-digit mobile no.*"
-                              
-                              :readonly="personalInfo.is_phone_verified"
-                              @keypress="isNumber($event)"
-                              :counter="10"
-                              prefix="+91"
-                              :type="'text'"
-                              maxLength="10"
-                              :rules="[
-                                (v) => !!v || 'Mobile number is required',
-                                (v) =>
-                                  (v && v.length >= 10 && v.length <= 10) ||
-                                  'Mobile number must be 10 digit',
-                              ]"
-                              required
-                            >
-                              <template #append>
-                                <div class="d-flex align-center n-mt-10">
-                                  <v-btn
-                                    on
-                                    text
-                                    max-height="35"
-                                    :disabled="
-                                      personalInfo.phone_no.length != 10
-                                    "
-                                    v-if="
-                                      !personalInfo.is_phone_verified &&
-                                      usingPhone
-                                    "
-                                    @click="generatePhoneOtp()"
-                                  >
-                                    verify
-                                  </v-btn>
+                            <v-row v-if="personalInfo.is_email_verified">
+                              <v-col class="px-0 mt-1">
+                                <v-img
+                                  src="../assets/verifiedIcon.png"
+                                  contain
+                                  max-width="24"
+                                ></v-img>
+                              </v-col>
+                              <v-col class="px-0"> </v-col>
+                            </v-row>
+                          </div>
+                        </template>
+                        ></v-text-field
+                      >
+                    </v-form>
+                  </v-col>
+                </v-row>
+                <v-row class="py-0 px-8">
+                  <v-col class="py-0 c-text-field">
+                    <v-text-field
+                      v-model="personalInfo.phone_no"
+                      label="Your 10-digit mobile no.*"
+                      :readonly="personalInfo.is_phone_verified"
+                      @keypress="isNumber($event)"
+                      :counter="10"
+                      prefix="+91"
+                      :type="'text'"
+                      maxLength="10"
+                      :rules="[
+                        (v) => !!v || 'Mobile number is required',
+                        (v) =>
+                          (v && v.length >= 10 && v.length <= 10) ||
+                          'Mobile number must be 10 digit',
+                      ]"
+                      required
+                    >
+                      <template #append>
+                        <div class="d-flex align-center n-mt-10">
+                          <v-btn
+                            on
+                            text
+                            max-height="35"
+                            :disabled="personalInfo.phone_no.length != 10"
+                            v-if="!personalInfo.is_phone_verified && usingPhone"
+                            @click="generatePhoneOtp()"
+                          >
+                            verify
+                          </v-btn>
 
-                                  <v-row v-if="personalInfo.is_phone_verified">
-                                    <v-col class="px-0 mt-1">
-                                      <v-img
-                                        src="../assets/verifiedIcon.png"
-                                        contain
-                                        max-width="24"
-                                      ></v-img>
-                                    </v-col>
+                          <v-row v-if="personalInfo.is_phone_verified">
+                            <v-col class="px-0 mt-1">
+                              <v-img
+                                src="../assets/verifiedIcon.png"
+                                contain
+                                max-width="24"
+                              ></v-img>
+                            </v-col>
 
-                                    <v-col class="px-0"> </v-col>
-                                  </v-row>
-                                </div>
-                              </template>
-                            </v-text-field>
-                          </v-col>
-                        </v-row>
-                        <v-row class="py-0 px-8">
-                          <v-col cols="4" class="py-0"
-                            ><v-text-field
-                              v-model="personalInfo.dob"                             
-                              :max="new Date().toISOString().slice(0, 10)"
-                              label="Date of Birth (DDMMYY)*"
-                              type="date"
-                              :rules="[
-                                (v) => !!v || 'Date of Birth is required',
-                                (v) => {
-                                  const firstdate = new Date(v);
-                                  const today_date = new Date();
-                                 return (
-                                    firstdate < today_date ||
-                                    'Future date not allowed'
-                                  );
-                                },
-                               (v) => {
-                                  const firstdate = new Date(v);
-                                  const today_date = new Date();
-                                  const diffTime = Math.abs(
-                                    firstdate - today_date
-                                  );
-                                  const diffDays = Math.ceil(
-                                    diffTime / (1000 * 60 * 60 * 24 * 365)
-                                  );
-                                  return (
-                                    diffDays >= 18 || 'age is less than 18'
-                                 );
-                                },
-                              ]"
-                              required
-                            ></v-text-field
-                          ></v-col>
-                          <v-col cols="3" class="py-0">
-                            <v-select
-                              v-model="personalInfo.gender"
-                              label="Gender*"
-                              :items="['FEMALE', 'MALE', 'OTHERS']"
-                              :rules="[(v) => !!v || 'Gender is required']"
-                              required
-                            >
-                            </v-select>
-                          </v-col>
-                        </v-row>
-                        <v-row class="px-8 py-0">
-                          <v-col cols="12" class="py-0 c-text-field">
-                              <v-text-field
-                                v-model="personalInfo.address"
-                                label="Address*"
-                                counter="100"
-                                maxLength="10"
-                                required
-                                :rules="[
-                                  (v) => !!v || 'Address is required',
-                                 
-                                ]"
-                                :readonly="isCurrentLocation ? true : false"
-                              >
-                              <template #append>
-                                <div v-if="!isCurrentLocation" class="d-flex align-center">
-                                  <v-btn
-                                    :loading="isFetchingLocation"
-                                    class="pa-0"
-                                    color="primary"
-                                    text
-                                    @click="location"
-                                  >
-                                    <v-icon>mdi-map-marker</v-icon>
-                                    Location
-                                  </v-btn>
-                                </div>
-                                <div v-else class="d-flex align-center">
-                                  <v-btn
-                                    class="pa-0"
-                                    color="primary"
-                                    text
-                                    @click="clearLocation"
-                                  >
-                                    <v-icon>mdi-undo</v-icon>
-                                    Reset
-                                  </v-btn>
-                                </div>
-                              </template>
-                            </v-text-field>
-                            </v-col>
-                        </v-row>
-                        <div v-if="!isCurrentLocation" class="pt-5 px-8">
-                          <v-row class="py-0">
-                            <v-col cols="6" class="py-0">
-                              <v-select
-                                v-model="personalInfo.country_id"
-                                :value="country"
-                                label="Country *"
-                                :items="countries"
-                                item-text="country_name"
-                                item-value="id"
-                                :rules="[
-                                  (v) => !!v || 'Country name is required',
-                                  (v) => v > -1 || 'country name is required'
-                                ]"
-                                required
-                                @change="fetchStates"
-                              >
-                              </v-select>
-                            </v-col>
-                            <v-col cols="6" class="py-0">
-                              <v-select
-                                v-model="personalInfo.state_id"
-                                :value="state"
-                                label="State *"
-                                :items="states"
-                                
-                                
-                                item-value="id"
-                                item-text="state_name"
-                                :rules="[
-                                  (v) => !!v || 'State name is required',
-                                  (v) => v > -1 || 'State name is required'
-                                ]"
-                                required
-                                @change="fetchDistricts"
-                              >
-                              </v-select>
-                            </v-col>
-                          </v-row>
-                          <v-row class="py-0">
-                            <v-col cols="6" class="py-0 c-text-field">
-                              <v-select
-                                v-model="personalInfo.district_id"
-                                :value="district"
-                                label="District"
-                                :items="districts"
-                                item-value="id"
-                                item-text="district_name"
-                                @change="fetchTalukas"
-                              >
-                              </v-select>
-                            </v-col>
-                            <v-col cols="6" class="py-0 c-text-field">
-                              <v-select
-                                v-model="personalInfo.talukTehsil"
-                                :value="talukTehsil"
-                                label="Taluka / Tehsil"
-                                :items="talukas"
-                                
-                                
-                                item-value="id"
-                                item-text="taluka_name"
-                                @change="fetchCities"
-                              >
-                              </v-select>
-                            </v-col> </v-row
-                          ><v-row class="py-0">
-                            <v-col cols="6" class="py-0">
-                              <v-select
-                                v-model="personalInfo.city_id"
-                                :value="cityVillage"
-                                label="City / Village"
-                                :items="cities"
-                                item-value="id"
-                                item-text="city_name"
-                              >
-                              </v-select>
-                            </v-col>
-                            <v-col cols="6" class="py-0 c-text-field">
-                              <v-text-field
-                                v-model="personalInfo.pincode"
-                                :value="pinCode"
-                                
-                                @keypress="isNumber($event)"
-                                label="Pin Code *"
-                                counter="6"
-                                maxLength="6"
-                                :rules="[
-                                  (v) => !!v || 'Pincode is required',
-                                  (v) =>
-                                    (v.length == 6) ||
-                                    'Pincode must be 6 digit',
-                                ]"
-                                required
-                              ></v-text-field>
-                            </v-col>
+                            <v-col class="px-0"> </v-col>
                           </v-row>
                         </div>
-                        <div v-if="isCurrentLocation" class="pt-5 px-8">
-                          <v-row class="py-0">
-                            <v-col cols="6" class="py-0 c-text-field">
-                              <v-text-field
-                                v-model="personalInfo.country_name"
-                                label="Country *"
-                                
-                                readonly
-                                :rules="[
-                                  (v) => !!v || 'Country name is required',
-                                ]"
-                                required
-                              >
-                              </v-text-field>
-                            </v-col>
-                            <v-col cols="6" class="py-0 c-text-field">
-                              <v-text-field
-                                v-model="personalInfo.state_name"
-                                readonly
-                                label="State *"                                
-                                :rules="[
-                                  (v) => !!v || 'State name is required',
-                                ]"
-                                required
-                              >
-                              </v-text-field>
-                            </v-col>
-                          </v-row>
-                          <v-row class="py-0">
-                            <v-col cols="6" class="py-0 c-text-field">
-                              <v-text-field
-                                v-model="personalInfo.district_name"
-                                label="District"
-                                readonly
-                                
-                                
-                                
-                                :rules="[
-                                  (v) => !!v || 'District name is required',
-                                ]"
-                              >
-                              </v-text-field>
-                            </v-col>
-                            <v-col cols="6" class="py-0 c-text-field">
-                              <v-text-field
-                                v-model="personalInfo.taluka_name"
-                                label="Taluk / Tehsil"
-                                readonly
-                                
-                                
-                                
-                              >
-                              </v-text-field>
-                            </v-col> </v-row
-                          ><v-row class="py-0">
-                            <v-col cols="6" class="py-0 c-text-field">
-                              <v-text-field
-                                v-model="personalInfo.city_name"
-                                readonly
-                                label="City / Village"
-                                :items="cities"
-                                
-                                
-                                
-                              >
-                              </v-text-field>
-                            </v-col>
-                            <v-col cols="6" class="py-0 c-text-field">
-                              <v-text-field
-                                v-model="personalInfo.pincode"
-                                :value="pinCode"
-                                
-                                @keypress="isNumber($event)"
-                                label="Pin Code *"
-                                readonly
-                                counter="6"
-                                maxLength="6"
-                                :rules="[
-                                  (v) => !!v || 'Pincode is required',
-                                  (v) =>
-                                    v.length == 6 ||
-                                    'Pincode must be 6 digit',
-                                ]"
-                                required
-                              ></v-text-field>
-                            </v-col>
-                          </v-row>
+                      </template>
+                    </v-text-field>
+                  </v-col>
+                </v-row>
+                <v-row class="py-0 px-8">
+                  <v-col cols="4" class="py-0"
+                    ><v-text-field
+                      v-model="personalInfo.dob"
+                      :max="new Date().toISOString().slice(0, 10)"
+                      label="Date of Birth (DDMMYY)*"
+                      type="date"
+                      :rules="[
+                        (v) => !!v || 'Date of Birth is required',
+                        (v) => {
+                          const firstdate = new Date(v);
+                          const today_date = new Date();
+                          return (
+                            firstdate < today_date || 'Future date not allowed'
+                          );
+                        },
+                        (v) => {
+                          const firstdate = new Date(v);
+                          const today_date = new Date();
+                          const diffTime = Math.abs(firstdate - today_date);
+                          const diffDays = Math.ceil(
+                            diffTime / (1000 * 60 * 60 * 24 * 365)
+                          );
+                          return diffDays >= 18 || 'age is less than 18';
+                        },
+                      ]"
+                      required
+                    ></v-text-field
+                  ></v-col>
+                  <v-col cols="3" class="py-0">
+                    <v-select
+                      v-model="personalInfo.gender"
+                      label="Gender*"
+                      :items="['FEMALE', 'MALE', 'OTHERS']"
+                      :rules="[(v) => !!v || 'Gender is required']"
+                      required
+                    >
+                    </v-select>
+                  </v-col>
+                </v-row>
+                <v-row class="px-8 py-0">
+                  <v-col cols="12" class="py-0 c-text-field">
+                    <v-text-field
+                      v-model="personalInfo.address"
+                      label="Address*"
+                      counter="100"
+                      maxLength="10"
+                      required
+                      :rules="[(v) => !!v || 'Address is required']"
+                      :readonly="isCurrentLocation ? true : false"
+                    >
+                      <template #append>
+                        <div
+                          v-if="!isCurrentLocation"
+                          class="d-flex align-center"
+                        >
+                          <v-btn
+                            :loading="isFetchingLocation"
+                            class="pa-0"
+                            color="primary"
+                            text
+                            @click="location"
+                          >
+                            <v-icon>mdi-map-marker</v-icon>
+                            Location
+                          </v-btn>
                         </div>
-                      </v-card>
-                </v-form>
-                </v-card>
-                <v-btn
-                        :loading="isCreatingUser"
-                        depressed
-                        color="primary"
-                        class="float-right white--text mx-8 my-6"
-                        @click="savePersonal"
+                        <div v-else class="d-flex align-center">
+                          <v-btn
+                            class="pa-0"
+                            color="primary"
+                            text
+                            @click="clearLocation"
+                          >
+                            <v-icon>mdi-undo</v-icon>
+                            Reset
+                          </v-btn>
+                        </div>
+                      </template>
+                    </v-text-field>
+                  </v-col>
+                </v-row>
+                <div v-if="!isCurrentLocation" class="pt-5 px-8">
+                  <v-row class="py-0">
+                    <v-col cols="6" class="py-0">
+                      <v-select
+                        v-model="personalInfo.country_id"
+                        :value="country"
+                        label="Country *"
+                        :items="countries"
+                        item-text="country_name"
+                        item-value="id"
+                        :rules="[
+                          (v) => !!v || 'Country name is required',
+                          (v) => v > -1 || 'country name is required',
+                        ]"
+                        required
+                        @change="fetchStates"
                       >
-                        Save
-                </v-btn>
+                      </v-select>
+                    </v-col>
+                    <v-col cols="6" class="py-0">
+                      <v-select
+                        v-model="personalInfo.state_id"
+                        :value="state"
+                        label="State *"
+                        :items="states"
+                        item-value="id"
+                        item-text="state_name"
+                        :rules="[
+                          (v) => !!v || 'State name is required',
+                          (v) => v > -1 || 'State name is required',
+                        ]"
+                        required
+                        @change="fetchDistricts"
+                      >
+                      </v-select>
+                    </v-col>
+                  </v-row>
+                  <v-row class="py-0">
+                    <v-col cols="6" class="py-0 c-text-field">
+                      <v-select
+                        v-model="personalInfo.district_id"
+                        :value="district"
+                        label="District"
+                        :items="districts"
+                        item-value="id"
+                        item-text="district_name"
+                        @change="fetchTalukas"
+                      >
+                      </v-select>
+                    </v-col>
+                    <v-col cols="6" class="py-0 c-text-field">
+                      <v-select
+                        v-model="personalInfo.talukTehsil"
+                        :value="talukTehsil"
+                        label="Taluka / Tehsil"
+                        :items="talukas"
+                        item-value="id"
+                        item-text="taluka_name"
+                        @change="fetchCities"
+                      >
+                      </v-select>
+                    </v-col> </v-row
+                  ><v-row class="py-0">
+                    <v-col cols="6" class="py-0">
+                      <v-select
+                        v-model="personalInfo.city_id"
+                        :value="cityVillage"
+                        label="City / Village"
+                        :items="cities"
+                        item-value="id"
+                        item-text="city_name"
+                      >
+                      </v-select>
+                    </v-col>
+                    <v-col cols="6" class="py-0 c-text-field">
+                      <v-text-field
+                        v-model="personalInfo.pincode"
+                        :value="pinCode"
+                        @keypress="isNumber($event)"
+                        label="Pin Code *"
+                        counter="6"
+                        maxLength="6"
+                        :rules="[
+                          (v) => !!v || 'Pincode is required',
+                          (v) => v.length == 6 || 'Pincode must be 6 digit',
+                        ]"
+                        required
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
+                </div>
+                <div v-if="isCurrentLocation" class="pt-5 px-8">
+                  <v-row class="py-0">
+                    <v-col cols="6" class="py-0 c-text-field">
+                      <v-text-field
+                        v-model="personalInfo.country_name"
+                        label="Country *"
+                        readonly
+                        :rules="[(v) => !!v || 'Country name is required']"
+                        required
+                      >
+                      </v-text-field>
+                    </v-col>
+                    <v-col cols="6" class="py-0 c-text-field">
+                      <v-text-field
+                        v-model="personalInfo.state_name"
+                        readonly
+                        label="State *"
+                        :rules="[(v) => !!v || 'State name is required']"
+                        required
+                      >
+                      </v-text-field>
+                    </v-col>
+                  </v-row>
+                  <v-row class="py-0">
+                    <v-col cols="6" class="py-0 c-text-field">
+                      <v-text-field
+                        v-model="personalInfo.district_name"
+                        label="District"
+                        readonly
+                        :rules="[(v) => !!v || 'District name is required']"
+                      >
+                      </v-text-field>
+                    </v-col>
+                    <v-col cols="6" class="py-0 c-text-field">
+                      <v-text-field
+                        v-model="personalInfo.taluka_name"
+                        label="Taluk / Tehsil"
+                        readonly
+                      >
+                      </v-text-field>
+                    </v-col> </v-row
+                  ><v-row class="py-0">
+                    <v-col cols="6" class="py-0 c-text-field">
+                      <v-text-field
+                        v-model="personalInfo.city_name"
+                        readonly
+                        label="City / Village"
+                        :items="cities"
+                      >
+                      </v-text-field>
+                    </v-col>
+                    <v-col cols="6" class="py-0 c-text-field">
+                      <v-text-field
+                        v-model="personalInfo.pincode"
+                        :value="pinCode"
+                        @keypress="isNumber($event)"
+                        label="Pin Code *"
+                        readonly
+                        counter="6"
+                        maxLength="6"
+                        :rules="[
+                          (v) => !!v || 'Pincode is required',
+                          (v) => v.length == 6 || 'Pincode must be 6 digit',
+                        ]"
+                        required
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
+                </div>
+              </v-card>
+            </v-form>
+          </v-card>
+          <v-btn
+            :loading="isCreatingUser"
+            depressed
+            color="primary"
+            class="float-right white--text mx-8 my-6"
+            @click="savePersonal"
+          >
+            Save
+          </v-btn>
         </v-tab-item>
         <v-tab-item>
           <v-card
-                :height="getHeight - 200 + 'px'"
-                id="myScroll"
-                elevation="0"
-                style="overflow-x: hidden;"
-                depressed
-              >
-                <v-form lazy-validation ref="step2">
-                  <v-card elevation="0">
-                      <v-expansion-panels v-model="expandedPanelIndex">
-                        <v-expansion-panel
-                          v-for="(
-                            qualification, index
-                          ) in academicQualifications"
-                          :key="index"
-                          elevation="0"
+            :height="getHeight - 200 + 'px'"
+            id="myScroll"
+            elevation="0"
+            style="overflow-x: hidden"
+            depressed
+          >
+            <v-form lazy-validation ref="step2">
+              <v-card elevation="0">
+                <v-expansion-panels v-model="expandedPanelIndex">
+                  <v-expansion-panel
+                    v-for="(qualification, index) in academicQualifications"
+                    :key="index"
+                    elevation="0"
+                  >
+                    <v-expansion-panel-header>
+                      <div
+                        class="d-flex flex-column"
+                        v-if="
+                          expandedPanelIndex != index &&
+                          qualification.programme != ''
+                        "
+                      >
+                        <div
+                          class="font-weight-regular"
+                          v-if="qualification.programme != ''"
                         >
-                          <v-expansion-panel-header>
-                            <div
-                              class="d-flex flex-column"
-                              v-if="expandedPanelIndex != index  &&
-                                qualification.programme != ''"
-                            >
-                              <div
-                                class="font-weight-regular"
-                                v-if="qualification.programme != ''"
-                              >
-                                {{ index + 1 + ". " + qualification.programme }}
-                              </div>
-                              <div 
-                              v-if="qualification.institution != ''"
-                              class="text-body-2 grey--text pt-2 pb-2">
-                                {{ qualification.institution }}
-                              </div>
-                              <div
-                                class="text-body-2 grey--text"
-                                v-if="qualification.start_date != ''"
-                              >
-                                {{
-                                  new Date(
-                                    qualification.start_date
-                                  ).getFullYear() +
-                                  " - " +
-                                  new Date(qualification.end_date).getFullYear()
-                                }}
-                              </div>
-                            </div>
-                            <div
-                              class="d-flex flex-column"
-                              v-if="
-                                expandedPanelIndex != index &&
-                                qualification.programme == ''"
-                           > Add academic programme detail
-                            </div>
-                          </v-expansion-panel-header>
+                          {{ index + 1 + ". " + qualification.programme }}
+                        </div>
+                        <div
+                          v-if="qualification.institution != ''"
+                          class="text-body-2 grey--text pt-2 pb-2"
+                        >
+                          {{ qualification.institution }}
+                        </div>
+                        <div
+                          class="text-body-2 grey--text"
+                          v-if="qualification.start_date != ''"
+                        >
+                          {{
+                            new Date(qualification.start_date).getFullYear() +
+                            " - " +
+                            new Date(qualification.end_date).getFullYear()
+                          }}
+                        </div>
+                      </div>
+                      <div
+                        class="d-flex flex-column"
+                        v-if="
+                          expandedPanelIndex != index &&
+                          qualification.programme == ''
+                        "
+                      >
+                        Add academic programme detail
+                      </div>
+                    </v-expansion-panel-header>
 
-                          <v-expansion-panel-content>
-                            <v-row class="py-0">
-                              <v-col class="py-0 c-text-field"
-                                ><v-text-field
-                                  v-model="qualification.institution"
-                                  
-                                  label="School/ College/ University *"
-                                  
-                                  
-                                  counter="100"
-                                  maxLength="100"
-                                  :rules="[
-                                    (v) =>
-                                      !!v ||
-                                      'School/ College/ University name is required',
-                                  ]"
-                                  required
-                                ></v-text-field
-                              ></v-col>
-                            </v-row>
-                            <v-row class="py-0">
-                              <v-col class="py-0 c-text-field"
-                                ><v-text-field
-                                  v-model="qualification.programme"
-                                  
-                                  label="Degree/ Diploma/ Certification *"
-                                  
-                                  
-                                  counter="100"
-                                  maxLength="100"
-                                  :rules="[
-                                    (v) =>
-                                      !!v ||
-                                      'Degree/ Diploma/ Certification name is required',
-                                  ]"
-                                  required
-                                ></v-text-field
-                              ></v-col> </v-row
-                            ><v-row class="py-0">
-                              <v-col class="py-0 c-text-field"
-                                ><v-text-field
-                                  v-model="qualification.field_of_study"
-                                  
-                                  label="Field of Study*"
-                                  
-                                  
-                                  counter="100"
-                                  maxLength="100"
-                                  required
-                                  :rules="[
-                                    (v) => !!v || 'Field of Study is required',
-                                  ]"
-                                ></v-text-field
-                              ></v-col>
-                            </v-row>
+                    <v-expansion-panel-content>
+                      <v-row class="py-0">
+                        <v-col class="py-0 c-text-field"
+                          ><v-text-field
+                            v-model="qualification.institution"
+                            label="School/ College/ University *"
+                            counter="100"
+                            maxLength="100"
+                            :rules="[
+                              (v) =>
+                                !!v ||
+                                'School/ College/ University name is required',
+                            ]"
+                            required
+                          ></v-text-field
+                        ></v-col>
+                      </v-row>
+                      <v-row class="py-0">
+                        <v-col class="py-0 c-text-field"
+                          ><v-text-field
+                            v-model="qualification.programme"
+                            label="Degree/ Diploma/ Certification *"
+                            counter="100"
+                            maxLength="100"
+                            :rules="[
+                              (v) =>
+                                !!v ||
+                                'Degree/ Diploma/ Certification name is required',
+                            ]"
+                            required
+                          ></v-text-field
+                        ></v-col> </v-row
+                      ><v-row class="py-0">
+                        <v-col class="py-0 c-text-field"
+                          ><v-text-field
+                            v-model="qualification.field_of_study"
+                            label="Field of Study*"
+                            counter="100"
+                            maxLength="100"
+                            required
+                            :rules="[
+                              (v) => !!v || 'Field of Study is required',
+                            ]"
+                          ></v-text-field
+                        ></v-col>
+                      </v-row>
 
-                            <v-row class="py-0">
-                              <v-col cols="6" class="py-0"
-                                ><v-text-field
-                                  v-model="qualification.start_date"
-                                  :max="new Date().toISOString().slice(0, 10)"
-                                  
-                                  label="Start Date*"
-                                  
-                                  
-                                  type="date"
-                                  :rules="[
-                                    (v) => !!v || 'Start Date is required',
-                                    (v) => {
-                                  const firstdate = new Date(v);
-                                  const today_date = new Date();
-                                  return (
-                                    firstdate < today_date ||
-                                    'Future date not allowed'
-                                  );
-                                },
-                                  ]"
-                                ></v-text-field
-                              ></v-col>
-                              <v-col cols="6" class="py-0"
-                                ><v-text-field
-                                  v-model="qualification.end_date"
-                                  :max="new Date().toISOString().slice(0, 10)"
-                                  
-                                  label="End Date* (or expected)"
-                                  
-                                  
-                                  type="date"
-                                  :rules="[
-                                    (v) => !!v || 'End Date is required',
-                                    (v) => qualification.end_date > qualification.start_date || 'end date should be greater than start date',
-                                    (v) => {
-                                  const firstdate = new Date(v);
-                                  const today_date = new Date();
-                                  return (
-                                    firstdate < today_date ||
-                                    'Future date not allowed'
-                                  );
-                                },
-                                  ]"
-                                ></v-text-field
-                              ></v-col>
-                            </v-row>
+                      <v-row class="py-0">
+                        <v-col cols="6" class="py-0"
+                          ><v-text-field
+                            v-model="qualification.start_date"
+                            :max="new Date().toISOString().slice(0, 10)"
+                            label="Start Date*"
+                            type="date"
+                            :rules="[
+                              (v) => !!v || 'Start Date is required',
+                              (v) => {
+                                const firstdate = new Date(v);
+                                const today_date = new Date();
+                                return (
+                                  firstdate < today_date ||
+                                  'Future date not allowed'
+                                );
+                              },
+                            ]"
+                          ></v-text-field
+                        ></v-col>
+                        <v-col cols="6" class="py-0"
+                          ><v-text-field
+                            v-model="qualification.end_date"
+                            :max="new Date().toISOString().slice(0, 10)"
+                            label="End Date* (or expected)"
+                            type="date"
+                            :rules="[
+                              (v) => !!v || 'End Date is required',
+                              (v) =>
+                                qualification.end_date >
+                                  qualification.start_date ||
+                                'end date should be greater than start date',
+                              (v) => {
+                                const firstdate = new Date(v);
+                                const today_date = new Date();
+                                return (
+                                  firstdate < today_date ||
+                                  'Future date not allowed'
+                                );
+                              },
+                            ]"
+                          ></v-text-field
+                        ></v-col>
+                      </v-row>
 
-                            <v-row class="py-0">
-                              <v-col cols="12" class="py-0 c-text-field">
-                                <v-text-field
-                                  
-                                  label="Extra Curricular Activities"
-                                  
-                                  
-                                  counter="500"
-                                  maxLength="500"
-                                ></v-text-field>
-                              </v-col>
-                            </v-row>
-                            <v-row class="py-0">
-                              <v-col cols="12" class="py-0 c-text-field">
-                                <v-text-field
-                                  
-                                  label="Achievements"
-                                  
-                                  
-                                  counter="500"
-                                  maxLength="500"
-                                ></v-text-field>
-                              </v-col>
-                            </v-row>
-                            <v-row class="py-0">
-                              <v-col cols="12" class="py-0 c-text-field">
-                                <!-- <div class="-xl d-flex flex-row justify-space-between align-center" outline style="height:48px; width: 100%; margin-bottom: 8px;padding: 0 24px; border: 1px solid grey; position: relative">
+                      <v-row class="py-0">
+                        <v-col cols="12" class="py-0 c-text-field">
+                          <v-text-field
+                            label="Extra Curricular Activities"
+                            counter="500"
+                            maxLength="500"
+                          ></v-text-field>
+                        </v-col>
+                      </v-row>
+                      <v-row class="py-0">
+                        <v-col cols="12" class="py-0 c-text-field">
+                          <v-text-field
+                            label="Achievements"
+                            counter="500"
+                            maxLength="500"
+                          ></v-text-field>
+                        </v-col>
+                      </v-row>
+                      <v-row class="py-0">
+                        <v-col cols="12" class="py-0 c-text-field">
+                          <!-- <div class="-xl d-flex flex-row justify-space-between align-center" outline style="height:48px; width: 100%; margin-bottom: 8px;padding: 0 24px; border: 1px solid grey; position: relative">
                                     <div>
                                       <v-chip v-for="i in 5" :key="i">cetificate.jpg</v-chip>
                                     </div>
@@ -679,221 +619,214 @@
                                       <input type="file" id="myfile" name="myfile"  @change="onChange" style="position: absolute; top:0px; width: 124px; height: 48px;opacity: 0; right: 0px; cursor: pointer">
                                     </div>
                                 </div> -->
-                                <v-file-input
-                                  chips
-                                  label="Upload Certificate"
-                                  id="fileInput"
-                                  append-inner-icon="mdi-attachment"
-                                  @change="onChange"
-                                  accept="application/pdf, image/jpeg, image/jpg"
-                                  v-model="selectedFile[expandedPanelIndex]"
-                                >
-                                  <template #append>
-                                    <div
-                                      class="d-flex align-center cursor n-mt-10"
-                                      @click="manualClick"
-                                    >
-                                      <v-icon>mdi-attachment</v-icon> Attachment
-                                    </div>
-                                  </template>
-                                </v-file-input>
-                              </v-col>
-                            </v-row>
-                            <v-row v-if="index != 0">
-                              <v-col cols="12" class="d-flex justify-end">
-                                <v-btn
-                                  @click="openDeleteDiolog(index)"
-                                  text
-                                  class="d-flex justify-end red--text"
-                                  >Remove</v-btn
-                                >
-                              </v-col>
-                            </v-row>
-                          </v-expansion-panel-content>
-                        </v-expansion-panel>
-                      </v-expansion-panels>
-
-                      <v-row>
-                        <v-col class="mt-4">
+                          <v-file-input
+                            chips
+                            label="Upload Certificate"
+                            id="fileInput"
+                            append-inner-icon="mdi-attachment"
+                            @change="onChange"
+                            accept="application/pdf, image/jpeg, image/jpg"
+                            v-model="selectedFile[expandedPanelIndex]"
+                          >
+                            <template #append>
+                              <div
+                                class="d-flex align-center cursor n-mt-10"
+                                @click="manualClick"
+                              >
+                                <v-icon>mdi-attachment</v-icon> Attachment
+                              </div>
+                            </template>
+                          </v-file-input>
+                        </v-col>
+                      </v-row>
+                      <v-row v-if="index != 0">
+                        <v-col cols="12" class="d-flex justify-end">
                           <v-btn
+                            @click="openDeleteDiolog(index)"
                             text
-                            @click="addAcademicQualification"
-                            class="primary--text unset-capitalize"
-                            ><v-icon class="mr-4">mdi-plus-circle-outline</v-icon>Add another
-                            Educational Qualification (You might have)</v-btn
+                            class="d-flex justify-end red--text"
+                            >Remove</v-btn
                           >
                         </v-col>
                       </v-row>
-                  </v-card>
-                </v-form>
+                    </v-expansion-panel-content>
+                  </v-expansion-panel>
+                </v-expansion-panels>
+
+                <v-row>
+                  <v-col class="mt-4">
+                    <v-btn
+                      text
+                      @click="addAcademicQualification"
+                      class="primary--text unset-capitalize"
+                      ><v-icon class="mr-4">mdi-plus-circle-outline</v-icon>Add
+                      another Educational Qualification (You might have)</v-btn
+                    >
+                  </v-col>
+                </v-row>
               </v-card>
-              <v-btn
-                :loading="isCreatingUser"
-                color="primary"
-                depressed
-                class="float-right white--text my-6 mx-8 m-btn-p"
-                @click="saveAcademic"
-              >
-              Save
-              </v-btn>
+            </v-form>
+          </v-card>
+          <v-btn
+            :loading="isCreatingUser"
+            color="primary"
+            depressed
+            class="float-right white--text my-6 mx-8 m-btn-p"
+            @click="saveAcademic"
+          >
+            Save
+          </v-btn>
         </v-tab-item>
         <v-tab-item>
           <v-card
-                :height="getHeight - 200 + 'px'"
-                id="myScroll"
-                elevation="0"
-                depressed
-              >
-                <v-form lazy-validation ref="step3">
-                  <v-card elevation="0" class="mb-8" style="overflow-x: hidden;">
-                    <v-card class="pa-0 mb-8" elevation="0">
-                      <v-expansion-panels v-model="expandedPanelIndex">
-                        <v-expansion-panel
-                          v-for="(professional, index) in professionalInfos"
-                          :key="index"
-                          elevation="0"
+            :height="getHeight - 200 + 'px'"
+            id="myScroll"
+            elevation="0"
+            depressed
+          >
+            <v-form lazy-validation ref="step3">
+              <v-card elevation="0" class="mb-8" style="overflow-x: hidden">
+                <v-card class="pa-0 mb-8" elevation="0">
+                  <v-expansion-panels v-model="expandedPanelIndex">
+                    <v-expansion-panel
+                      v-for="(professional, index) in professionalInfos"
+                      :key="index"
+                      elevation="0"
+                    >
+                      <v-expansion-panel-header
+                        ><div
+                          class="d-flex flex-column"
+                          v-if="expandedPanelIndex != index"
+                          @click="consolee(professional.end_date)"
                         >
-                          <v-expansion-panel-header
-                            ><div
-                              class="d-flex flex-column"
-                              v-if="expandedPanelIndex != index"
-                              @click="consolee(professional.end_date)"
-                            >
-                              <div
-                                v-if="experience == 'Fresher'"
-                                class="font-weight-regular"
-                              >
-                                Fresher
-                              </div>
-                              <div v-if="experience !== 'Fresher' && professional.position != ''">
-                                <div class="font-weight-regular">
-                                  {{ index + 1 + ". " + professional.position }}
-                                </div>
-                                <div
-                                  class="text-body-2 grey--text"
-                                 v-if="professional.start_date != '' && isCurrentlyWorking"
-                                >
-                                  {{
-                                    new Date(
-                                      professional.start_date
-                                    ).getFullYear() +
-                                    " - " + 
-                                    (professional.end_date != '' ?
-                                    new Date(
-                                      professional.end_date
-                                    ).getFullYear() : 'Present')
-                                  }}
-                                </div>
-                               </div>
-                                <div v-if="experience !== 'Fresher' && professional.position == ''"  class="font-weight-regular">
-                                  Add position details
-                                </div>
-                            </div>
-                            </v-expansion-panel-header
+                          <div
+                            v-if="experience == 'Fresher'"
+                            class="font-weight-regular"
                           >
-                          <v-expansion-panel-content>
-                            <v-row class="py-0 px-0">
+                            Fresher
+                          </div>
+                          <div
+                            v-if="
+                              experience !== 'Fresher' &&
+                              professional.position != ''
+                            "
+                          >
+                            <div class="font-weight-regular">
+                              {{ index + 1 + ". " + professional.position }}
+                            </div>
+                            <div
+                              class="text-body-2 grey--text"
+                              v-if="
+                                professional.start_date != '' &&
+                                isCurrentlyWorking
+                              "
+                            >
+                              {{
+                                new Date(
+                                  professional.start_date
+                                ).getFullYear() +
+                                " - " +
+                                (professional.end_date != ""
+                                  ? new Date(
+                                      professional.end_date
+                                    ).getFullYear()
+                                  : "Present")
+                              }}
+                            </div>
+                          </div>
+                          <div
+                            v-if="
+                              experience !== 'Fresher' &&
+                              professional.position == ''
+                            "
+                            class="font-weight-regular"
+                          >
+                            Add position details
+                          </div>
+                        </div>
+                      </v-expansion-panel-header>
+                      <v-expansion-panel-content>
+                        <v-row class="py-0 px-0">
+                          <v-col class="py-0 px-0">
+                            <v-card
+                              v-if="index == 0"
+                              width="100%"
+                              elevation="0"
+                              class="mb-2 -xl"
+                            >
                               <v-col class="py-0 px-0">
-                                <v-card
-                                  v-if="index == 0"
-                                  width="100%"
-                                  elevation="0"
-                                  class="mb-2 -xl">
-                                    <v-col class="py-0 px-0">
-                                      <v-row class="py-0 px-0 ml-2">
-                                        <v-col cols="1" class="py-0 px-0"
-                                          ><div class="pt-4 ml-1">
-                                            I have
-                                          </div></v-col>
-                                        <v-col
-                                          cols="1 center"
-                                          class="py-0 px-0 c-text-field d-flex"
-                                        > 
-                                          <v-text-field
-                                            :disabled="
-                                              experience != 'Experienced'
-                                            "
-                                            type="number"
-                                            
-                                            @keypress="isNumber($event)"
-                                            
-                                            :rules="[minValueRule]"
-                                            v-model="
-                                              professional.experience_year
-                                            "
-                                          >
-                                          </v-text-field>
-                                        </v-col>
-                                        <v-col cols="1" class="py-0 px-0"
-                                          ><div class="pt-4 ml-1">
-                                            Years
-                                          </div></v-col
-                                        >
-                                        <v-col
-                                          cols="1"
-                                          class="py-0 px-0 c-text-field"
-                                        >
-                                          <v-text-field
-                                            type="number"
-                                            :disabled="
-                                              experience != 'Experienced'
-                                            "
-                                            @keypress="isNumber($event)"
-                                            :rules="[minValueRule]"
-                                            
-                                            
-                                            v-model="
-                                              professional.experience_month
-                                            "
-                                          >
-                                          </v-text-field>
-                                        </v-col>
-                                        <v-col cols="4 center" class="py-0 px-0"
-                                          ><div class="pt-4 ml-1">
-                                            Months of experience
-                                          </div></v-col
-                                        >
-                                      </v-row>
-                                    </v-col> 
-                                    </v-card>
-                              </v-col>
-                            </v-row>
-                            <div v-if="experience == 'Experienced'">
-                              <v-row class="py-0">
-                                <v-col class="py-0 c-text-field"
-                                  ><v-text-field
-                                    
-                                    label="Role/ Position *"
-                                    
-                                    
-                                    counter="100"
-                                    maxLength="100"
-                                    required
-                                    :rules="[
-                                      (v) =>
-                                        !!v ||
-                                        'Role/ Position name is required'
-                                    ]"
-                                   
-                                    v-model="professional.position"
-                                  ></v-text-field
-                                ></v-col> </v-row
-                              ><v-row class="py-0">
-                                <v-col class="py-0 c-text-field"
-                                  ><v-select
-                                    label="Employment Type"
-                                    :items="employeeType"
-                                    
-                                    item-value="id"
-                                    item-text="name"
-                                    
-                                    v-model="professional.employee_type_id"
+                                <v-row class="py-0 px-0 ml-2">
+                                  <v-col cols="1" class="py-0 px-0"
+                                    ><div class="pt-4 ml-1">I have</div></v-col
                                   >
-                                  </v-select
-                                ></v-col>
-                              </v-row>
+                                  <v-col
+                                    cols="1 center"
+                                    class="py-0 px-0 c-text-field d-flex"
+                                  >
+                                    <v-text-field
+                                      :disabled="experience != 'Experienced'"
+                                      type="number"
+                                      @keypress="isNumber($event)"
+                                      :rules="[minValueRule]"
+                                      v-model="professional.experience_year"
+                                    >
+                                    </v-text-field>
+                                  </v-col>
+                                  <v-col cols="1" class="py-0 px-0"
+                                    ><div class="pt-4 ml-1">Years</div></v-col
+                                  >
+                                  <v-col
+                                    cols="1"
+                                    class="py-0 px-0 c-text-field"
+                                  >
+                                    <v-text-field
+                                      type="number"
+                                      :disabled="experience != 'Experienced'"
+                                      @keypress="isNumber($event)"
+                                      :rules="[minValueRule]"
+                                      v-model="professional.experience_month"
+                                    >
+                                    </v-text-field>
+                                  </v-col>
+                                  <v-col cols="4 center" class="py-0 px-0"
+                                    ><div class="pt-4 ml-1">
+                                      Months of experience
+                                    </div></v-col
+                                  >
+                                </v-row>
+                              </v-col>
+                            </v-card>
+                          </v-col>
+                        </v-row>
+                        <div v-if="experience == 'Experienced'">
+                          <v-row class="py-0">
+                            <v-col class="py-0 c-text-field"
+                              ><v-text-field
+                                label="Role/ Position *"
+                                counter="100"
+                                maxLength="100"
+                                required
+                                :rules="[
+                                  (v) =>
+                                    !!v || 'Role/ Position name is required',
+                                ]"
+                                v-model="professional.position"
+                              ></v-text-field
+                            ></v-col> </v-row
+                          ><v-row class="py-0">
+                            <v-col class="py-0 c-text-field"
+                              ><v-select
+                                label="Employment Type"
+                                :items="employeeType"
+                                item-value="id"
+                                item-text="name"
+                                v-model="professional.employee_type_id"
+                              >
+                              </v-select
+                            ></v-col>
+                          </v-row>
 
-                              <!-- <v-row class="py-0">
+                          <!-- <v-row class="py-0">
                                 <v-col class="py-0"
                                   ><v-select
                                     label="School / Institute"
@@ -907,66 +840,65 @@
                                   </v-select
                                 ></v-col>
                               </v-row> -->
-                              <v-row class="py-0">
-                                <v-col class="py-0">
-                                  <v-checkbox
-                                    class="py-0"
-                                    v-model="isCurrentlyWorking"
-                                    label="I am currently working on this role / position."
-                                  ></v-checkbox>
-                                </v-col>
-                              </v-row>
-                              <v-row class="py-0">
-                                <v-col cols="6" class="py-0"
-                                  ><v-text-field
-                                    
-                                    label="Start Date*"
-                                    
-                                    :max="new Date().toISOString().slice(0, 10)"
-                                    
-                                    v-model="professional.start_date"
-                                    type="date"
-                                    :rules="[
-                                    (v) => !!v || 'Start Date is required',
-                                    (v) => {
-                                  const firstdate = new Date(v);
-                                  const today_date = new Date();
-                                  return (
-                                    firstdate < today_date ||
-                                    'Future date not allowed'
-                                  );
-                                },
-                                  ]"
-                                  ></v-text-field
-                                ></v-col>
-                                <v-col cols="6" class="py-0"
-                                  ><v-text-field
-                                    :disabled="isCurrentlyWorking"
-                                    
-                                    label="End Date*"
-                                    
-                                    :max="new Date().toISOString().slice(0, 10)"
-                                    
-                                    v-model="professional.end_date"
-                                    type="date"
-                                    :rules="
-                                      !isCurrentlyWorking
-                                        ? [(v) => !!v || 'End Date is required',
-                                    (v) => professional.end_date > professional.start_date || 'end date should be greater than start date',
-                                    (v) => {
-                                  const firstdate = new Date(v);
-                                  const today_date = new Date();
-                                  return (
-                                    firstdate < today_date ||
-                                    'Future date not allowed'
-                                  );
-                                },]
-                                        : ''
-                                    "
-                                  ></v-text-field
-                                ></v-col>
-                              </v-row>
-                              <!-- <v-row class="py-0">
+                          <v-row class="py-0">
+                            <v-col class="py-0">
+                              <v-checkbox
+                                class="py-0"
+                                v-model="isCurrentlyWorking"
+                                label="I am currently working on this role / position."
+                              ></v-checkbox>
+                            </v-col>
+                          </v-row>
+                          <v-row class="py-0">
+                            <v-col cols="6" class="py-0"
+                              ><v-text-field
+                                label="Start Date*"
+                                :max="new Date().toISOString().slice(0, 10)"
+                                v-model="professional.start_date"
+                                type="date"
+                                :rules="[
+                                  (v) => !!v || 'Start Date is required',
+                                  (v) => {
+                                    const firstdate = new Date(v);
+                                    const today_date = new Date();
+                                    return (
+                                      firstdate < today_date ||
+                                      'Future date not allowed'
+                                    );
+                                  },
+                                ]"
+                              ></v-text-field
+                            ></v-col>
+                            <v-col cols="6" class="py-0"
+                              ><v-text-field
+                                :disabled="isCurrentlyWorking"
+                                label="End Date*"
+                                :max="new Date().toISOString().slice(0, 10)"
+                                v-model="professional.end_date"
+                                type="date"
+                                :rules="
+                                  !isCurrentlyWorking
+                                    ? [
+                                        (v) => !!v || 'End Date is required',
+                                        (v) =>
+                                          professional.end_date >
+                                            professional.start_date ||
+                                          'end date should be greater than start date',
+                                        (v) => {
+                                          const firstdate = new Date(v);
+                                          const today_date = new Date();
+                                          return (
+                                            firstdate < today_date ||
+                                            'Future date not allowed'
+                                          );
+                                        },
+                                      ]
+                                    : ''
+                                "
+                              ></v-text-field
+                            ></v-col>
+                          </v-row>
+                          <!-- <v-row class="py-0">
                                 <v-col class="py-0">
                                   <v-select
                                     label="Board"
@@ -1030,10 +962,10 @@
                                   </v-autocomplete>
                                 </v-col>
                               </v-row> -->
-                            </div>
+                        </div>
 
-                            <div v-if="experience != 'Experienced'">
-                              <!-- <v-row class="py-0">
+                        <div v-if="experience != 'Experienced'">
+                          <!-- <v-row class="py-0">
                                 <v-col class="py-0">
                                   <v-autocomplete
                                     clearable
@@ -1084,49 +1016,231 @@
                                   </v-autocomplete>
                                 </v-col>
                               </v-row> -->
-                            </div>
-                            <v-row
-                              v-if="experience == 'Experienced' && index != 0"
+                        </div>
+                        <v-row v-if="experience == 'Experienced' && index != 0">
+                          <v-col cols="12" class="d-flex justify-end">
+                            <v-btn
+                              @click="openDeleteDiolog(index)"
+                              text
+                              class="d-flex justify-end red--text"
+                              >Remove</v-btn
                             >
-                              <v-col cols="12" class="d-flex justify-end">
-                                <v-btn
-                                  @click="openDeleteDiolog(index)"
-                                  text
-                                  class="d-flex justify-end red--text"
-                                  >Remove</v-btn
-                                >
-                              </v-col>
-                            </v-row>
-                          </v-expansion-panel-content>
-                        </v-expansion-panel>
-                      </v-expansion-panels>
-                      <v-row>
-                        <v-col class="mt-4" v-if="experience == 'Experienced'">
-                          <v-btn
-                            text
-                            @click="addProfessionalInfo"
-                            class="primary--text"
-                            ><v-icon class="mr-4">mdi-plus-circle-outline</v-icon>Add more
-                            professional details(optional)</v-btn
-                          >
-                        </v-col>
-                      </v-row>
-                    </v-card>
-                  </v-card>
-                </v-form>
+                          </v-col>
+                        </v-row>
+                      </v-expansion-panel-content>
+                    </v-expansion-panel>
+                  </v-expansion-panels>
+                  <v-row>
+                    <v-col class="mt-4" v-if="experience == 'Experienced'">
+                      <v-btn
+                        text
+                        @click="addProfessionalInfo"
+                        class="primary--text"
+                        ><v-icon class="mr-4">mdi-plus-circle-outline</v-icon
+                        >Add more professional details(optional)</v-btn
+                      >
+                    </v-col>
+                  </v-row>
+                </v-card>
               </v-card>
-              <v-btn
-                    :loading="isCreatingUser"
-                    depressed
-                    color="primary"
-                    class="float-right  white--text my-6 mx-8"
-                    @click="saveDetails"
-                  >
-                    Save
-                  </v-btn>
+            </v-form>
+          </v-card>
+          <v-btn
+            :loading="isCreatingUser"
+            depressed
+            color="primary"
+            class="float-right white--text my-6 mx-8"
+            @click="saveDetails"
+          >
+            Save
+          </v-btn>
         </v-tab-item>
         <v-tab-item>
-          
+          <div class="slideparent pa-5">
+            <div class="text-h6 mb-2">My Results</div>
+            <div class="d-flex flex-wrap">
+            <div class="mytestcard">
+                  <v-card
+                    class="mb-4 movingcard"
+                    min-width="333"
+                    max-width="333"
+                    outlined
+                    height="360"
+                    style="margin-right: 8.33px"
+                  >
+                    <v-list-item three-line class="mb-0">
+                      <v-list-item-avatar
+                        tile
+                        size="300"
+                        height="173"
+                        color="grey"
+                      ></v-list-item-avatar>
+                    </v-list-item>
+                    <v-list-item three-line>
+                      <v-list-item-content class="pt-0">
+                        <v-list-item-title
+                          class="assessment-name mb-0 text-wrap mb-2"
+                        >
+                          Trained Graduate Teacher Assessment (VGOS)
+                        </v-list-item-title>
+                        <v-list-item-subtitle class="assessment-instructions">
+                          This course will provide you with in-depth knowledge
+                          of child development. It will take you through all of
+                          the developmental domains.
+                        </v-list-item-subtitle>
+                      </v-list-item-content>
+                    </v-list-item>
+                    <v-expand-transition>
+                      <v-card-actions class="mx-2">
+                        <v-btn
+                          depressed
+                          block
+                          color="#E9F2F9"
+                          class="primary--text"
+                          height="40"
+                          >View Test Result</v-btn
+                        >
+                      </v-card-actions>
+                    </v-expand-transition>
+                  </v-card>
+                </div> 
+                <div class="mytestcard">
+                  <v-card
+                    class="mb-4 movingcard"
+                    min-width="333"
+                    max-width="333"
+                    outlined
+                    height="360"
+                    style="margin-right: 8.33px"
+                  >
+                    <v-list-item three-line class="mb-0">
+                      <v-list-item-avatar
+                        tile
+                        size="300"
+                        height="173"
+                        color="grey"
+                      ></v-list-item-avatar>
+                    </v-list-item>
+                    <v-list-item three-line>
+                      <v-list-item-content class="pt-0">
+                        <v-list-item-title
+                          class="assessment-name mb-0 text-wrap mb-2"
+                        >
+                          Trained Graduate Teacher Assessment (VGOS)
+                        </v-list-item-title>
+                        <v-list-item-subtitle class="assessment-instructions">
+                          This course will provide you with in-depth knowledge
+                          of child development. It will take you through all of
+                          the developmental domains.
+                        </v-list-item-subtitle>
+                      </v-list-item-content>
+                    </v-list-item>
+                    <v-expand-transition>
+                      <v-card-actions class="mx-2">
+                        <v-btn
+                          depressed
+                          block
+                          color="#E9F2F9"
+                          class="primary--text"
+                          height="40"
+                          >View Test Result</v-btn
+                        >
+                      </v-card-actions>
+                    </v-expand-transition>
+                  </v-card>
+                </div> 
+                <div class="mytestcard">
+                  <v-card
+                    class="mb-4 movingcard"
+                    min-width="333"
+                    max-width="333"
+                    outlined
+                    height="360"
+                    style="margin-right: 8.33px"
+                  >
+                    <v-list-item three-line class="mb-0">
+                      <v-list-item-avatar
+                        tile
+                        size="300"
+                        height="173"
+                        color="grey"
+                      ></v-list-item-avatar>
+                    </v-list-item>
+                    <v-list-item three-line>
+                      <v-list-item-content class="pt-0">
+                        <v-list-item-title
+                          class="assessment-name mb-0 text-wrap mb-2"
+                        >
+                          Trained Graduate Teacher Assessment (VGOS)
+                        </v-list-item-title>
+                        <v-list-item-subtitle class="assessment-instructions">
+                          This course will provide you with in-depth knowledge
+                          of child development. It will take you through all of
+                          the developmental domains.
+                        </v-list-item-subtitle>
+                      </v-list-item-content>
+                    </v-list-item>
+                    <v-expand-transition>
+                      <v-card-actions class="mx-2">
+                        <v-btn
+                          depressed
+                          block
+                          color="#E9F2F9"
+                          class="primary--text"
+                          height="40"
+                          >View Test Result</v-btn
+                        >
+                      </v-card-actions>
+                    </v-expand-transition>
+                  </v-card>
+                </div> 
+                <div class="mytestcard">
+                  <v-card
+                    class="mb-4 movingcard"
+                    min-width="333"
+                    max-width="333"
+                    outlined
+                    height="360"
+                    style="margin-right: 8.33px"
+                  >
+                    <v-list-item three-line class="mb-0">
+                      <v-list-item-avatar
+                        tile
+                        size="300"
+                        height="173"
+                        color="grey"
+                      ></v-list-item-avatar>
+                    </v-list-item>
+                    <v-list-item three-line>
+                      <v-list-item-content class="pt-0">
+                        <v-list-item-title
+                          class="assessment-name mb-0 text-wrap mb-2"
+                        >
+                          Trained Graduate Teacher Assessment (VGOS)
+                        </v-list-item-title>
+                        <v-list-item-subtitle class="assessment-instructions">
+                          This course will provide you with in-depth knowledge
+                          of child development. It will take you through all of
+                          the developmental domains.
+                        </v-list-item-subtitle>
+                      </v-list-item-content>
+                    </v-list-item>
+                    <v-expand-transition>
+                      <v-card-actions class="mx-2">
+                        <v-btn
+                          depressed
+                          block
+                          color="#E9F2F9"
+                          class="primary--text"
+                          height="40"
+                          >View Test Result</v-btn
+                        >
+                      </v-card-actions>
+                    </v-expand-transition>
+                  </v-card>
+                </div>
+          </div>
+          </div>
         </v-tab-item>
       </v-tabs>
     </v-container>
@@ -1149,6 +1263,7 @@ import GradeController from "@/controllers/GradeController";
 import SubjectController from "@/controllers/SubjectController";
 import LogedInUserInfo from "@/controllers/LogedInUserInfo";
 import AuthService from "../services/AuthService";
+import AssessmentController from "@/controllers/AssessmentController";
 
 export default {
   name: "RegistrationView",
@@ -1203,7 +1318,7 @@ export default {
       isCurrentLocation: false,
       preSignedUrl: "",
       selectedFile: [],
-
+      allAssessments: [],
       userInfo: {},
       indexValue: null,
 
@@ -1290,10 +1405,12 @@ export default {
   methods: {
     onChange() {
       console.log(this.selectedFile[this.expandedPanelIndex]);
-      console.log("selelcted file details",this.expandedPanelIndex);
+      console.log("selelcted file details", this.expandedPanelIndex);
       this.getPreSignedUrl();
-      
-     
+    },
+    async getAllAssessment() {
+      const response = await AssessmentController.getAllAssessment();
+      this.allAssessments = response.data.data;
     },
     async getPreSignedUrl() {
       const response = await UploadController.getPreSignedUrl({
@@ -1327,18 +1444,18 @@ export default {
         return true;
       }
     },
-    clearLocation () {
+    clearLocation() {
       this.isCurrentLocation = false;
-      this.personalInfo.country_name = '';
-      this.personalInfo.state_name = '';
-      this.personalInfo.district_name = '';
+      this.personalInfo.country_name = "";
+      this.personalInfo.state_name = "";
+      this.personalInfo.district_name = "";
       this.personalInfo.country_id = -1;
       this.personalInfo.state_id = -1;
       this.personalInfo.district_id = -1;
-      this.personalInfo.pincode = '';
-      this.personalInfo.taluka_name = '';
-      this.personalInfo.city_name = '';
-      this.personalInfo.address = '';
+      this.personalInfo.pincode = "";
+      this.personalInfo.taluka_name = "";
+      this.personalInfo.city_name = "";
+      this.personalInfo.address = "";
     },
     async location() {
       this.isFetchingLocation = true;
@@ -1358,7 +1475,10 @@ export default {
             this.personalInfo.pincode = response.data.address.postcode;
             this.personalInfo.taluka_name = response.data.address.county;
             this.personalInfo.city_name = response.data.address.neighbourhood;
-            this.personalInfo.address = response.data.address.building + ', ' + response.data.address.road;
+            this.personalInfo.address =
+              response.data.address.building +
+              ", " +
+              response.data.address.road;
             this.isFetchingLocation = false;
           }
         },
@@ -1380,7 +1500,7 @@ export default {
     },
     async savePersonal() {
       if (this.$refs.step1.validate()) {
-        console.log("userif conditon,",this.personalInfo);
+        console.log("userif conditon,", this.personalInfo);
         this.isCreatingUser = true;
         const response = await PersonalInfoController.createUserPersonalInfo(
           this.personalInfo
@@ -1396,7 +1516,7 @@ export default {
           this.expandedPanelIndex = 0;
         } else {
           this.isCreatingUser = false;
-          alert(response.data.error)
+          alert(response.data.error);
         }
       } else {
         if (this.$refs.step1.validate()) {
@@ -1425,7 +1545,7 @@ export default {
           this.expandedPanelIndex = 0;
         } else {
           this.isCreatingUser = false;
-          alert(response.data.error)
+          alert(response.data.error);
         }
       }
     },
@@ -1437,23 +1557,25 @@ export default {
       if (this.$refs.step3.validate()) {
         //console.log("userif conditon");
         this.isCreatingUser = true;
-        if(this.isCurrentlyWorking) {
+        if (this.isCurrentlyWorking) {
           delete this.professionalInfos[0].end_date;
         }
         const response =
-          this.experience=='Fresher'?  await ProfessionalController.createUserProfessionalInfo(
-            [{
-              is_fresher:true,
-            }]
-          )  : await ProfessionalController.createUserProfessionalInfo(
-            this.professionalInfos
-          );
+          this.experience == "Fresher"
+            ? await ProfessionalController.createUserProfessionalInfo([
+                {
+                  is_fresher: true,
+                },
+              ])
+            : await ProfessionalController.createUserProfessionalInfo(
+                this.professionalInfos
+              );
         if (response.data.success) {
           this.isCreatingUser = false;
           this.successDialog = true;
           this.$router.replace("/interests");
         } else {
-          alert(response.data.error)
+          alert(response.data.error);
           this.isCreatingUser = false;
         }
         console.log(response);
@@ -1538,7 +1660,7 @@ export default {
       //console.log(this.states);
     },
     async fetchDistricts(state_id) {
-      console.log("fetchD",this.personalInfo.state_id);
+      console.log("fetchD", this.personalInfo.state_id);
       const response = await AddressController.getDistricts(
         state_id ? state_id : this.personalInfo.state_id
       );
@@ -1709,14 +1831,14 @@ export default {
       this.deleteDialog = true;
     },
     logout() {
-  AuthService.logout();
-  this.$mixpanel.track("UserLoggedOut", {
-    session_timeout: false,
-    screen_name: "ThankyouScreen",
-  });
-  this.$mixpanel.reset();
-  this.$router.push("/login");
-},
+      AuthService.logout();
+      this.$mixpanel.track("UserLoggedOut", {
+        session_timeout: false,
+        screen_name: "ThankyouScreen",
+      });
+      this.$mixpanel.reset();
+      this.$router.push("/login");
+    },
   },
   computed: {
     getHeight() {
@@ -1750,23 +1872,21 @@ export default {
     this.fetchCountries();
   },
 };
-
 </script>
 
 <style>
-   .registration-stepper-header.v-stepper__header {
-    box-shadow: none;
-    margin-left: 140px;
-    margin-right: 140px;
-    margin-bottom: 0px;
-   }
-   .registration-stepper.v-sheet.v-stepper:not(.v-sheet--) {
-    box-shadow: none;
+.registration-stepper-header.v-stepper__header {
+  box-shadow: none;
+  margin-left: 140px;
+  margin-right: 140px;
+  margin-bottom: 0px;
 }
-.v-application .profile-tab .v-tabs-bar{
-    flex: 1 0 auto;
-    height: min-content;
+.registration-stepper.v-sheet.v-stepper:not(.v-sheet--) {
+  box-shadow: none;
 }
-
+.v-application .profile-tab .v-tabs-bar {
+  flex: 1 0 auto;
+  height: min-content;
+}
 </style>
      
