@@ -120,7 +120,7 @@ export default {
       isLoading: false,
       timeSlotIndex: null,
       dateRangeIndex: null,
-      slotTiming: ["10:00 am","12:00 pm","01:00 am","03:00 am","06:00 am"]
+      slotTiming: ["10:00 am","12:00 pm","01:00 pm","03:00 pm","06:00 pm"]
     }
   },
   methods: {
@@ -145,14 +145,12 @@ export default {
         let datefinal = moment(date, "Do MMM, YY hh:mm a").format("YYYY-MM-DD hh:mm:ss");
         console.log(datefinal);
         
-
-        const assessmentId = this.$route.params.id;
         let response = await AssessmentController.postSetupMainsAssessment({
           slot: datefinal,
-        }, assessmentId);
+        });
         
         if(response.status == 200)  {
-          this.$router.push(`/assessment/${assessmentId}/mains/setup`);
+          this.$router.push(`/assessment/mains/setup`);
         } else {
           this.isLoading = false;
           this.error = true

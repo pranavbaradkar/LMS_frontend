@@ -65,7 +65,7 @@
               <div class="mb-1" style="font-size: 28px; line-height: 33px;">{{ assessmentData.name }}</div>
               <p class="mt-1 font-weight-regular" style="font-size: 14px; color: #FAFAFA;"
                   v-if="assessmentData.screening_status == 'PASSED'"
-                  @click="setupMains(assessmentData.id)">
+                  @click="setupMains()">
 
                 {{ assessmentData.instructions }}
               </p>
@@ -229,8 +229,8 @@ export default {
     backHistory() {
 
     },
-    setupMains(assessmentId) {
-      this.$router.push(`/assessment/${assessmentId}/mains/setup`);
+    setupMains() {
+      this.$router.push(`/assessment/mains/setup`);
     },
 
     formatTime(seconds) {

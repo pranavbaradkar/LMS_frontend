@@ -105,7 +105,6 @@
   </div>
 </template>
 <script>
-//import ImageInput from "../components/ImageInput.vue";
 import { validationMixin } from "vuelidate";
 import navBar from "@/components/navBar.vue"
 import moment from 'moment';
@@ -132,9 +131,9 @@ export default {
     selectItem(param) {
       this.selectedType = param;
       if(param == 'slot' && this.isDateSelected == false) {
-        this.$router.push(`/assessment/${this.$route.params.id}/mains/slot`);
+        this.$router.push(`/assessment/mains/slot`);
       } else if(param == 'pacd' && this.isVideoSelected == false) {
-        this.$router.push(`/assessment/${this.$route.params.id}/mains/pacd`);
+        this.$router.push(`/assessment/mains/pacd`);
       }
     },
     slotMain() {
@@ -143,15 +142,24 @@ export default {
     async getMainsSetup() {
       let response = await AssessmentController.getSetupMainsAssessment();
       if(response.status == 200 && response.data && response.data.data) {
+
+        if(response.data.data && response.data.data.slot && response.data.data.video_link) {
+          this.$router.push(`/pre/assessment/mains`);
+        }
+
         this.isDateSelected = response.data.data && response.data.data.slot ? true : false;
         console.log(this.isDateSelected);
         if(this.isDateSelected) {
           this.selectedType = 'slot';
         }
+
         this.isVideoSelected = response.data.data && response.data.data.video_link ? true : false;
         if(this.isVideoSelected) {
-          this.selectedType = 'video';
+          this.selectedType = 'pacd';
         }
+
+
+
         this.mainsSetup = response.data.data;
       }
     },

@@ -16,6 +16,7 @@ import SlotSelection from '../views/SlotSelectionView'
 import Pcad from '../views/PcadView'
 import ScreeningStatus from '../views/ScreeningStatusView'
 import ResultView from '../views/ResultView'
+import MainScreeningSetupStatus from '../views/MainScreeningSetupStatusView';
 
 //import store from "../store";
 
@@ -104,7 +105,7 @@ const routes = [
     }
   },
   {
-    path: '/assessment/:id/mains/setup',
+    path: '/assessment/mains/setup',
     name: 'PreMain',
     component: PreMain,
     meta: {
@@ -112,7 +113,7 @@ const routes = [
     }
   },
   {
-    path: '/assessment/:id/mains/slot',
+    path: '/assessment/mains/slot',
     name: 'SlotSelection',
     component: SlotSelection,
     meta: {
@@ -139,6 +140,14 @@ const routes = [
     path: '/assessment/:id/result',
     name: 'ResultView',
     component: ResultView,
+    meta: {
+      requiresAuth: true,
+    }
+  },
+  {
+    path: '/pre/assessment/mains',
+    name: 'mainsSet',
+    component: MainScreeningSetupStatus,
     meta: {
       requiresAuth: true,
     }

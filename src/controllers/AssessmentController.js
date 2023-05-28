@@ -79,9 +79,20 @@ export default {
     },
 
     postSetupMainsAssessment: async function (payload) {
-
         try {
             const response = await instance.post(`users/assessment_slot`, payload, {
+                headers: {
+                    'Authorization': AuthService.getToken()
+                }
+            })
+            return response;
+        } catch (error) {
+            return error.response;
+        }
+    },
+    uploadS3Video: async function (payload) {
+        try {
+            const response = await instance.post(`users/s3/video`, payload, {
                 headers: {
                     'Authorization': AuthService.getToken()
                 }
