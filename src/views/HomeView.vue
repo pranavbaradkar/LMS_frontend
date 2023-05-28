@@ -34,24 +34,24 @@
         elevation="0"
         width="100%"
         variant="outlined"
-        v-if="allAssessments.length != 0 || recommendedAssessment != {}"
+        v-if="allAssessments && allAssessments.length != 0 || recommendedAssessment != {}"
       >
         <v-row align="start" no-gutters v-if="isEdit == false">
-          <v-col>
+          <v-col v-if="userInterests.schools.length > 0">
             <v-sheet class="ma-2">
               <p class="school-label">School</p>
               <div class="d-flex align-center">
                 <p class="font-weight-medium school-value mb-0">
-                  {{ userInterests.schools[0].name }}
+                  {{ userInterests.schools && userInterests.schools[0] ? userInterests.schools[0].name : 'N/A' }}
                 </p>
                 <v-menu offset-y>
                   <template v-slot:activator="{ on, attrs }">
                     <v-btn 
                       v-bind="attrs"
                       v-on="on"
-                      v-if="userInterests.schools.length - 1 > 0" 
+                      v-if="(userInterests.schools.length - 1) > 0" 
                       class="mx-2" fab dark small 
-                      color="#277BC0"> + {{ userInterests.schools.length - 1 }} 
+                      color="#277BC0"> + {{ (userInterests.schools.length) - 1 }} 
                     </v-btn>
                   </template>
                   <v-list>
@@ -66,12 +66,12 @@
               </div>
             </v-sheet>
           </v-col>
-          <v-col>
+          <v-col v-if="userInterests.levels && userInterests.levels.length > 0">
             <v-sheet class="ma-2">
               <p class="school-label">Level</p>
               <div class="d-flex align-center">
                 <p class="font-weight-medium school-value mb-0">
-                  {{ userInterests.levels[0].name }}
+                  {{ userInterests.levels && userInterests.levels[0] ? userInterests.levels[0].name : 'N/A' }}
                 </p>
                 <v-menu offset-y>
                   <template v-slot:activator="{ on, attrs }">
@@ -95,13 +95,14 @@
               </div>
             </v-sheet>
           </v-col>
-          <v-col>
+          
+          <v-col v-if="userInterests.boards.length > 0">
             <v-sheet class="ma-2">
               <p class="school-label">Board</p>
 
               <div class="d-flex align-center">
                 <p class="font-weight-medium school-value mb-0">
-                  {{ userInterests.boards[0].name }}
+                  {{ userInterests.boards && userInterests.boards[0] ? userInterests.boards[0].name : 'N/A' }}
                 </p>
                 <v-menu offset-y>
                   <template v-slot:activator="{ on, attrs }">
@@ -125,12 +126,13 @@
               </div>
             </v-sheet>
           </v-col>
-          <v-col>
+
+          <v-col v-if="userInterests.subjects.length > 0">
             <v-sheet class="ma-2">
               <p class="school-label">Subject’s</p>
               <div class="d-flex align-center">
                 <p class="font-weight-medium school-value mb-0">
-                  {{ userInterests.subjects[0].name }}
+                  {{ userInterests.subjects && userInterests.subjects[0] ? userInterests.subjects[0].name : 'N/A' }}
                 </p>
                 <v-menu offset-y>
                   <template v-slot:activator="{ on, attrs }">
@@ -173,7 +175,6 @@
             <v-sheet class="ma-2">
               <p class="school-label">School</p>
               <div class="d-flex align-center">
-                <!-- <p class="font-weight-medium school-value mb-0">Vibgyor High (Malad East)</p> -->
                 <v-select
                   v-model="schoolSelected"
                   :items="schools"
@@ -274,7 +275,6 @@
               class="white--text text-container"
               v-if="recommendedAssessment != null"
             >
-              <!-- <div class="text-caption">Recommended</div> -->
               <v-btn
                 elevation="0"
                 height="32px"
@@ -289,10 +289,11 @@
               </p>
               <div class="mt-1" v-if="recommendedAssessment.tests != null">
                 <v-icon class="white--text">mdi-book</v-icon>
-                {{ recommendedAssessment.tests[0].total_no_of_questions }}
+                {{ recommendedAssessment && recommendedAssessment.tests[0].total_no_of_questions }}
                 Questions<v-icon class="white--text">mdi-circle-small</v-icon
                 ><v-icon class="white--text">mdi-clock</v-icon>
                 {{
+                  (recommendedAssessment.tests && recommendedAssessment.tests[0].duration_of_assessment) &&
                   formatTime(
                     recommendedAssessment.tests[0].duration_of_assessment
                   )
@@ -310,35 +311,6 @@
                 >START TEST</v-btn
               >
             </div>
-            <!-- <div class="white--text" v-if="recommendedAssessment != null">
-              <div class="text-caption">Recommended</div>
-
-              <div class="text-h4 mb-1">{{ recommendedAssessment.name }}</div>
-              <p class="mt-4">{{ recommendedAssessment.instructions }}</p>
-              <div class="mt-4" v-if="recommendedAssessment.tests != null">
-                <v-icon class="white--text">mdi-book</v-icon>
-                {{ recommendedAssessment.tests[0].total_no_of_questions }}
-                Questions<v-icon class="white--text">mdi-circle-small</v-icon
-                ><v-icon class="white--text">mdi-clock</v-icon>
-                {{
-                  formatTime(
-                    recommendedAssessment.tests[0].duration_of_assessment
-                  )
-                }}
-                <v-icon class="white--text">mdi-circle-small</v-icon
-                ><v-icon class="white--text">mdi-book</v-icon>
-                300 Users
-              </div>
-              <v-btn
-                height="48px"
-                color="#277BC0"
-                class="primary--text mt-8"
-                rounded
-                large
-                @click="recommendedTestViewEvent"
-                >VIEW TEST</v-btn
-              >
-            </div> -->
           </v-card>
         </v-img>
         <div class="text-h6 py-4">Other Tests</div>
@@ -515,7 +487,12 @@ export default {
       recommendedAssessment: {},
       duration: 0,
       noOfQuestions: 0,
-      userInterests: [],
+      userInterests: {
+        boards: [],
+        schools: [],
+        levels: [],
+        subjects: []
+      },
       userInterestsEdit: [],
       schoolSelected: [],
       levelSelected: [],
@@ -770,7 +747,7 @@ export default {
       const response = await UserIntrestController.getUserInterests();
 
       this.userInterests = response.data.data;
-      //console.log("userInterests log", this.userInterests);
+      console.log("userInterests log", this.userInterests);
     },
     async getUserInterestEdit() {
       const response = await UserIntrestController.getUserInterestsForEdit();
@@ -831,41 +808,45 @@ export default {
       if (response.status == 404) {
         const response2 =
           await RecommendedAssessmentController.getRecommendedAssessment(
-            "?debug=187"
+            "?debug=203"
           );
-        this.recommendedAssessment = response2.data.data;
+        this.recommendedAssessment = response2.data ? response2.data.data : null;
         console.log(this.recommendedAssessment);
-        this.allAssessments = this.allAssessments.filter(function (item) {
-          return item.id !== response.data.data.id;
-        });
+        this.allAssessments = response2.data.data ? this.allAssessments.filter(function (item) {
+          return item.id !== response2.data.data.id;
+        }) : this.allAssessments;
       } else {
-        this.recommendedAssessment = response.data.data;
+        this.recommendedAssessment = response.data && response.data.data ?  response.data.data : null;
         console.log("reco", this.recommendedAssessment);
 
-        this.allAssessments = this.allAssessments.filter(function (item) {
+        this.allAssessments = response.data && response.data.data ? this.allAssessments.filter(function (item) {
           return item.id !== response.data.data.id;
-        });
+        }) : this.allAssessments;
       }
       if (
-        this.recommendedAssessment.screening_status == "PENDING" ||
-        this.recommendedAssessment.screening_status == "STARTED"
+        this.recommendedAssessment && (this.recommendedAssessment.screening_status == "PENDING" ||
+        this.recommendedAssessment.screening_status == "STARTED")
       ) {
         this.testType = "Screening";
         this.e1 = 1;
-      } else if (
-        this.recommendedAssessment.screening_status != "PENDING" &&
-        this.recommendedAssessment.screening_status != "STARTED" &&
-        (this.recommendedAssessment.mains_status == "PENDING" ||
-          this.recommendedAssessment.mains_status == "STARTED")
-      ) {
-        this.testType = "Mains";
-        this.e1 = 2;
-      } else {
+      } else if(this.recommendedAssessment) {
+
         this.$router.push({
-          path: "/report",
-          query: { id: this.recommendedAssessment.id },
+          path: `/assessment/${this.recommendedAssessment.id}/status`,
+          query: {},
         });
       }
+
+      // else if (
+      //   this.recommendedAssessment && this.recommendedAssessment.screening_status != "PENDING" &&
+      //   this.recommendedAssessment.screening_status != "STARTED" &&
+      //   (this.recommendedAssessment && this.recommendedAssessment.mains_status == "PENDING" ||
+      //     this.recommendedAssessment.mains_status == "STARTED")
+      // ) {
+      //   this.testType = "Mains";
+      //   this.e1 = 2;
+      // }
+
       //console.log("data", this.recommendedAssessment);
     },
   },

@@ -97,20 +97,7 @@ export default {
     window.removeEventListener("resize", this.onResize);
   },
   methods: {
-    confirm() {
-      this.$mixpanel.track("SubmissionSucceeded", {
-        notification_sms: this.notificationSMS,
-        screen_name: "ThankyouScreen",
-      });
-      this.$mixpanel.track("SubmissionSucceeded", {
-        notification_email: this.notificationEmail,
-        screen_name: "ThankyouScreen",
-      });
-      // this.$router.push({
-      //   path: "/report",
-      //   query: { id: this.assessmentId },
-      // });
-    },
+    
     formatTime(seconds) {
       const totalMs = seconds * 1000;
       const result = new Date(totalMs).toISOString().slice(11, 19);
@@ -156,7 +143,7 @@ export default {
     },
     setupMains(assessmentId) {
       this.$router.push(`/assessment/${assessmentId}/mains/setup`);
-    },
+    }
   },
   created() {
     // console.log("userInfo");

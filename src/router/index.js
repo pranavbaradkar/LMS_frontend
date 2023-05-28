@@ -120,7 +120,7 @@ const routes = [
     }
   },
   {
-    path: '/assessment/:id/mains/pcad',
+    path: '/assessment/:id/mains/pacd',
     name: 'Pcad',
     component: Pcad,
     meta: {

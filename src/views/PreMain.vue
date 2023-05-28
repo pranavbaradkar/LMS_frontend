@@ -43,7 +43,7 @@
             <v-col cols="6" class="d-flex align-center justify-center">
               <v-card
                 class="d-flex align-center flex-column rounded-lg justify-center me-5"
-                :class="selectedType == 'slot' && 'active-item'"
+                :class="(selectedType == 'slot' && isDateSelected) && 'active-item'"
                 height="200"
                 width="185"
                 elevation="0"
@@ -51,7 +51,7 @@
                 @click="selectItem('slot')"
               >
                 <v-btn 
-                  v-if="selectedType == 'slot'"
+                  v-if="selectedType == 'slot' && isDateSelected"
                   fab
                   small
                   color="#277BC0"
@@ -67,6 +67,8 @@
                   src="@/assets/calendar.svg"
                 ></v-img>
                 <p class="mb-0 subtitle-2">Slot Selection</p>
+                <p class="slotText">{{ this.mainsSetup && this.mainsSetup.slot ? slotMain() : '' }}</p>
+
               </v-card>
               <v-card
                 elevation="0"
@@ -74,11 +76,11 @@
                 class="d-flex align-center flex-column rounded-lg justify-center"
                 height="200"
                 width="185"
-                :class="selectedType == 'pacd' && 'active-item  '"
+                :class="(selectedType == 'pacd' && isVideoSelected) && 'active-item  '"
                 @click="selectItem('pacd')"
               >
                 <v-btn 
-                  v-if="selectedType == 'pacd'"
+                  v-if="selectedType == 'pacd' && isVideoSelected"
                   fab
                   small
                   color="#277BC0"
@@ -106,6 +108,8 @@
 //import ImageInput from "../components/ImageInput.vue";
 import { validationMixin } from "vuelidate";
 import navBar from "@/components/navBar.vue"
+import moment from 'moment';
+import AssessmentController from "../controllers/AssessmentController";
 export default {
   name: "RegistrationView",
   mixins: [validationMixin],
@@ -118,12 +122,38 @@ export default {
   data() {
     return {
       selectedType: null, //pacd
-      windowHeight: window.innerHeight
+      windowHeight: window.innerHeight,
+      isDateSelected: false,
+      isVideoSelected: false,
+      mainsSetup: {}
     };
   },
   methods: {
     selectItem(param) {
       this.selectedType = param;
+      if(param == 'slot' && this.isDateSelected == false) {
+        this.$router.push(`/assessment/${this.$route.params.id}/mains/slot`);
+      } else if(param == 'pacd' && this.isVideoSelected == false) {
+        this.$router.push(`/assessment/${this.$route.params.id}/mains/pacd`);
+      }
+    },
+    slotMain() {
+      return moment(this.mainsSetup.slot, 'YYYY-MM-DDTHH:mm:sssZ').format('Do MMM, YY hh:mm a');
+    },
+    async getMainsSetup() {
+      let response = await AssessmentController.getSetupMainsAssessment();
+      if(response.status == 200 && response.data && response.data.data) {
+        this.isDateSelected = response.data.data && response.data.data.slot ? true : false;
+        console.log(this.isDateSelected);
+        if(this.isDateSelected) {
+          this.selectedType = 'slot';
+        }
+        this.isVideoSelected = response.data.data && response.data.data.video_link ? true : false;
+        if(this.isVideoSelected) {
+          this.selectedType = 'video';
+        }
+        this.mainsSetup = response.data.data;
+      }
     },
     onResize() {
       this.windowHeight = window.innerHeight;
@@ -132,7 +162,7 @@ export default {
   computed: {
     getHeight() {
       return this.windowHeight;
-    },
+    }
   }, 
   mounted() {
     window.addEventListener("resize", this.onResize);
@@ -140,7 +170,9 @@ export default {
   beforeDestroy() {
     window.removeEventListener("resize", this.onResize);
   },
-  created() {},
+  created() {
+    this.getMainsSetup();
+  },
 };
 </script>
 <style scoped>
@@ -153,6 +185,15 @@ export default {
     }
     .active-item {
       border: 1px solid #277BC0;
+    }
+
+    .slotText {
+      width: 50%;
+      text-align: center;
+      font-size: 13px;
+      margin-bottom: 0px;
+      position: absolute;
+      bottom: 9px;
     }
   
 </style>

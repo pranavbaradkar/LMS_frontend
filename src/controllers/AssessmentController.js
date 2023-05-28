@@ -77,4 +77,30 @@ export default {
             return error.response;
         }
     },
+
+    postSetupMainsAssessment: async function (payload) {
+
+        try {
+            const response = await instance.post(`users/assessment_slot`, payload, {
+                headers: {
+                    'Authorization': AuthService.getToken()
+                }
+            })
+            return response;
+        } catch (error) {
+            return error.response;
+        }
+    },
+    getSetupMainsAssessment: async function () {
+        try {
+            const response = await instance.get(`users/assessment_slot`, {
+                headers: {
+                    'Authorization': AuthService.getToken()
+                }
+            })
+            return response;
+        } catch (error) {
+            return error.response;
+        }
+    },
 }
