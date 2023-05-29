@@ -44,6 +44,7 @@
                     >
                       <p class="mb-0">Topic</p>
                       <p><strong>Demonstrating Newton's Laws of Motion</strong></p>
+                      <hr class="border-hr"></hr>
                       <p>Pointers to Cover</p>
                       <v-stepper v-model="e6" vertical>
                         <v-stepper-step step="">
@@ -139,6 +140,7 @@ export default {
       mins: 0,
       secs: 0,
       seconds: 0,
+      e6: null,
       blob: null,
       isLoading: false,
     };
@@ -236,7 +238,7 @@ export default {
         if (response.status == 200) {
           // this.$router.push(`/assessment/${assessmentId}/mains/setup`);
           let response2 = await AssessmentController.postSetupMainsAssessment({
-            video_link: response.data.data.url,
+            demo_link: response.data.data.url,
           });
 
           if (
@@ -244,10 +246,8 @@ export default {
             response2.data &&
             response2.data.data
           ) {
-            if (response2.data.data.slot && response2.data.data.video_link) {
+            if (response2.data.data.slot && response2.data.data.demo_link) {
               this.$router.push(`/pre/assessment/mains`);
-            } else {
-              this.$router.push(`/assessment/mains/setup`);
             }
           } else {
             alert("Something went wrong please contact admin");
@@ -376,5 +376,13 @@ export default {
   padding: 0px !important;
   margin-bottom: 16px;
   margin-top: 12px !important;
+}
+.border-hr {
+  position: relative;
+  width: 110%;
+  left: -20px;
+  top: -7px;
+  border-color: #f2f2f2;
+  border-width: 0.4px;
 }
 </style>

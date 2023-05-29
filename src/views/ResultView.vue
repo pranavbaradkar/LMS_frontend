@@ -254,7 +254,7 @@ export default {
       this.$router.push(`/assessment/mains/setup`);
     },
     startDemoVideo() {
-
+      this.$router.push(`/assessment/mains/demo`);
     },
     formatTime(seconds) {
       const totalMs = seconds * 1000;

@@ -14,7 +14,7 @@
             </div>
             <div>
               <div class="font-weight-bold thank-you-text">
-                Mains Setup Compeletd
+                Mains Setup Completed
               </div>
               <p class="mb-0 thank-you-subtext">
                 We will shortly reach out to you with the mains test details
@@ -317,15 +317,26 @@ export default {
     async getRecommendedAssessment() {
       const response =
         await RecommendedAssessmentController.getRecommendedAssessment("");
-      if (response.status == 404) {
-        const response2 =
-          await RecommendedAssessmentController.getRecommendedAssessment(
-            "?debug=203"
-          );
-        this.recommendedAssessment = response2.data ? response2.data.data : null;
-      } else {
-        this.recommendedAssessment = response.data ? response.data.data : null;
-      }
+        if (response.status == 404) {
+          const response2 =
+            await RecommendedAssessmentController.getRecommendedAssessment(
+              "?debug=203"
+            );
+          this.recommendedAssessment = response2.data ? response2.data.data : null;
+        } else {
+          this.recommendedAssessment = response.data ? response.data.data : null;
+        }
+
+        if ( this.recommendedAssessment && (this.recommendedAssessment.mains_status == "FAILED" ||
+          this.recommendedAssessment.mains_status == "PASSED")) {
+          this.$router.push({
+              path: `/assessment/${this.recommendedAssessment.id}/mains/status`,
+              query: {},
+            });
+        } 
+
+
+
     },
   },
   created() {

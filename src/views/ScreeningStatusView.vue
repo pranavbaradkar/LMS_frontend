@@ -135,7 +135,7 @@ export default {
       }
     },
     startDemoVideo() {
-
+      this.$router.push(`/assessment/mains/demo`);
     },
     logout() {
       AuthService.logout();
