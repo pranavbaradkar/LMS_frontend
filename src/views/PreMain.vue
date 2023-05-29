@@ -158,8 +158,6 @@ export default {
           this.selectedType = 'pacd';
         }
 
-
-
         this.mainsSetup = response.data.data;
       }
     },

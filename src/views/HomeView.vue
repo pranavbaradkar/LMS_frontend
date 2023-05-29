@@ -829,10 +829,17 @@ export default {
       ) {
         this.testType = "Screening";
         this.e1 = 1;
-      } else if(this.recommendedAssessment) {
-
+      } else if ( this.recommendedAssessment && (this.recommendedAssessment.mains_status == "FAIED" ||
+        this.recommendedAssessment.mains_status == "PASSED")) {
         this.$router.push({
-          path: `/assessment/${this.recommendedAssessment.id}/status`,
+          path: `/assessment/${this.recommendedAssessment.id}/mains/status`,
+          query: {},
+        });
+      } else if ( this.recommendedAssessment && (this.recommendedAssessment.screening_status == "FAIED" ||
+        this.recommendedAssessment.screening_status == "PASSED")) {
+        
+        this.$router.push({
+          path: `/assessment/${this.recommendedAssessment.id}/screening/status`,
           query: {},
         });
       }

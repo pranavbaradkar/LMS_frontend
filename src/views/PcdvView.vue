@@ -26,7 +26,7 @@
                       <v-icon @click="$router.go(-1)">mdi-arrow-left</v-icon>
                     </div>
                     <div style="font-size: 39px" class="font-weight-bold ml-8">
-                      PACD
+                      PADV
                     </div>
                     <div
                       style="font-size: 14px; color: #000; width: 80%"
@@ -162,10 +162,6 @@ export default {
         type: blob.type,
       });
       formData.append('image', imageFile);
-
-      // await axios.post(`https://assessments-service.staging.hubblehox.ai/api/v1/s3/video/${userId}`, formData, {
-      //   headers: {},
-      // });
     },
     pad(value) {
       return value < 10 ? "0" + value : value;
@@ -191,11 +187,11 @@ export default {
         if(response.status == 200)  {
           // this.$router.push(`/assessment/${assessmentId}/mains/setup`);
           let response2 = await AssessmentController.postSetupMainsAssessment({
-            video_link: response.data.data.url,
+            padv_video_link: response.data.data.url,
           });
           
           if(response2.status == 200 && response2.data && response2.data.data)  {
-              if(response2.data.data.slot && response2.data.data.video_link) {
+              if(response2.data.data.slot && response2.data.data.padv_video_link) {
                 this.$router.push(`/pre/assessment/mains`);
               } else {
                 this.$router.push(`/assessment/mains/setup`);

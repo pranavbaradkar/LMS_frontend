@@ -14,6 +14,7 @@ import ProfileView from '../views/ProfileView'
 import PreMain from '../views/PreMain'
 import SlotSelection from '../views/SlotSelectionView'
 import Pcad from '../views/PcadView'
+import Pcdv from '../views/PcdvView'
 import ScreeningStatus from '../views/ScreeningStatusView'
 import ResultView from '../views/ResultView'
 import MainScreeningSetupStatus from '../views/MainScreeningSetupStatusView';
@@ -121,7 +122,7 @@ const routes = [
     }
   },
   {
-    path: '/assessment/:id/mains/pacd',
+    path: '/assessment/mains/pacd',
     name: 'Pcad',
     component: Pcad,
     meta: {
@@ -129,7 +130,15 @@ const routes = [
     }
   },
   {
-    path: '/assessment/:id/status',
+    path: '/assessment/mains/padv',
+    name: 'padv',
+    component: Pcdv,
+    meta: {
+      requiresAuth: true,
+    }
+  },
+  {
+    path: '/assessment/:id/:type/status',
     name: 'ScreeningStatus',
     component: ScreeningStatus,
     meta: {
@@ -137,7 +146,7 @@ const routes = [
     }
   },
   {
-    path: '/assessment/:id/result',
+    path: '/assessment/:id/:type/result',
     name: 'ResultView',
     component: ResultView,
     meta: {

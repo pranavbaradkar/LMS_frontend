@@ -1314,7 +1314,7 @@ export default {
       }
     },
     viewResult(assessmentId) {
-      this.$router.push(`assessment/${assessmentId}/status`);
+      this.$router.push(`assessment/${assessmentId}/screening/status`);
     },
     clearLocation() {
       this.isCurrentLocation = false;

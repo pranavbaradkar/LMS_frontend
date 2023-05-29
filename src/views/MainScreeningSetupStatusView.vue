@@ -55,28 +55,30 @@
               rounded
               >Yet to Start Mains
             </v-btn>
-            <div class="text-h6 mb-1">Primary Teacher Assessment (VGOS)</div>
+            <div class="text-h6 mb-1">{{ recommendedAssessment &&  recommendedAssessment.name }}</div>
             <p class="mt-1 font-weight-regular">
-              This test will assess the user in all the below-mentioned sections
-              based on the preferences of the level and subjects selected by the
-              candidate. The candidate who clears this assessment will be
-              eligible for the next step of the process.
+             {{ recommendedAssessment && recommendedAssessment.instructions }}
             </p>
             <!-- show setup mains button if screen test passed -->
             <v-btn
               height="48px"
-              color="#277BC0"
-              class="white--text mt-4 me-2"
+              :color="`${this.isExistPadv ? '#DADADA' : '#277BC0' }`"
+              :class="`${this.isExistPadv ? 'gray--text' : 'white--text' }`"
+              class="mt-4 me-2"
               elevation="0"
               large
+              :disabled="this.isExistPadv"
+              @click="redirect"
             >
               Start PADV
             </v-btn>
             <v-btn
               height="48px"
-              color="#DADADA"
+              :color="`${!this.isExistPadv ? '#DADADA' : '#277BC0' }`"
+              :class="`${!this.isExistPadv ? 'gray--text' : 'white--text' }`"
               class="gray--text mt-4"
               elevation="0"
+              :disabled="!this.isExistPadv"
               large
             >
               Start Mains Test
@@ -226,6 +228,8 @@ import "../styles.css";
 import AssessmentController from "../controllers/AssessmentController";
 import navBar from '@/components/navBar.vue';
 import moment from 'moment';
+import RecommendedAssessmentController from "@/controllers/RecommendedAssessmentController";
+
 export default {
   components: { navBar },
   name: "HomeView",
@@ -238,6 +242,7 @@ export default {
       recommendedAssessment: {},
       assessmentConfigData: {},
       selectedItem: 1,
+      isExistPadv: false,
       items: [
         { text: "Mode", value: "At School" },
         { text: "Date", value: "18/05/2023" },
@@ -269,6 +274,11 @@ export default {
       //   query: { id: this.assessmentId },
       // });
     },
+    redirect() {
+      if(!this.isExistPadv) {
+        this.$router.push(`/assessment/mains/padv`);
+      }
+    },
     async getAssessmentInfo(assessmentId) {
       let response = await AssessmentController.getSingleAssessment(
         assessmentId
@@ -284,6 +294,10 @@ export default {
     async getMainsSetup() {
       let response = await AssessmentController.getSetupMainsAssessment();
       if(response.status == 200) {
+        this.isExistPadv = false;
+        if(response.data.data && response.data.data.slot && response.data.data.padv_video_link) {
+          this.isExistPadv = true;
+        }
         if(response.data.data && response.data.data.slot && response.data.data.video_link) {
           let dateIndex = this.items.findIndex(ele => ele.text == 'Date');
           let timeIndex = this.items.findIndex(ele => ele.text == 'Time');
@@ -301,9 +315,23 @@ export default {
       }
       
     },
+    async getRecommendedAssessment() {
+      const response =
+        await RecommendedAssessmentController.getRecommendedAssessment("");
+      if (response.status == 404) {
+        const response2 =
+          await RecommendedAssessmentController.getRecommendedAssessment(
+            "?debug=203"
+          );
+        this.recommendedAssessment = response2.data ? response2.data.data : null;
+      } else {
+        this.recommendedAssessment = response.data ? response.data.data : null;
+      }
+    },
   },
   created() {
     this.getMainsSetup();
+    this.getRecommendedAssessment();
   },
 };
 </script>
