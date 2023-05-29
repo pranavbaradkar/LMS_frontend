@@ -1670,7 +1670,7 @@ export default {
       this.personalInfo.is_email_verified = this.userInfo.is_email_verified;
       this.personalInfo.is_phone_verified = this.userInfo.is_phone_verified;
       this.personalInfo.email = this.userInfo.email;
-      this.personalInfo.phone_no = this.userInfo.phone_no.slice(-10);
+      this.personalInfo.phone_no = this.userInfo.phone_no && this.userInfo.phone_no.slice(-10);
 
       this.personalInfo.first_name = this.userInfo.first_name;
       this.personalInfo.last_name = this.userInfo.last_name;
