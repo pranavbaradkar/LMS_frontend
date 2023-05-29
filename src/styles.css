@@ -111,6 +111,42 @@
     top: 50%;
 }
 
+.vertical-steps-demo-video .v-stepper--vertical .v-stepper__step {
+  padding: 0px 31px 0px;
+}
+
+.vertical-steps-demo-video .v-stepper__step__step {
+  align-items: center;
+  border-radius: 50%;
+  display: inline-flex;
+  font-size: 0.75rem;
+  justify-content: center;
+  height: 10px;
+  min-width: 10px;
+  width: 10px;
+  transition: 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.theme--light.v-stepper .v-stepper__step:not(.v-stepper__step--active):not(.v-stepper__step--complete):not(.v-stepper__step--error) .v-stepper__step__step {
+  background: rgba(0, 0, 0)!important;
+}
+
+.vertical-steps-demo-video .v-stepper--vertical .v-stepper__step {
+  padding: 0px 15px 0px;
+}
+
+.vertical-steps-demo-video .v-sheet.v-stepper:not(.v-sheet--outlined) {
+  box-shadow: none!important;
+}
+
+.vertical-steps-demo-video .theme--light.v-stepper .v-stepper__label {
+  color: #000!important;;
+}
+
+.v-application--is-ltr .v-stepper--vertical .v-stepper__content {
+  margin: -8px -36px -6px 20px!important;
+}
+
 .text-container {
   width: 60%;
 }
