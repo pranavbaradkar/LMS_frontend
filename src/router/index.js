@@ -18,6 +18,7 @@ import Pcdv from '../views/PcdvView'
 import ScreeningStatus from '../views/ScreeningStatusView'
 import ResultView from '../views/ResultView'
 import MainScreeningSetupStatus from '../views/MainScreeningSetupStatusView';
+import DemoVideo from '../views/DemoVideoView';
 
 //import store from "../store";
 
@@ -157,6 +158,14 @@ const routes = [
     path: '/pre/assessment/mains',
     name: 'mainsSet',
     component: MainScreeningSetupStatus,
+    meta: {
+      requiresAuth: true,
+    }
+  },
+  {
+    path: '/assessment/mains/demo',
+    name: 'mainsSet',
+    component: DemoVideo,
     meta: {
       requiresAuth: true,
     }
