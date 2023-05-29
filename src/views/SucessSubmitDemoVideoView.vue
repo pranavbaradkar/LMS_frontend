@@ -122,7 +122,6 @@ export default {
       return result;
     },
     logout() {
-      AuthService.logout();
       this.$mixpanel.track("UserLoggedOut", {
         session_timeout: false,
         screen_name: "ThankyouScreen",

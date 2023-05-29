@@ -44,7 +44,7 @@
                     >
                       <p class="mb-0">Topic</p>
                       <p><strong>Demonstrating Newton's Laws of Motion</strong></p>
-                      <hr class="border-hr"></hr>
+                      <hr class="border-hr" />
                       <p>Pointers to Cover</p>
                       <v-stepper v-model="e6" vertical>
                         <v-stepper-step step="">

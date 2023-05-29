@@ -69,7 +69,7 @@
             <!-- show setup mains button if screen test passed -->
             <v-btn height="48px" color="#277BC0" class="white--text mt-4" elevation="0" large
               v-if="assessmentData.screening_status == 'PASSED' && type == 'screening'"
-              @click="setupMains(assessmentData.id)">
+              @click="setupMains()">
               Setup Mains
             </v-btn>
 
@@ -167,8 +167,8 @@ export default {
     viewResult(assessmentId) {
       this.$router.push(`/assessment/${assessmentId}/${this.$route.params.type}/result`);
     },
-    setupMains(assessmentId) {
-      this.$router.push(`/assessment/${assessmentId}/mains/setup`);
+    setupMains() {
+      this.$router.push(`/assessment/mains/setup`);
     }
   },
   created() {
