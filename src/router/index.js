@@ -164,7 +164,7 @@ const routes = [
     }
   },
   {
-    path: '/assessment/mains/demo',
+    path: '/assessment/:id/mains/demo',
     name: 'mainsSet',
     component: DemoVideo,
     meta: {
@@ -172,7 +172,7 @@ const routes = [
     }
   },
   {
-    path: '/demoVideoScreeningStatus',
+    path: '/assessment/:id/mains/demo/:type',
     name: 'DemoVideoScreeningStatus',
     component: SucessSubmitDemoVideo,
     meta: {

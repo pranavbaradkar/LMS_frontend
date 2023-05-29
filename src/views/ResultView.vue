@@ -100,7 +100,7 @@
                   Mains</v-btn>
 
                 <v-btn height="48px" color="primary" class="white--text mt-4" large elevation="0" v-if="assessmentData.mains_status == 'PASSED' && type == 'mains' && !isDemoVideoExist"
-                @click="startDemoVideo()">
+                @click="startDemoVideo(assessmentData.id)">
                   Start Demo Video</v-btn>
 
               </div>
@@ -254,8 +254,8 @@ export default {
     setupMains() {
       this.$router.push(`/assessment/mains/setup`);
     },
-    startDemoVideo() {
-      this.$router.push(`/assessment/mains/demo`);
+    startDemoVideo(id) {
+      this.$router.push(`/assessment/${id}/mains/demo`);
     },
     formatTime(seconds) {
       const totalMs = seconds * 1000;

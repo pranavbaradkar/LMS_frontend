@@ -143,6 +143,7 @@ export default {
       e6: null,
       blob: null,
       isLoading: false,
+      assessment_id: null
     };
   },
   methods: {
@@ -247,7 +248,7 @@ export default {
             response2.data.data
           ) {
             if (response2.data.data.slot && response2.data.data.demo_link) {
-              this.$router.push(`/pre/assessment/mains`);
+              this.$router.push(`/assessment/${this.assessment_id}/mains/demo/thanks`);
             }
           } else {
             alert("Something went wrong please contact admin");
@@ -284,6 +285,7 @@ export default {
     window.removeEventListener("resize", this.onResize);
   },
   created() {
+    this.assessment_id = this.$route.params.id;
     this.getUserInfo();
   },
 };
