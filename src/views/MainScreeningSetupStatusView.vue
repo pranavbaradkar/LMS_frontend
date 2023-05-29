@@ -313,7 +313,6 @@ export default {
           this.$router.push(`/assessment/mains/setup`);
         }
       }
-      
     },
     async getRecommendedAssessment() {
       const response =
