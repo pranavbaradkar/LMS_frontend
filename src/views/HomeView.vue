@@ -796,6 +796,9 @@ export default {
       this.getRecommendedAssessment();
     },
     async getRecommendedAssessment() {
+
+      var setupMains = await AssessmentController.getSetupMainsAssessment();
+
       const response =
         await RecommendedAssessmentController.getRecommendedAssessment("");
       //console.log("response", response);
@@ -829,13 +832,30 @@ export default {
       ) {
         this.testType = "Screening";
         this.e1 = 1;
-      } else if(this.recommendedAssessment) {
-
+      } else if(this.recommendedAssessment && (this.recommendedAssessment.mains_status == "FAILED" ||
+        this.recommendedAssessment.mains_status == "PASSED")) {
         this.$router.push({
-          path: `/assessment/${this.recommendedAssessment.id}/status`,
+          path: `/assessment/${this.recommendedAssessment.id}/mains/status`,
           query: {},
         });
-      }
+      } else if ( this.recommendedAssessment && (this.recommendedAssessment.screening_status == "FAILED" ||
+        this.recommendedAssessment.screening_status == "PASSED")) {
+          if(setupMains.status == 200) {
+            if(setupMains.data.data && (response.data.data.slot == null || response.data.data.video_link == null)) {
+              this.$router.push(`/assessment/mains/setup`);
+            } else {
+              this.$router.push({
+                path: `/assessment/${this.recommendedAssessment.id}/screening/status`,
+                query: {},
+              });
+            }
+          }  else {
+            this.$router.push({
+              path: `/assessment/${this.recommendedAssessment.id}/screening/status`,
+              query: {},
+            });
+          }
+      } 
 
       // else if (
       //   this.recommendedAssessment && this.recommendedAssessment.screening_status != "PENDING" &&
@@ -848,7 +868,7 @@ export default {
       // }
 
       //console.log("data", this.recommendedAssessment);
-    },
+    }
   },
   created() {
     this.getUserInfo();

@@ -33,9 +33,13 @@
             <div class="d-flex flex-row justify-space-between" style="width: 100%">
               <div class="d-flex flex-row justify-center">
                 <v-icon class="mr-4" @click="$router.go(-1)">mdi-arrow-left</v-icon>
-                <div>
+                <div v-if="type=='screening'">
                   <div style="font-size: 12px;line-height:14px ;">SCREENING RESULT</div>
                   <div>Your Screening Test Report</div>
+                </div>
+                <div v-if="type=='mains'">
+                  <div style="font-size: 12px;line-height:14px ;">MAINS RESULT</div>
+                  <div>Your Mains Test Report</div>
                 </div>
               </div>
               <div class="d-flex flex-row justify-center">
@@ -53,19 +57,30 @@
           <v-card class="pa-10 d-flex align-center" elevation="0" width="100%" height="100%" variant="outlined"
             color="transparent">
             <div class="white--text text-container">
+
+
               <!-- <div class="text-caption">Recommended</div> -->
-              <v-btn v-if="assessmentData.screening_status == 'PASSED'" elevation="0" height="32px" color="#03C988"
-              class="white--text font-weight-regular text-capitalize mb-3" rounded>Passed Screening Test
-            </v-btn>
-            <!-- for fail screen test -->
-            <v-btn v-if="assessmentData.screening_status == 'FAILED'" elevation="0" height="32px" color="#CA5251"
-              class="white--text font-weight-regular text-capitalize mb-3" rounded>Screening Test Failed
-            </v-btn>
+              <v-btn v-if="assessmentData.screening_status == 'PASSED' && type == 'screening'" elevation="0" height="32px" color="#03C988"
+                class="white--text font-weight-regular text-capitalize mb-3" rounded>Passed Screening Test
+              </v-btn>
+              <!-- for fail screen test -->
+              <v-btn v-if="assessmentData.screening_status == 'FAILED' && type == 'screening'" elevation="0" height="32px" color="#CA5251"
+                class="white--text font-weight-regular text-capitalize mb-3" rounded>Screening Test Failed
+              </v-btn>
+
+
+              <!-- <div class="text-caption">Recommended</div> -->
+              <v-btn v-if="assessmentData.mains_status == 'PASSED' && type == 'mains'" elevation="0" height="32px" color="#03C988"
+                class="white--text font-weight-regular text-capitalize mb-3" rounded>Passed Mains Test
+              </v-btn>
+              <!-- for fail screen test -->
+              <v-btn v-if="assessmentData.mains_status == 'FAILED' && type == 'mains'" elevation="0" height="32px" color="#CA5251"
+                class="white--text font-weight-regular text-capitalize mb-3" rounded>Mains Test Failed
+              </v-btn>
+
 
               <div class="mb-1" style="font-size: 28px; line-height: 33px;">{{ assessmentData.name }}</div>
-              <p class="mt-1 font-weight-regular" style="font-size: 14px; color: #FAFAFA;"
-                  v-if="assessmentData.screening_status == 'PASSED'"
-                  @click="setupMains()">
+              <p class="mt-1 font-weight-regular" style="font-size: 14px; color: #FAFAFA;">
 
                 {{ assessmentData.instructions }}
               </p>
@@ -80,9 +95,14 @@
                   >View Result</v-btn
                 > -->
 
-                <v-btn height="48px" color="primary" class="white--text mt-4" large elevation="0" v-if="assessmentData.screening_status == 'PASSED'"
-              @click="setupMains(assessmentData.id)">Setup
+                <v-btn height="48px" color="primary" class="white--text mt-4" large elevation="0" v-if="assessmentData.screening_status == 'PASSED' && type == 'screening'"
+                @click="setupMains(assessmentData.id)">Setup
                   Mains</v-btn>
+
+                <v-btn height="48px" color="primary" class="white--text mt-4" large elevation="0" v-if="assessmentData.mains_status == 'PASSED' && type == 'mains'"
+                @click="startDemoVideo()">
+                  Start Demo Video</v-btn>
+
               </div>
             </div>
           </v-card>
@@ -168,6 +188,7 @@ export default {
       assessmentData: {},
       assessmentConfigData: {},
       identifyUser: {},
+      type: 'screening',
       userInfo: {},
       chartDataPercentage: {
         // labels: ["", ""],
@@ -232,7 +253,9 @@ export default {
     setupMains() {
       this.$router.push(`/assessment/mains/setup`);
     },
-
+    startDemoVideo() {
+      this.$router.push(`/assessment/mains/demo`);
+    },
     formatTime(seconds) {
       const totalMs = seconds * 1000;
       const result = new Date(totalMs).toISOString().slice(11, 19);
@@ -278,6 +301,7 @@ export default {
     // console.log("userInfo");
     this.getUserInfo();
     const assessmentId = this.$route.params.id;
+    this.type = this.$route.params.type;
 
     // console.log("assessment data", assessment)
     this.assessmentId = assessmentId;

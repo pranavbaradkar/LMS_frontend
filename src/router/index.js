@@ -14,9 +14,11 @@ import ProfileView from '../views/ProfileView'
 import PreMain from '../views/PreMain'
 import SlotSelection from '../views/SlotSelectionView'
 import Pcad from '../views/PcadView'
+import Pcdv from '../views/PcdvView'
 import ScreeningStatus from '../views/ScreeningStatusView'
 import ResultView from '../views/ResultView'
 import MainScreeningSetupStatus from '../views/MainScreeningSetupStatusView';
+import DemoVideo from '../views/DemoVideoView';
 
 //import store from "../store";
 
@@ -121,7 +123,7 @@ const routes = [
     }
   },
   {
-    path: '/assessment/:id/mains/pacd',
+    path: '/assessment/mains/pacd',
     name: 'Pcad',
     component: Pcad,
     meta: {
@@ -129,7 +131,15 @@ const routes = [
     }
   },
   {
-    path: '/assessment/:id/status',
+    path: '/assessment/mains/padv',
+    name: 'padv',
+    component: Pcdv,
+    meta: {
+      requiresAuth: true,
+    }
+  },
+  {
+    path: '/assessment/:id/:type/status',
     name: 'ScreeningStatus',
     component: ScreeningStatus,
     meta: {
@@ -137,7 +147,7 @@ const routes = [
     }
   },
   {
-    path: '/assessment/:id/result',
+    path: '/assessment/:id/:type/result',
     name: 'ResultView',
     component: ResultView,
     meta: {
@@ -148,6 +158,14 @@ const routes = [
     path: '/pre/assessment/mains',
     name: 'mainsSet',
     component: MainScreeningSetupStatus,
+    meta: {
+      requiresAuth: true,
+    }
+  },
+  {
+    path: '/assessment/mains/demo',
+    name: 'mainsSet',
+    component: DemoVideo,
     meta: {
       requiresAuth: true,
     }

@@ -40,13 +40,24 @@
           color="transparent">
           <div class="white--text text-container">
             <!-- <div class="text-caption">Recommended</div> -->
-            <v-btn v-if="assessmentData.screening_status == 'PASSED'" elevation="0" height="32px" color="#03C988"
+            <v-btn v-if="assessmentData.screening_status == 'PASSED' && type == 'screening'" elevation="0" height="32px" color="#03C988"
               class="white--text font-weight-regular text-capitalize mb-3" rounded>Passed Screening Test
             </v-btn>
             <!-- for fail screen test -->
-            <v-btn v-if="assessmentData.screening_status == 'FAILED'" elevation="0" height="32px" color="#CA5251"
+            <v-btn v-if="assessmentData.screening_status == 'FAILED'  && type == 'screening'" elevation="0" height="32px" color="#CA5251"
               class="white--text font-weight-regular text-capitalize mb-3" rounded>Screening Test Failed
             </v-btn>
+
+
+            <!-- <div class="text-caption">Recommended</div> -->
+            <v-btn v-if="assessmentData.mains_status == 'PASSED' && type == 'mains'" elevation="0" height="32px" color="#03C988"
+              class="white--text font-weight-regular text-capitalize mb-3" rounded>Passed Mains Test
+            </v-btn>
+            <!-- for fail screen test -->
+            <v-btn v-if="assessmentData.mains_status == 'FAILED'  && type == 'mains'" elevation="0" height="32px" color="#CA5251"
+              class="white--text font-weight-regular text-capitalize mb-3" rounded>Mains Test Failed
+            </v-btn>
+
             <div class="text-h6 mb-1">{{ assessmentData.name }}</div>
             <p class="mt-1 font-weight-regular">
               {{ assessmentData.instructions }}
@@ -57,10 +68,15 @@
             </v-btn>
             <!-- show setup mains button if screen test passed -->
             <v-btn height="48px" color="#277BC0" class="white--text mt-4" elevation="0" large
-              v-if="assessmentData.screening_status == 'PASSED'"
+              v-if="assessmentData.screening_status == 'PASSED' && type == 'screening'"
               @click="setupMains(assessmentData.id)">
               Setup Mains
             </v-btn>
+
+            <v-btn height="48px" color="primary" class="white--text mt-4" large elevation="0" v-if="assessmentData.mains_status == 'PASSED' && type == 'mains'"
+            @click="startDemoVideo()">
+              Start Demo Video</v-btn>
+
           </div>
         </v-card>
       </v-img>
@@ -85,6 +101,7 @@ export default {
       assessmentConfigData: {},
       identifyUser: {},
       userInfo: {},
+      type: 'screening'
     };
   },
   mounted() {
@@ -117,6 +134,9 @@ export default {
         this.$router.replace("/interests");
       }
     },
+    startDemoVideo() {
+      this.$router.push(`/assessment/mains/demo`);
+    },
     logout() {
       AuthService.logout();
       this.$mixpanel.track("UserLoggedOut", {
@@ -139,7 +159,7 @@ export default {
       }
     },
     viewResult(assessmentId) {
-      this.$router.push(`/assessment/${assessmentId}/result`);
+      this.$router.push(`/assessment/${assessmentId}/${this.$route.params.type}/result`);
     },
     setupMains(assessmentId) {
       this.$router.push(`/assessment/${assessmentId}/mains/setup`);
@@ -149,7 +169,7 @@ export default {
     // console.log("userInfo");
     this.getUserInfo();
     const assessmentId = this.$route.params.id;
-
+    this.type = this.$route.params.type;
     // console.log("assessment data", assessment)
     this.assessmentId = assessmentId;
     this.getAssessmentInfo(assessmentId);
