@@ -100,13 +100,13 @@
                 </button>
               </div>
               <v-btn
-                :disabled="isLoading"
                 variant="tonal"
                 elevation="0"
                 block
                 height="48px"
                 class="w-100 submit-btn white--text confirm"
                 @click="submitLink"
+                :disabled="isLoading || blob==null"
                 >Submit</v-btn
               >
             </v-col>
@@ -229,7 +229,7 @@ export default {
         formData.append("image", imageFile);
         formData.append("context", "user-profiles");
         formData.append("business_type", "b2c");
-        formData.append("post_type", "pacd");
+        formData.append("post_type", "demo");
         formData.append("file_type", "videos");
 
         let response = await AssessmentController.uploadS3Video(formData);

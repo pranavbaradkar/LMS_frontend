@@ -99,7 +99,7 @@
                 @click="setupMains(assessmentData.id)">Setup
                   Mains</v-btn>
 
-                <v-btn height="48px" color="primary" class="white--text mt-4" large elevation="0" v-if="assessmentData.mains_status == 'PASSED' && type == 'mains'"
+                <v-btn height="48px" color="primary" class="white--text mt-4" large elevation="0" v-if="assessmentData.mains_status == 'PASSED' && type == 'mains' && !isDemoVideoExist"
                 @click="startDemoVideo()">
                   Start Demo Video</v-btn>
 
@@ -190,6 +190,7 @@ export default {
       identifyUser: {},
       type: 'screening',
       userInfo: {},
+      isDemoVideoExist: false,
       chartDataPercentage: {
         // labels: ["", ""],
         datasets: [
@@ -295,6 +296,13 @@ export default {
         this.assessmentData = response.data.data;
         console.log(this.assessmentData);
       }
+
+
+      let setupMains = await AssessmentController.getSetupMainsAssessment();
+      if(setupMains.status == 200 && setupMains.data && setupMains.data.data && setupMains.data.data.demo_link) {
+        this.isDemoVideoExist = true;
+      }
+
     },
   },
   created() {
@@ -306,6 +314,7 @@ export default {
     // console.log("assessment data", assessment)
     this.assessmentId = assessmentId;
     this.getAssessmentInfo(assessmentId);
+    
   }
 
 };

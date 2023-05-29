@@ -73,7 +73,7 @@
               Setup Mains
             </v-btn>
 
-            <v-btn height="48px" color="primary" class="white--text mt-4" large elevation="0" v-if="assessmentData.mains_status == 'PASSED' && type == 'mains'"
+            <v-btn height="48px" color="primary" class="white--text mt-4" large elevation="0" v-if="assessmentData.mains_status == 'PASSED' && type == 'mains' && !isDemoVideoExist"
             @click="startDemoVideo()">
               Start Demo Video</v-btn>
 
@@ -101,6 +101,7 @@ export default {
       assessmentConfigData: {},
       identifyUser: {},
       userInfo: {},
+      isDemoVideoExist: false,
       type: 'screening'
     };
   },
@@ -157,6 +158,11 @@ export default {
         this.assessmentData = response.data.data;
         console.log(this.assessmentData);
       }
+      let setupMains = await AssessmentController.getSetupMainsAssessment();
+      if(setupMains.status == 200 && setupMains.data && setupMains.data.data && setupMains.data.data.demo_link) {
+        this.isDemoVideoExist = true;
+      }
+
     },
     viewResult(assessmentId) {
       this.$router.push(`/assessment/${assessmentId}/${this.$route.params.type}/result`);
