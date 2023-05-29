@@ -24,7 +24,7 @@
         <v-card v-if="!isGenerateOtpClicked" width="426px" height="516px">
           <div class="text-center pt-12 pl-12 pr-12 pb-9">
             <div class="d-flex justify-center align-center">
-              <div class="d-flex justify-center flex-row" style="width: 248px; height: 100% 
+              <div class="d-flex justify-center flex-row" style="width: 270px; height: 100% 
               ;">
                 <div 
                 @click="
@@ -48,7 +48,7 @@
             <v-card-title class="justify-center text-h6 font-weight-bold pt-0 mt-9">
               Login
             </v-card-title>
-            <v-card-text class="text-center text-body-1 font-weight-light pb-9">
+            <v-card-text class="text-center text-body-1 font-weight-light pb-9" style="color: rgba(0, 0, 0, 0.6)">
               <span>Welcome{{ !vibgyouBool ? " Job Seeker!" : " Teachers" }} Please enter
                 your credentials to start the journey</span>
             </v-card-text>

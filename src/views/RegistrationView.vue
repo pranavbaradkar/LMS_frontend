@@ -365,7 +365,7 @@
                                 v-model="personalInfo.address"
                                 label="Address*"
                                 counter="100"
-                                maxLength="10"
+                                maxLength="100"
                                 required
                                 :rules="[
                                   (v) => !!v || 'Address is required',
@@ -1408,7 +1408,7 @@ export default {
         talukTehsil: -1,
         city_id: -1,
         address: "",
-        pincode: 0,
+        pincode: "",
         country_name: "",
         state_name: "",
         city_name: "",
@@ -1681,7 +1681,7 @@ export default {
       this.personalInfo.state_id = this.userInfo.state_id;
       this.personalInfo.address = this.userInfo.address;
       this.personalInfo.city_id = this.userInfo.city_id;
-      this.personalInfo.pincode = this.userInfo.pincode;
+      this.personalInfo.pincode = this.userInfo.pincode.toString();
       this.personalInfo.city_name = this.userInfo.city_name;
       this.personalInfo.taluka_name = this.userInfo.taluka_name;
       this.personalInfo.dob = this.userInfo.dob;
@@ -1813,7 +1813,7 @@ export default {
       this.time = 119;
       this.resendBool = false;
       const response = await AuthService.generateOTP({
-        mobile: toString(this.personalInfo.phone_no),
+        mobile: this.personalInfo.phone_no,
       });
 
       if (response) {

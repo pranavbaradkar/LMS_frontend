@@ -1222,7 +1222,7 @@ export default {
         talukTehsil: -1,
         city_id: -1,
         address: "",
-        pincode: 0,
+        pincode: '',
         country_name: "",
         state_name: "",
         city_name: "",
@@ -1344,7 +1344,7 @@ export default {
             this.personalInfo.state_name = response.data.address.state;
             this.personalInfo.district_name =
               response.data.address.state_district;
-            this.personalInfo.pincode = response.data.address.postcode;
+            this.personalInfo.pincode = response.data.address.postcode.toString();
             this.personalInfo.taluka_name = response.data.address.county;
             this.personalInfo.city_name = response.data.address.neighbourhood;
             this.personalInfo.address =
@@ -1377,7 +1377,6 @@ export default {
         const response = await PersonalInfoController.createUserPersonalInfo(
           this.personalInfo
         );
-        console.log(response);
         if (response.data.success) {
           this.$mixpanel.track("AcademicsPageLoaded", {
             user_type: this.userInfo.user_type,
@@ -1635,7 +1634,7 @@ export default {
       this.time = 119;
       this.resendBool = false;
       const response = await AuthService.generateOTP({
-        mobile: toString(this.personalInfo.phone_no),
+        mobile: this.personalInfo.phone_no,
       });
 
       if (response) {
