@@ -612,7 +612,9 @@ export default {
     },
     recommendedTestViewEvent() {
       this.selectedAssessment = this.recommendedAssessment;
-      console.log("selected assessment", this.selectedAssessment);
+      let selectedTest = this.selectedAssessment.tests.filter(ele => ele.assessment_type == 'SCREENING');
+
+
       if (
         this.selectedAssessment.screening_status == "PENDING" ||
         this.selectedAssessment.screening_status == "STARTED"
@@ -633,10 +635,8 @@ export default {
           query: { id: this.selectedAssessment.id },
         });
       }
-      this.duration =
-        this.selectedAssessment.tests[this.e1 - 1].duration_of_assessment;
-      this.noOfQuestions =
-        this.selectedAssessment.tests[this.e1 - 1].total_no_of_questions;
+      this.duration = selectedTest.duration_of_assessment;
+      this.noOfQuestions = selectedTest.total_no_of_questions;
       this.dialog = true;
       this.$mixpanel.track("RecommendedViewTestClicked", {
         assessment_id: this.recommendedAssessment.id,
@@ -657,24 +657,25 @@ export default {
       const response = await AssessmentController.getSingleAssessment(id);
       if (response.data.success) {
         this.selectedAssessment = response.data.data;
+        let selectedTest = this.selectedAssessment.tests.filter(ele => ele.assessment_type == 'SCREENING');
 
-        this.duration = this.selectedAssessment.tests[0].duration_of_assessment;
+        this.duration = selectedTest.duration_of_assessment;
         this.noOfQuestions =
-          this.selectedAssessment.tests[0].total_no_of_questions;
+          selectedTest.total_no_of_questions;
         this.dialog = true;
         this.$mixpanel.track("OtherViewTestClicked", {
           assessment_id: this.selectedAssessment.id,
           assessment_name: this.selectedAssessment.name,
           screen_name: "RecommendedTestScreen",
           assessment_level:
-            this.selectedAssessment.tests[this.e1 - 1].level.name,
+            selectedTest.level.name,
         });
         this.$mixpanel.track("InstructionsModalLoaded", {
           assessment_id: this.selectedAssessment.id,
           assessment_name: this.selectedAssessment.name,
           screen_name: "AssessmentInstructionsScreen",
           assessment_level:
-            this.selectedAssessment.tests[this.e1 - 1].level.name,
+            selectedTest.level.name,
         });
         console.log(this.selectedAssessment);
       } else {
@@ -790,7 +791,7 @@ export default {
       });
     },
     async getAllAssessment() {
-      const response = await AssessmentController.getAllAssessment();
+      const response = await AssessmentController.getAllAssessment({type: 'SCREENING'});
       this.allAssessments = response.data.data;
       //console.log(this.allAssessments);
       this.getRecommendedAssessment();
@@ -800,7 +801,7 @@ export default {
       var setupMains = await AssessmentController.getSetupMainsAssessment();
 
       const response =
-        await RecommendedAssessmentController.getRecommendedAssessment("");
+        await RecommendedAssessmentController.getRecommendedAssessment("", {type: 'SCREENING'});
       //console.log("response", response);
       this.$mixpanel.track("RecommendationScreenLoaded", {
         screen_name: "RecommendationScreen",
@@ -811,7 +812,7 @@ export default {
       if (response.status == 404) {
         const response2 =
           await RecommendedAssessmentController.getRecommendedAssessment(
-            "?debug=203"
+            "?debug=203", {type: 'SCREENING'}
           );
         this.recommendedAssessment = response2.data ? response2.data.data : null;
         console.log(this.recommendedAssessment);

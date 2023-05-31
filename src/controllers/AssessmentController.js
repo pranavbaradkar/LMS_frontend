@@ -5,12 +5,9 @@ const instance = axios.create({
 });
 
 export default {
-    startScreening: async function (id) {
+    startScreening: async function (id, payload) {
         try {
-            const response = await instance.post('users/assessments/status', {
-                "assessment_id": id,
-                "screening_status": "STARTED"
-            }, {
+            const response = await instance.post('users/assessments/status',{ ...{ "assessment_id": id }, ...payload} , {
                 headers: {
                     'Authorization': AuthService.getToken()
                 }
@@ -36,12 +33,9 @@ export default {
             return error.response;
         }
     },
-    startMains: async function (id) {
+    startMains: async function (id, payload) {
         try {
-            const response = await instance.put('users/assessments/'+id+'/status', {
-                "assessment_id": id,
-                "mains_status": "STARTED"
-            }, {
+            const response = await instance.post('users/assessments/status', { ...{ "assessment_id": id }, ...payload}, {
                 headers: {
                     'Authorization': AuthService.getToken()
                 }
@@ -51,13 +45,14 @@ export default {
             return error.response;
         }
     },
-    getAllAssessment: async function () {
+    getAllAssessment: async function ( params = {}) {
 
         try {
             const response = await instance.get('/users/assessments', {
                 headers: {
                     'Authorization': AuthService.getToken()
-                }
+                },
+                params: params
             })
             return response;
         } catch (error) {
