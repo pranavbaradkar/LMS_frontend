@@ -267,6 +267,7 @@ export default {
             email: this.email + "@vgos.org",
             otp: this.otp,
             debug: false,
+            method: 'email',
           });
           if (res.success) {
             this.$mixpanel.track("VerifyOTP", {
@@ -286,7 +287,9 @@ export default {
             email: this.email,
             otp: this.otp,
             debug: false,
+            method: 'email',
           });
+          console.log(res, "hjdsbdchj")
           if (res.success) {
             this.$mixpanel.track("VerifyOTP", {
               counter_secs_taken: 45,
@@ -313,6 +316,7 @@ export default {
           mobile: this.phoneNumber,
           otp: this.otp,
           debug: false,
+          method: 'phone'
         });
         if (res.success) {
           this.$mixpanel.track("VerifyOTP", {
@@ -422,15 +426,6 @@ export default {
   cursor: pointer;
 }
 
-input[type="text"] {
-  width: 100%;
-  padding: 3px 20px;
-  margin: 12px 0;
-  box-sizing: border-box;
-  -webkit-transition: 0.2s;
-  transition: 0.2s;
-  outline-color: #277BC0;
-}
 
 .v-otp-input > .v-input > .v-input__control > .v-input__slot > .v-text-field__slot > input {
   padding: 0px !important;

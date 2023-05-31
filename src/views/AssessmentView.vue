@@ -209,8 +209,36 @@
                       class="d-flex w-100 px-2 py-0 flex-row justify-space-around"
                       :class="questions[selectedQuestion].question_options[0].option_type == 'TEXT' ? 'flex-column' : ''"
                       >
-                        <v-radio-group  class="w-100 radioGroup" inline >
-                          <v-card elevation="0" height="auto"   class="overflow-hidden white my-1 mx-1 border-with-color has-selected" 
+                      <v-radio-group v-if="this.questions[this.selectedQuestion].question_type != 'MULTIPLE_CHOICE'"  class="w-100 radioGroup" inline v-model="questions[selectedQuestion].myAnswer" >
+                        <v-card elevation="0" height="auto"   class="overflow-hidden white my-1 mx-1 border-with-color has-selected" 
+                              v-for="(option, index) in questions[selectedQuestion].question_options" :key="index"
+                              :class="questions[selectedQuestion].question_options[index].option_type == 'TEXT' ? 'w-100' : 'option-width'"
+                                >                                
+                                <v-card @click="
+                                        setOption(
+                                          questions[selectedQuestion].question_options[index]
+                                        )
+                                      " elevation="0" height="50px" width="100%" v-if="option.option_type=='TEXT'" class="px-4 w-100 d-flex justify-start cursor sub-text-option" :class="questions[selectedQuestion].myAnswer == option.option_key || (Array.isArray(questions[selectedQuestion].myAnswer) && questions[selectedQuestion].myAnswer.indexOf(option.option_key) >= 0) ? 'secondaryPrimaryAccent' : ''" >
+                                    
+                                      <v-radio readonly class="my-0" :value="questions[selectedQuestion].question_options[index].option_key"></v-radio> <div class="application-statement" v-html="option.option_value"></div>
+                                </v-card>
+                                <v-card elevation="0"  height="100%" width="100%"  v-else-if="option.option_type =='IMAGE'" class="px-4 w-100 d-flex justify-start cursor sub-text-option" :class="questions[selectedQuestion].myAnswer == option.option_key || (Array.isArray(questions[selectedQuestion].myAnswer) && questions[selectedQuestion].myAnswer.indexOf(option.option_key) >= 0) ? 'secondaryPrimaryAccent' : '' ">
+                                  <div class="option-left" @click="
+                                        setOption(
+                                          questions[selectedQuestion].question_options[index]
+                                        )
+                                      ">
+                                      <v-radio readonly class="my-0 image-radio" :value="questions[selectedQuestion].question_options[index].option_key" ></v-radio> <img  class="my-2" height="80px" width="auto" type="image" :src="option.option_value" alt="Image not found">
+                                  </div>
+                                  
+                                    <v-btn @click="zoomOutFun(option.option_value)" class="zoom-out" icon>
+                                      <v-icon size="20px"> mdi-arrow-expand </v-icon>
+                                    </v-btn>
+                                </v-card>
+                        </v-card>
+                      </v-radio-group>
+
+                      <v-card elevation="0" height="auto" v-else class="overflow-hidden white my-1 mx-1 border-with-color has-selected" 
                               v-for="(option, index) in questions[selectedQuestion].question_options" :key="index"
                               :class="questions[selectedQuestion].question_options[index].option_type == 'TEXT' ? 'w-100' : 'option-width'"
                                 >
@@ -221,59 +249,55 @@
                                         )
                                       " elevation="0" height="50px" width="100%" v-if="option.option_type=='TEXT'" class="px-4 w-100 d-flex justify-start cursor sub-text-option" :class="questions[selectedQuestion].myAnswer == option.option_key || (Array.isArray(questions[selectedQuestion].myAnswer) && questions[selectedQuestion].myAnswer.indexOf(option.option_key) >= 0) ? 'secondaryPrimaryAccent' : ''" >
                                     
-                                      <v-radio  class="my-0" :value="questions[selectedQuestion].question_options[index].option_key" ></v-radio> <div class="application-statement" v-html="option.option_value"></div>
+                                      <v-checkbox readonly :input-value="questions[selectedQuestion].myAnswer == option.option_key || (Array.isArray(questions[selectedQuestion].myAnswer) && questions[selectedQuestion].myAnswer.indexOf(option.option_key) >= 0)"></v-checkbox> <div class="application-statement" v-html="option.option_value"></div>
                                 </v-card>
-
-
-
-
                                 <v-card elevation="0"  height="100%" width="100%"  v-else-if="option.option_type =='IMAGE'" class="px-4 w-100 d-flex justify-start cursor sub-text-option" :class="questions[selectedQuestion].myAnswer == option.option_key || (Array.isArray(questions[selectedQuestion].myAnswer) && questions[selectedQuestion].myAnswer.indexOf(option.option_key) >= 0) ? 'secondaryPrimaryAccent' : '' ">
                                   <div class="option-left" @click="
                                         setOption(
                                           questions[selectedQuestion].question_options[index]
                                         )
                                       ">
-                                      <v-radio class="my-0 image-radio" :value="questions[selectedQuestion].question_options[index].option_key" ></v-radio> <img  class="my-2" height="80px" width="auto" type="image" :src="option.option_value" alt="Image not found">
+                                      <v-checkbox readonly class="image-radio" :input-value="questions[selectedQuestion].myAnswer == option.option_key || (Array.isArray(questions[selectedQuestion].myAnswer) && questions[selectedQuestion].myAnswer.indexOf(option.option_key) >= 0)"></v-checkbox> <img  class="my-2" height="80px" width="auto" type="image" :src="option.option_value" alt="Image not found">
                                   </div>
                                   
                                     <v-btn @click="zoomOutFun(option.option_value)" class="zoom-out" icon>
                                       <v-icon size="20px"> mdi-arrow-expand </v-icon>
                                     </v-btn>
                                 </v-card>
-
-
-
-
-
-
-                        </v-card>
-                          
-                      </v-radio-group>
+                      </v-card>
                     </v-card-title>
                   </v-card>
                 </v-card>
 
-                <v-card v-if="questions[selectedQuestion].question_type == 'MATCH_THE_FOLLOWING'" width="100%" height="30%" elevation="0" class="ml-2">
+                <v-card v-if="questions[selectedQuestion].question_type == 'MATCH_THE_FOLLOWING'" class="option-card mt-0 rounded w-100 float-bottom px-3" elevation="0" >
+                  <v-card height="auto"  elevation="0" color="grey lighten-4" class="border-with-color">
+                  <v-card-title>
                   <v-row>
-                    <v-col cols="4" class="pa-3 mr-8 rounded-xl option-card" style="background-color: #FBF5F2;">
-                      <v-card :style="{'background-color': ifOptionSelected(option) ? mtfQuestions.mathOptionColors[bColorIndex(option)]: ''}" @click="selectMtfKey(questions[selectedQuestion].question_options[index])" v-for="(option, index) in questions[selectedQuestion].question_options" :key="index" class="mb-2 d-flex justify-center pa-2">
-                        {{ option.option_value }} 
+                    <v-col cols="4" class="pa-2">
+                      <v-card elevation="0" :style="{'background-color': ifOptionSelected(option) ? mtfQuestions.mathOptionColors[bColorIndex(option)]: ''}" @click="selectMtfKey(questions[selectedQuestion].question_options[index])" v-for="(option, index) in questions[selectedQuestion].question_options" :key="index" class="mb-2 d-flex justify-center pa-2 border-with-color">
+                        <div style="font-size: 16px">{{ option.option_value }}</div>
                       </v-card>
                     </v-col>
-                    <v-col cols="4" class="pa-3 ml-8 rounded-xl option-card" style="background-color: #FBF5F2;">
+                    <v-col cols="7" class="pa-2">
                       <v-card
                       :style="{'background-color': ifAnswerSelected(answer) ? mtfQuestions.mathOptionColors[findIndexOfValue(answer.answer_key)]: ''}"
                       @click="setOption(
                                         questions[selectedQuestion].question_mtf_answers[index]
                                       )" 
-                      v-for="(answer, index) in questions[selectedQuestion].question_mtf_answers" :key="index" class="mb-2 d-flex justify-center pa-2">
-                      {{ answer.answer_value }}
+                      v-for="(answer, index) in questions[selectedQuestion].question_mtf_answers" :key="index" class="mb-2 d-flex justify-center pa-2 border-with-color">
+                      <div style="font-size: 16px">{{ answer.answer_value }}</div>
                       </v-card>
                     </v-col>
-                    <v-col class="pt-0">
-                      <v-btn @click="resetMTF">Reset</v-btn>
+                    <v-col cols="1" class="pt-0 d-flex flex-row justify-center align-end">
+                      <v-btn fab small class="mb-0" elevation="0" @click="resetMTF">
+                        <v-icon>
+                          mdi-restore
+                        </v-icon>
+                      </v-btn>
                     </v-col>
                   </v-row>
+                </v-card-title>
+                </v-card>
                 </v-card>
 
               </v-container>
@@ -357,7 +381,7 @@
               No Questions Data Found!
             </v-card-title>
             <v-card-title @click="$router.back()" class="pb-0">
-              <v-btn rounded color="secondary" class="black--text" width="250">Return To Home</v-btn>
+              <v-btn rounded color="primary" class="black--text" width="250">Return To Home</v-btn>
             </v-card-title>
           </v-card>
         </v-col>
@@ -738,7 +762,7 @@ export default {
       zoomOutBool: false,
       zoomOutImageUrl: "",
       mtfQuestions: {
-        mathOptionColors: ['rgba(75, 66, 178, 0.12)','rgba(88, 178, 66, 0.12)','rgba(178, 66, 66, 0.12)','rgba(66, 178, 178, 0.12)'],
+        mathOptionColors: ['#FBA6A1','#F7E6A7','#9FE3CD','#A3DEFF'],
         selectedOption: null,
         colorIndex: 0,
         selectedAnswer: null,
@@ -1123,6 +1147,7 @@ export default {
           Vue.set(this.response, question.id, question.myAnswer);
         }
       });
+      
       const response = await AssessmentsController.submitAssessment(
         this.assessment.id,
         {

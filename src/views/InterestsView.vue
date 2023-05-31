@@ -160,7 +160,7 @@
             <v-slide-group
             mandatory
             show-arrows>
-    <v-slide-item
+            <v-slide-item
     v-for="(sub, index) in Array.from(new Set(subjectCategoryNames)) " :key="index"
         v-slot="{ active, toggle }"
       >
@@ -199,7 +199,7 @@
                     
                       >
                         <v-col align-self="center">
-                          <v-checkbox  :input-value="active" class="mt-0 mb-0"></v-checkbox>
+                          <v-checkbox readonly  :input-value="active" class="mt-0 mb-0"></v-checkbox>
             <v-row>
                 <v-col class="d-flex justify-center pa-0 mb-2 mt-1" color="primary">
                   <div style="height: 48px; width: 48px;">

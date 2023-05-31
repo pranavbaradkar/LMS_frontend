@@ -31,6 +31,114 @@
         </v-list-item-action>
       </v-list-item>
     </v-app-bar>
+
+
+    <v-dialog v-model="deleteDialog" max-width="366px" persistent>
+      <v-card fluid>
+        <v-container fluid class="pa-0">
+          <v-card-text class="text-center">
+            <v-avatar color="#db44371f" size="90"
+              ><v-icon size="65" color="#DB4437"
+                >mdi-trash-can-outline</v-icon
+              ></v-avatar
+            >
+
+            <p class="text-h5 pt-4 pb-0">
+              Are You Sure You Want To Delete This Info ?
+            </p>
+            <p
+              class="text-disabled grey--text text-subtitle-1"
+              color="rgba(0, 0, 0, 0.6)"
+              disabled
+            >
+              This action will permanently delete the item . This cannot be
+              undone
+            </p>
+
+            <div class="d-flex justify-space-between" fluid>
+              <v-btn
+                class="black--text"
+                color="#0000001a"
+                large
+                width="157px"
+                
+                @click="deleteDialog = false"
+                >CANCEL</v-btn
+              >
+              <v-btn
+                class="primary white--text"
+                large
+                width="157px"
+                
+                @click="removeDataFromSteps()"
+                >DELETE</v-btn
+              >
+            </div>
+          </v-card-text>
+        </v-container>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="otpDialog" max-width="450px" class="center">
+      <v-card height="100%" elevation="0" class="pb-8">
+        <v-card-title class="justify-center text-h5 font-weight-bold">
+          {{ usingPhone ? "Verify Your Phone Number" : "Verify Your Email" }}
+        </v-card-title>
+        <v-card-text class="text-center text-body-1"
+          ><span>Enter 6 Digit Code Sent On</span><br /><span>{{
+            usingPhone ? "Your Phone Number" : "Your Email Address"
+          }}</span></v-card-text
+        >
+
+        <div class="d-flex flex-column pl-8 pr-8">
+          <v-otp-input length="6" type="number" v-model="otp"></v-otp-input>
+          <v-row justify="space-between" class="ma-0 pa-0">
+            <v-col class="ma-0 pa-0">
+              <v-card-subtitle class="ma-0 pa-0"
+                >0{{ Math.floor(time / 60) }}:
+                <span v-if="time % 60 < 10">0</span
+                >{{ time % 60 }}</v-card-subtitle
+              >
+            </v-col>
+            <v-col class="ma-0 pa-0">
+              <v-card-subtitle class="ma-0 pa-0 text-end">
+                {{ otp.length }}/6</v-card-subtitle
+              >
+            </v-col>
+          </v-row>
+        </div>
+
+        <v-card-text class="text-center">
+          <v-btn
+            class="primary--text cursor"
+            on
+            text
+            elevation="0"
+            :disabled="!resendBool"
+            @click="usingPhone ? generatePhoneOtp() : generateOtp()"
+          >
+            RESEND OTP
+          </v-btn>
+        </v-card-text>
+        <v-card-title class="justify-center">
+          <v-btn
+            color="primary"
+            class="textcolor--text"
+            
+            large
+            width="90%"
+            height="40"
+            @click="validateOTP"
+            :disabled="otp.length != 6"
+          >
+            VERIFY
+          </v-btn>
+        </v-card-title>
+      </v-card>
+    </v-dialog>
+
+
+
+
     <v-container fluid class="pa-8">
       <v-row>
         <v-col class="py-0">
@@ -262,7 +370,7 @@
                             text
                             @click="clearLocation"
                           >
-                            <v-icon>mdi-undo</v-icon>
+                            <v-icon>mdi-restore</v-icon>
                             Reset
                           </v-btn>
                         </div>
@@ -645,7 +753,7 @@
                       <v-row v-if="index != 0">
                         <v-col cols="12" class="d-flex justify-end">
                           <v-btn
-                            @click="openDeleteDiolog(index)"
+                            @click="openDeleteDiolog(index, 2)"
                             text
                             class="d-flex justify-end red--text"
                             >Remove</v-btn
@@ -720,8 +828,8 @@
                             <div
                               class="text-body-2 grey--text"
                               v-if="
-                                professional.start_date != '' &&
-                                isCurrentlyWorking
+                                professional.start_date != '' ||
+                                professional.isCurrentlyWorking
                               "
                             >
                               {{
@@ -847,7 +955,7 @@
                             <v-col class="py-0">
                               <v-checkbox
                                 class="py-0"
-                                v-model="isCurrentlyWorking"
+                                v-model="professional.isCurrentlyWorking"
                                 label="I am currently working on this role / position."
                               ></v-checkbox>
                             </v-col>
@@ -874,13 +982,13 @@
                             ></v-col>
                             <v-col cols="6" class="py-0"
                               ><v-text-field
-                                :disabled="isCurrentlyWorking"
+                                :disabled="professional.isCurrentlyWorking"
                                 label="End Date*"
                                 :max="new Date().toISOString().slice(0, 10)"
                                 v-model="professional.end_date"
                                 type="date"
                                 :rules="
-                                  !isCurrentlyWorking
+                                  !professional.isCurrentlyWorking
                                     ? [
                                         (v) => !!v || 'End Date is required',
                                         (v) =>
@@ -1023,7 +1131,7 @@
                         <v-row v-if="experience == 'Experienced' && index != 0">
                           <v-col cols="12" class="d-flex justify-end">
                             <v-btn
-                              @click="openDeleteDiolog(index)"
+                              @click="openDeleteDiolog(index, 3)"
                               text
                               class="d-flex justify-end red--text"
                               >Remove</v-btn
@@ -1253,6 +1361,7 @@ export default {
           employee_type_id: 0,
           start_date: "",
           end_date: "",
+          isCurrentlyWorking: false,
         },
       ],
       employeeType: [
@@ -1361,6 +1470,7 @@ export default {
       );
     },
     removeDataFromSteps() {
+      console.log("e1", this.e1);
       this.deleteDialog = true;
       if (this.e1 == 2) {
         this.academicQualifications.splice(this.indexValue, 1);
@@ -1369,11 +1479,18 @@ export default {
       }
       this.deleteDialog = false;
       this.indexValue = null;
+      this.e1 = 1;
     },
     async savePersonal() {
       if (this.$refs.step1.validate()) {
         console.log("userif conditon,", this.personalInfo);
         this.isCreatingUser = true;
+        if (this.isCurrentLocation) {
+          this.personalInfo.country_id = null;
+          this.personalInfo.state_id = null;
+          this.personalInfo.district_id = null;
+          this.personalInfo.city_id = null;
+        }
         const response = await PersonalInfoController.createUserPersonalInfo(
           this.personalInfo
         );
@@ -1428,9 +1545,13 @@ export default {
       if (this.$refs.step3.validate()) {
         //console.log("userif conditon");
         this.isCreatingUser = true;
-        if (this.isCurrentlyWorking) {
-          delete this.professionalInfos[0].end_date;
-        }
+        const professionalInfos = this.professionalInfos.map((profession) => {
+          const newProfession = profession;
+          if (profession.isCurrentlyWorking) {
+            newProfession.end_date = "";
+          }
+          return newProfession;
+        });
         const response =
           this.experience == "Fresher"
             ? await ProfessionalController.createUserProfessionalInfo([
@@ -1439,12 +1560,11 @@ export default {
                 },
               ])
             : await ProfessionalController.createUserProfessionalInfo(
-                this.professionalInfos
+                professionalInfos
               );
         if (response.data.success) {
           this.isCreatingUser = false;
           this.successDialog = true;
-          this.$router.replace("/interests");
         } else {
           alert(response.data.error);
           this.isCreatingUser = false;
@@ -1456,7 +1576,7 @@ export default {
         this.academicQualifications.forEach((item, index) => {
           mixpanelData[`academics_info_${index + 1}`] = item;
         });
-        this.professionalInfos.forEach((item, index) => {
+        professionalInfos.forEach((item, index) => {
           mixpanelData[`professional_info_${index + 1}`] = item;
         });
         this.$mixpanel.track("SaveProfileDetailsClicked", mixpanelData);
@@ -1479,6 +1599,48 @@ export default {
         }
       }
     },
+
+    async getUserAcademicInfo () {
+      const response = await AcademicsController.getUserAcademicInfo();
+      if (!response.data.data.length || !response.data.success) {
+        return;
+      }
+      const academinInfo = response.data.data;
+      this.academicQualifications = academinInfo.map((item) => {
+        return {
+          institution: item.institution,
+        programme: item.programme,
+        start_date: item.start_date,
+        end_date: item.end_date,
+        field_of_study: item.field_of_study,
+        extra_carricular_activities: item.extra_carricular_activities,
+        grade_score: item.grade_score,
+        grade_type: item.grade_type,
+        achievements: item.achievements,
+        certificate_url: item.certificate_url,
+        }
+      })
+    },
+
+    async getUserProfessionalInfo () {
+      const response = await ProfessionalController.getUserProfessionalInfo();
+      if (!response.data.data.length || !response.data.success) {
+        return;
+      }
+      const professionalInfo = response.data.data;
+      this.professionalInfos = professionalInfo.map((item) => {
+        return {
+          experience_year: item.experience_year,
+          experience_month: item.experience_month,
+          position: item.position,
+          employee_type_id: item.employee_type_id,
+          start_date: item.start_date,
+          end_date: item.end_date,
+          isCurrentlyWorking: (item.start_date.length != 0 && item.end_date.length == 0) ? true : false,
+        }
+      });
+    },
+
     async getUserInfo() {
       const response = await LogedInUserInfo.getUserInfo();
       this.userInfo = response.data.user;
@@ -1697,9 +1859,11 @@ export default {
 
       // this.isGenerateOtpClicked = true;
     },
-    openDeleteDiolog(index) {
+    openDeleteDiolog(index, step) {
       this.indexValue = index;
       this.deleteDialog = true;
+      this.e1 = step;
+      console.log("step", step);
     },
     logout() {
   AuthService.logout();
@@ -1744,6 +1908,8 @@ export default {
   created() {
     this.getUserInfo();
     this.fetchCountries();
+    this.getUserAcademicInfo();
+    this.getUserProfessionalInfo();
   },
 };
 </script>
@@ -1761,6 +1927,10 @@ export default {
 .v-application .profile-tab .v-tabs-bar {
   flex: 1 0 auto;
   height: min-content;
+}
+
+.c-text-field > .v-file-input > .v-input__control > .v-input__slot > .v-text-field__slot > label {
+    top: 0px !important;
 }
 </style>
      
