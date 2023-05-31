@@ -18,4 +18,17 @@ export default {
             return error.response;
         }
     },
+
+    getUserAcademicInfo: async function () {
+        try {
+            const response = await instance.get('users/academics' , {
+                headers: {
+                    'Authorization': AuthService.getToken()
+                }
+            })
+            return response;
+        } catch (error) {
+            return error.response;
+        }
+    },
 }

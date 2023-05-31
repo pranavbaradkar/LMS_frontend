@@ -160,7 +160,7 @@
             <v-slide-group
             mandatory
             show-arrows>
-    <v-slide-item
+            <v-slide-item
     v-for="(sub, index) in Array.from(new Set(subjectCategoryNames)) " :key="index"
         v-slot="{ active, toggle }"
       >
@@ -199,7 +199,7 @@
                     
                       >
                         <v-col align-self="center">
-                          <v-checkbox  :input-value="active" class="mt-0 mb-0"></v-checkbox>
+                          <v-checkbox readonly  :input-value="active" class="mt-0 mb-0"></v-checkbox>
             <v-row>
                 <v-col class="d-flex justify-center pa-0 mb-2 mt-1" color="primary">
                   <div style="height: 48px; width: 48px;">
@@ -245,7 +245,7 @@
           <v-card-subtitle>
             <v-row>
               <v-col class="d-flex justify-center flex-column align-center pa-0">
-                <div style="font-size: 34px; line-height: 40px;" class="font-weight-bold black--text text-align-center">Welcome to your profile! </div>
+                <div style="font-size: 34px; line-height: 40px; text-align: center" class="font-weight-bold black--text">Welcome to your profile! </div>
                 <div style="align-self: center; text-align: center; color: #4D4D4D " class="mt-2">
                   To make the most out of your experience, please take a moment to set your preferences. By doing so, we can tailor our recommendations to your interests and needs. Click the 'Preferences' button to get started
                 </div>

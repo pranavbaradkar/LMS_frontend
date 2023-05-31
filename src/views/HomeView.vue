@@ -177,9 +177,10 @@
               <div class="d-flex align-center">
                 <v-select
                   v-model="schoolSelected"
-                  :items="schools"
+                  :items="getSchoolData"
                   item-text="name"
                   item-value="id"
+                  item-disabled="disabled"
                   :menu-props="{ maxHeight: '400' }"
                   multiple
                   persistent-hint
@@ -193,7 +194,7 @@
               <div class="d-flex align-center">
                 <v-select
                   v-model="levelSelected"
-                  :items="levels"
+                  :items="getLevelData"
                   item-text="name"
                   item-value="id"
                   :menu-props="{ maxHeight: '400' }"
@@ -208,7 +209,7 @@
               <p class="school-label">Board</p>
               <v-select
                 v-model="boardSelected"
-                :items="boards"
+                :items="getBoardData"
                 item-text="name"
                 item-value="id"
                 :menu-props="{ maxHeight: '400' }"
@@ -223,7 +224,7 @@
               <div class="d-flex align-center">
                 <v-select
                   v-model="subjectSelected"
-                  :items="subjects"
+                  :items="getSubjectData"
                   item-text="name"
                   item-value="id"
                   :menu-props="{ maxHeight: '400' }"
@@ -511,6 +512,58 @@ export default {
     getHeight() {
       return this.windowHeight - 90;
     },
+
+    getSchoolData () {
+      const newData = this.schools.map((item) => {
+        if (this.schoolSelected.length <= 1 && this.schoolSelected.includes(item.id)) {
+            const newItem = item;
+            newItem.disabled = true;
+            return newItem;
+        }
+        item.disabled = false;
+        return item;
+      });
+      return newData;
+    },
+
+    getLevelData () {
+      const newData = this.levels.map((item) => {
+        if (this.levelSelected.length <= 1 && this.levelSelected.includes(item.id)) {
+            const newItem = item;
+            newItem.disabled = true;
+            return newItem;
+        }
+        item.disabled = false;
+        return item;
+      });
+      return newData;
+    },
+
+    getBoardData () {
+      const newData = this.boards.map((item) => {
+        if (this.boardSelected.length <= 1 && this.boardSelected.includes(item.id)) {
+            const newItem = item;
+            newItem.disabled = true;
+            return newItem;
+        }
+        item.disabled = false;
+        return item;
+      });
+      return newData;
+    },
+
+    getSubjectData() {
+      const newData = this.subjects.map((item) => {
+        if (this.subjectSelected.length <= 1 && this.subjectSelected.includes(item.id)) {
+            const newItem = item;
+            newItem.disabled = true;
+            return newItem;
+        }
+        item.disabled = false;
+        return item;
+      });
+      return newData;
+    }
   },
   mounted() {
     this.$nextTick(() => {
@@ -583,13 +636,13 @@ export default {
         assessment_level: this.selectedAssessment.tests[this.e1 - 1].level.name,
       });
 
-      // console.log('selected',this.selectedAssessment);
-      // this.$router.push({
-      //   path: "/assessment",
-      //   query: { id: this.selectedAssessment.id, test: this.testType },
-      // });
-      let url = `/#/assessment?id=${this.selectedAssessment.id}&test=${this.testType}`;
-      this.Full_W_P(url);
+      console.log('selected',this.selectedAssessment);
+      this.$router.push({
+        path: "/assessment",
+        query: { id: this.selectedAssessment.id, test: this.testType },
+      });
+      // let url = `/#/assessment?id=${this.selectedAssessment.id}&test=${this.testType}`;
+      // this.Full_W_P(url);
     },
     Full_W_P(url) {
       let params  = 'width='+screen.width;
@@ -701,13 +754,17 @@ export default {
     async getSchool() {
       const response = await SchoolController.getSchool();
       // console.log(response);
-      this.schools = response.data.data.rows;
-      //console.log("school log", this.schoolData);
+      this.schools = response.data.data.rows.map((item) => {
+        return {...item, disabled: false}
+      });
+      console.log("school log", this.schools);
     },
     async getSubjects() {
       const response = await SubjectController.getSubject();
 
-      this.subjects = response.data.data.rows;
+      this.subjects = response.data.data.rows.map((item) => {
+        return {...item, disabled: false}
+      });
 
       this.subjectCategoryNames = this.subjects.map(
         (item) => item.subject_category.name
@@ -735,13 +792,17 @@ export default {
     async getBoards() {
       const response = await BoardController.getBoards();
       //console.log(response);
-      this.boards = response.data.data.rows;
+      this.boards = response.data.data.rows.map((item) => {
+        return {...item, disabled: false}
+      });
       console.log("board log", this.boards);
     },
     async getLevel() {
       const response = await LevelController.getLevel();
 
-      this.levels = response.data.data.rows;
+      this.levels = response.data.data.rows.map((item) => {
+        return {...item, disabled: false}
+      });
       //console.log("level log", this.levels);
     },
     async getUserInterests() {

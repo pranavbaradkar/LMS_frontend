@@ -359,6 +359,11 @@ color: rgba(0, 0, 0, 0.6);
 body {
   background-color: #F8FAFC !important;
 }
+
+html * {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+}
 .phoneprefix {
   width: fit-content;
   height: 100%;
@@ -708,4 +713,18 @@ body {
 
 .v-btn {
   text-transform:none !important;
+}
+
+input[type="date"] {
+  transform: translateY(8px);
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 3px 20px;
+  margin: 12px 0;
+  box-sizing: border-box;
+  -webkit-transition: 0.2s;
+  transition: 0.2s;
+  outline-color: #277BC0;
 }

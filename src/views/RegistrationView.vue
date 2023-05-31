@@ -365,7 +365,7 @@
                                 v-model="personalInfo.address"
                                 label="Address*"
                                 counter="100"
-                                maxLength="10"
+                                maxLength="100"
                                 required
                                 :rules="[
                                   (v) => !!v || 'Address is required',
@@ -393,7 +393,7 @@
                                     text
                                     @click="clearLocation"
                                   >
-                                    <v-icon>mdi-undo</v-icon>
+                                    <v-icon>mdi-restore</v-icon>
                                     Reset
                                   </v-btn>
                                 </div>
@@ -923,7 +923,7 @@
                                 </div>
                                 <div
                                   class="text-body-2 grey--text"
-                                 v-if="professional.start_date != '' && isCurrentlyWorking"
+                                 v-if="professional.start_date != '' || professional.isCurrentlyWorking"
                                 >
                                   {{
                                     new Date(
@@ -1063,7 +1063,7 @@
                                 <v-col class="py-0">
                                   <v-checkbox
                                     class="py-0"
-                                    v-model="isCurrentlyWorking"
+                                    v-model="professional.isCurrentlyWorking"
                                     label="I am currently working on this role / position."
                                   ></v-checkbox>
                                 </v-col>
@@ -1093,7 +1093,7 @@
                                 ></v-col>
                                 <v-col cols="6" class="py-0"
                                   ><v-text-field
-                                    :disabled="isCurrentlyWorking"
+                                    :disabled="professional.isCurrentlyWorking"
                                     
                                     label="End Date*"
                                     
@@ -1102,7 +1102,7 @@
                                     v-model="professional.end_date"
                                     type="date"
                                     :rules="
-                                      !isCurrentlyWorking
+                                      !professional.isCurrentlyWorking
                                         ? [(v) => !!v || 'End Date is required',
                                     (v) => professional.end_date > professional.start_date || 'end date should be greater than start date',
                                     (v) => {
@@ -1408,7 +1408,7 @@ export default {
         talukTehsil: -1,
         city_id: -1,
         address: "",
-        pincode: 0,
+        pincode: "",
         country_name: "",
         state_name: "",
         city_name: "",
@@ -1439,6 +1439,7 @@ export default {
           employee_type_id: 0,
           start_date: "",
           end_date: "",
+          isCurrentlyWorking: false,
         },
       ],
       employeeType: [
@@ -1461,9 +1462,7 @@ export default {
     onChange() {
       console.log(this.selectedFile[this.expandedPanelIndex]);
       console.log("selelcted file details",this.expandedPanelIndex);
-      this.getPreSignedUrl();
-      
-     
+      this.selectedFile[this.expandedPanelIndex] && this.getPreSignedUrl();
     },
     async getPreSignedUrl() {
       const response = await UploadController.getPreSignedUrl({
@@ -1549,10 +1548,16 @@ export default {
       this.indexValue = null;
     },
     async goToStep2() {
-      console.log("clicked step 2")
+      console.log("clicked step 2 okay")
       if (this.$refs.step1.validate()) {
         console.log("userif conditon");
         this.isCreatingUser = true;
+        if (this.isCurrentLocation) {
+          this.personalInfo.country_id = null;
+          this.personalInfo.state_id = null;
+          this.personalInfo.district_id = null;
+          this.personalInfo.city_id = null;
+        }
         const response = await PersonalInfoController.createUserPersonalInfo(
           this.personalInfo
         );
@@ -1611,16 +1616,20 @@ export default {
       if (this.$refs.step3.validate()) {
         //console.log("userif conditon");
         this.isCreatingUser = true;
-        if(this.isCurrentlyWorking) {
-          delete this.professionalInfos[0].end_date;
-        }
+        const professionalInfos = this.professionalInfos.map((profession) => {
+          const newProfession = profession;
+          if (profession.isCurrentlyWorking) {
+            delete newProfession.end_date;
+          }
+          return newProfession;
+        });
         const response =
           this.experience=='Fresher'?  await ProfessionalController.createUserProfessionalInfo(
             [{
               is_fresher:true,
             }]
           )  : await ProfessionalController.createUserProfessionalInfo(
-            this.professionalInfos
+              professionalInfos
           );
         if (response.data.success) {
           this.isCreatingUser = false;
@@ -1637,7 +1646,7 @@ export default {
         this.academicQualifications.forEach((item, index) => {
           mixpanelData[`academics_info_${index + 1}`] = item;
         });
-        this.professionalInfos.forEach((item, index) => {
+        professionalInfos.forEach((item, index) => {
           mixpanelData[`professional_info_${index + 1}`] = item;
         });
         this.$mixpanel.track("SaveProfileDetailsClicked", mixpanelData);
@@ -1660,6 +1669,48 @@ export default {
         }
       }
     },
+
+    async getUserAcademicInfo () {
+      const response = await AcademicsController.getUserAcademicInfo();
+      if (!response.data.data.length || !response.data.success) {
+        return;
+      }
+      const academinInfo = response.data.data;
+      this.academicQualifications = academinInfo.map((item) => {
+        return {
+          institution: item.institution,
+        programme: item.programme,
+        start_date: item.start_date,
+        end_date: item.end_date,
+        field_of_study: item.field_of_study,
+        extra_carricular_activities: item.extra_carricular_activities,
+        grade_score: item.grade_score,
+        grade_type: item.grade_type,
+        achievements: item.achievements,
+        certificate_url: item.certificate_url,
+        }
+      })
+    },
+
+    async getUserProfessionalInfo () {
+      const response = await ProfessionalController.getUserProfessionalInfo();
+      if (!response.data.data.length || !response.data.success) {
+        return;
+      }
+      const professionalInfo = response.data.data;
+      this.professionalInfos = professionalInfo.map((item) => {
+        return {
+          experience_year: item.experience_year,
+          experience_month: item.experience_month,
+          position: item.position,
+          employee_type_id: item.employee_type_id,
+          start_date: item.start_date,
+          end_date: item.end_date,
+          isCurrentlyWorking: (item.start_date.length != 0 && item.end_date.length == 0) ? true : false,
+        }
+      });
+      console.log(this.professionalInfos);
+    },
     async getUserInfo() {
       const response = await LogedInUserInfo.getUserInfo();
       this.userInfo = response.data.user;
@@ -1670,21 +1721,23 @@ export default {
       this.personalInfo.is_email_verified = this.userInfo.is_email_verified;
       this.personalInfo.is_phone_verified = this.userInfo.is_phone_verified;
       this.personalInfo.email = this.userInfo.email;
-      this.personalInfo.phone_no = this.userInfo.phone_no && this.userInfo.phone_no.slice(-10);
+      this.personalInfo.phone_no = this.userInfo.phone_no ? this.userInfo.phone_no.slice(-10) : '';
 
       this.personalInfo.first_name = this.userInfo.first_name;
       this.personalInfo.last_name = this.userInfo.last_name;
       this.personalInfo.title = this.userInfo.title;
       this.personalInfo.middle_name = this.userInfo.middle_name;
       this.personalInfo.country_id = this.userInfo.country_id;
-      this.personalInfo.gender = this.userInfo.gender;
+      this.fetchStates(this.userInfo.country_id);
+      this.fetchDistricts(this.userInfo.state_id);
+      this.personalInfo.gender = this.userInfo.gender ? this.userInfo.gender : -1;
       this.personalInfo.state_id = this.userInfo.state_id;
       this.personalInfo.address = this.userInfo.address;
       this.personalInfo.city_id = this.userInfo.city_id;
-      this.personalInfo.pincode = this.userInfo.pincode;
+      this.personalInfo.pincode = this.userInfo.pincode ? this.userInfo.pincode.toString() : '';
       this.personalInfo.city_name = this.userInfo.city_name;
       this.personalInfo.taluka_name = this.userInfo.taluka_name;
-      this.personalInfo.dob = this.userInfo.dob;
+      this.personalInfo.dob = this.userInfo.dob ? this.userInfo.dob : '';
       this.personalInfo.state_id = this.userInfo.state_id;
 
       this.$mixpanel.track("PersonalInformationStepLoaded", {
@@ -1702,22 +1755,25 @@ export default {
 
       //console.log(this.countries);
     },
-    async fetchStates() {
+    async fetchStates(country_id) {
       const response = await AddressController.getStates(
-        this.personalInfo.country_id
+        country_id ? country_id : this.personalInfo.country_id ? this.personalInfo.country_id : -1
       );
       this.states = response.data.data.rows;
       //console.log(this.states);
     },
-    async fetchDistricts() {
+    async fetchDistricts(state_id) {
       //console.log(this.personalInfo.state_id);
+      console.log("fetchD", this.personalInfo.state_id);
       const response = await AddressController.getDistricts(
-        this.personalInfo.state_id
+        state_id ? state_id : this.personalInfo.state_id ? this.personalInfo.state_id : -1
       );
       this.districts = response.data.data.rows;
 
       //console.log(this.districts);
+      if (state_id || this.personalInfo.state_id) {
       this.fetchCities();
+      }
     },
     async fetchTalukas() {
       const response = await AddressController.getTalukas(
@@ -1789,6 +1845,7 @@ export default {
         employee_type_id: 0,
         start_date: "",
         end_date: "",
+        isCurrentlyWorking: false,
       });
       this.expandedPanelIndex = this.professionalInfos.length - 1;
     },
@@ -1813,7 +1870,7 @@ export default {
       this.time = 119;
       this.resendBool = false;
       const response = await AuthService.generateOTP({
-        mobile: toString(this.personalInfo.phone_no),
+        mobile: this.personalInfo.phone_no,
       });
 
       if (response) {
@@ -1901,9 +1958,7 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      console.log("clicked step 2")
       window.addEventListener("resize", this.onResize);
-      console.log("clicked step 2")
     });
   },
 
@@ -1912,6 +1967,8 @@ export default {
   },
   created() {
     this.getUserInfo();
+    this.getUserProfessionalInfo();
+    this.getUserAcademicInfo();
     this.fetchCountries();
   },
 };

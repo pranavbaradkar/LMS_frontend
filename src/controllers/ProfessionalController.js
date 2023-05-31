@@ -18,4 +18,16 @@ export default {
             return error.response;
         }
     },
+    getUserProfessionalInfo: async function () {
+        try {
+            const response = await instance.get('users/professional-infos' , {
+                headers: {
+                    'Authorization': AuthService.getToken()
+                }
+            })
+            return response;
+        } catch (error) {
+            return error.response;
+        }
+    },
 }

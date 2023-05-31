@@ -24,7 +24,7 @@
         <v-card v-if="!isGenerateOtpClicked" width="426px" height="516px">
           <div class="text-center pt-12 pl-12 pr-12 pb-9">
             <div class="d-flex justify-center align-center">
-              <div class="d-flex justify-center flex-row" style="width: 248px; height: 100% 
+              <div class="d-flex justify-center flex-row" style="width: 270px; height: 100% 
               ;">
                 <div 
                 @click="
@@ -48,7 +48,7 @@
             <v-card-title class="justify-center text-h6 font-weight-bold pt-0 mt-9">
               Login
             </v-card-title>
-            <v-card-text class="text-center text-body-1 font-weight-light pb-9">
+            <v-card-text class="text-center text-body-1 font-weight-light pb-9" style="color: rgba(0, 0, 0, 0.6)">
               <span>Welcome{{ !vibgyouBool ? " Job Seeker!" : " Teachers" }} Please enter
                 your credentials to start the journey</span>
             </v-card-text>
@@ -267,6 +267,7 @@ export default {
             email: this.email + "@vgos.org",
             otp: this.otp,
             debug: false,
+            method: 'email',
           });
           if (res.success) {
             this.$mixpanel.track("VerifyOTP", {
@@ -286,7 +287,9 @@ export default {
             email: this.email,
             otp: this.otp,
             debug: false,
+            method: 'email',
           });
+          console.log(res, "hjdsbdchj")
           if (res.success) {
             this.$mixpanel.track("VerifyOTP", {
               counter_secs_taken: 45,
@@ -313,6 +316,7 @@ export default {
           mobile: this.phoneNumber,
           otp: this.otp,
           debug: false,
+          method: 'phone'
         });
         if (res.success) {
           this.$mixpanel.track("VerifyOTP", {
@@ -422,15 +426,6 @@ export default {
   cursor: pointer;
 }
 
-input[type="text"] {
-  width: 100%;
-  padding: 3px 20px;
-  margin: 12px 0;
-  box-sizing: border-box;
-  -webkit-transition: 0.2s;
-  transition: 0.2s;
-  outline-color: #277BC0;
-}
 
 .v-otp-input > .v-input > .v-input__control > .v-input__slot > .v-text-field__slot > input {
   padding: 0px !important;
