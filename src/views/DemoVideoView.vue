@@ -44,7 +44,7 @@
                     >
                       <p class="mb-0">Topic</p>
                       <p><strong>Demonstrating Newton's Laws of Motion</strong></p>
-                      <hl class="border-hr"></hl>
+                      <hr class="border-hr" />
                       <p>Pointers to Cover</p>
                       <v-stepper v-model="e6" vertical>
                         <v-stepper-step step="">
@@ -100,13 +100,13 @@
                 </button>
               </div>
               <v-btn
-                :disabled="isLoading"
                 variant="tonal"
                 elevation="0"
                 block
                 height="48px"
                 class="w-100 submit-btn white--text confirm"
                 @click="submitLink"
+                :disabled="isLoading || blob==null"
                 >Submit</v-btn
               >
             </v-col>
@@ -143,6 +143,7 @@ export default {
       e6: null,
       blob: null,
       isLoading: false,
+      assessment_id: null
     };
   },
   methods: {
@@ -229,7 +230,7 @@ export default {
         formData.append("image", imageFile);
         formData.append("context", "user-profiles");
         formData.append("business_type", "b2c");
-        formData.append("post_type", "pacd");
+        formData.append("post_type", "demo");
         formData.append("file_type", "videos");
 
         let response = await AssessmentController.uploadS3Video(formData);
@@ -247,7 +248,7 @@ export default {
             response2.data.data
           ) {
             if (response2.data.data.slot && response2.data.data.demo_link) {
-              this.$router.push(`/pre/assessment/mains`);
+              this.$router.push(`/assessment/${this.assessment_id}/mains/demo/thanks`);
             }
           } else {
             alert("Something went wrong please contact admin");
@@ -284,6 +285,7 @@ export default {
     window.removeEventListener("resize", this.onResize);
   },
   created() {
+    this.assessment_id = this.$route.params.id;
     this.getUserInfo();
   },
 };

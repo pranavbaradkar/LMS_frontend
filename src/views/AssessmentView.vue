@@ -1534,7 +1534,8 @@ export default {
         });
         console.log("Screening started");
         const response = await AssessmentController.startScreening(
-          this.assessmentId
+          this.assessmentId,
+          {status: 'STARTED', type: "SCREENING"}
         );
         console.log(response);
       } else {
@@ -1547,7 +1548,8 @@ export default {
         });
         console.log("Mains started");
         const response = await AssessmentController.startMains(
-          this.assessmentId
+          this.assessmentId,
+          {status: 'STARTED', type: "MAINS"}
         );
         console.log(response);
       }
@@ -1579,3 +1581,12 @@ export default {
   },
 };
 </script>
+
+<style>
+#videoElement {
+  transform: rotateY(180deg);
+  -webkit-transform:rotateY(180deg); /* Safari and Chrome */
+  -moz-transform:rotateY(180deg); /* Firefox */
+  /*Mirror code ends*/
+}
+</style>

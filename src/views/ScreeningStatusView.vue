@@ -69,12 +69,12 @@
             <!-- show setup mains button if screen test passed -->
             <v-btn height="48px" color="#277BC0" class="white--text mt-4" elevation="0" large
               v-if="assessmentData.screening_status == 'PASSED' && type == 'screening'"
-              @click="setupMains(assessmentData.id)">
+              @click="setupMains()">
               Setup Mains
             </v-btn>
 
-            <v-btn height="48px" color="primary" class="white--text mt-4" large elevation="0" v-if="assessmentData.mains_status == 'PASSED' && type == 'mains'"
-            @click="startDemoVideo()">
+            <v-btn height="48px" color="primary" class="white--text mt-4" large elevation="0" v-if="assessmentData.mains_status == 'PASSED' && type == 'mains' && !isDemoVideoExist"
+            @click="startDemoVideo(assessmentData.id)">
               Start Demo Video</v-btn>
 
           </div>
@@ -101,6 +101,7 @@ export default {
       assessmentConfigData: {},
       identifyUser: {},
       userInfo: {},
+      isDemoVideoExist: false,
       type: 'screening'
     };
   },
@@ -134,8 +135,8 @@ export default {
         this.$router.replace("/interests");
       }
     },
-    startDemoVideo() {
-      this.$router.push(`/assessment/mains/demo`);
+    startDemoVideo(id) {
+      this.$router.push(`/assessment/${id}/mains/demo`);
     },
     logout() {
       AuthService.logout();
@@ -157,12 +158,17 @@ export default {
         this.assessmentData = response.data.data;
         console.log(this.assessmentData);
       }
+      let setupMains = await AssessmentController.getSetupMainsAssessment();
+      if(setupMains.status == 200 && setupMains.data && setupMains.data.data && setupMains.data.data.demo_link) {
+        this.isDemoVideoExist = true;
+      }
+
     },
     viewResult(assessmentId) {
       this.$router.push(`/assessment/${assessmentId}/${this.$route.params.type}/result`);
     },
-    setupMains(assessmentId) {
-      this.$router.push(`/assessment/${assessmentId}/mains/setup`);
+    setupMains() {
+      this.$router.push(`/assessment/mains/setup`);
     }
   },
   created() {

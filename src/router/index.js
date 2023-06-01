@@ -19,6 +19,7 @@ import ScreeningStatus from '../views/ScreeningStatusView'
 import ResultView from '../views/ResultView'
 import MainScreeningSetupStatus from '../views/MainScreeningSetupStatusView';
 import DemoVideo from '../views/DemoVideoView';
+import SucessSubmitDemoVideo from '../views/SucessSubmitDemoVideoView'
 
 //import store from "../store";
 
@@ -163,9 +164,17 @@ const routes = [
     }
   },
   {
-    path: '/assessment/mains/demo',
+    path: '/assessment/:id/mains/demo',
     name: 'mainsSet',
     component: DemoVideo,
+    meta: {
+      requiresAuth: true,
+    }
+  },
+  {
+    path: '/assessment/:id/mains/demo/:type',
+    name: 'DemoVideoScreeningStatus',
+    component: SucessSubmitDemoVideo,
     meta: {
       requiresAuth: true,
     }
