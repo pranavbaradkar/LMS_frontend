@@ -28,16 +28,16 @@
     <v-container class="white-background pa-0" style="width: 100%">
       <!-- :height="getHeight" -->
       <v-card color="surface" class="mx-auto" elevation="0" width="100%" variant="outlined">
-        <v-card width="82.1%" class="pa-0" style="position: fixed; z-index: 10; top: 62px">
+        <v-card width="77.1%" class="pa-0" style="position: fixed; z-index: 10; top: 62px;border-bottom-left-radius: 0px; border-bottom-right-radius: 0px">
           <v-card-title style="width: 100%">
             <div class="d-flex flex-row justify-space-between" style="width: 100%">
               <div class="d-flex flex-row justify-center">
                 <v-icon class="mr-4" @click="$router.go(-1)">mdi-arrow-left</v-icon>
-                <div v-if="type=='screening'">
+                <div v-if="type =='Screening'">
                   <div style="font-size: 12px;line-height:14px ;">SCREENING RESULT</div>
                   <div>Your Screening Test Report</div>
                 </div>
-                <div v-if="type=='mains'">
+                <div v-if="type =='Mains'">
                   <div style="font-size: 12px;line-height:14px ;">MAINS RESULT</div>
                   <div>Your Mains Test Report</div>
                 </div>
@@ -60,21 +60,21 @@
 
 
               <!-- <div class="text-caption">Recommended</div> -->
-              <v-btn v-if="assessmentData.screening_status == 'PASSED' && type == 'screening'" elevation="0" height="32px" color="#03C988"
+              <v-btn v-if="assessmentData.screening_status == 'PASSED' && type == 'Screening'" elevation="0" height="32px" color="#03C988"
                 class="white--text font-weight-regular text-capitalize mb-3" rounded>Passed Screening Test
               </v-btn>
               <!-- for fail screen test -->
-              <v-btn v-if="assessmentData.screening_status == 'FAILED' && type == 'screening'" elevation="0" height="32px" color="#CA5251"
+              <v-btn v-if="assessmentData.screening_status == 'FAILED' && type == 'Screening'" elevation="0" height="32px" color="#CA5251"
                 class="white--text font-weight-regular text-capitalize mb-3" rounded>Screening Test Failed
               </v-btn>
 
 
               <!-- <div class="text-caption">Recommended</div> -->
-              <v-btn v-if="assessmentData.mains_status == 'PASSED' && type == 'mains'" elevation="0" height="32px" color="#03C988"
+              <v-btn v-if="assessmentData.mains_status == 'PASSED' && type == 'Mains'" elevation="0" height="32px" color="#03C988"
                 class="white--text font-weight-regular text-capitalize mb-3" rounded>Passed Mains Test
               </v-btn>
               <!-- for fail screen test -->
-              <v-btn v-if="assessmentData.mains_status == 'FAILED' && type == 'mains'" elevation="0" height="32px" color="#CA5251"
+              <v-btn v-if="assessmentData.mains_status == 'FAILED' && type == 'Mains'" elevation="0" height="32px" color="#CA5251"
                 class="white--text font-weight-regular text-capitalize mb-3" rounded>Mains Test Failed
               </v-btn>
 
@@ -95,14 +95,13 @@
                   >View Result</v-btn
                 > -->
 
-                <v-btn height="48px" color="primary" class="white--text mt-4" large elevation="0" v-if="assessmentData.screening_status == 'PASSED' && type == 'screening'"
+                <v-btn height="48px" color="primary" class="white--text mt-4" large elevation="0" v-if="assessmentData.screening_status == 'PASSED' && type == 'Screening'"
                 @click="setupMains(assessmentData.id)">Setup
                   Mains</v-btn>
 
-                <v-btn height="48px" color="primary" class="white--text mt-4" large elevation="0" v-if="assessmentData.mains_status == 'PASSED' && type == 'mains'"
+                <v-btn height="48px" color="primary" class="white--text mt-4" large elevation="0" v-if="assessmentData.mains_status == 'PASSED' && type == 'Mains'"
                 @click="startDemoVideo()">
                   Start Demo Video</v-btn>
-
               </div>
             </div>
           </v-card>
@@ -116,7 +115,7 @@
             </Doughnut>
             <div style="top: 50%; left: 50% ;position: absolute; transform: translate(-50%, -50%);"
               class="d-flex justify-center flex-column align-center">
-              <div style="font-size: 32px; line-height: 38px; font-weight: 500;">85%</div>
+              <div style="font-size: 32px; line-height: 38px; font-weight: 500;">{{ getPercentage }} %</div>
               <div style="font-size: 16px; line-height: 19px; font-weight: 500;">Test Result</div>
             </div>
           </v-card>
@@ -133,7 +132,7 @@
           </v-card>
 
           <v-card elevation="0" height="303" width="402" style="border: 1px solid #DADADA" class="pa-4">
-            <Bar :options="chartOptions" :data="chartDataSkills" chart-id="bar-chart" width="100%" height="100%">
+            <Bar v-if="chartDataSkills.datasets[0].data.length != 0" :options="chartOptions" :data="chartDataSkills" chart-id="bar-chart" width="100%" height="100%">
             </Bar>
           </v-card>
         </div>
@@ -149,7 +148,7 @@
                 <div style="font-size: 16px; line-height: 19px; font-weight: 500;" class="ml-2">{{ item }}</div>
               </div>
               <div style="font-size: 32px; line-height: 38px; font-weight: 500;">
-                6/10
+                {{assessmentResult.data[index]}}/100
               </div>
             </div>
           </v-col>
@@ -186,9 +185,10 @@ export default {
     return {
       assessmentId: null,
       assessmentData: {},
+      assessmentResult: {},
       assessmentConfigData: {},
       identifyUser: {},
-      type: 'screening',
+      type: '',
       userInfo: {},
       chartDataPercentage: {
         // labels: ["", ""],
@@ -218,7 +218,7 @@ export default {
         datasets: [
           {
             backgroundColor: ["#277BC0", " #EBEBEB"],
-            data: [45, 15],
+            data: [],
             circumference: 260,
             rotation: 230,
             cutout: "90%",
@@ -226,7 +226,7 @@ export default {
         ],
       },
       chartDataSkills: {
-        labels: ["IQ/EQ", "Pedagogy", "English", "Psychometry", "Subject", "Computer"],
+        labels: [],
         datasets: [
           {
             dotBgColor: [
@@ -237,10 +237,17 @@ export default {
               'rgba(26, 98, 255, 0.1)',
               'rgba(129, 26, 255, 0.1)'],
             backgroundColor: ["#FF281A", " #F5C828", '#10B981', '#1AADFF', '#1A62FF', '#811AFF'],
-            data: [20, 35, 50, 60, 100, 45, 120],
+            data: [],
           },
         ],
       },
+    }
+  },
+  computed: {
+    getPercentage () {
+      const percentage = (this.assessmentResult.dataScore.scored / this.assessmentResult.dataScore.total_score) * 100;
+
+      return percentage.toFixed(1);
     }
   },
   methods: {
@@ -284,6 +291,7 @@ export default {
       this.$mixpanel.reset();
       this.$router.push("/login");
     },
+
     async getAssessmentInfo(assessmentId) {
       let response = await AssessmentController.getSingleAssessment(
         assessmentId
@@ -296,6 +304,24 @@ export default {
         console.log(this.assessmentData);
       }
     },
+
+
+    async getAssesmentResult(assessmentId) {
+      let response = await AssessmentController.getAssesmentResult(
+        assessmentId
+      );
+
+      if (response == 404) {
+        this.assessmentResult = {};
+      } else {
+        this.assessmentResult = response.data.data;
+        this.chartDataSkills.labels = this.assessmentResult.labels;
+        this.chartDataSkills.datasets[0].data = this.assessmentResult.data;
+        this.chartDataScore.datasets[0].data = [this.assessmentResult.dataScore.scored, this.assessmentResult.dataScore.dataScore];
+      }
+    },
+  },
+  mounted() {
   },
   created() {
     // console.log("userInfo");
@@ -303,9 +329,11 @@ export default {
     const assessmentId = this.$route.params.id;
     this.type = this.$route.params.type;
 
+    console.log("type", this.type);
     // console.log("assessment data", assessment)
     this.assessmentId = assessmentId;
     this.getAssessmentInfo(assessmentId);
+    this.getAssesmentResult(assessmentId);
   }
 
 };
