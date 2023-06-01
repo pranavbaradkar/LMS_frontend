@@ -33,11 +33,11 @@
             <div class="d-flex flex-row justify-space-between" style="width: 100%">
               <div class="d-flex flex-row justify-center">
                 <v-icon class="mr-4" @click="$router.go(-1)">mdi-arrow-left</v-icon>
-                <div v-if="type =='Screening'">
+                <div v-if="type =='screening'">
                   <div style="font-size: 12px;line-height:14px ;">SCREENING RESULT</div>
                   <div>Your Screening Test Report</div>
                 </div>
-                <div v-if="type =='Mains'">
+                <div v-if="type =='mains'">
                   <div style="font-size: 12px;line-height:14px ;">MAINS RESULT</div>
                   <div>Your Mains Test Report</div>
                 </div>
@@ -60,21 +60,21 @@
 
 
               <!-- <div class="text-caption">Recommended</div> -->
-              <v-btn v-if="assessmentData.screening_status == 'PASSED' && type == 'Screening'" elevation="0" height="32px" color="#03C988"
+              <v-btn v-if="assessmentData.screening_status == 'PASSED' && type == 'screening'" elevation="0" height="32px" color="#03C988"
                 class="white--text font-weight-regular text-capitalize mb-3" rounded>Passed Screening Test
               </v-btn>
               <!-- for fail screen test -->
-              <v-btn v-if="assessmentData.screening_status == 'FAILED' && type == 'Screening'" elevation="0" height="32px" color="#CA5251"
+              <v-btn v-if="assessmentData.screening_status == 'FAILED' && type == 'screening'" elevation="0" height="32px" color="#CA5251"
                 class="white--text font-weight-regular text-capitalize mb-3" rounded>Screening Test Failed
               </v-btn>
 
 
               <!-- <div class="text-caption">Recommended</div> -->
-              <v-btn v-if="assessmentData.mains_status == 'PASSED' && type == 'Mains'" elevation="0" height="32px" color="#03C988"
+              <v-btn v-if="assessmentData.mains_status == 'PASSED' && type == 'mains'" elevation="0" height="32px" color="#03C988"
                 class="white--text font-weight-regular text-capitalize mb-3" rounded>Passed Mains Test
               </v-btn>
               <!-- for fail screen test -->
-              <v-btn v-if="assessmentData.mains_status == 'FAILED' && type == 'Mains'" elevation="0" height="32px" color="#CA5251"
+              <v-btn v-if="assessmentData.mains_status == 'FAILED' && type == 'mains'" elevation="0" height="32px" color="#CA5251"
                 class="white--text font-weight-regular text-capitalize mb-3" rounded>Mains Test Failed
               </v-btn>
 
@@ -95,11 +95,11 @@
                   >View Result</v-btn
                 > -->
 
-                <v-btn height="48px" color="primary" class="white--text mt-4" large elevation="0" v-if="assessmentData.screening_status == 'PASSED' && type == 'Screening'"
+                <v-btn height="48px" color="primary" class="white--text mt-4" large elevation="0" v-if="assessmentData.status == 'PASSED' && type == 'screening'"
                 @click="setupMains(assessmentData.id)">Setup
                   Mains</v-btn>
 
-                <v-btn height="48px" color="primary" class="white--text mt-4" large elevation="0" v-if="assessmentData.mains_status == 'PASSED' && type == 'mains' && !isDemoVideoExist"
+                <v-btn height="48px" color="primary" class="white--text mt-4" large elevation="0" v-if="assessmentData.status == 'PASSED' && type == 'mains' && !isDemoVideoExist"
                 @click="startDemoVideo(assessmentData.id)">
                   Start Demo Video</v-btn>
               </div>
@@ -107,7 +107,7 @@
           </v-card>
         </v-img>
 
-        <div class="resultParent d-flex flex-row justify-center mt-4 px-8">
+        <div v-if="assessmentResult.percentage" class="resultParent d-flex flex-row justify-center mt-4 px-8">
           <v-card elevation="0" height="303" width="298"
             style="background-color: #F8FAFC; border: 1px solid #DADADA; position: relative;" class="mr-4 pa-8 pt-6">
             <Doughnut :options="chartOptions" :data="chartDataPercentage" chart-id="doughnut-chart" width="100%"
