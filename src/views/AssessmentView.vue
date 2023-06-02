@@ -1340,7 +1340,7 @@
       </v-card>
     </v-dialog>
 
-    <!-- <v-dialog v-model="genericDialog" width="450px" persistent>
+    <v-dialog v-model="genericDialog" width="450px" persistent>
       <v-card>
         <v-container>
           <v-card-text class="text-center">
@@ -1362,7 +1362,7 @@
           </v-card-text>
         </v-container>
       </v-card>
-    </v-dialog> -->
+    </v-dialog>
   </div>
 </template>
 
