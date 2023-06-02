@@ -248,11 +248,14 @@ body .v-application .question-selection-box .bookmark-bg .question-box-font {
 }
 
 .procting {
-  width: 100%;
+  width: auto;
 }
 
 #videoElement {
   width: 100%;
-  margin-top: 15px;
-  margin-bottom: 15px;
+}
+
+.background-home {
+  width: 100%;
+  border-radius: 24px;
 }

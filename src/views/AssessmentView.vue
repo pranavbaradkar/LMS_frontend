@@ -10,11 +10,12 @@
             class="left-container elevation-0 surface"
             :height="getHeight"
           >
-            <v-card-title class="pb-0 question-title"
+            <v-card-title class="pb-0 pt-0 question-title"
               ><span>{{ assessment.name }}</span></v-card-title
             >
 
-            <v-card
+            <div class="px-4 py-1">
+              <v-card
               class="d-flex align-center w-100 pa-0 timer border rounded timer-border"
               elevation="0"
             >
@@ -31,9 +32,10 @@
                 <span class="pe-1 text-h4">{{ secs }}</span
                 ><span class="text-subtitle-1">ss</span>
               </div>
-            </v-card>
+              </v-card>
+            </div>
 
-            <div class="procting">
+            <div class="procting px-4 py-1">
               <video id="videoElement" class="rounded" autoplay></video>
             </div>
             
@@ -880,7 +882,7 @@
         </v-col>
 
         <v-col cols="2" class="p-0 col-22 right-container">
-          <!-- <v-row class="d-flex px-4 py-4"> -->
+         
           <!-- <v-col class="px-0 py-0"> -->
           <v-btn
             variant="tonal"
@@ -896,7 +898,7 @@
           <v-row
             cols="12"
             :border="1"
-            class="align-center text-align-center mt-4 px-3 pb-4"
+            class="align-center text-align-center mt-2 px-3 pb-4"
           >
             <div class="v-tab-icons-wrapper">
               <div class="d-flex justify-space-between">
@@ -921,51 +923,36 @@
                 </div>
               </div>
 
-              <v-tabs-items v-model="tabs">
-                <v-tab-item
-                  v-for="i in 3"
-                  :key="i"
-                  :value="'mobile-tabs-5-' + i"
-                >
-                  <v-card flat style="max-height: 250px; overflow: scroll; margin-top:10px">
-                    <div class="mx-1 pa-2">
-                      <div class="align-start mt-1 mb-3">
-                        <img src="../assets/in-icon.png" />
-                        <p class="mb-2">Header</p>
-                        <p
-                          class="mb-0 font-weight-regular"
-                          style="font-size: 16px;line-height: 19px;"
-                        >
-                          This assessment consists a total 
-                        </p>
-                        <p
-                          class="mb-0 font-weight-regular"
-                          style="font-size: 10px;ine-height: 12px;text-align: right;color: #7B7A7B;"
-                        >
-                          14:20pm
-                        </p>
+              <v-tabs-items class="" :height="getRightHeight"  :style="`max-height: ${getRightHeight};`" >
+                <div v-if="tabs === 'mobile-tabs-5-2'"><Calculator></Calculator></div>
+                <div v-if="tabs === 'mobile-tabs-5-1'">
+                  <div
+                    v-for="itemValue, i in notificationData"
+                    :key="i"
+                  >
+                    <v-card flat style="max-height: 250px; overflow: scroll; margin-top:10px">
+                      <div class="mx-1 pa-2">
+                        <div class="align-start mt-1 mb-3">
+                          <img src="../assets/in-icon.png" />
+                          <p class="mb-2">{{ itemValue.title }}</p>
+                          <p
+                            class="mb-0 font-weight-regular"
+                            style="font-size: 16px;line-height: 19px;"
+                          >
+                            {{ itemValue.body }}
+                          </p>
+                          <p
+                            class="mb-0 font-weight-regular"
+                            style="font-size: 10px;ine-height: 12px;text-align: right;color: #7B7A7B;"
+                          >
+                            14:20pm
+                          </p>
+                        </div>
+                        <v-divider></v-divider>
                       </div>
-                      <v-divider></v-divider>
-                      <div class="align-start mt-1 mb-3">
-                        <img src="../assets/in-icon.png" />
-                        <p class="mb-2">Header</p>
-                        <p
-                          class="mb-0 font-weight-regular"
-                          style="font-size: 16px;line-height: 19px;"
-                        >
-                          This assessment consists a total 
-                        </p>
-                        <p
-                          class="mb-0 font-weight-regular"
-                          style="font-size: 10px;ine-height: 12px;text-align: right;color: #7B7A7B;"
-                        >
-                          14:20pm
-                        </p>
-                      </div>
-                      <v-divider></v-divider>
-                    </div>
-                  </v-card>
-                </v-tab-item>
+                    </v-card>
+                  </div>
+                </div>
               </v-tabs-items>
             </div>
             <!-- Submit Button -->
@@ -1383,14 +1370,19 @@
 import "../styles.css";
 import AssessmentsController from "../controllers/AssessmentsController";
 import AssessmentController from "../controllers/AssessmentController";
+import LogedInUserInfo from "@/controllers/LogedInUserInfo";
 import Vue from "vue";
 import "./style/assessment-view.css";
-
+import Calculator from "@/components/calculator.vue"
 export default {
   name: "AssessmentView",
+  components: {
+    Calculator,
+  },
   data() {
     return {
       assetType: "",
+      userInfo: {},
       testType: "",
       assessmentId: "",
       confirmExitDialog: false,
@@ -1420,6 +1412,7 @@ export default {
       progressList: [],
       option_selected: "",
       response: {},
+      notificationData: [],
       bookmarked: [],
       skipped: [],
       answeredProgress: 0,
@@ -1440,6 +1433,7 @@ export default {
       mediaRecorder: null,
       socket: null,
       chunks: [],
+      tabs:'mobile-tabs-5-1',
       rec_status: "idle",
       tab_status: null,
       violations: 0,
@@ -1457,7 +1451,12 @@ export default {
     getLeftHeight() {
       //console.log("Height =", window.innerHeight);
       //console.log("Width =", window.innerWidth);
-      return this.windowHeight - 170 + "px";
+      return this.windowHeight - 450 + "px";
+    },
+    getRightHeight() {
+      //console.log("Height =", window.innerHeight);
+      //console.log("Width =", window.innerWidth);
+      return this.windowHeight - 200 + "px";
     },
 
     // getQuestionsListHeight() {
@@ -1506,18 +1505,18 @@ export default {
     });
     window.removeEventListener("resize", this.onResize);
     this.stopTimer();
-    this.$mixpanel.track("AssessmentClosed", {
-      assessment_id: this.assessment.id,
-      assessment_name: this.assessment.name,
-      questions_qnswered: this.answeredProgress,
-      questions_bookmarked: this.bookmarked,
-      questions_skipped: this.skipped,
-      total_time_spent_in_sec:
-        this.assessment.tests[0].duration_of_assessment * 60 - this.seconds,
-      screen_name: "AssessmentScreen",
-      assessment_type: this.testType,
-      assessment_level: this.assessment.tests[1].level.name,
-    });
+    // this.$mixpanel.track("AssessmentClosed", {
+    //   assessment_id: this.assessment.id,
+    //   assessment_name: this.assessment.name,
+    //   questions_qnswered: this.answeredProgress,
+    //   questions_bookmarked: this.bookmarked,
+    //   questions_skipped: this.skipped,
+    //   total_time_spent_in_sec:
+    //     this.assessment.tests[0].duration_of_assessment * 60 - this.seconds,
+    //   screen_name: "AssessmentScreen",
+    //   assessment_type: this.testType,
+    //   assessment_level: this.assessment.tests[1].level.name,
+    // });
     await this.setLog();
   },
 
@@ -2112,16 +2111,18 @@ export default {
           Vue.set(response, question.id, question.myAnswer);
         }
       });
-      let assessmentData = this.assessment.tests.find(
-        (ele) => ele.assessment_type == this.testType.toLocaleUpperCase()
-      );
-      await AssessmentController.updateScreeningStatus(
-        this.assessment.id,
-        this.testType.toLocaleLowerCase(),
-        assessmentData.duration_of_assessment - this.seconds,
-        response,
-        this.violations
-      );
+      if(this.assessment && this.assessment.tests.length > 0) {
+        let assessmentData = this.assessment.tests.find(
+          (ele) => ele.assessment_type == this.testType.toLocaleUpperCase()
+        );
+        await AssessmentController.updateScreeningStatus(
+          this.assessment.id,
+          this.testType.toLocaleLowerCase(),
+          assessmentData.duration_of_assessment - this.seconds,
+          response,
+          this.violations
+        );
+      }
     },
     previous() {
       if (this.isTimeUp) {
@@ -2259,6 +2260,7 @@ export default {
         this.errorDialog = true;
         this.errorMessage = response2.data.error;
       }
+      this.onResize();
     },
     handleBeforeUnload(event) {
       event.preventDefault();
@@ -2306,13 +2308,37 @@ export default {
       myaudio && myaudio.pause();
       myVideo && myVideo.pause();
     },
+    async getUserInfo() {
+      const response = await LogedInUserInfo.getUserInfo();
+      this.userInfo = response.data.user;
+      console.log(this.userInfo);
+      this.socketestablish();
+    },
+    socketestablish() {
+      const socket = AssessmentController.socketConnect(this.userInfo.id, this.assessmentId);
+
+      // eslint-disable-next-line
+      socket.on("connect", function () {
+        console.log("connected to webSocket");
+      });
+
+      socket.on("dataEvent", (data) => {
+        console.log("Received data from server:", data);
+        this.notificationData.push(data);
+
+      });
+    }
   },
 
   created() {
     this.assessmentId = this.$route.query.id;
     this.testType = this.$route.query.test;
     // console.log(this.assessmentId);
+
+   
+
     this.getAssessmentInfo();
+    this.getUserInfo();
 
     this.checkUserAgent();
     this.cameraMedia();
@@ -2324,17 +2350,18 @@ export default {
       this.verifyCameraStream();
     }, 10000);
 
+    
+
     // test websocket connection
-    const socket = AssessmentController.socketConnect(123, 2332);
+  
 
-    // eslint-disable-next-line
-    socket.on("connect", function () {
-      console.log("connected to webSocket");
-    });
 
-    socket.on("dataEvent", (data) => {
-      console.log("Received data from server:", data);
-    });
+    setTimeout(() => {
+      this.onResize();
+    }, 1000)
+    
+
+
   },
 };
 </script>
