@@ -718,6 +718,7 @@ import AssessmentsController from "../controllers/AssessmentsController";
 import AssessmentController from "../controllers/AssessmentController";
 import Vue from "vue";
 import "./style/assessment-view.css";
+
 export default {
   name: "AssessmentView",
   data() {
@@ -1577,6 +1578,20 @@ export default {
     setInterval(()=>{
       this.verifyCameraStream();
     }, 10000);
+
+
+    // test websocket connection
+    const socket = AssessmentController.socketConnect(123, 2332);
+
+    // eslint-disable-next-line
+    socket.on('connect', function () {
+      console.log('connected to webSocket');
+    });
+
+    socket.on('dataEvent', (data) => {
+      console.log('Received data from server:', data);
+    });
+
 
   },
 };

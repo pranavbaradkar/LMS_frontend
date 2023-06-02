@@ -641,8 +641,8 @@ export default {
         path: "/assessment",
         query: { id: this.selectedAssessment.id, test: this.testType },
       });
-      // let url = `/#/assessment?id=${this.selectedAssessment.id}&test=${this.testType}`;
-      // this.Full_W_P(url);
+      //let url = `/#/assessment?id=${this.selectedAssessment.id}&test=${this.testType}`;
+      //this.Full_W_P(url);
     },
     Full_W_P(url) {
       let params  = 'width='+screen.width;

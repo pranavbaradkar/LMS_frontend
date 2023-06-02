@@ -1,10 +1,15 @@
 import axios from 'axios'
+import SocketIO from 'socket.io-client';
 import AuthService from '@/services/AuthService';
 const instance = axios.create({
     baseURL: process.env.VUE_APP_API_URL
 });
 
 export default {
+    socketConnect: function(userId, assessment_id) {
+        console.log(userId, assessment_id)
+        return SocketIO.connect(`${process.env.VUE_APP_SOCKET_URL}?user_id=${userId}&assessment_id=${assessment_id}`);
+    },
     startScreening: async function (id, payload) {
         try {
             const response = await instance.post('users/assessments/status',{ ...{ "assessment_id": id }, ...payload} , {
