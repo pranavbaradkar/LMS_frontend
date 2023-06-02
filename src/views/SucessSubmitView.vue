@@ -209,6 +209,8 @@
             >
               <div class="d-flex flex-row align-center">
                 <v-checkbox
+                  @click="whatsappSelected"
+                  v-model="notificationWhatsapp"
                 ></v-checkbox>
                 <v-img
                   max-height="24"
@@ -240,84 +242,6 @@
         </div>
       </v-card>
     </v-dialog>
-    <!-- <div class="d-flex m-body m-center">
-      <v-card
-        width="55rem"
-        height="auto"
-        class="d-flex flex-column align-center justify-center pa-8 rounded-xl"
-        elevation="0"
-      >
-        <img src="../assets/bgicon.svg" width="200px" height="auto" />
-        <v-card-title> Thank you for attempting this assessment</v-card-title>
-        <v-card-subtitle class="ma-0 pa-0">
-          <div>Hold your breath, your school HR will announce</div>
-        </v-card-subtitle>
-        <v-card-subtitle class="ma-0 pa-0">
-          <div>the results once they are published.</div>
-        </v-card-subtitle>
-
-        <div class="d-flex justify-center w-100 ma-6">
-          <v-card elevation="0">
-            <v-card-text class="pl-2 pb-2"
-              >Get notified for test results on</v-card-text
-            >
-            <div class="d-flex justify-center">
-              <v-card
-                width="245"
-                height="54"
-                class="d-flex flex-row m-center m-btn ma-2"
-                elevation="0"
-                depressed
-                ><v-checkbox
-                  @click="emailSelected"
-                  v-model="notificationEmail"
-                ></v-checkbox
-                ><img
-                  class="mr-2"
-                  src="../assets/Gmail.svg"
-                  width="25px"
-                  height="auto"
-                />
-                <div class="d-flex flex-column">
-                  <div class="c-b-t">Email</div>
-                  <div class="c-b-t-m">{{ $store.state.userInfo.email }}</div>
-                </div>
-              </v-card>
-
-              <v-card
-                width="245"
-                height="54"
-                class="d-flex flex-row m-center m-btn ma-2"
-                elevation="0"
-                depressed
-                ><v-checkbox
-                  @click="messageSelected"
-                  v-model="notificationSMS"
-                ></v-checkbox
-                ><v-icon class="mr-2" size="25"
-                  >mdi-message-reply-outline</v-icon
-                >
-                <div class="d-flex flex-column">
-                  <div class="c-b-t">SMS</div>
-                  <div class="c-b-t-m">
-                    {{ $store.state.userInfo.phone_no }}
-                  </div>
-                </div>
-              </v-card>
-            </div>
-          </v-card>
-        </div>
-        <v-btn
-          color="secondary"
-          class="black--text"
-          rounded
-          large
-          depressed
-          @click="confirm"
-          >confirm</v-btn
-        >
-      </v-card>
-    </div> -->
   </div>
 </template>
     
@@ -326,14 +250,16 @@ import "../styles.css";
 import AssessmentController from "../controllers/AssessmentController";
 import AuthService from "../services/AuthService";
 import LogedInUserInfo from "@/controllers/LogedInUserInfo";
+import NotificationController from "@/controllers/NotificationController"
 export default {
   name: "HomeView",
   data() {
     return {
       notificationSMS: false,
       notificationEmail: false,
+      notificationWhatsapp: false,
       assessmentId: null,
-      dialog: true,
+      dialog: false,
       recommendedAssessment: {},
       assessmentConfigData: {}
     };
@@ -348,16 +274,50 @@ export default {
     window.removeEventListener("resize", this.onResize);
   },
   methods: {
-    confirm() {
+    async confirm() {
+      const data = [];
+      if (this.notificationEmail) {
+        data.push({
+           context:"assessments",
+           channel: "email",
+           identifier: this.$store.state.userInfo.email,
+        })
+      }
+      if (this.notificationSMS) {
+        data.push({
+           context:"assessments",
+           channel: "mobile",
+           identifier: this.$store.state.userInfo.phone_no,
+        })
+      }
+      if (this.notificationWhatsapp) {
+        data.push({
+           context:"assessments",
+           channel: "whatsapp",
+           identifier: this.$store.state.userInfo.phone_no,
+        })
+      }
+      const response = await NotificationController.saveNotificationEndPoint(data);
+
+      if (response.data.success) {
+        this.dialog = false;
+      }
+      else {
+        alert(response.data.error)
+      }
+
       this.$mixpanel.track("SubmissionSucceeded", {
         notification_sms: this.notificationSMS,
+        screen_name: "ThankyouScreen",
+      });
+      this.$mixpanel.track("SubmissionSucceeded", {
+        notification_sms: this.notificationWhatsapp,
         screen_name: "ThankyouScreen",
       });
       this.$mixpanel.track("SubmissionSucceeded", {
         notification_email: this.notificationEmail,
         screen_name: "ThankyouScreen",
       });
-      this.dialog = false;
       // this.$router.push({
       //   path: "/report",
       //   query: { id: this.assessmentId },
@@ -383,6 +343,12 @@ export default {
         phone_number: this.$store.state.userInfo.phone_no,
       });
     },
+    whatsappSelected () {
+      this.$mixpanel.track("NotificationOptionsSelected", {
+        method: "Whatsapp",
+        phone_number: this.$store.state.userInfo.phone_no,
+      });
+    },
     emailSelected() {
       this.$mixpanel.track("NotificationOptionsSelected", {
         method: "Email",
@@ -404,6 +370,13 @@ export default {
         console.log(this.recommendedAssessment);
       }
     },
+
+    async getNotificationInfo () {
+      const response = await NotificationController.getNotificationEndPoint();
+      if (response.data.data.length == 0) {
+        this.dialog = true;
+      } 
+    }
   },
   created() {
     // console.log("userInfo");
@@ -413,6 +386,7 @@ export default {
     // console.log("assessment data", assessment)
     this.assessmentId = assessmentId;
     this.getAssessmentInfo(assessmentId);
+    this.getNotificationInfo();
     // console.log('assessment id',this.assessmentId)
     this.$mixpanel.track("SubmissionSucceeded", {
       assessment_id: assessmentId,
