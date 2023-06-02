@@ -12,6 +12,7 @@
     "chart.js": "^4.3.0",
     "core-js": "^3.8.3",
     "firebase": "^9.18.0",
+    "gmap-vue": "^3.5.4",
     "jwt-decode": "^3.1.2",
     "mixpanel-browser": "^2.46.0",
     "moment": "^2.29.4",

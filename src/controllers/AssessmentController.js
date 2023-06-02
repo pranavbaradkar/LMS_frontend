@@ -128,5 +128,18 @@ export default {
         }
     },
 
+    getSlots: async function () {
+        try {
+            const response = await instance.get(`users/mains/slots`, {
+                headers: {
+                    'Authorization': AuthService.getToken()
+                }
+            })
+            return response;
+        } catch (error) {
+            return error.response;
+        }
+    },
+
 
 }

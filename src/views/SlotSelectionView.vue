@@ -59,11 +59,11 @@
                   v-for="(day, index) in dateRange"
                   :key="index"
                   >
-                    <div class="h6 pb-3">{{ day }}</div>
+                    <div class="h6 pb-3">{{ day.day }}</div>
                     <div class="d-flex flex-wrap" 
                   >
                       <v-card
-                          v-for="(time, slotIndex) in slotTiming"
+                          v-for="(time, slotIndex) in day.timeing"
                         :key="`${slotIndex}-time`"
                         class="d-flex align-center flex-column rounded-md justify-center border-with-margin"
                         :class="(slotIndex == timeSlotIndex && dateRangeIndex == index) ? 'active-item' : ''"
@@ -131,17 +131,19 @@ export default {
       this.timeSlotIndex = slotIndex;
       this.dateRangeIndex = index;
     },
-    generateSlot() {
-      let totalDay = 7; 
-      for(var i = 1; i <= totalDay; i++) {
-        let date = moment().day(i).format("Do MMM, YY");
-        this.dateRange.push(date);
+    async generateSlot() {
+      const response = await AssessmentController.getSlots();
+      if (response.data.success) {
+        this.dateRange = response.data.data;
+      }
+      else {
+        alert(response.data.error)
       }
     },
     async confirmSlot() {
       this.isLoading = true;
-      if(this.dateRange[this.dateRangeIndex] && this.slotTiming[this.timeSlotIndex]) {
-        let date = this.dateRange[this.dateRangeIndex]+" "+this.slotTiming[this.timeSlotIndex];
+      if(this.dateRange[this.dateRangeIndex].day && this.dateRange[this.dateRangeIndex].timeing[this.timeSlotIndex]) {
+        let date = this.dateRange[this.dateRangeIndex].day+" "+this.dateRange[this.dateRangeIndex].timeing[this.timeSlotIndex];
         let datefinal = moment(date, "Do MMM, YY hh:mm a").format("YYYY-MM-DD hh:mm:ss");
         console.log(datefinal);
         

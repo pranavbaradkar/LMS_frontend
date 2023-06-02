@@ -174,13 +174,13 @@
           <div>
             <p>Main Instructions</p>
             <div class="d-flex">
-              <v-img
-                max-width="162px"
-                max-height="137px"
-                src="../assets/holebanner.jpeg"
-                cover
-                class="rounded-lg me-5"
-              ></v-img>
+              <GmapMap
+  :center="{lat:10, lng:10}"
+  :zoom="7"
+  map-type-id="terrain"
+  style="width: 500px; height: 300px"
+>
+</GmapMap>
               <div class="pb-3">
                 <v-list-item-title
                   class="subtitle-2 mb-1"
@@ -229,6 +229,8 @@ import AssessmentController from "../controllers/AssessmentController";
 import navBar from '@/components/navBar.vue';
 import moment from 'moment';
 import RecommendedAssessmentController from "@/controllers/RecommendedAssessmentController";
+// import { helpers } from 'gmap-vue';
+// const { googleMapsApiInitializer } = helpers;
 
 export default {
   components: { navBar },
@@ -255,7 +257,9 @@ export default {
     };
   },
   mounted() {
-   
+    // googleMapsApiInitializer({
+    //   key: 'AIzaSyB6VKjg8YZbX4kymR-bgUMEgQQKzG4iRJ8',
+    // }, false);
   },
 
   beforeDestroy() {
@@ -332,15 +336,23 @@ export default {
     },
     async getRecommendedAssessment() {
       const response =
-        await RecommendedAssessmentController.getRecommendedAssessment("");
+        await RecommendedAssessmentController.getRecommendedAssessment("",{type: 'MAINS'});
         if (response.status == 404) {
           const response2 =
             await RecommendedAssessmentController.getRecommendedAssessment(
-              "?debug=203"
+              "?debug=203", {type: "MAINS"}
             );
           this.recommendedAssessment = response2.data ? response2.data.data : null;
+          this.assessmentConfigData = this.recommendedAssessment.tests.find(
+          (ele) => ele.assessment_type == "MAINS"
+        );
+        this.noOfQuestions = this.assessmentConfigData.total_no_of_questions;
         } else {
           this.recommendedAssessment = response.data ? response.data.data : null;
+          this.assessmentConfigData = this.recommendedAssessment.tests.find(
+          (ele) => ele.assessment_type == "MAINS"
+        );
+        this.noOfQuestions = this.assessmentConfigData.total_no_of_questions;
         }
 
         if ( this.recommendedAssessment && this.recommendedAssessment.type === 'mains' && (this.recommendedAssessment.status == "FAILED" ||
