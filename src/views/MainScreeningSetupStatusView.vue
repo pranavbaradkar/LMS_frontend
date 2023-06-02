@@ -62,12 +62,12 @@
             <!-- show setup mains button if screen test passed -->
             <v-btn
               height="48px"
-              :color="`${this.isExistPadv ? '#DADADA' : '#277BC0' }`"
-              :class="`${this.isExistPadv ? 'gray--text' : 'white--text' }`"
+              :color="`${this.isExistPadv || !this.isPadvStart ? '#DADADA' : '#277BC0' }`"
+              :class="`${this.isExistPadv || !this.isPadvStart ? 'gray--text' : 'white--text' }`"
               class="mt-4 me-2"
               elevation="0"
               large
-              :disabled="this.isExistPadv"
+              :disabled="this.isExistPadv || !this.isPadvStart"
               @click="redirect"
             >
               Start PADV
@@ -243,6 +243,7 @@ export default {
       assessmentConfigData: {},
       selectedItem: 1,
       isExistPadv: false,
+      isPadvStart: false,
       items: [
         { text: "Mode", value: "At School" },
         { text: "Date", value: "18/05/2023" },
@@ -250,6 +251,7 @@ export default {
         { text: "Room No.", value: "204" },
         { text: "Computer No.", value: "20" },
       ],
+      startTime: '',
     };
   },
   mounted() {
@@ -279,6 +281,19 @@ export default {
         this.$router.push(`/assessment/mains/padv`);
       }
     },
+    startPADV () {
+      const refreshIntervalId = setInterval(() => {
+        const currentTime = new Date().toLocaleString();
+        const startDate = new Date(new Date(this.startTime) - 15 * 60000).toLocaleString();
+
+        if (startDate < currentTime) {
+          console.log(currentTime, startDate);
+          this.isPadvStart = true;
+          clearInterval(refreshIntervalId);
+        }
+        
+      }, 1000);
+    },
     async getAssessmentInfo(assessmentId) {
       let response = await AssessmentController.getSingleAssessment(
         assessmentId
@@ -303,11 +318,12 @@ export default {
           let timeIndex = this.items.findIndex(ele => ele.text == 'Time');
 
           let date = moment(response.data.data.slot).format("DD/MM/YYYY");
-          let time = moment(response.data.data.slot).format("hh:mm A");
-          let time2Hours =  moment(response.data.data.slot).add(2, 'hours').format("hh:mm A");
-          this.items[timeIndex].value = date;
-          this.items[dateIndex].value = `${time} - ${time2Hours}`;
-          console.log(this.items);
+          let time = moment.utc(response.data.data.slot).format("hh:mm A");
+          let time2Hours =  moment.utc(response.data.data.slot).add(2, 'hours').format("hh:mm A");
+          this.items[timeIndex].value = `${time} - ${time2Hours}`;
+          this.items[dateIndex].value = date;
+          this.startTime = response.data.data.slot;
+          this.startPADV();
         } else {
           //console.log(response.data.data, response.data.data && response.data.data.slot && response.data.data.video_link)
           this.$router.push(`/assessment/mains/setup`);
@@ -327,8 +343,8 @@ export default {
           this.recommendedAssessment = response.data ? response.data.data : null;
         }
 
-        if ( this.recommendedAssessment && (this.recommendedAssessment.mains_status == "FAILED" ||
-          this.recommendedAssessment.mains_status == "PASSED")) {
+        if ( this.recommendedAssessment && this.recommendedAssessment.type === 'mains' && (this.recommendedAssessment.status == "FAILED" ||
+          this.recommendedAssessment.status == "PASSED")) {
           this.$router.push({
               path: `/assessment/${this.recommendedAssessment.id}/mains/status`,
               query: {},

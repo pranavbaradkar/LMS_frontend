@@ -114,4 +114,19 @@ export default {
             return error.response;
         }
     },
+
+    getAssesmentResult: async function (id) {
+        try {
+            const response = await instance.get(`/assessments/${id}/result/analytics`, {
+                headers: {
+                    'Authorization': AuthService.getToken()
+                }
+            })
+            return response;
+        } catch (error) {
+            return error.response;
+        }
+    },
+
+
 }
