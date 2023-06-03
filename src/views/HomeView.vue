@@ -259,10 +259,9 @@
 
         <v-img
           width="100%"
-          height="327px"
           src="../assets/home_banner.svg"
           cover
-          class="mt-4"
+          class="mt-4 background-home"
         >
           <v-card
             class="pa-10 d-flex align-center"

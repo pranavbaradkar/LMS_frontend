@@ -59,7 +59,7 @@ export default {
       console.log("validate response",response);
       if (response.data.success) {
         const token = response.data.token
-        localStorage.setItem('USER_DATA', response.data)
+        localStorage.setItem('USER_DATA', JSON.stringify(response.data))
         localStorage.setItem(TOKEN_KEY, token)
         
         return response.data;

@@ -124,8 +124,11 @@ export default {
       this.secs = this.pad(remainingSeconds);
     },
     requestVideo() {
-      navigator.mediaDevices.getUserMedia({
-          video: true,
+      navigator.mediaDevices.getUserMedia({ 
+          video: {
+            frameRate: { ideal: 30, max: 60 },
+            facingMode: "user" 
+          },
           audio: true
         })
         .then(stm => {
