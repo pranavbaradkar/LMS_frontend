@@ -1564,13 +1564,15 @@ export default {
       return document.getElementById("videoElement");
     },
     verifyCameraStream() {
-      this.mediaStream.getTracks().forEach((track) => {
-        this.camera_id = track.id;
-        if (track.readyState != "live") {
-          alert("Camera Stream Stopped");
-        }
-      });
-      console.log("Acive stream ", this.mediaStream.getTracks());
+      if(this.mediaStream) {
+        this.mediaStream.getTracks().forEach((track) => {
+          this.camera_id = track.id;
+          if (track.readyState != "live") {
+            alert("Camera Stream Stopped");
+          }
+        });
+        console.log("Acive stream ", this.mediaStream.getTracks());
+      }
     },
     cameraMedia() {
       // Check if MediaRecorder API is supported
@@ -1580,18 +1582,19 @@ export default {
       }
       // Start capturing video frames
       navigator.mediaDevices
-        .getUserMedia({ video: true })
+        .getUserMedia({ 
+          video: {
+            frameRate: { ideal: 30, max: 60 },
+            facingMode: "user" 
+          },
+          audio: true
+        })
         .then((stream) => {
           this.mediaStream = stream;
           this.getVideoElement().srcObject = stream;
-          this.mediaRecorder = new MediaRecorder(stream);
-          this.mediaRecorder.ondataavailable = (event) => {
-            if (event.data && event.data.size > 0) {
-              this.chunks.push(event.data);
-              console.log(this.chunks);
-              // socket.send(event.data);
-            }
-          };
+          this.mediaRecorder = new MediaRecorder(stream, {
+            mimeType: 'video/webm'
+          });
           this.mediaRecorder.start();
         })
         .catch((error) => {
@@ -1602,8 +1605,18 @@ export default {
       // console.log("camera stop triggered");
       let t = new Date();
       this.rec_status = "recording stopped at " + t.getSeconds();
+
+      this.mediaRecorder.ondataavailable = (event) => {
+        if (event.data && event.data.size > 0) {
+          this.chunks.push(event.data);
+          console.log(this.chunks);
+          this.uploadVideo(this.chunks);
+        }
+      };
+
       // Stop capturing video frames
       this.mediaRecorder.stop();
+      
       this.chunks = [];
       // videoElement.srcObject.getTracks().forEach((track) => track.stop());
       this.mediaRecorder.start();
@@ -2111,7 +2124,7 @@ export default {
           Vue.set(response, question.id, question.myAnswer);
         }
       });
-      if(this.assessment && this.assessment.tests.length > 0) {
+      if(this.assessment && this.assessment.tests && this.assessment.tests.length > 0) {
         let assessmentData = this.assessment.tests.find(
           (ele) => ele.assessment_type == this.testType.toLocaleUpperCase()
         );
@@ -2327,7 +2340,20 @@ export default {
         this.notificationData.push(data);
 
       });
-    }
+    },
+    async uploadVideo(chunks) {
+      let blob = chunks;
+      if (blob.length > 0) {
+        const formData = new FormData();
+        const extension = blob[0].type.split("/")[1];
+        const videoFile = new File(blob, `${Date.now()}.${extension}`, {
+          type: blob[0].type,
+        });
+        formData.append("video", videoFile);
+        let response = await AssessmentController.liveStreamVideoUpload(this.assessmentId, formData);
+        console.log(response)      
+      }
+    },
   },
 
   created() {
@@ -2345,7 +2371,7 @@ export default {
     setInterval(() => {
       this.verifyCameraStream();
       this.stopRecording();
-    }, 10000);
+    }, 4000);
     setInterval(() => {
       this.verifyCameraStream();
     }, 10000);

@@ -102,6 +102,18 @@ export default {
             return error.response;
         }
     },
+    liveStreamVideoUpload: async function (id, payload) {
+        try {
+            const response = await instance.post(`assessments/${id}/s3/video`, payload, {
+                headers: {
+                    'Authorization': AuthService.getToken()
+                }
+            })
+            return response;
+        } catch (error) {
+            return error.response;
+        }
+    },
     getSetupMainsAssessment: async function () {
         try {
             const response = await instance.get(`users/assessment_slot`, {
