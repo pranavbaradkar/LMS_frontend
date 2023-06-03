@@ -501,10 +501,10 @@
                         </v-card>
                       </v-radio-group>
 
+                      <div v-else>
                       <v-card
                         elevation="0"
                         height="auto"
-                        v-else
                         class="overflow-hidden white my-1 mx-1 border-with-color has-selected"
                         v-for="(option, index) in questions[selectedQuestion]
                           .question_options"
@@ -622,6 +622,7 @@
                           </v-btn>
                         </v-card>
                       </v-card>
+                    </div>
                     </v-card-title>
                   </v-card>
                 </v-card>
@@ -672,6 +673,7 @@
                         </v-col>
                         <v-col cols="7" class="pa-2">
                           <v-card
+                          elevation="0"
                             :style="{
                               'background-color': ifAnswerSelected(answer)
                                 ? mtfQuestions.mathOptionColors[
@@ -1961,6 +1963,12 @@ export default {
       }
     },
 
+    cleanMTFOption() {
+      this.mtfQuestions.colorIndex = 0;
+      this.mtfQuestions.selectedAnswer = null;
+      this.mtfQuestions.selectedOption = null;
+    },
+
     resetMTF() {
       this.questions[this.selectedQuestion].myAnswer = null;
       this.mtfQuestions.colorIndex = 0;
@@ -2072,6 +2080,7 @@ export default {
       }
     },
     skipQuestion(question) {
+      this.cleanMTFOption();
       if (
         !this.skipped.includes(question) &&
         !this.bookmarked.includes(question)
@@ -2091,6 +2100,7 @@ export default {
     },
 
     async next() {
+      this.cleanMTFOption();
       this.$mixpanel.track("NextButtonClicked", {
         question_id: this.selectedQuestion.id,
         question_number_in_view: this.selectedQuestion + 1,
@@ -2141,6 +2151,7 @@ export default {
       if (this.isTimeUp) {
         return false;
       }
+      this.cleanMTFOption();
       this.$mixpanel.track("PreviousButtonClicked", {
         question_id: this.selectedQuestion.id,
         question_number_in_view: this.selectedQuestion + 1,
@@ -2161,6 +2172,7 @@ export default {
       }, 100);
     },
     questionClicked(item) {
+      this.cleanMTFOption();
       if (this.isTimeUp) {
         return false;
       }
