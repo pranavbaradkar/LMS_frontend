@@ -230,7 +230,7 @@ export default {
         formData.append("image", imageFile);
         formData.append("context", "user-profiles");
         formData.append("business_type", "b2c");
-        formData.append("post_type", "demo");
+        formData.append("post_type", "demo_video");
         formData.append("file_type", "videos");
 
         let response = await AssessmentController.uploadS3Video(formData);
