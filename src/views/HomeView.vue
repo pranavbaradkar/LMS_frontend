@@ -682,9 +682,13 @@ export default {
         this.testType = "Mains";
         this.e1 = 2;
       } else {
+        // this.$router.push({
+        //   path: "/report",
+        //   query: { id: this.selectedAssessment.id },
+        // });
         this.$router.push({
-          path: "/report",
-          query: { id: this.selectedAssessment.id },
+          path: `/assessment/${this.selectedAssessment.id}/screening/status`,
+          query: {},
         });
       }
       this.duration = selectedTest.duration_of_assessment;

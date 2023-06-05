@@ -925,11 +925,11 @@
                 </div>
               </div>
 
-              <v-tabs-items class="" :height="getRightHeight"  :style="`max-height: ${getRightHeight};`" >
+              <v-tabs-items class="" :height="getRightHeight"  :style="`max-height: ${getRightHeight};overflow:scroll`" >
                 <div v-if="tabs === 'mobile-tabs-5-2'"><Calculator></Calculator></div>
                 <div v-if="tabs === 'mobile-tabs-5-1'">
                   <div
-                    v-for="itemValue, i in notificationData"
+                    v-for="itemValue, i in reverseNotificationItems"
                     :key="i"
                   >
                     <v-card flat style="max-height: 250px; overflow: scroll; margin-top:10px">
@@ -947,7 +947,7 @@
                             class="mb-0 font-weight-regular"
                             style="font-size: 10px;ine-height: 12px;text-align: right;color: #7B7A7B;"
                           >
-                            14:20pm
+                            14:20 pm
                           </p>
                         </div>
                         <v-divider></v-divider>
@@ -1455,6 +1455,9 @@ export default {
       //console.log("Width =", window.innerWidth);
       return this.windowHeight - 450 + "px";
     },
+    reverseNotificationItems() {
+        return this.notificationData.slice().reverse();
+    }, 
     getRightHeight() {
       //console.log("Height =", window.innerHeight);
       //console.log("Width =", window.innerWidth);
@@ -2383,7 +2386,7 @@ export default {
     setInterval(() => {
       this.verifyCameraStream();
       this.stopRecording();
-    }, 4000);
+    }, 3000);
     setInterval(() => {
       this.verifyCameraStream();
     }, 10000);
