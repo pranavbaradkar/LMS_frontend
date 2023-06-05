@@ -307,7 +307,7 @@
                 color="#277BC0"
                 class="white--text mt-4"
                 large
-                @click="recommendedTestViewEvent"
+                @click="dialog = true"
                 >START TEST</v-btn
               >
             </div>
@@ -625,6 +625,7 @@ export default {
 
     startTest() {
       this.dialog = false;
+      console.log('selected',this.selectedAssessment);
       this.$mixpanel.track("StartTestClicked", {
         assessment_id: this.selectedAssessment.id,
         assessment_name: this.selectedAssessment.name,
@@ -636,12 +637,12 @@ export default {
       });
 
       console.log('selected',this.selectedAssessment);
-      // this.$router.push({
-      //   path: "/assessment",
-      //   query: { id: this.selectedAssessment.id, test: this.testType },
-      // });
-      let url = `/#/assessment?id=${this.selectedAssessment.id}&test=${this.testType}`;
-      this.Full_W_P(url);
+      this.$router.push({
+        path: "/assessment",
+        query: { id: this.selectedAssessment.id, test: this.testType },
+      });
+      // let url = `/#/assessment?id=${this.selectedAssessment.id}&test=${this.testType}`;
+      // this.Full_W_P(url);
     },
     Full_W_P(url) {
       let params  = 'width='+screen.width;
@@ -664,9 +665,8 @@ export default {
     },
     recommendedTestViewEvent() {
       this.selectedAssessment = this.recommendedAssessment;
+      console.log(this.selectedAssessment);
       let selectedTest = this.selectedAssessment.tests.filter(ele => ele.assessment_type == 'SCREENING');
-
-
       if (
         this.selectedAssessment.screening_status == "PENDING" ||
         this.selectedAssessment.screening_status == "STARTED"
@@ -693,21 +693,6 @@ export default {
       }
       this.duration = selectedTest.duration_of_assessment;
       this.noOfQuestions = selectedTest.total_no_of_questions;
-      this.dialog = true;
-      this.$mixpanel.track("RecommendedViewTestClicked", {
-        assessment_id: this.recommendedAssessment.id,
-        assessment_name: this.recommendedAssessment.name,
-        screen_name: "RecommendedTestScreen",
-        assessment_level:
-          this.recommendedAssessment.tests[this.e1 - 1].level.name,
-      });
-      this.$mixpanel.track("InstructionsModalLoaded", {
-        assessment_id: this.recommendedAssessment.id,
-        assessment_name: this.recommendedAssessment.name,
-        screen_name: "AssessmentInstructionsScreen",
-        assessment_level:
-          this.recommendedAssessment.tests[this.e1 - 1].level.name,
-      });
     },
     async otherTestViewEvent(id) {
       const response = await AssessmentController.getSingleAssessment(id);
@@ -920,7 +905,19 @@ export default {
               query: {},
             });
           }
-      } 
+      }
+      
+      else {
+        this.$router.replace({
+          path: "/success",
+          query: {
+            assessmentId: this.recommendedAssessment.id,
+            assessmentName: this.recommendedAssessment.name,
+          },
+        })
+      }
+
+      this.selectedAssessment = this.recommendedAssessment;
 
       // else if (
       //   this.recommendedAssessment && this.recommendedAssessment.screening_status != "PENDING" &&
@@ -944,7 +941,7 @@ export default {
     this.getSchool();
     this.getUserInterests();
     this.getUserInterestEdit();
-    //this.getRecommendedAssessment();
+    // this.getRecommendedAssessment();
   },
 };
 </script>
