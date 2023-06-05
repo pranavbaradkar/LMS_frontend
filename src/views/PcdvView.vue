@@ -194,11 +194,7 @@ export default {
           });
           
           if(response2.status == 200 && response2.data && response2.data.data)  {
-              if(response2.data.data.slot && response2.data.data.padv_video_link) {
-                this.$router.push(`/pre/assessment/mains`);
-              } else {
-                this.$router.push(`/assessment/mains/setup`);
-              }
+            this.authorizeUser(response2.data.data);
           } else {
             alert("Something went wrong please contact admin");
             this.isLoading = false;
@@ -212,7 +208,18 @@ export default {
           this.error = true
         }
       }
+    },
+    async authorizeUser(payloadData) {
+      let payload = {
+        userid: payloadData.user_id,
+        "s3key_padc" : payloadData.video_link.substr(payloadData.video_link.indexOf('/', 8) + 1),
+        "s3key_padv" : payloadData.padv_video_link.substr(payloadData.padv_video_link.indexOf('/', 8) + 1),
+      }
+      let response = await AssessmentController.authorizeUser(payload);
+      console.log(response);
+      this.$router.push(`/pre/assessment/mains`);
     }
+
 
   },
   computed: {

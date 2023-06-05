@@ -90,6 +90,18 @@ export default {
             return error.response;
         }
     },
+    authorizeUser: async function (payload) {
+        try {
+            const response = await instance.post(`user/authorize`, payload, {
+                headers: {
+                    'Authorization': AuthService.getToken()
+                }
+            })
+            return response;
+        } catch (error) {
+            return error.response;
+        }
+    },
     uploadS3Video: async function (payload) {
         try {
             const response = await instance.post(`users/s3/video`, payload, {

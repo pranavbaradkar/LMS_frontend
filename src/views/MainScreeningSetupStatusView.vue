@@ -70,7 +70,8 @@
               :disabled="this.isExistPadv || !this.isPadvStart"
               @click="redirect"
             >
-              Start PADV
+              Start PADV 
+              <v-icon small class="mx-2" :color="`${isVerify ? 'green' :'red'}`" >{{isVerify ? 'mdi-account-check' : 'mdi-account-remove'}}</v-icon>
             </v-btn>
             <v-btn
               height="48px"
@@ -246,6 +247,7 @@ export default {
       selectedItem: 1,
       isExistPadv: false,
       isPadvStart: false,
+      isVerify: false,
       items: [
         { text: "Mode", value: "At School" },
         { text: "Date", value: "18/05/2023" },
@@ -286,6 +288,7 @@ export default {
       }
     },
     startPADV () {
+      this.isPadvStart = true;
       const refreshIntervalId = setInterval(() => {
         const currentTime = new Date().toLocaleString();
         const startDate = new Date(new Date(this.startTime) - 15 * 60000).toLocaleString();
@@ -315,7 +318,7 @@ export default {
       if(response.status == 200) {
         this.isExistPadv = false;
         if(response.data.data && response.data.data.slot && response.data.data.padv_video_link) {
-          this.isExistPadv = true;
+          // this.isExistPadv = true;
         }
         if(response.data.data && response.data.data.slot && response.data.data.video_link) {
           let dateIndex = this.items.findIndex(ele => ele.text == 'Date');
@@ -327,6 +330,7 @@ export default {
           this.items[timeIndex].value = `${time} - ${time2Hours}`;
           this.items[dateIndex].value = date;
           this.startTime = response.data.data.slot;
+          this.isVerify = response.data.data.is_authorized;
           this.startPADV();
         } else {
           //console.log(response.data.data, response.data.data && response.data.data.slot && response.data.data.video_link)
@@ -346,13 +350,13 @@ export default {
           this.assessmentConfigData = this.recommendedAssessment.tests.find(
           (ele) => ele.assessment_type == "MAINS"
         );
-        this.noOfQuestions = this.assessmentConfigData.total_no_of_questions;
+        this.noOfQuestions = this.assessmentConfigData && this.assessmentConfigData.total_no_of_questions ? this.assessmentConfigData.total_no_of_questions : 0;
         } else {
           this.recommendedAssessment = response.data ? response.data.data : null;
           this.assessmentConfigData = this.recommendedAssessment.tests.find(
           (ele) => ele.assessment_type == "MAINS"
         );
-        this.noOfQuestions = this.assessmentConfigData.total_no_of_questions;
+        this.noOfQuestions = this.assessmentConfigData && this.assessmentConfigData.total_no_of_questions ? this.assessmentConfigData.total_no_of_questions : 0;
         }
 
         if ( this.recommendedAssessment && this.recommendedAssessment.type === 'mains' && (this.recommendedAssessment.status == "FAILED" ||
