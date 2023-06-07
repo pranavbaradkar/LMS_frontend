@@ -70,7 +70,7 @@
               :disabled="this.isExistPadv || !this.isPadvStart"
               @click="redirect"
             >
-              Start PADV 
+              Identify 
               <v-icon small class="mx-2" :color="`${isVerify ? 'green' :'red'}`" >{{isVerify ? 'mdi-account-check' : 'mdi-account-remove'}}</v-icon>
             </v-btn>
             <v-btn
@@ -176,11 +176,22 @@
             <p>Main Instructions</p>
             <div class="d-flex">
               <GmapMap
-  :center="{lat:10, lng:10}"
-  :zoom="7"
+              :options="{
+   zoomControl: true,
+   mapTypeControl: false,
+   scaleControl: false,
+   streetViewControl: false,
+   rotateControl: false,
+   fullscreenControl: true,
+   disableDefaultUi: false,
+ }"
+  class="mr-2"
+  :center="{lat:19, lng:19}"
+  :zoom="3"
   map-type-id="terrain"
-  style="width: 500px; height: 300px"
+  style="width: 200px; height: 200px"
 >
+<GmapMarker ref="myMarker" :position="google && new google.maps.LatLng(1.38, 103.8)" />
 </GmapMap>
               <div class="pb-3">
                 <v-list-item-title
@@ -232,6 +243,7 @@ import moment from 'moment';
 import RecommendedAssessmentController from "@/controllers/RecommendedAssessmentController";
 // import { helpers } from 'gmap-vue';
 // const { googleMapsApiInitializer } = helpers;
+import { getGoogleMapsAPI } from 'gmap-vue';
 
 export default {
   components: { navBar },
@@ -257,6 +269,9 @@ export default {
       ],
       startTime: '',
     };
+  },
+  computed: {
+    google: getGoogleMapsAPI,
   },
   mounted() {
     // googleMapsApiInitializer({
@@ -288,10 +303,10 @@ export default {
       }
     },
     startPADV () {
-      this.isPadvStart = true;
+      this.isPadvStart = false;
       const refreshIntervalId = setInterval(() => {
-        const currentTime = new Date().toLocaleString();
-        const startDate = new Date(new Date(this.startTime) - 15 * 60000).toLocaleString();
+        const currentTime = new Date();
+        const startDate = new Date(new Date(this.startTime) - 15 * 60000);
 
         if (startDate < currentTime) {
           console.log(currentTime, startDate);
@@ -299,7 +314,7 @@ export default {
           clearInterval(refreshIntervalId);
         }
         
-      }, 1000);
+      }, 30000);
     },
     async getAssessmentInfo(assessmentId) {
       let response = await AssessmentController.getSingleAssessment(
@@ -325,8 +340,8 @@ export default {
           let timeIndex = this.items.findIndex(ele => ele.text == 'Time');
 
           let date = moment(response.data.data.slot).format("DD/MM/YYYY");
-          let time = moment.utc(response.data.data.slot).format("hh:mm A");
-          let time2Hours =  moment.utc(response.data.data.slot).add(2, 'hours').format("hh:mm A");
+          let time = moment(response.data.data.slot).format("hh:mm A");
+          let time2Hours =  moment(response.data.data.slot).add(2, 'hours').format("hh:mm A");
           this.items[timeIndex].value = `${time} - ${time2Hours}`;
           this.items[dateIndex].value = date;
           this.startTime = response.data.data.slot;

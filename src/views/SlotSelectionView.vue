@@ -145,10 +145,12 @@ export default {
       if(this.dateRange[this.dateRangeIndex].day && this.dateRange[this.dateRangeIndex].timeing[this.timeSlotIndex]) {
         let date = this.dateRange[this.dateRangeIndex].day+" "+this.dateRange[this.dateRangeIndex].timeing[this.timeSlotIndex];
         let datefinal = moment(date, "Do MMM, YY hh:mm a").format("YYYY-MM-DD hh:mm:ss");
-        console.log(datefinal);
+        console.log("date",date);
+        console.log("date",datefinal);
+        console.log(new Date(datefinal));
         
         let response = await AssessmentController.postSetupMainsAssessment({
-          slot: datefinal,
+          slot: new Date(datefinal),
         });
         
         if(response.status == 200)  {
