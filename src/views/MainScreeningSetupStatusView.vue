@@ -176,6 +176,7 @@
             <p>Main Instructions</p>
             <div class="d-flex">
               <GmapMap
+              v-if="lat && lng"
               :options="{
    zoomControl: true,
    mapTypeControl: false,
@@ -186,12 +187,12 @@
    disableDefaultUi: false,
  }"
   class="mr-2"
-  :center="{lat:19, lng:19}"
-  :zoom="3"
-  map-type-id="terrain"
+  :center="{lat:lat, lng:lng}"
+  :zoom="20"
+  map-type-id="roadmap"
   style="width: 200px; height: 200px"
 >
-<GmapMarker ref="myMarker" :position="google && new google.maps.LatLng(1.38, 103.8)" />
+<GmapMarker ref="myMarker" :position="{lat,lng}"/>
 </GmapMap>
               <div class="pb-3">
                 <v-list-item-title
@@ -217,12 +218,12 @@
                 <div class="ml-2 mt-2">
                   <v-list-item class="pa-0 pt-2 pb-2">
                       <v-icon size="20" color="#277bc0" class="me-2">mdi-link-variant</v-icon>
-                    <a href="#" class="text-decoration-none subtitle-2">COPY LINK</a>
+                    <a @click="copyURL" class="text-decoration-none subtitle-2">COPY LINK</a>
                   </v-list-item>
 
                   <v-list-item class="pa-0">
                       <v-icon size="20" color="#277bc0" class="me-2">mdi-open-in-new</v-icon>
-                    <a href="#" class="text-decoration-none subtitle-2">OPEN MAPS</a>
+                    <a :href="`http://maps.google.com/?q=${address}`" class="text-decoration-none subtitle-2">OPEN MAPS</a>
                   </v-list-item>
                 </div>
                 <div></div>
@@ -244,6 +245,7 @@ import RecommendedAssessmentController from "@/controllers/RecommendedAssessment
 // import { helpers } from 'gmap-vue';
 // const { googleMapsApiInitializer } = helpers;
 import { getGoogleMapsAPI } from 'gmap-vue';
+import axios from 'axios';
 
 export default {
   components: { navBar },
@@ -268,6 +270,9 @@ export default {
         { text: "Computer No.", value: "20" },
       ],
       startTime: '',
+      lat: null,
+      lng: null,
+      address: 'Lotus coorporate park, ram mandir road',
     };
   },
   computed: {
@@ -283,6 +288,15 @@ export default {
     window.removeEventListener("resize", this.onResize);
   },
   methods: {
+    async copyURL() {
+    let copyUrl = `http://maps.google.com/?q=${this.address}`
+    try {
+      await navigator.clipboard.writeText(copyUrl);
+      alert('Copied');
+    } catch($e) {
+      alert('Cannot copy');
+    }
+    },
     confirm() {
       this.$mixpanel.track("SubmissionSucceeded", {
         notification_sms: this.notificationSMS,
@@ -332,8 +346,9 @@ export default {
       let response = await AssessmentController.getSetupMainsAssessment();
       if(response.status == 200) {
         this.isExistPadv = false;
+        this.getMarkers();
         if(response.data.data && response.data.data.slot && response.data.data.padv_video_link) {
-          // this.isExistPadv = true;
+          this.isExistPadv = true;
         }
         if(response.data.data && response.data.data.slot && response.data.data.video_link) {
           let dateIndex = this.items.findIndex(ele => ele.text == 'Date');
@@ -351,6 +366,19 @@ export default {
           //console.log(response.data.data, response.data.data && response.data.data.slot && response.data.data.video_link)
           this.$router.push(`/assessment/mains/setup`);
         }
+      }
+    },
+    async getMarkers () {
+      let key = 'AIzaSyAD5twRtN_60No5ZqBlp7JcpIsRfwE23RM'
+      const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${this.address}&key=${key}`;
+      const response = await axios.get(url);
+      if (response.status == 200) {
+        const locationCord = response.data.results[0].geometry.location;
+        // console.log(response.data.results[0].geometry.location);
+        this.lat = locationCord.lat;
+        this.lng = locationCord.lng;
+
+        console.log(this.lat, this.lng);
       }
     },
     async getRecommendedAssessment() {
