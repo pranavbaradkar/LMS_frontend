@@ -67,9 +67,9 @@
               class="mt-4 me-2"
               elevation="0"
               large
-              :disabled="this.isExistPadv || !this.isPadvStart"
               @click="redirect"
             >
+            <!--   :disabled="this.isExistPadv || !this.isPadvStart" -->
               Start PADV 
               <v-icon small class="mx-2" :color="`${isVerify ? 'green' :'red'}`" >{{isVerify ? 'mdi-account-check' : 'mdi-account-remove'}}</v-icon>
             </v-btn>
@@ -79,9 +79,9 @@
               :class="`${!this.isExistPadv ? 'gray--text' : 'white--text' }`"
               class="gray--text mt-4"
               elevation="0"
-              :disabled="!this.isExistPadv"
               large
             >
+            <!--  :disabled="!this.isExistPadv || !isVerify" -->
               Start Mains Test
             </v-btn>
           </div>
@@ -318,7 +318,7 @@ export default {
       if(response.status == 200) {
         this.isExistPadv = false;
         if(response.data.data && response.data.data.slot && response.data.data.padv_video_link) {
-          // this.isExistPadv = true;
+          this.isExistPadv = true;
         }
         if(response.data.data && response.data.data.slot && response.data.data.video_link) {
           let dateIndex = this.items.findIndex(ele => ele.text == 'Date');

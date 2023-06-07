@@ -315,6 +315,15 @@ border-radius: 10px 10px 0px 0px;
   width: 0px!important;
 }
 
+.justify-content-between {
+  justify-content: space-between !important;
+}
+.cursor-pointer {
+  cursor: pointer;
+}
+.filtericon svg {
+  height: 27px;
+}
 .profile-tab .v-tab--active {
   background-color: #E9F2F9;
 }

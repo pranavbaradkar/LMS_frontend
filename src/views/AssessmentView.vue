@@ -35,24 +35,37 @@
               </v-card>
             </div>
 
-            <div class="procting px-4 py-1">
+            <div class="procting px-4 py-1" v-if="testType == 'mains'">
               <video id="videoElement" class="rounded" autoplay></video>
             </div>
             
-            <v-card-title class="question-heading"
-              >Question Listing</v-card-title
-            >
+            <v-card-title class="question-heading d-flex justify-content-between pb-0">
+              Question Listing
+              <div class="filtericon" @click="() => {
+                  isFilter = !isFilter;
+                  filterBy = null;
+                }">
+                <svg v-if="!isFilter" width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" clip-rule="evenodd" d="M10.5652 9C9.70108 9 9 9.71286 9 10.5904V11.5264C9 12.1765 9.24719 12.8016 9.68936 13.2718L14.5351 18.4243L14.5372 18.4211C15.4727 19.3788 15.9991 20.6734 15.9991 22.0233V26.5952C15.9991 26.9007 16.3187 27.0957 16.584 26.9516L19.3436 25.4479C19.7602 25.2204 20.0201 24.7784 20.0201 24.2984V22.0114C20.0201 20.6691 20.539 19.3799 21.466 18.4243L26.3117 13.2718C26.7528 12.8016 27 12.1765 27 11.5264V10.5904C27 9.71286 26.3 9 25.4359 9H10.5652Z" stroke="#334155" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  <rect x="0.5" y="0.5" width="35" height="35" rx="3.5" stroke="#94A3B8"/>
+                </svg>
+                <svg v-if="isFilter" width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect width="36" height="36" rx="4" fill="#277BC0"/>
+                  <path d="M19.4099 18.0002L25.7099 11.7102C25.8982 11.5219 26.004 11.2665 26.004 11.0002C26.004 10.7339 25.8982 10.4785 25.7099 10.2902C25.5216 10.1019 25.2662 9.99609 24.9999 9.99609C24.7336 9.99609 24.4782 10.1019 24.2899 10.2902L17.9999 16.5902L11.7099 10.2902C11.5216 10.1019 11.2662 9.99609 10.9999 9.99609C10.7336 9.99609 10.4782 10.1019 10.2899 10.2902C10.1016 10.4785 9.99585 10.7339 9.99585 11.0002C9.99585 11.2665 10.1016 11.5219 10.2899 11.7102L16.5899 18.0002L10.2899 24.2902C10.1962 24.3831 10.1218 24.4937 10.071 24.6156C10.0203 24.7375 9.99414 24.8682 9.99414 25.0002C9.99414 25.1322 10.0203 25.2629 10.071 25.3848C10.1218 25.5066 10.1962 25.6172 10.2899 25.7102C10.3829 25.8039 10.4935 25.8783 10.6154 25.9291C10.7372 25.9798 10.8679 26.006 10.9999 26.006C11.132 26.006 11.2627 25.9798 11.3845 25.9291C11.5064 25.8783 11.617 25.8039 11.7099 25.7102L17.9999 19.4102L24.2899 25.7102C24.3829 25.8039 24.4935 25.8783 24.6154 25.9291C24.7372 25.9798 24.8679 26.006 24.9999 26.006C25.132 26.006 25.2627 25.9798 25.3845 25.9291C25.5064 25.8783 25.617 25.8039 25.7099 25.7102C25.8037 25.6172 25.8781 25.5066 25.9288 25.3848C25.9796 25.2629 26.0057 25.1322 26.0057 25.0002C26.0057 24.8682 25.9796 24.7375 25.9288 24.6156C25.8781 24.4937 25.8037 24.3831 25.7099 24.2902L19.4099 18.0002Z" fill="#D7DFE7"/>
+                </svg>
+              </div>
+            </v-card-title>
 
-            <div class="legend-flag">
-              <div class="legend-contain">
+            <div class="legend-flag" v-if="isFilter">
+              <div class="legend-contain cursor-pointer" :class="filterBy=='answered' ? 'active' : ''" @click="filterBy = 'answered'">
                 <span class="icon answered-bg me-2"></span>
                 <span class="label">Answered</span>
               </div>
-              <div class="legend-contain">
+              <div class="legend-contain cursor-pointer" :class="filterBy=='skipped' ? 'active' : ''"  @click="filterBy = 'skipped'">
                 <span class="icon skipped-bg me-2"></span>
                 <span class="label">Skipped</span>
               </div>
-              <div class="legend-contain">
+              <div class="legend-contain cursor-pointer" :class="filterBy=='bookmark' ? 'active' : ''" @click="filterBy = 'bookmark'">
                 <span class="icon bookmark-bg me-2"></span>
                 <span class="label">Bookmark</span>
               </div>
@@ -122,27 +135,36 @@
                   <v-list-item
                     v-for="(item, i) in questions"
                     :key="i"
-                    class="question-selection-box me-2 mt-3 lighten-4 pt-2 pb-2"
+                    @click="questionClicked(item)"
+                    class="pa-0"
+                    style="flex: 0"
+                  >
+                    <div 
+                    v-if="filterBy == null || filterBy == 'skipped' && skipped.includes(item) || filterBy == 'bookmark' && bookmarked.includes(item) || filterBy == 'answered' && item.myAnswer != null"  
+                    class="d-flex question-selection-box me-2 mt-3 lighten-4 pt-2 pb-2"
                     :class="`${getColorBg(item)} ${
                       i == selectedQuestion
                         ? 'v-item--active v-list-item--active'
                         : ''
-                    }`"
-                    @click="questionClicked(item)"
-                  >
-                    <v-list-item-content class="py-0" :id="scrollId + '' + i">
-                      <v-list-item-title
-                        :border="false"
-                        class="question-box-font text-center"
-                        :class="`${
-                          i == selectedQuestion ? 'primary--text' : ''
-                        }`"
-                      >
-                        <!-- <v-icon large :color="getColor(item)">mdi-circle-medium</v-icon>
-                        <img v-if="i == selectedQuestion" src="../assets/Polygonpoly.png" class="polyicon" /> -->
-                        Q{{ i + 1 }}
-                      </v-list-item-title>
-                    </v-list-item-content>
+                    }`">
+
+                      <v-list-item-content  class="py-0" :id="scrollId + '' + i">
+                        <v-list-item-title
+                          :border="false"
+                          class="question-box-font text-center"
+                          :class="`${
+                            i == selectedQuestion ? 'primary--text' : ''
+                          }`"
+                        >
+                          <!-- <v-icon large :color="getColor(item)">mdi-circle-medium</v-icon>
+                          <img v-if="i == selectedQuestion" src="../assets/Polygonpoly.png" class="polyicon" /> -->
+                          Q{{ i + 1 }}
+                        </v-list-item-title>
+                      </v-list-item-content>
+
+                    </div>
+                    
+                  
 
                     <!-- <v-list-item-action v-if="bookmarked.includes(item)">
                       <v-icon color="primary">
@@ -907,7 +929,7 @@
                 <div>
                   <v-tabs v-model="tabs" fixed-tabs>
                     <!-- <v-tabs-slider></v-tabs-slider> -->
-                    <v-tab href="#mobile-tabs-5-1" class="primary--text">
+                    <v-tab v-if="testType=='mains'" href="#mobile-tabs-5-1" class="primary--text">
                       <img src="../assets/notification.png" />
                     </v-tab>
 
@@ -927,7 +949,7 @@
 
               <v-tabs-items class="" :height="getRightHeight"  :style="`max-height: ${getRightHeight};overflow:scroll`" >
                 <div v-if="tabs === 'mobile-tabs-5-2'"><Calculator></Calculator></div>
-                <div v-if="tabs === 'mobile-tabs-5-1'">
+                <div v-if="tabs === 'mobile-tabs-5-1' && testType=='mains'">
                   <div
                     v-for="itemValue, i in reverseNotificationItems"
                     :key="i"
@@ -1302,7 +1324,7 @@
                 depressed
                 class="white--text mt-5 mb-5 w-50"
                 large
-                @click="$router.back()"
+                @click="redirectHome()"
                 >YES</v-btn
               >
             </div>
@@ -1335,6 +1357,37 @@
                 large
                 @click="submitAssessment"
                 >YES</v-btn
+              >
+            </div>
+          </v-card-text>
+        </v-container>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="timeUpModal" width="480px" persistent>
+      <v-card>
+        <v-container>
+          <v-card-text class="text-center">
+            <!-- <v-icon color="error" size="96">mdi-close-circle-outline</v-icon> -->
+            <p class="text-h5 mb-0">
+              <strong>Your assessment timing has been finished, kindly submit your assessment</strong>
+            </p>
+            <div class="d-flex justify-space-between w-100">
+              <v-btn
+                color="#DADADA"
+                depressed
+                class="black--text mt-5 mb-5 me-2 w-50"
+                large
+                @click="timeUpModal = false"
+                >NO</v-btn
+              >
+              <v-btn
+                color="#277BC0"
+                depressed
+                class="white--text mt-5 mb-5 w-50"
+                large
+                @click="submitAssessment"
+                >Submit Assessment</v-btn
               >
             </div>
           </v-card-text>
@@ -1396,6 +1449,9 @@ export default {
       mins: "00",
       secs: "00",
       seconds: 800,
+      isFilter: false,
+      filterBy: null,
+      timeUpModal: false,
       durationOfAssessment: 0,
       lastAnswerTime: null,
       timerId: null,
@@ -1453,7 +1509,8 @@ export default {
     getLeftHeight() {
       //console.log("Height =", window.innerHeight);
       //console.log("Width =", window.innerWidth);
-      return this.windowHeight - 450 + "px";
+      let deduction = this.testType == 'mains' ? 450 : 200;
+      return this.windowHeight - deduction + "px";
     },
     reverseNotificationItems() {
         return this.notificationData.slice().reverse();
@@ -1469,6 +1526,9 @@ export default {
     // },
   },
   watch: {
+    filterBy() {
+      console.log(this.questions)
+    },
     // whenever question changes, this function will run
     selectedQuestion() {
       this.lastAnswerTime = this.seconds;
@@ -1479,7 +1539,7 @@ export default {
     window.addEventListener("beforeunload", this.handleBeforeUnload);
     document.addEventListener("keydown", this.handleKeyPress);
 
-    ["focus"].forEach((event) => {
+    ["visibilitychange"].forEach((event) => {
       window.addEventListener(event, this.handleTabBlurFocus);
     });
     ["copy", "paste"].forEach((event) => {
@@ -1527,9 +1587,12 @@ export default {
 
   methods: {
     handleTabBlurFocus(event) {
-      this.violations++;
-      console.warn("User ", event.type, " on current Tab");
-      this.genericDialog = true;
+      if(document.visibilityState == 'hidden') {
+        console.log();
+        this.violations++;
+        console.warn("User ", event.type, " on current Tab");
+        this.genericDialog = true;
+      }
     },
     handleCopyPaste(event) {
       this.violations++;
@@ -1573,7 +1636,7 @@ export default {
         this.mediaStream.getTracks().forEach((track) => {
           this.camera_id = track.id;
           if (track.readyState != "live") {
-            alert("Camera Stream Stopped");
+            console.log("Camera Stream Stopped");
           }
         });
         console.log("Acive stream ", this.mediaStream.getTracks());
@@ -1603,28 +1666,35 @@ export default {
           this.mediaRecorder.start();
         })
         .catch((error) => {
-          alert("Error accessing the camera:", error);
+          console.log("Error accessing the camera:", error);
+          this.confirmExitDialog = true;
         });
+    },
+    redirectHome() {
+      window.location.href="/";
     },
     stopRecording() {
       // console.log("camera stop triggered");
       let t = new Date();
       this.rec_status = "recording stopped at " + t.getSeconds();
+      if(this.mediaRecorder) {
+        this.mediaRecorder.ondataavailable = (event) => {
+          if (event.data && event.data.size > 0) {
+            this.chunks.push(event.data);
+            console.log(this.chunks);
+            this.uploadVideo(this.chunks);
+          }
+        };
 
-      this.mediaRecorder.ondataavailable = (event) => {
-        if (event.data && event.data.size > 0) {
-          this.chunks.push(event.data);
-          console.log(this.chunks);
-          this.uploadVideo(this.chunks);
-        }
-      };
-
-      // Stop capturing video frames
-      this.mediaRecorder.stop();
+        // Stop capturing video frames
+        this.mediaRecorder.stop();
+        
+        this.chunks = [];
+        // videoElement.srcObject.getTracks().forEach((track) => track.stop());
+        this.mediaRecorder.start();
+      }
       
-      this.chunks = [];
-      // videoElement.srcObject.getTracks().forEach((track) => track.stop());
-      this.mediaRecorder.start();
+     
       //socket.close();
     },
     getAssetType(assetDataType) {
@@ -1724,7 +1794,8 @@ export default {
     },
     updateTime() {
       if (this.seconds <= 0) {
-        this.genericDialog = true;
+        // this.genericDialog = true;
+        this.timeUpModal = true;
         this.pauseMedia();
         clearInterval(this.interval);
         return;
@@ -2137,6 +2208,7 @@ export default {
           Vue.set(response, question.id, question.myAnswer);
         }
       });
+      console.log("assessment", this.assessment, this.assessment.tests);
       if(this.assessment && this.assessment.tests && this.assessment.tests.length > 0) {
         let assessmentData = this.assessment.tests.find(
           (ele) => ele.assessment_type == this.testType.toLocaleUpperCase()
@@ -2247,43 +2319,48 @@ export default {
         this.assessmentId
       );
       if (response2.data.success) {
-        this.assessment = response2.data.data;
-        console.log("assessmentinfo", this.assessment);
-
-        let assessmentData = this.assessment.tests.find(
-          (ele) => ele.assessment_type == this.testType.toLocaleUpperCase()
-        );
-
-        this.seconds = assessmentData.duration_of_assessment;
-        this.durationOfAssessment = assessmentData.duration_of_assessment
-          ? assessmentData.duration_of_assessment
-          : 0;
-        if (
-          this.assessment &&
-          this.assessment.assessment_log &&
-          this.assessment.assessment_log.length > 0
-        ) {
-          let elapsed_time = this.assessment.assessment_log.elapsed_time;
-          this.seconds = this.seconds - elapsed_time;
-          let answeredQ =
+        this.assessment = response2.data && response2.data.data ? response2.data.data : null;
+       
+        if(this.assessment) {
+          let assessmentData = this.assessment.tests.find(
+            (ele) => ele.assessment_type == this.testType.toLocaleUpperCase()
+          );
+          if(assessmentData) {
+            this.seconds = assessmentData.duration_of_assessment;
+            this.durationOfAssessment = assessmentData.duration_of_assessment
+              ? assessmentData.duration_of_assessment
+              : 0;
+          }
+          console.log("hello", this.assessment, this.assessment.assessment_log.length);
+          if (
+            this.assessment &&
             this.assessment.assessment_log &&
-            this.assessment.assessment_log.answered_question
-              ? JSON.parse(this.assessment.assessment_log.answered_question)
-              : {};
-          let isLastQuestionItem = 0;
-          this.questions = this.questions.map((question, index) => {
-            if (answeredQ[question.id]) {
-              question.myAnswer = answeredQ[question.id];
-              isLastQuestionItem = index;
-            }
-            return question;
-          });
-          this.selectedQuestion = isLastQuestionItem;
-          this.updateProgress();
-        }
+            Object.keys(this.assessment.assessment_log).length > 0
+          ) {
+            let elapsed_time = this.assessment.assessment_log.elapsed_time;
+            this.seconds = this.seconds - elapsed_time;
+            console.log("====",this.seconds);
+            let answeredQ =
+              this.assessment.assessment_log &&
+              this.assessment.assessment_log.answered_question
+                ? JSON.parse(this.assessment.assessment_log.answered_question)
+                : {};
+            let isLastQuestionItem = 0;
+            this.questions = this.questions.map((question, index) => {
+              if (answeredQ[question.id]) {
+                question.myAnswer = answeredQ[question.id];
+                isLastQuestionItem = index;
+              }
+              return question;
+            });
+            this.selectedQuestion = isLastQuestionItem;
+            this.updateProgress();
+          }
 
-        this.lastAnswerTime = this.seconds;
-        this.changeTestStatus();
+          this.lastAnswerTime = this.seconds;
+          this.changeTestStatus();
+        }
+       
       } else {
         this.errorDialog = true;
         this.errorMessage = response2.data.error;
@@ -2306,7 +2383,7 @@ export default {
           assessment_name: this.assessment.name,
           screen_name: "AssessmentScreen",
           assessment_type: this.testType,
-          assessment_level: this.assessment.tests[0].level.name,
+          assessment_level: this.assessment.tests && this.assessment.tests.length > 0 ? this.assessment.tests[0].level.name : null,
         });
         console.log("Screening started");
         const response = await AssessmentController.startScreening(
@@ -2320,7 +2397,7 @@ export default {
           assessment_name: this.assessment.name,
           screen_name: "AssessmentScreen",
           assessment_type: this.testType,
-          assessment_level: this.assessment.tests[1].level.name,
+          assessment_level: this.assessment.tests && this.assessment.tests.length > 0 ? this.assessment.tests[0].level.name : null,
         });
         console.log("Mains started");
         const response = await AssessmentController.startMains(
@@ -2339,8 +2416,9 @@ export default {
     async getUserInfo() {
       const response = await LogedInUserInfo.getUserInfo();
       this.userInfo = response.data.user;
-      console.log(this.userInfo);
-      this.socketestablish();
+      if(this.testType == 'mains') {
+        this.socketestablish();
+      }
     },
     socketestablish() {
       const socket = AssessmentController.socketConnect(this.userInfo.id, this.assessmentId);
@@ -2382,26 +2460,21 @@ export default {
     this.getUserInfo();
 
     this.checkUserAgent();
-    this.cameraMedia();
-    setInterval(() => {
-      this.verifyCameraStream();
-      this.stopRecording();
-    }, 3000);
-    setInterval(() => {
-      this.verifyCameraStream();
-    }, 10000);
 
-    
+    if(this.testType == 'mains') {
+      this.cameraMedia();
+      setInterval(() => {
+        this.verifyCameraStream();
+        this.stopRecording();
+      }, 3000);
+      setInterval(() => {
+        this.verifyCameraStream();
+      }, 10000);
 
-    // test websocket connection
-  
-
-
+    }
     setTimeout(() => {
       this.onResize();
     }, 1000)
-    
-
 
   },
 };
