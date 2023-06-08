@@ -455,21 +455,6 @@
                               >
                               </v-select>
                             </v-col>
-                            <v-col cols="6" class="py-0 c-text-field">
-                              <v-select
-                                v-model="personalInfo.talukTehsil"
-                                :value="talukTehsil"
-                                label="Taluka / Tehsil"
-                                :items="talukas"
-                                
-                                
-                                item-value="id"
-                                item-text="taluka_name"
-                                @change="fetchCities"
-                              >
-                              </v-select>
-                            </v-col> </v-row
-                          ><v-row class="py-0">
                             <v-col cols="6" class="py-0">
                               <v-select
                                 v-model="personalInfo.city_id"
@@ -481,6 +466,8 @@
                               >
                               </v-select>
                             </v-col>
+                          </v-row>
+                          <v-row class="py-0">
                             <v-col cols="6" class="py-0 c-text-field">
                               <v-text-field
                                 v-model="personalInfo.pincode"
@@ -546,28 +533,15 @@
                             </v-col>
                             <v-col cols="6" class="py-0 c-text-field">
                               <v-text-field
-                                v-model="personalInfo.taluka_name"
-                                label="Taluk / Tehsil"
-                                readonly
-                                
-                                
-                                
-                              >
-                              </v-text-field>
-                            </v-col> </v-row
-                          ><v-row class="py-0">
-                            <v-col cols="6" class="py-0 c-text-field">
-                              <v-text-field
                                 v-model="personalInfo.city_name"
                                 readonly
                                 label="City / Village"
-                                :items="cities"
-                                
-                                
-                                
+                                :items="cities"  
                               >
                               </v-text-field>
                             </v-col>
+                            </v-row>
+                            <v-row class="py-0">
                             <v-col cols="6" class="py-0 c-text-field">
                               <v-text-field
                                 v-model="personalInfo.pincode"
