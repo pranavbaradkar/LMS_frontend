@@ -1582,6 +1582,11 @@ export default {
     //   assessment_type: this.testType,
     //   assessment_level: this.assessment.tests[1].level.name,
     // });
+
+    if(this.getVideoElement() && this.getVideoElement().srcObject) {
+      this.getVideoElement().srcObject.getTracks().forEach((track) => track.stop());
+    }
+
     await this.setLog();
   },
 
