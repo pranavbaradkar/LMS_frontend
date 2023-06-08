@@ -31,6 +31,7 @@
                 () => {
                   vibgyouBool = true;
                   usingPhone = false;
+                  reset()
                 }" 
                 class="px-6 py-2 left-button" :class="vibgyouBool ? 'active-border' : 'non-active-border'">
                 VGOS
@@ -39,6 +40,7 @@
                 () => {
                   vibgyouBool = false;
                   usingPhone = false;
+                  reset()
                 }
               ">
                 Job Seeker
@@ -70,9 +72,14 @@
             </div>
             <v-form v-model="valid" v-if="!usingPhone || vibgyouBool">
               <span height="40px">
-                <v-text-field label="Email address" :suffix="vibgyouBool ? '@vgos.org' : ''"
-                  :rules="vibgyouBool ? vgosRules : emailRules" class="rounded-xl" placeholder="Enter Email Id"
-                  v-model="email" solo outlined @focus="triggerEmailEvent"></v-text-field>
+                <v-text-field v-if="vibgyouBool" label="Email address" suffix="@vgos.org"
+                  :rules="vgosRules" class="rounded-xl" placeholder="Enter Email Id"
+                  v-model="email" solo outlined @focus="triggerEmailEvent">
+                </v-text-field>
+                <v-text-field v-else label="Email address"
+                  :rules="emailRules" class="rounded-xl" placeholder="Enter Email Id"
+                  v-model="email" solo outlined @focus="triggerEmailEvent">
+                </v-text-field>
               </span>
             </v-form>
             <v-btn v-if="usingPhone" color="primary" class="white--text" rounded-sm width="100%" height="32" depressed
@@ -186,6 +193,10 @@ export default {
     };
   },
   methods: {
+    reset () {
+      this.phone_number = "";
+      this.email = "";
+    },
     triggerPhoneNumberEvent() {
       this.$mixpanel.track("PhoneNumberFilled", {
         phone_number: this.phoneNumber,

@@ -10,25 +10,6 @@
             width="178"
           ></v-img>
         </v-list-item-icon>
-        <v-list-item-content> </v-list-item-content>
-        <v-list-item-action>
-          <v-row class="align-center">
-            <v-card-title class="font-weight-light pr-0">Hello,</v-card-title>
-
-            <v-card-title class="pl-2" v-if="$store.state.userInfo != null"
-              >{{ $store.state.userInfo.first_name }} 👋</v-card-title
-            >
-            <v-menu offset-y>
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn color="primary" dark v-bind="attrs" v-on="on" @click="goToProfile" text icon>
-                  <v-avatar>
-                    <v-img src="../assets/user.png"></v-img>
-                  </v-avatar>
-                </v-btn>
-              </template>
-            </v-menu>
-          </v-row>
-        </v-list-item-action>
       </v-list-item>
     </v-app-bar>
 
@@ -642,7 +623,7 @@
                           ></v-text-field
                         ></v-col> </v-row
                       ><v-row class="py-0">
-                        <v-col class="py-0 c-text-field"
+                        <v-col cols="10" class="py-0 c-text-field"
                           ><v-text-field
                             v-model="qualification.field_of_study"
                             label="Field of Study*"
@@ -651,6 +632,17 @@
                             required
                             :rules="[
                               (v) => !!v || 'Field of Study is required',
+                            ]"
+                          ></v-text-field
+                        ></v-col>
+                        <v-col cols="2" class="py-0 c-text-field"
+                          ><v-text-field
+                            v-model="qualification.grade_score"
+                            maxLength="4"
+                            label="Score"
+                            suffix="%"
+                            :rules="[
+                              (v) => /^[0-9]{0,2}(\.[0-9]{1,2})?$|^-?(100)(\.[0]{1,2})?$/.test(v) || 'Score not valid'
                             ]"
                           ></v-text-field
                         ></v-col>
@@ -790,154 +782,124 @@
         </v-tab-item>
         <v-tab-item>
           <v-card
-            :height="getHeight - 200 + 'px'"
-            id="myScroll"
-            elevation="0"
-            depressed
-          >
-            <v-form lazy-validation ref="step3">
-              <v-card elevation="0" class="mb-8" style="overflow-x: hidden">
-                <v-card class="pa-0 mb-8" elevation="0">
-                  <v-expansion-panels v-model="expandedPanelIndex">
-                    <v-expansion-panel
-                      v-for="(professional, index) in professionalInfos"
-                      :key="index"
-                      elevation="0"
-                    >
-                      <v-expansion-panel-header
-                        ><div
-                          class="d-flex flex-column"
-                          v-if="expandedPanelIndex != index"
-                          @click="consolee(professional.end_date)"
+                :height="getHeight - 300 + 'px'"
+                id="myScroll"
+                elevation="0"
+                depressed
+              >
+                <v-form lazy-validation ref="step3">
+                  <v-card elevation="0" class="mb-8" style="overflow-x: hidden;">
+                    <v-card class="pa-0 mb-8" elevation="0">
+                      <v-card
+                                  width="100%"
+                                  elevation="0"
+                                  class="mb-2 -xl">
+                                    <v-col class="py-0 px-0">
+                                      <v-row class="py-0 px-0 ml-2">
+                                        <v-col class="py-0 px-0">
+                                          <div class="pt-4 ml-1">
+                                            Experience
+                                          </div>
+                                        </v-col>
+                                      </v-row>
+                                      <v-row class="py-2 px-0 ml-2">
+                                        <v-chip-group
+                                          v-model="experience"
+                                          mandatory
+                                          active-class="primary--text">
+                                          <v-chip
+                                            v-for="(exp,index) in experiences"
+                                            :key="index"
+                                            class="mr-6"
+                                            :value="index"
+                                          >
+                                            {{ index === 0 ? 'Fresher' : index === 1 ? 'upto 1' : exp.min + '-' + exp.max + ' years' }}
+                                          </v-chip>
+                                        </v-chip-group>
+                                      </v-row>
+                                    </v-col> 
+                      </v-card>
+                      <v-expansion-panels v-if="experience !=0 " v-model="expandedPanelIndex">
+                        <v-expansion-panel
+                          v-for="(professional, index) in professionalInfos"
+                          :key="index"
+                          elevation="0"
                         >
-                          <div
-                            v-if="experience == 'Fresher'"
-                            class="font-weight-regular"
-                          >
-                            Fresher
-                          </div>
-                          <div
-                            v-if="
-                              experience !== 'Fresher' &&
-                              professional.position != ''
-                            "
-                          >
-                            <div class="font-weight-regular">
-                              {{ index + 1 + ". " + professional.position }}
-                            </div>
-                            <div
-                              class="text-body-2 grey--text"
-                              v-if="
-                                professional.start_date != '' ||
-                                professional.isCurrentlyWorking
-                              "
+                          <v-expansion-panel-header
+                            ><div
+                              class="d-flex flex-column"
+                              v-if="expandedPanelIndex != index"
+                              @click="consolee(professional.end_date)"
                             >
-                              {{
-                                new Date(
-                                  professional.start_date
-                                ).getFullYear() +
-                                " - " +
-                                (professional.end_date != ""
-                                  ? new Date(
-                                      professional.end_date
-                                    ).getFullYear()
-                                  : "Present")
-                              }}
-                            </div>
-                          </div>
-                          <div
-                            v-if="
-                              experience !== 'Fresher' &&
-                              professional.position == ''
-                            "
-                            class="font-weight-regular"
-                          >
-                            Add position details
-                          </div>
-                        </div>
-                      </v-expansion-panel-header>
-                      <v-expansion-panel-content>
-                        <v-row class="py-0 px-0">
-                          <v-col class="py-0 px-0">
-                            <v-card
-                              v-if="index == 0"
-                              width="100%"
-                              elevation="0"
-                              class="mb-2 -xl"
-                            >
-                              <v-col class="py-0 px-0">
-                                <v-row class="py-0 px-0 ml-2">
-                                  <v-col cols="1" class="py-0 px-0"
-                                    ><div class="pt-4 ml-1">I have</div></v-col
-                                  >
-                                  <v-col
-                                    cols="1 center"
-                                    class="py-0 px-0 c-text-field d-flex"
-                                  >
-                                    <v-text-field
-                                      :disabled="experience != 'Experienced'"
-                                      type="number"
-                                      @keypress="isNumber($event)"
-                                      :rules="[minValueRule]"
-                                      v-model="professional.experience_year"
-                                    >
-                                    </v-text-field>
-                                  </v-col>
-                                  <v-col cols="1" class="py-0 px-0"
-                                    ><div class="pt-4 ml-1">Years</div></v-col
-                                  >
-                                  <v-col
-                                    cols="1"
-                                    class="py-0 px-0 c-text-field"
-                                  >
-                                    <v-text-field
-                                      type="number"
-                                      :disabled="experience != 'Experienced'"
-                                      @keypress="isNumber($event)"
-                                      :rules="[minValueRule]"
-                                      v-model="professional.experience_month"
-                                    >
-                                    </v-text-field>
-                                  </v-col>
-                                  <v-col cols="4 center" class="py-0 px-0"
-                                    ><div class="pt-4 ml-1">
-                                      Months of experience
-                                    </div></v-col
-                                  >
-                                </v-row>
-                              </v-col>
-                            </v-card>
-                          </v-col>
-                        </v-row>
-                        <div v-if="experience == 'Experienced'">
-                          <v-row class="py-0">
-                            <v-col class="py-0 c-text-field"
-                              ><v-text-field
-                                label="Role/ Position *"
-                                counter="100"
-                                maxLength="100"
-                                required
-                                :rules="[
-                                  (v) =>
-                                    !!v || 'Role/ Position name is required',
-                                ]"
-                                v-model="professional.position"
-                              ></v-text-field
-                            ></v-col> </v-row
-                          ><v-row class="py-0">
-                            <v-col class="py-0 c-text-field"
-                              ><v-select
-                                label="Employment Type"
-                                :items="employeeType"
-                                item-value="id"
-                                item-text="name"
-                                v-model="professional.employee_type_id"
+                              <div
+                                v-if="experience == 0"
+                                class="font-weight-regular"
                               >
-                              </v-select
-                            ></v-col>
-                          </v-row>
+                                Fresher
+                              </div>
+                              <div v-if="experience !== 0 && professional.position != ''">
+                                <div class="font-weight-regular">
+                                  {{ index + 1 + ". " + professional.position }}
+                                </div>
+                                <div
+                                  class="text-body-2 grey--text"
+                                 v-if="professional.start_date != '' || professional.isCurrentlyWorking"
+                                >
+                                  {{
+                                    new Date(
+                                      professional.start_date
+                                    ).getFullYear() +
+                                    " - " + 
+                                    (professional.end_date != '' ?
+                                    new Date(
+                                      professional.end_date
+                                    ).getFullYear() : 'Present')
+                                  }}
+                                </div>
+                               </div>
+                                <div v-if="experience !== 0 && professional.position == ''"  class="font-weight-regular">
+                                  Add position details
+                                </div>
+                            </div>
+                            </v-expansion-panel-header
+                          >
+                          <v-expansion-panel-content>
+                            <div v-if="experience != 0">
+                              <v-row class="py-0">
+                                <v-col class="py-0 c-text-field"
+                                  ><v-text-field
+                                    
+                                    label="Role/ Position *"
+                                    
+                                    
+                                    counter="100"
+                                    maxLength="100"
+                                    required
+                                    :rules="[
+                                      (v) =>
+                                        !!v ||
+                                        'Role/ Position name is required'
+                                    ]"
+                                   
+                                    v-model="professional.position"
+                                  ></v-text-field
+                                ></v-col> </v-row
+                              ><v-row class="py-0">
+                                <v-col class="py-0 c-text-field"
+                                  ><v-select
+                                    label="Employment Type"
+                                    :items="employeeType"
+                                    
+                                    item-value="id"
+                                    item-text="name"
+                                    
+                                    v-model="professional.employee_type_id"
+                                  >
+                                  </v-select
+                                ></v-col>
+                              </v-row>
 
-                          <!-- <v-row class="py-0">
+                              <!-- <v-row class="py-0">
                                 <v-col class="py-0"
                                   ><v-select
                                     label="School / Institute"
@@ -951,65 +913,66 @@
                                   </v-select
                                 ></v-col>
                               </v-row> -->
-                          <v-row class="py-0">
-                            <v-col class="py-0">
-                              <v-checkbox
-                                class="py-0"
-                                v-model="professional.isCurrentlyWorking"
-                                label="I am currently working on this role / position."
-                              ></v-checkbox>
-                            </v-col>
-                          </v-row>
-                          <v-row class="py-0">
-                            <v-col cols="6" class="py-0"
-                              ><v-text-field
-                                label="Start Date*"
-                                :max="new Date().toISOString().slice(0, 10)"
-                                v-model="professional.start_date"
-                                type="date"
-                                :rules="[
-                                  (v) => !!v || 'Start Date is required',
-                                  (v) => {
-                                    const firstdate = new Date(v);
-                                    const today_date = new Date();
-                                    return (
-                                      firstdate < today_date ||
-                                      'Future date not allowed'
-                                    );
-                                  },
-                                ]"
-                              ></v-text-field
-                            ></v-col>
-                            <v-col cols="6" class="py-0"
-                              ><v-text-field
-                                :disabled="professional.isCurrentlyWorking"
-                                label="End Date*"
-                                :max="new Date().toISOString().slice(0, 10)"
-                                v-model="professional.end_date"
-                                type="date"
-                                :rules="
-                                  !professional.isCurrentlyWorking
-                                    ? [
-                                        (v) => !!v || 'End Date is required',
-                                        (v) =>
-                                          professional.end_date >
-                                            professional.start_date ||
-                                          'end date should be greater than start date',
-                                        (v) => {
-                                          const firstdate = new Date(v);
-                                          const today_date = new Date();
-                                          return (
-                                            firstdate < today_date ||
-                                            'Future date not allowed'
-                                          );
-                                        },
-                                      ]
-                                    : ''
-                                "
-                              ></v-text-field
-                            ></v-col>
-                          </v-row>
-                          <!-- <v-row class="py-0">
+                              <v-row class="py-0">
+                                <v-col class="py-0">
+                                  <v-checkbox
+                                    class="py-0"
+                                    v-model="professional.isCurrentlyWorking"
+                                    label="I am currently working on this role / position."
+                                  ></v-checkbox>
+                                </v-col>
+                              </v-row>
+                              <v-row class="py-0">
+                                <v-col cols="6" class="py-0"
+                                  ><v-text-field
+                                    
+                                    label="Start Date*"
+                                    
+                                    :max="new Date().toISOString().slice(0, 10)"
+                                    
+                                    v-model="professional.start_date"
+                                    type="date"
+                                    :rules="[
+                                    (v) => !!v || 'Start Date is required',
+                                    (v) => {
+                                  const firstdate = new Date(v);
+                                  const today_date = new Date();
+                                  return (
+                                    firstdate < today_date ||
+                                    'Future date not allowed'
+                                  );
+                                },
+                                  ]"
+                                  ></v-text-field
+                                ></v-col>
+                                <v-col cols="6" class="py-0"
+                                  ><v-text-field
+                                    :disabled="professional.isCurrentlyWorking"
+                                    
+                                    label="End Date*"
+                                    
+                                    :max="new Date().toISOString().slice(0, 10)"
+                                    
+                                    v-model="professional.end_date"
+                                    type="date"
+                                    :rules="
+                                      !professional.isCurrentlyWorking
+                                        ? [(v) => !!v || 'End Date is required',
+                                    (v) => professional.end_date > professional.start_date || 'end date should be greater than start date',
+                                    (v) => {
+                                  const firstdate = new Date(v);
+                                  const today_date = new Date();
+                                  return (
+                                    firstdate < today_date ||
+                                    'Future date not allowed'
+                                  );
+                                },]
+                                        : ''
+                                    "
+                                  ></v-text-field
+                                ></v-col>
+                              </v-row>
+                              <!-- <v-row class="py-0">
                                 <v-col class="py-0">
                                   <v-select
                                     label="Board"
@@ -1073,10 +1036,10 @@
                                   </v-autocomplete>
                                 </v-col>
                               </v-row> -->
-                        </div>
+                            </div>
 
-                        <div v-if="experience != 'Experienced'">
-                          <!-- <v-row class="py-0">
+                            <div v-if="experience == 0">
+                              <!-- <v-row class="py-0">
                                 <v-col class="py-0">
                                   <v-autocomplete
                                     clearable
@@ -1127,34 +1090,36 @@
                                   </v-autocomplete>
                                 </v-col>
                               </v-row> -->
-                        </div>
-                        <v-row v-if="experience == 'Experienced' && index != 0">
-                          <v-col cols="12" class="d-flex justify-end">
-                            <v-btn
-                              @click="openDeleteDiolog(index, 3)"
-                              text
-                              class="d-flex justify-end red--text"
-                              >Remove</v-btn
+                            </div>
+                            <v-row
+                              v-if="experience != 0 && index != 0"
                             >
-                          </v-col>
-                        </v-row>
-                      </v-expansion-panel-content>
-                    </v-expansion-panel>
-                  </v-expansion-panels>
-                  <v-row>
-                    <v-col class="mt-4" v-if="experience == 'Experienced'">
-                      <v-btn
-                        text
-                        @click="addProfessionalInfo"
-                        class="primary--text"
-                        ><v-icon class="mr-4">mdi-plus-circle-outline</v-icon
-                        >Add more professional details(optional)</v-btn
-                      >
-                    </v-col>
-                  </v-row>
-                </v-card>
-              </v-card>
-            </v-form>
+                              <v-col cols="12" class="d-flex justify-end">
+                                <v-btn
+                                  @click="openDeleteDiolog(index)"
+                                  text
+                                  class="d-flex justify-end red--text"
+                                  >Remove</v-btn
+                                >
+                              </v-col>
+                            </v-row>
+                          </v-expansion-panel-content>
+                        </v-expansion-panel>
+                      </v-expansion-panels>
+                      <v-row>
+                        <v-col class="mt-4" v-if="experience != 0">
+                          <v-btn
+                            text
+                            @click="addProfessionalInfo"
+                            class="primary--text"
+                            ><v-icon class="mr-4">mdi-plus-circle-outline</v-icon>Add more
+                            professional details(optional)</v-btn
+                          >
+                        </v-col>
+                      </v-row>
+                    </v-card>
+                  </v-card>
+                </v-form>
           </v-card>
           <v-btn
             :loading="isCreatingUser"
@@ -1255,7 +1220,7 @@ export default {
   data() {
     return {
       e1: 1,
-      experience: "Experienced",
+      experience: 0,
       isCurrentlyWorking: false,
       isFetchingLocation: false,
       windowHeight: window.innerHeight,
@@ -1353,10 +1318,28 @@ export default {
           certificate_url: "",
         },
       ],
+      experiences: [
+        {
+          min: 0,
+          max: 0
+        },
+        {
+          min: 0,
+          max: 1
+        },
+        {
+          min: 1,
+          max: 3
+        },
+        {
+          min: 3,
+          max: 5
+        },
+      ],
       professionalInfos: [
         {
-          experience_year: 0,
-          experience_month: 0,
+          experience_max: 0,
+          experience_min: 0,
           position: "",
           employee_type_id: 0,
           start_date: "",
@@ -1456,10 +1439,8 @@ export default {
             this.personalInfo.pincode = response.data.address.postcode.toString();
             this.personalInfo.taluka_name = response.data.address.county;
             this.personalInfo.city_name = response.data.address.neighbourhood;
-            this.personalInfo.address =
-              response.data.address.building +
-              ", " +
-              response.data.address.road;
+            const address = response.data.display_name.split(", ");
+            this.personalInfo.address = address.length >= 2 ? address[0] + ", " + address[1] : address.length >= 1 ? address[0] : this.personalInfo.state_name + ", " + this.personalInfo.pincode;
             this.isFetchingLocation = false;
           }
         },
@@ -1547,13 +1528,15 @@ export default {
         this.isCreatingUser = true;
         const professionalInfos = this.professionalInfos.map((profession) => {
           const newProfession = profession;
+          newProfession.experience_max = this.experiences[this.experience].max;
+          newProfession.experience_min = this.experiences[this.experience].min;
           if (profession.isCurrentlyWorking) {
             newProfession.end_date = "";
           }
           return newProfession;
         });
         const response =
-          this.experience == "Fresher"
+          this.experience == 0
             ? await ProfessionalController.createUserProfessionalInfo([
                 {
                   is_fresher: true,
@@ -1608,7 +1591,7 @@ export default {
       const academinInfo = response.data.data;
       this.academicQualifications = academinInfo.map((item) => {
         return {
-          institution: item.institution,
+        institution: item.institution,
         programme: item.programme,
         start_date: item.start_date,
         end_date: item.end_date,
@@ -1630,8 +1613,8 @@ export default {
       const professionalInfo = response.data.data;
       this.professionalInfos = professionalInfo.map((item) => {
         return {
-          experience_year: item.experience_year,
-          experience_month: item.experience_month,
+          experience_max: item.experience_max,
+          experience_min: item.experience_min,
           position: item.position,
           employee_type_id: item.employee_type_id,
           start_date: item.start_date,
@@ -1639,6 +1622,7 @@ export default {
           isCurrentlyWorking: (item.start_date.length != 0 && item.end_date.length == 0) ? true : false,
         }
       });
+      this.experience = this.professionalInfos.length ? this.experiences.findIndex((item) => item.max === this.professionalInfos[0].experience_max) : 1;
     },
 
     async getUserInfo() {
@@ -1766,8 +1750,8 @@ export default {
     },
     addProfessionalInfo() {
       this.professionalInfos.push({
-        experience_year: 0,
-        experience_month: 0,
+        experience_max: 0,
+        experience_min: 0,
         position: "",
         employee_type_id: 0,
         start_date: "",

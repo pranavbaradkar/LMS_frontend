@@ -13,12 +13,16 @@
             👋</v-card-title>
           <v-menu offset-y>
             <template v-slot:activator="{ on, attrs }">
-              <v-btn color="primary" dark v-bind="attrs" v-on="on" @click="goToProfile" text icon>
+              <v-btn color="primary" dark v-bind="attrs" v-on="on" text icon>
                 <v-avatar>
                   <v-img src="../assets/user.png"></v-img>
                 </v-avatar>
               </v-btn>
             </template>
+            <div class="d-flex flex-column">
+            <v-btn @click="goToProfile">Profile</v-btn>
+            <v-btn @click="logout">logout</v-btn>
+            </div>
           </v-menu>
         </v-row>
       </v-list-item-action>

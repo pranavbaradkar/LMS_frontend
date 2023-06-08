@@ -1,31 +1,6 @@
 <template height="80">
   <div class="surface">
-    <v-app-bar app elevation="0" color="surface" class="justify-start">
-      <v-list-item>
-        <v-list-item-icon>
-          <v-img src="../assets/logo.svg" contain height="64"></v-img>
-        </v-list-item-icon>
-        <v-list-item-content> </v-list-item-content>
-        <v-list-item-action>
-          <v-row class="align-center">
-            <v-card-title class="font-weight-light pr-0">Hello,</v-card-title>
-
-            <v-card-title class="pl-2" v-if="userInfo != null"
-              >{{ userInfo.first_name }} 👋</v-card-title
-            > 
-            <v-menu offset-y>
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn color="primary" dark v-bind="attrs" v-on="on" @click="goToProfile" text icon>
-                  <v-avatar>
-                    <v-img src="../assets/user.png"></v-img>
-                  </v-avatar>
-                </v-btn>
-              </template>
-            </v-menu>
-          </v-row>
-        </v-list-item-action>
-      </v-list-item>
-    </v-app-bar>
+    <nav-bar></nav-bar>
     <v-container class="white-background">
       <!-- :height="getHeight" -->
       <v-card
@@ -341,7 +316,9 @@
                       size="300"
                       height="173"
                       color="grey"
-                    ></v-list-item-avatar>
+                    >
+                    <v-img src="@/assets/OTbanner.svg"></v-img>
+                  </v-list-item-avatar>
                   </v-list-item>
                   <v-list-item three-line>
                     <v-list-item-content class="pt-0">
@@ -470,10 +447,11 @@ import SchoolController from "@/controllers/SchoolController";
 import BoardController from "@/controllers/BoardController";
 import LevelController from "@/controllers/LevelController";
 import SubjectController from "@/controllers/SubjectController";
+import NavBar from '@/components/navBar.vue';
 
 export default {
+  components: { NavBar },
   name: "HomeView",
-
   data() {
     return {
       selectedAssessment: {},
@@ -775,6 +753,7 @@ export default {
       this.isEdit = false;
       this.getUserInterests();
       this.getUserInterestEdit();   
+      this.getAllAssessment();
       return response;
     },
     async getBoards() {

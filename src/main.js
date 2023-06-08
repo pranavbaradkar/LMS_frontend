@@ -11,7 +11,7 @@ Vue.use(
   GmapVue, {
     load: {
       // [REQUIRED] This is the unique required value by Google Maps API
-      key: 'AIzaSyB6VKjg8YZbX4kymR-bgUMEgQQKzG4iRJ8',
+      key: 'AIzaSyAD5twRtN_60No5ZqBlp7JcpIsRfwE23RM',
       libraries: 'places',
       customCallback: 'MyCustomCallback',
     },

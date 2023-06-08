@@ -26,7 +26,7 @@
                       <v-icon @click="$router.go(-1)">mdi-arrow-left</v-icon>
                     </div>
                     <div style="font-size: 39px" class="font-weight-bold ml-8">
-                      PADC
+                      Cature
                     </div>
                     <div
                       style="font-size: 14px; color: #000; width: 80%"
