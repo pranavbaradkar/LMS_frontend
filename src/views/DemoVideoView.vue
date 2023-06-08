@@ -240,6 +240,7 @@ export default {
           // this.$router.push(`/assessment/${assessmentId}/mains/setup`);
           let response2 = await AssessmentController.postSetupMainsAssessment({
             demo_link: response.data.data.url,
+            demo_video_status: 'SUBMITTED'
           });
 
           if (
