@@ -706,7 +706,7 @@
                                 ></v-text-field
                               ></v-col> </v-row
                             ><v-row class="py-0">
-                              <v-col class="py-0 c-text-field"
+                              <v-col cols="10" class="py-0 c-text-field"
                                 ><v-text-field
                                   v-model="qualification.field_of_study"
                                   
@@ -721,6 +721,17 @@
                                   ]"
                                 ></v-text-field
                               ></v-col>
+                              <v-col cols="2" class="py-0 c-text-field"
+                          ><v-text-field
+                            v-model="qualification.grade_score"
+                            maxLength="4"
+                            label="Score"
+                            suffix="%"
+                            :rules="[
+                              (v) => /^[0-9]{0,2}(\.[0-9]{1,2})?$|^-?(100)(\.[0]{1,2})?$/.test(v) || 'Score not valid'
+                            ]"
+                          ></v-text-field
+                        ></v-col>
                             </v-row>
 
                             <v-row class="py-0">
