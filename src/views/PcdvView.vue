@@ -240,6 +240,9 @@ export default {
 
   beforeDestroy() {
     window.removeEventListener("resize", this.onResize);
+    if(video) {
+      video.srcObject.getTracks().forEach((track) => track.stop());
+    }
   },
   created() {
     this.getUserInfo();
