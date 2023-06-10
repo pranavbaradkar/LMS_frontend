@@ -433,7 +433,7 @@
                               )
                             "
                             elevation="0"
-                            height="50px"
+                            min-height="50px"
                             width="100%"
                             v-if="option.option_type == 'TEXT'"
                             class="px-4 w-100 d-flex justify-start cursor sub-text-option"
@@ -547,7 +547,7 @@
                             )
                           "
                           elevation="0"
-                          height="50px"
+                          min-height="50px"
                           width="100%"
                           v-if="option.option_type == 'TEXT'"
                           class="px-4 w-100 d-flex justify-start cursor sub-text-option"
@@ -1537,15 +1537,17 @@ export default {
   },
   mounted() {
     window.addEventListener("beforeunload", this.handleBeforeUnload);
-    document.addEventListener("keydown", this.handleKeyPress);
 
-    ["visibilitychange"].forEach((event) => {
-      window.addEventListener(event, this.handleTabBlurFocus);
-    });
-    ["copy", "paste"].forEach((event) => {
-      window.addEventListener(event, this.handleCopyPaste);
-    });
+    if(this.testType.toLowerCase() == "mains") {
+      document.addEventListener("keydown", this.handleKeyPress);
 
+      ["visibilitychange"].forEach((event) => {
+        window.addEventListener(event, this.handleTabBlurFocus);
+      });
+      ["copy", "paste"].forEach((event) => {
+        window.addEventListener(event, this.handleCopyPaste);
+      });
+    }
     this.startTimer();
 
     this.$nextTick(() => {
