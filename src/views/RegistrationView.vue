@@ -840,7 +840,14 @@
                 class="mx-4 my-4 primary--text"
                 depressed
                 outlined
-                @click="e1++"
+                @click="() => {
+                  e1++;
+                  if (e1 === 3) {
+                    this.$mixpanel.track('ProfessionInfoStepLoaded', {
+            user_type: this.userInfo.user_type,
+          });
+                  }
+                  }"
               >
                 Skip
                 <v-icon class="ml-2">
@@ -1268,6 +1275,7 @@ import GradeController from "@/controllers/GradeController";
 import SubjectController from "@/controllers/SubjectController";
 import LogedInUserInfo from "@/controllers/LogedInUserInfo";
 import AuthService from "../services/AuthService";
+import { APP_NAME } from '@/constant';
 
 export default {
   name: "RegistrationView",
@@ -1281,6 +1289,7 @@ export default {
   // },
   data() {
     return {
+      appName: APP_NAME,
       e1: 1,
       experience: 0,
       isCurrentlyWorking: false,
@@ -1477,6 +1486,11 @@ export default {
     },
     async location() {
       this.isFetchingLocation = true;
+      this.$mixpanel.track("GetLocationClicked", {
+            user_type: this.userInfo.user_type,
+            screen_name: "PersonalInfoScreen",
+            app_name: this.appName,
+          });
       navigator.geolocation.getCurrentPosition(
         async (position) => {
           this.lat = position.coords.latitude; //'26.4838767';
@@ -1517,7 +1531,13 @@ export default {
     async goToStep2() {
       console.log("clicked step 2 okay")
       if (this.$refs.step1.validate()) {
-        console.log("userif conditon");
+        this.$mixpanel.identify(this.userInfo.id)
+        this.$mixpanel.people.set({
+        $name: this.personalInfo.first_name + this.personalInfo.last_name,
+        $email: this.personalInfo.email,
+        $phone: this.personalInfo.mobile,
+      });
+        console.log("userif conditon", this.userInfo.id);
         this.isCreatingUser = true;
         if (this.isCurrentLocation) {
           this.personalInfo.country_id = null;
@@ -1530,9 +1550,16 @@ export default {
         );
         console.log(response);
         if (response.data.success) {
+          this.$mixpanel.track('NextButtonClicked', {
+          personalInfo: this.personalInfo,
+          screen_name: 'PersonalInfoScreen',
+          app_name: this.appName,
+          user_type: this.userInfo.user_type,
+          });
           this.$mixpanel.track("AcademicsPageLoaded", {
             user_type: this.userInfo.user_type,
-            screen_name: "AcademicsScreen",
+            screen_name: "AcademicInfoScreen",
+            app_name: this.appName,
           });
           this.isCreatingUser = false;
           this.successDialog = true;
@@ -1559,11 +1586,14 @@ export default {
         if (response.data.success) {
           this.$mixpanel.track("NextButtonClicked", {
             academics_info: this.academicQualifications,
-            screen_name: "AcademicProfileInformationScreen",
+            screen_name: "AcademicInfoScreen",
+            app_name: this.appName,
+            user_type: this.userInfo.user_type,
           });
           this.$mixpanel.track("ProfessionInfoStepLoaded", {
             user_type: this.userInfo.user_type,
             screen_name: "ProfessionInfoScreen",
+            app_name: this.appName,
           });
           this.isCreatingUser = false;
           this.successDialog = true;
@@ -1601,6 +1631,12 @@ export default {
               professionalInfos
           );
         if (response.data.success) {
+          this.$mixpanel.track("SubmitButtonClicked", {
+            professional_info: this.professionalInfo,
+            screen_name: "ProfessionalInfoScreen",
+            app_name: this.appName,
+            user_type: this.userInfo.user_type,
+          });
           this.isCreatingUser = false;
           this.successDialog = true;
           this.$router.replace("/interests");
@@ -1610,15 +1646,23 @@ export default {
         }
         console.log(response);
         let mixpanelData = {
-          personal_info: this.personalInfo,
+          app_name: this.appName,
+          user_type: this.userInfo.user_type,
         };
-        this.academicQualifications.forEach((item, index) => {
-          mixpanelData[`academics_info_${index + 1}`] = item;
-        });
-        professionalInfos.forEach((item, index) => {
-          mixpanelData[`professional_info_${index + 1}`] = item;
-        });
+        // this.academicQualifications.forEach((item, index) => {
+        //   mixpanelData[`academics_info_${index + 1}`] = item;
+        // });
+        // professionalInfos.forEach((item, index) => {
+        //   mixpanelData[`professional_info_${index + 1}`] = item;
+        // });
+        
         this.$mixpanel.track("SaveProfileDetailsClicked", mixpanelData);
+        this.$mixpanel.identify(this.userInfo.id);
+        this.$mixpanel.people.set({
+        $personal_info: this.personalInfo,
+        $academic_info: this.academicQualifications,
+        $professional_info: this.professionalInfos,
+      });
       }
     },
     async startTest() {
@@ -1687,6 +1731,11 @@ export default {
       this.userInfo = response.data.user;
       //console.log("User: Registration", this.userInfo);
       if (this.userInfo.is_personal_info_captured) {
+        this.$mixpanel.track("AcademicsPageLoaded", {
+            user_type: this.userInfo.user_type,
+            screen_name: "AcademicInfoScreen",
+            app_name: this.appName,
+          });
         this.e1 = 2;
       }
       this.personalInfo.is_email_verified = this.userInfo.is_email_verified;
@@ -1711,10 +1760,17 @@ export default {
       this.personalInfo.dob = this.userInfo.dob ? this.userInfo.dob : '';
       this.personalInfo.state_id = this.userInfo.state_id;
 
+      const userId = this.userInfo.id;
+      console.log(userId);
+      this.$mixpanel.identify(userId);
+
+      if (this.e1 == 1) {
       this.$mixpanel.track("PersonalInformationStepLoaded", {
         user_type: this.userInfo.user_type,
         screen_name: "PersonalProfileInformationScreen",
+        app_name: this.appName,
       });
+    }
     },
     onResize() {
       this.windowHeight = window.innerHeight;
@@ -1820,6 +1876,25 @@ export default {
       });
       this.expandedPanelIndex = this.professionalInfos.length - 1;
     },
+    async resendOtp() {
+      this.usingPhone = false;
+      this.resendBool = false;
+      this.time = 119;
+
+      await AuthService.generateOTP({
+        email: this.personalInfo.email,
+      });
+      this.isGenerateOtpClicked = true;
+      this.otpTimmer();
+      this.$mixpanel.track("ResendOTPClicked", {
+        email_address: this.email,
+        user_type: this.userInfo.user_type,
+        screen_name: "PersonalInfoScreen",
+        app_name: this.appName,
+      });
+
+      // console.log("opt send response", response)
+    },
     async generateOtp() {
       this.usingPhone = false;
       this.resendBool = false;
@@ -1832,11 +1907,36 @@ export default {
       this.otpTimmer();
       this.$mixpanel.track("VerifyEmailClicked", {
         email_address: this.personalInfo.email,
-        screen_name: "PersonalProfileInformationScreen",
+        screen_name: "PersonalInfoScreen",
+        user_type: this.userInfo.user_type,
+        app_name: this.appName,
       });
 
       // console.log("opt send response", response)
     },
+
+    async resendPhoneOtp() {
+      this.time = 119;
+      this.resendBool = false;
+      const response = await AuthService.generateOTP({
+        mobile: this.personalInfo.phone_no,
+      });
+
+      if (response) {
+        this.otpDialog = true;
+      }
+
+      this.isGenerateOtpClicked = true;
+      this.otpTimmer();
+      this.$mixpanel.track("ResendOTPClicked", {
+        phone_number: this.phoneNumber,
+        screen_name: "PersonalInfoScreen",
+        app_name: this.appName,
+        user_type: this.userInfo.user_type,
+      });
+      // console.log("opt send response", response)
+    },
+
     async generatePhoneOtp() {
       this.time = 119;
       this.resendBool = false;
@@ -1850,9 +1950,11 @@ export default {
 
       this.isGenerateOtpClicked = true;
       this.otpTimmer();
-      this.$mixpanel.track("VerifyMobileClicked", {
-        phone_number: this.personalInfo.phone_no,
-        screen_name: "PersonalProfileInformationScreen",
+      this.$mixpanel.track("VerifyPhoneClicked", {
+        phone_number: this.phoneNumber,
+        screen_name: "PersonalInfoScreen",
+        app_name: this.appName,
+        user_type: this.personalInfo.user_type,
       });
 
       // console.log("opt send response", response)
@@ -1879,9 +1981,13 @@ export default {
           user_id: this.userInfo.id,
         });
         this.$mixpanel.track("VerifyOTP", {
-          counter_secs_taken: 45,
-          otp_status: "Verified",
-          screen_name: "EnterOTPEmailScreen",
+              email: this.email,
+              otp: this.otp,
+              counter_secs_taken: 119 - this.time,
+              otp_status: res.success,
+              screen_name: "PersonalInfoScreen",
+              app_name: this.appName,
+              user_type: this.userInfo.user_type,
         });
         this.personalInfo.is_email_verified = res.success;
         this.otpDialog = false;
@@ -1893,10 +1999,14 @@ export default {
           user_id: this.userInfo.id,
         });
         this.$mixpanel.track("VerifyOTP", {
-          counter_secs_taken: 45,
-          otp_status: "Verified",
-          screen_name: "EnterOTPMobileScreen",
-        });
+            mobile: this.phoneNumber,
+          otp: this.otp,
+            counter_secs_taken: 119 - this.time,
+              otp_status: res.success,
+              screen_name: "PersonalInfoScreen",
+              app_name: this.appName,
+              user_type: this.personalInfo.user_type,
+          });
         this.personalInfo.is_phone_verified = res.success;
         this.otpDialog = false;
         //console.log("RES VLAUE ", res);

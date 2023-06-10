@@ -76,6 +76,7 @@ import "../styles.css";
 import LogedInUserInfo from "@/controllers/LogedInUserInfo";
 import navBar from "@/components/navBar.vue"
 import AssessmentController from "../controllers/AssessmentController";
+import { APP_NAME } from '@/constant';
 
 var video, startBtn, stopBtn, stream, recorder;
 
@@ -90,6 +91,7 @@ export default {
   },
   data() {
     return {
+      userInfo: {},
       windowHeight: window.innerHeight,
       interval: null,
       mins: 0,
@@ -103,6 +105,10 @@ export default {
     async getUserInfo() {
       const response = await LogedInUserInfo.getUserInfo();
       this.userInfo = response.data.user;
+      this.$mixpanel.track("CaptureLoaded", {
+      app_name: APP_NAME,
+      user_type: this.userInfo.user_type,
+    });
     },
     onResize() {
       this.windowHeight = window.innerHeight;
@@ -148,6 +154,10 @@ export default {
       stopBtn.style.display = 'block';
       // stopBtn.removeAttribute('disabled');
       // startBtn.disabled = true;
+      this.$mixpanel.track("startRecording", {
+      app_name: APP_NAME,
+      user_type: this.userInfo.user_type,
+    });
     },
     stopRecording() {
       recorder.ondataavailable = e => {
@@ -157,6 +167,10 @@ export default {
       clearInterval(this.interval);
       // startBtn.removeAttribute('disabled');
       // stopBtn.disabled = true;
+      this.$mixpanel.track("stopRecording", {
+      app_name: APP_NAME,
+      user_type: this.userInfo.user_type,
+    });
     },
     async sendUploadonS3(blob) {
       const formData = new FormData();
@@ -190,7 +204,11 @@ export default {
               
         let response = await AssessmentController.uploadS3Video(formData);
         console.log(response);
-
+        this.$mixpanel.track("SubmitVideoClicked", {
+          app_name: APP_NAME,
+          user_type: this.userInfo.user_type,
+          screen_name: "CaptureScreen"
+    });
         if(response.status == 200)  {
           // this.$router.push(`/assessment/${assessmentId}/mains/setup`);
           let response2 = await AssessmentController.postSetupMainsAssessment({
