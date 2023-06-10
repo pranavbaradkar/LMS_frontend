@@ -409,19 +409,6 @@
                       >
                       </v-select>
                     </v-col>
-                    <v-col cols="6" class="py-0 c-text-field">
-                      <v-select
-                        v-model="personalInfo.talukTehsil"
-                        :value="talukTehsil"
-                        label="Taluka / Tehsil"
-                        :items="talukas"
-                        item-value="id"
-                        item-text="taluka_name"
-                        @change="fetchCities"
-                      >
-                      </v-select>
-                    </v-col> </v-row
-                  ><v-row class="py-0">
                     <v-col cols="6" class="py-0">
                       <v-select
                         v-model="personalInfo.city_id"
@@ -433,6 +420,8 @@
                       >
                       </v-select>
                     </v-col>
+                     </v-row
+                  ><v-row class="py-0">
                     <v-col cols="6" class="py-0 c-text-field">
                       <v-text-field
                         v-model="personalInfo.pincode"
@@ -485,15 +474,6 @@
                     </v-col>
                     <v-col cols="6" class="py-0 c-text-field">
                       <v-text-field
-                        v-model="personalInfo.taluka_name"
-                        label="Taluk / Tehsil"
-                        readonly
-                      >
-                      </v-text-field>
-                    </v-col> </v-row
-                  ><v-row class="py-0">
-                    <v-col cols="6" class="py-0 c-text-field">
-                      <v-text-field
                         v-model="personalInfo.city_name"
                         readonly
                         label="City / Village"
@@ -501,6 +481,8 @@
                       >
                       </v-text-field>
                     </v-col>
+                     </v-row
+                  ><v-row class="py-0">
                     <v-col cols="6" class="py-0 c-text-field">
                       <v-text-field
                         v-model="personalInfo.pincode"
@@ -1438,7 +1420,7 @@ export default {
               response.data.address.state_district;
             this.personalInfo.pincode = response.data.address.postcode.toString();
             this.personalInfo.taluka_name = response.data.address.county;
-            this.personalInfo.city_name = response.data.address.neighbourhood;
+            this.personalInfo.city_name = response.data.address.city;
             const address = response.data.display_name.split(", ");
             this.personalInfo.address = address.length >= 2 ? address[0] + ", " + address[1] : address.length >= 1 ? address[0] : this.personalInfo.state_name + ", " + this.personalInfo.pincode;
             this.isFetchingLocation = false;

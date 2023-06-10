@@ -188,12 +188,15 @@ import RecommendedAssessmentController from "@/controllers/RecommendedAssessment
 // const { googleMapsApiInitializer } = helpers;
 import { getGoogleMapsAPI } from 'gmap-vue';
 import axios from 'axios';
+import LogedInUserInfo from '@/controllers/LogedInUserInfo';
+import { APP_NAME } from '@/constant';
 
 export default {
   components: { navBar },
   name: "HomeView",
   data() {
     return {
+      userInfo: {},
       notificationSMS: false,
       notificationEmail: false,
       assessmentId: null,
@@ -254,6 +257,12 @@ export default {
       // });
     },
     redirect() {
+      this.$mixpanel.track("IdentifyClicked", {
+          app_name: APP_NAME,
+          user_type: this.userInfo.user_type,
+          screen_name: "MainsIntroScreen",
+          time: new Date(this.startTime),
+    });
       if (!this.isExistPadv) {
         this.$router.push(`/assessment/mains/padv`);
       }
@@ -351,14 +360,20 @@ export default {
           query: {},
         });
       }
-
-
-
+    },
+    async getUserInfo() {
+      const response = await LogedInUserInfo.getUserInfo();
+      this.userInfo = response.data.user;
+      this.$mixpanel.track("MainsIntoScreenLoaded", {
+          app_name: APP_NAME,
+          user_type: this.userInfo.user_type,
+    });
     },
   },
   created() {
     this.getMainsSetup();
     this.getRecommendedAssessment();
+    this.getUserInfo();
   },
 };
 </script>

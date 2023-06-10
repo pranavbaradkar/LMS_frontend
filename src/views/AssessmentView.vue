@@ -42,6 +42,7 @@
             <v-card-title class="question-heading d-flex justify-content-between pb-0">
               Question Listing
               <div class="filtericon" @click="() => {
+                  this.$mixpanel.track('QuestionFilterClicked', {...assessmentMixPanel});
                   isFilter = !isFilter;
                   filterBy = null;
                 }">
@@ -57,15 +58,15 @@
             </v-card-title>
 
             <div class="legend-flag" v-if="isFilter">
-              <div class="legend-contain cursor-pointer" :class="filterBy=='answered' ? 'active' : ''" @click="filterBy = 'answered'">
+              <div class="legend-contain cursor-pointer" :class="filterBy=='answered' ? 'active' : ''" @click="filterByClicked('answered')">
                 <span class="icon answered-bg me-2"></span>
                 <span class="label">Answered</span>
               </div>
-              <div class="legend-contain cursor-pointer" :class="filterBy=='skipped' ? 'active' : ''"  @click="filterBy = 'skipped'">
+              <div class="legend-contain cursor-pointer" :class="filterBy=='skipped' ? 'active' : ''"  @click="filterByClicked('skipped')">
                 <span class="icon skipped-bg me-2"></span>
                 <span class="label">Skipped</span>
               </div>
-              <div class="legend-contain cursor-pointer" :class="filterBy=='bookmark' ? 'active' : ''" @click="filterBy = 'bookmark'">
+              <div class="legend-contain cursor-pointer" :class="filterBy=='bookmark' ? 'active' : ''" @click="filterByClicked('bookmark')">
                 <span class="icon bookmark-bg me-2"></span>
                 <span class="label">Bookmark</span>
               </div>
@@ -914,7 +915,20 @@
             elevation="0"
             block
             class="white--text exit-text font-size-14"
-            @click="confirmExitDialog = true"
+            @click="() => {
+              this.$mixpanel.track('AssessmentClosedClicked', {
+        counter_sec: this.seconds,
+        total_time_spent_in_sec: this.assessment.tests[0].duration_of_assessment * 60 - this.seconds,
+        assessment_id: this.assessment.id,
+          assessment_name: this.assessment.name,
+          screen_name: 'AssessmentScreen',
+          assessment_type: this.testType,
+          assessment_level: this.assessment.tests && this.assessment.tests.length > 0 ? this.assessment.tests[0].level.name : null,
+          app_name: this.appName,
+          user_type: this.userInfo.user_type,
+      });
+              confirmExitDialog = true
+              }"
             >Exit Test</v-btn
           >
 
@@ -929,15 +943,15 @@
                 <div>
                   <v-tabs v-model="tabs" fixed-tabs>
                     <!-- <v-tabs-slider></v-tabs-slider> -->
-                    <v-tab v-if="testType=='mains'" href="#mobile-tabs-5-1" class="primary--text">
+                    <v-tab @click="this.$mixpanel.track('NotificationTabClicked', {...assessmentMixPanel});" v-if="testType=='mains'" href="#mobile-tabs-5-1" class="primary--text">
                       <img src="../assets/notification.png" />
                     </v-tab>
 
-                    <v-tab href="#mobile-tabs-5-2" class="primary--text">
+                    <v-tab @click="this.$mixpanel.track('CalculatorTabClicked', {...assessmentMixPanel});" href="#mobile-tabs-5-2" class="primary--text">
                       <img src="../assets/math.png" />
                     </v-tab>
 
-                    <v-tab href="#mobile-tabs-5-3" class="primary--text">
+                    <v-tab @click="this.$mixpanel.track('NotepadTabClicked', {...assessmentMixPanel});" href="#mobile-tabs-5-3" class="primary--text">
                       <img src="../assets/clipboard.png" />
                     </v-tab>
                   </v-tabs>
@@ -1316,7 +1330,19 @@
                 depressed
                 class="black--text mt-5 mb-5 me-2 w-50"
                 large
-                @click="confirmExitDialog = false"
+                @click="() => {
+                  this.$mixpanel.track('AssessmentClosedNoClicked', {
+                    counter_sec: this.seconds,
+        total_time_spent_in_sec: this.assessment.tests[0].duration_of_assessment * 60 - this.seconds,
+        assessment_id: this.assessment.id,
+          assessment_name: this.assessment.name,
+          screen_name: 'AssessmentScreen',
+          assessment_type: this.testType,
+          assessment_level: this.assessment.tests && this.assessment.tests.length > 0 ? this.assessment.tests[0].level.name : null,
+          app_name: this.appName,
+          user_type: this.userInfo.user_type,
+      });
+                  confirmExitDialog = false}"
                 >NO</v-btn
               >
               <v-btn
@@ -1429,6 +1455,7 @@ import LogedInUserInfo from "@/controllers/LogedInUserInfo";
 import Vue from "vue";
 import "./style/assessment-view.css";
 import Calculator from "@/components/calculator.vue"
+import { APP_NAME } from '@/constant';
 export default {
   name: "AssessmentView",
   components: {
@@ -1436,6 +1463,8 @@ export default {
   },
   data() {
     return {
+      assessmentMixPanel: {},
+      appName: APP_NAME,
       assetType: "",
       userInfo: {},
       testType: "",
@@ -1593,6 +1622,10 @@ export default {
   },
 
   methods: {
+    filterByClicked (filter) {
+      this.filterBy = filter;
+      this.$mixpanel.track('AssesmentFilterClicked', {...this.assessmentMixPanel, ...{filter_type: filter}});
+    },
     handleTabBlurFocus(event) {
       if(document.visibilityState == 'hidden') {
         console.log();
@@ -1678,6 +1711,17 @@ export default {
         });
     },
     redirectHome() {
+      this.$mixpanel.track("AssessmentClosedYesClicked", {
+        counter_sec: this.seconds,
+        total_time_spent_in_sec: this.assessment.tests[0].duration_of_assessment * 60 - this.seconds,
+        assessment_id: this.assessment.id,
+          assessment_name: this.assessment.name,
+          screen_name: "AssessmentScreen",
+          assessment_type: this.testType,
+          assessment_level: this.assessment.tests && this.assessment.tests.length > 0 ? this.assessment.tests[0].level.name : null,
+          app_name: this.appName,
+          user_type: this.userInfo.user_type,
+      });
       window.location.href="/";
     },
     stopRecording() {
@@ -1930,7 +1974,7 @@ export default {
         }
       );
       this.$mixpanel.track("SubmitButtonClicked", {
-        assessment_id: this.assessment.id,
+        ...this.assessmentMixPanel,
         questions_answered: {
           count: this.answeredProgress,
           question_id: this.questions.filter((item) => item.myAnswer != null),
@@ -1953,6 +1997,8 @@ export default {
         screen_name: "AssessmentScreen",
       });
       this.sendAnswerGivenEvent();
+      this.sendBookmarkEvent();
+      this.sendSkippedEvent();
       //console.log(response);
       if (response.data.success) {
         // this.successDialog = true;
@@ -2183,8 +2229,9 @@ export default {
     async next() {
       this.cleanMTFOption();
       this.$mixpanel.track("NextButtonClicked", {
+        ...this.assessmentMixPanel,
         question_id: this.selectedQuestion.id,
-        question_number_in_view: this.selectedQuestion + 1,
+        question_number_in_assesment: this.selectedQuestion + 1,
         question_bookmarked: this.bookmarked.includes(
           this.questions[this.selectedQuestion]
         ),
@@ -2195,9 +2242,14 @@ export default {
         screen_name: "AssessmentScreen",
         difficulty_level:
           this.questions[this.selectedQuestion].difficulty_level,
-        skill: this.questions[this.selectedQuestion].skill.name,
+        complexity_level:
+          this.questions[this.selectedQuestion].complexity_level,
+        skill: this.questions[this.selectedQuestion].skill_id,
         Subject: this.questions[this.selectedQuestion].subject,
-        // is_answer_correct: this.questions[this.selectedQuestion].is_correct,
+        strand_id: this.questions[this.selectedQuestion].strand_id,
+        sub_strand_id: this.questions[this.selectedQuestion].sub_strand_id,
+        topic_id: this.questions[this.selectedQuestion].topic_id,
+        lo_ids: this.questions[this.selectedQuestion].lo_ids,
       });
       this.selectedQuestion = this.selectedQuestion + 1;
       this.scrollMethod("scrollId" + this.selectedQuestion);
@@ -2235,6 +2287,7 @@ export default {
       }
       this.cleanMTFOption();
       this.$mixpanel.track("PreviousButtonClicked", {
+        ...this.assessmentMixPanel,
         question_id: this.selectedQuestion.id,
         question_number_in_view: this.selectedQuestion + 1,
         question_bookmarked: this.bookmarked.includes(
@@ -2262,12 +2315,27 @@ export default {
         this.selectedQuestion = this.questions.indexOf(item);
         this.scrollMethod("scrollId" + this.selectedQuestion);
         this.$mixpanel.track("QuestionListClicked", {
+          ...this.assessmentMixPanel,
           question_id: this.selectedQuestion.id,
           question_number_in_view: this.selectedQuestion + 1,
           question_bookmarked: this.bookmarked.includes(
             this.questions[this.selectedQuestion]
           ),
+          option_selected:
+          this.questions[this.selectedQuestion].myAnswer == null
+            ? "NA"
+            : this.questions[this.selectedQuestion].myAnswer,
           screen_name: "AssessmentScreen",
+          difficulty_level:
+          this.questions[this.selectedQuestion].difficulty_level,
+        complexity_level:
+          this.questions[this.selectedQuestion].complexity_level,
+        skill: this.questions[this.selectedQuestion].skill_id,
+        Subject: this.questions[this.selectedQuestion].subject,
+        strand_id: this.questions[this.selectedQuestion].strand_id,
+        sub_strand_id: this.questions[this.selectedQuestion].sub_strand_id,
+        topic_id: this.questions[this.selectedQuestion].topic_id,
+        lo_ids: this.questions[this.selectedQuestion].lo_ids,
         });
       }
       setTimeout(() => {
@@ -2278,15 +2346,70 @@ export default {
       this.questions
         .filter((item) => item.myAnswer != null)
         .forEach((question) => {
+          let correct_answer = Array.isArray(question.myAnswer) ? question.question_options.filter((item) => item.correct_answer != "").map((item) => item.option_key) == question.myAnswer : question.question_options.find(
+              (option) => option.option_key == question.myAnswer
+            ).correct_answer != ""
           this.$mixpanel.track("AnswerGiven", {
+            ...this.assessmentMixPanel,
             question_id: question.id,
             option_selected: question.myAnswer,
-            is_answer_correct: question.question_options.find(
-              (option) => option.option_key == question.myAnswer
-            ).is_correct,
+            is_answer_correct: correct_answer,
             difficulty_level: question.difficulty_level,
             screen_name: "AssessmentScreen",
             time_taken_in_sec: question.timeTaken,
+        complexity_level: question.complexity_level,
+        skill_id: question.skill_id,
+        Subject: question.subject,
+        strand_id: question.strand_id,
+        sub_strand_id: question.sub_strand_id,
+        topic_id: question.topic_id,
+        lo_ids: question.lo_ids,
+        bloom_taxonomy: question.blooms_taxonomy,
+          });
+        });
+    },
+    sendSkippedEvent() {
+      this.questions
+        .filter((item) => this.skipped.includes(item))
+        .forEach((question) => {
+          this.$mixpanel.track("Skipped", {
+            ...this.assessmentMixPanel,
+            question_id: question.id,
+            option_selected: question.myAnswer,
+            difficulty_level: question.difficulty_level,
+            screen_name: "AssessmentScreen",
+            time_taken_in_sec: question.timeTaken,
+        complexity_level: question.complexity_level,
+        skill: question.skill_id,
+        Subject: question.subject,
+        strand_id: question.strand_id,
+        sub_strand_id: question.sub_strand_id,
+        topic_id: question.topic_id,
+        lo_ids: question.lo_ids,
+        bloom_taxonomy: question.blooms_taxonomy,
+          });
+        });
+    },
+    sendBookmarkEvent() {
+      this.questions
+        .filter((item) => this.bookmarked.includes(item))
+        .forEach((question) => {
+          console.log(question);
+          this.$mixpanel.track("Bookmark", {
+            ...this.assessmentMixPanel,
+            question_id: question.id,
+            option_selected: question.myAnswer,
+            difficulty_level: question.difficulty_level,
+            screen_name: "AssessmentScreen",
+            time_taken_in_sec: question.timeTaken,
+        complexity_level: question.complexity_level,
+        skill: question.skill_id,
+        Subject: question.subject,
+        strand_id: question.strand_id,
+        sub_strand_id: question.sub_strand_id,
+        topic_id: question.topic_id,
+        lo_ids: question.lo_ids,
+        bloom_taxonomy: question.blooms_taxonomy,
           });
         });
     },
@@ -2384,14 +2507,19 @@ export default {
       return confirmationMessage;
     },
     async changeTestStatus() {
-      if (this.testType == "Screening") {
-        this.$mixpanel.track("AssessmentLoaded", {
+      this.assessmentMixPanel = {
           assessment_id: this.assessment.id,
           assessment_name: this.assessment.name,
           screen_name: "AssessmentScreen",
           assessment_type: this.testType,
           assessment_level: this.assessment.tests && this.assessment.tests.length > 0 ? this.assessment.tests[0].level.name : null,
-        });
+          app_name: this.appName,
+          user_type: this.userInfo.user_type,
+      }
+      if (this.testType == "Screening") {
+        this.$mixpanel.track("AssessmentLoaded",
+          {...this.assessmentMixPanel}
+        );
         console.log("Screening started");
         const response = await AssessmentController.startScreening(
           this.assessmentId,
@@ -2399,13 +2527,9 @@ export default {
         );
         console.log(response);
       } else {
-        this.$mixpanel.track("AssessmentLoaded", {
-          assessment_id: this.assessment.id,
-          assessment_name: this.assessment.name,
-          screen_name: "AssessmentScreen",
-          assessment_type: this.testType,
-          assessment_level: this.assessment.tests && this.assessment.tests.length > 0 ? this.assessment.tests[0].level.name : null,
-        });
+        this.$mixpanel.track("AssessmentLoaded", 
+        {...this.assessmentMixPanel}
+        );
         console.log("Mains started");
         const response = await AssessmentController.startMains(
           this.assessmentId,

@@ -220,6 +220,7 @@ import AuthService from "../services/AuthService";
 import LogedInUserInfo from "@/controllers/LogedInUserInfo";
 import NotificationController from "@/controllers/NotificationController"
 import NavBar from '@/components/navBar.vue';
+import { APP_NAME } from '@/constant';
 export default {
   components: {NavBar},
   name: "HomeView",
@@ -233,11 +234,14 @@ export default {
       recommendedAssessment: {},
       assessmentConfigData: {},
       type: 'SCREENING',
+      userInfo: {},
     };
   },
   mounted() {
     this.$mixpanel.track("ThankyouPageLoaded", {
       screen_name: "ThankyouScreen",
+      app_name: APP_NAME,
+      user_type: this.userInfo.user_type,
     });
   },
 
@@ -283,14 +287,20 @@ export default {
       this.$mixpanel.track("SubmissionSucceeded", {
         notification_sms: this.notificationSMS,
         screen_name: "ThankyouScreen",
+        app_name: APP_NAME,
+        user_type: this.userInfo.user_type,
       });
       this.$mixpanel.track("SubmissionSucceeded", {
         notification_sms: this.notificationWhatsapp,
         screen_name: "ThankyouScreen",
+        app_name: APP_NAME,
+        user_type: this.userInfo.user_type,
       });
       this.$mixpanel.track("SubmissionSucceeded", {
         notification_email: this.notificationEmail,
         screen_name: "ThankyouScreen",
+        app_name: APP_NAME,
+        user_type: this.userInfo.user_type,
       });
       // this.$router.push({
       //   path: "/report",
@@ -315,18 +325,24 @@ export default {
       this.$mixpanel.track("NotificationOptionsSelected", {
         method: "Message",
         phone_number: this.$store.state.userInfo.phone_no,
+        app_name: APP_NAME,
+        user_type: this.userInfo.user_type,
       });
     },
     whatsappSelected () {
       this.$mixpanel.track("NotificationOptionsSelected", {
         method: "Whatsapp",
         phone_number: this.$store.state.userInfo.phone_no,
+        app_name: APP_NAME,
+        user_type: this.userInfo.user_type,
       });
     },
     emailSelected() {
       this.$mixpanel.track("NotificationOptionsSelected", {
         method: "Email",
         email_id: this.$store.state.userInfo.email,
+        app_name: APP_NAME,
+        user_type: this.userInfo.user_type,
       });
     },
     async getAssessmentInfo (assessmentId) {
@@ -351,7 +367,12 @@ export default {
       if (response.data.data.length == 0) {
         this.dialog = true;
       } 
-    }
+    },
+
+    async getUserInfo() {
+      const response = await LogedInUserInfo.getUserInfo();
+      this.userInfo = response.data.user;
+    },
   },
   created() {
     // console.log("userInfo");
@@ -362,11 +383,14 @@ export default {
     this.assessmentId = assessmentId;
     this.getAssessmentInfo(assessmentId);
     this.getNotificationInfo();
+    this.getUserInfo();
     // console.log('assessment id',this.assessmentId)
     this.$mixpanel.track("SubmissionSucceeded", {
       assessment_id: assessmentId,
       assessment_name: assessmentName,
       screen_name: "SubmissionSucceededScreen",
+      app_name: APP_NAME,
+      user_type: this.userInfo.user_type,
     });
 
     

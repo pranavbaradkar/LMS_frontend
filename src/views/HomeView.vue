@@ -282,7 +282,30 @@
                 color="#277BC0"
                 class="white--text mt-4"
                 large
-                @click="dialog = true"
+                @click="() => {
+                  this.$mixpanel.track('StartTestClicked', {
+        assessment_id: this.recommendedAssessment.id,
+        assessment_name: this.recommendedAssessment.name,
+        source: 'RecommendedScreen',
+        screen_name: 'RecommendedTestScreen',
+        assessment_type:
+          this.recommendedAssessment.tests[0].assessment_type,
+        assessment_level: this.recommendedAssessment.tests[0].level.name,
+        is_recommended: true,
+        user_type: this.userInfo.user_type,
+        app_name: this.appName,
+      });
+      this.$mixpanel.track('InstructionsModalLoaded', {
+          assessment_id: this.recommendedAssessment.id,
+          assessment_name: this.selectedAssessment.name,
+          screen_name: 'RecommendedTestScreen',
+          assessment_level: this.recommendedAssessment.tests[0].level.name,
+          assessment_type:this.recommendedAssessment.tests[0].assessment_type,
+          is_recommended: true,
+          user_type: this.userInfo.user_type,
+          app_name: this.appName,
+        });
+                  dialog = true}"
                 >START TEST</v-btn
               >
             </div>
@@ -448,12 +471,14 @@ import BoardController from "@/controllers/BoardController";
 import LevelController from "@/controllers/LevelController";
 import SubjectController from "@/controllers/SubjectController";
 import NavBar from '@/components/navBar.vue';
+import { APP_NAME } from '@/constant';
 
 export default {
   components: { NavBar },
   name: "HomeView",
   data() {
     return {
+      appName: APP_NAME,
       selectedAssessment: {},
       mouseHover: null,
       tab: null,
@@ -573,6 +598,8 @@ export default {
         assessment_name: this.selectedAssessment.name,
         screen_name: "RecommendedTestScreen",
         assessment_level: this.selectedAssessment.tests[this.e1 - 1].level.name,
+        user_type: this.userInfo.user_type,
+        app_name: this.appName,
       });
     },
     formatTime(seconds) {
@@ -607,11 +634,14 @@ export default {
       this.$mixpanel.track("StartTestClicked", {
         assessment_id: this.selectedAssessment.id,
         assessment_name: this.selectedAssessment.name,
-        source: "instruction_page/recommendation_page",
+        source: "instructionModal",
         screen_name: "RecommendedTestScreen",
         assessment_type:
           this.selectedAssessment.tests[this.e1 - 1].assessment_type,
         assessment_level: this.selectedAssessment.tests[this.e1 - 1].level.name,
+        is_recommended: this.selectedAssessment.id == this.recommendedAssessment.id,
+        user_type: this.userInfo.user_type,
+        app_name: this.appName,
       });
 
       console.log('selected',this.selectedAssessment);
@@ -682,19 +712,28 @@ export default {
         this.noOfQuestions =
           selectedTest.total_no_of_questions;
         this.dialog = true;
-        this.$mixpanel.track("OtherViewTestClicked", {
-          assessment_id: this.selectedAssessment.id,
-          assessment_name: this.selectedAssessment.name,
-          screen_name: "RecommendedTestScreen",
-          assessment_level:
-            selectedTest.level.name,
-        });
+        this.$mixpanel.track('StartTestClicked', {
+        assessment_id: this.selectedAssessment.id,
+        assessment_name: this.selectedAssessment.name,
+        source: 'RecommendedScreen',
+        screen_name: 'RecommendedTestScreen',
+        assessment_type:
+          this.selectedAssessment.tests[this.e1 - 1].assessment_type,
+        assessment_level: this.selectedAssessment.tests[this.e1 - 1].level.name,
+        is_recommended: false,
+        user_type: this.userInfo.user_type,
+        app_name: this.appName,
+      })
+
         this.$mixpanel.track("InstructionsModalLoaded", {
           assessment_id: this.selectedAssessment.id,
           assessment_name: this.selectedAssessment.name,
           screen_name: "AssessmentInstructionsScreen",
           assessment_level:
             selectedTest.level.name,
+          is_recommended: false,
+          user_type: this.userInfo.user_type,
+        app_name: this.appName,
         });
         console.log(this.selectedAssessment);
       } else {
@@ -710,6 +749,8 @@ export default {
       this.$mixpanel.track("UserLoggedOut", {
         session_timeout: false,
         screen_name: "ThankyouScreen",
+        user_type: this.userInfo.user_type,
+        app_name: this.appName,
       });
       this.$mixpanel.reset();
       this.$router.push("/login");
@@ -831,9 +872,6 @@ export default {
       const response =
         await RecommendedAssessmentController.getRecommendedAssessment("", {type: 'SCREENING'});
       //console.log("response", response);
-      this.$mixpanel.track("RecommendationScreenLoaded", {
-        screen_name: "RecommendationScreen",
-      });
       if (response.status == 401) {
         AuthService.logout();
       }
@@ -897,6 +935,16 @@ export default {
       }
 
       this.selectedAssessment = this.recommendedAssessment;
+
+      this.$mixpanel.track("RecommendationScreenLoaded", {
+        screen_name: "RecommendationScreen",
+        user_type: this.userInfo.user_type,
+        recommended_assessment_id : this.recommendedAssessment.id,
+        recommended_assessment_name: this.recommendedAssessment.name,
+        assessment_type : this.testType,
+        assesment_level: 'primary',
+        other_test_ids: this.allAssessments.map((item) => item.id),
+      });
 
       // else if (
       //   this.recommendedAssessment && this.recommendedAssessment.screening_status != "PENDING" &&

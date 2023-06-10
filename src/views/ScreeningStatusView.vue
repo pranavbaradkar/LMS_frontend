@@ -43,8 +43,7 @@
 
             <v-btn height="48px" color="primary" class="white--text mt-4" large elevation="0" v-if="assessmentData.mains_status == 'PASSED' && type == 'mains' && !isDemoVideoExist"
             @click="startDemoVideo(assessmentData.id)">
-              Start Demo Video</v-btn>
-
+            Start Demo Video</v-btn>
           </div>
         </v-card>
       </v-img>
@@ -58,6 +57,7 @@ import AssessmentController from "../controllers/AssessmentController";
 import AuthService from "../services/AuthService";
 import LogedInUserInfo from "@/controllers/LogedInUserInfo";
 import navBar from "@/components/navBar.vue";
+import { APP_NAME } from '@/constant';
 
 export default {
   components: {navBar},
@@ -78,6 +78,8 @@ export default {
   mounted() {
     this.$mixpanel.track("ThankyouPageLoaded", {
       screen_name: "ThankyouScreen",
+      app_name: APP_NAME,
+      user_type: this.userInfo.user_type,
     });
   },
 
@@ -113,6 +115,8 @@ export default {
       this.$mixpanel.track("UserLoggedOut", {
         session_timeout: false,
         screen_name: "ThankyouScreen",
+        app_name: APP_NAME,
+        user_type: this.userInfo.user_type,
       });
       this.$mixpanel.reset();
       this.$router.push("/login");
@@ -136,9 +140,29 @@ export default {
     },
     viewResult(assessmentId) {
       this.$router.push(`/assessment/${assessmentId}/${this.$route.params.type}/result`);
+      this.$mixpanel.track("ViewResultClicked", {
+        user_type: this.userInfo.user_type,
+        app_name: APP_NAME,
+        assessment_id: this.assessmentData.id,
+        assessment_name: this.assessmentData.name,
+        screen_name: "ScreeningStatusView",
+        assessment_level: this.assessmentData.tests[0].level.name,
+        assessment_type: this.assessmentData.tests[0].assessment_type,
+        status: this.assessmentData.screening_status ? this.assessmentData.screening_status : this.assessmentData.mains_status
+      });
     },
     setupMains() {
       this.$router.push(`/assessment/mains/setup`);
+      this.$mixpanel.track("SetUpMainsClicked", {
+        user_type: this.userInfo.user_type,
+        app_name: APP_NAME,
+        assessment_id: this.assessmentData.id,
+        assessment_name: this.assessmentData.name,
+        screen_name: "ScreeningStatusView",
+        assessment_level: this.assessmentData.tests[0].level.name,
+        assessment_type: this.assessmentData.tests[0].assessment_type,
+        status: this.assessmentData.screening_status ? this.assessmentData.screening_status : this.assessmentData.mains_status
+      });
     }
   },
   created() {

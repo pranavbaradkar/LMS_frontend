@@ -101,6 +101,8 @@ import { validationMixin } from "vuelidate";
 import moment from 'moment'
 import navBar from "@/components/navBar.vue"
 import AssessmentController from "../controllers/AssessmentController";
+import { APP_NAME } from '@/constant';
+import LogedInUserInfo from '@/controllers/LogedInUserInfo';
 
 export default {
   name: "RegistrationView",
@@ -120,7 +122,8 @@ export default {
       isLoading: false,
       timeSlotIndex: null,
       dateRangeIndex: null,
-      slotTiming: ["10:00 am","12:00 pm","01:00 pm","03:00 pm","06:00 pm"]
+      slotTiming: ["10:00 am","12:00 pm","01:00 pm","03:00 pm","06:00 pm"],
+      userInfo:{}
     }
   },
   methods: {
@@ -139,6 +142,14 @@ export default {
       else {
         alert(response.data.error)
       }
+      this.$mixpanel.track("SlotSelectionLoaded", {
+      app_name: APP_NAME,
+      user_type: this.userInfo.user_type,
+    });
+    },
+    async getUserInfo() {
+      const response = await LogedInUserInfo.getUserInfo();
+      this.userInfo = response.data.user;
     },
     async confirmSlot() {
       this.isLoading = true;
@@ -152,6 +163,13 @@ export default {
         let response = await AssessmentController.postSetupMainsAssessment({
           slot: new Date(datefinal),
         });
+
+      this.$mixpanel.track("ConfirmSlotClicked", {
+      app_name: APP_NAME,
+      user_type: this.userInfo.user_type,
+      slot_time: this.dateRange[this.dateRangeIndex].timeing[this.timeSlotIndex],
+      slot_date: this.dateRange[this.dateRangeIndex].day,
+      });
         
         if(response.status == 200)  {
           this.$router.push(`/assessment/mains/setup`);
@@ -179,6 +197,7 @@ export default {
   },
   created() {
    this.generateSlot();
+   this.getUserInfo();
   },
 };
 </script>

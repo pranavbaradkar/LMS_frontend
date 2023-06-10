@@ -95,7 +95,7 @@
                   style="margin-bottom: 20px"
                   src="@/assets/video-call.svg"
                 ></v-img>
-                <p class="mb-0 subtitle-2">PACD</p>
+                <p class="mb-0 subtitle-2">Capture</p>
               </v-card>
             </v-col>
         </v-row>
@@ -109,6 +109,8 @@ import { validationMixin } from "vuelidate";
 import navBar from "@/components/navBar.vue"
 import moment from 'moment';
 import AssessmentController from "../controllers/AssessmentController";
+import { APP_NAME } from '@/constant';
+import LogedInUserInfo from '@/controllers/LogedInUserInfo';
 export default {
   name: "RegistrationView",
   mixins: [validationMixin],
@@ -124,11 +126,17 @@ export default {
       windowHeight: window.innerHeight,
       isDateSelected: false,
       isVideoSelected: false,
-      mainsSetup: {}
+      mainsSetup: {},
+      userInfo: {},
     };
   },
   methods: {
     selectItem(param) {
+      this.$mixpanel.track(param == 'slot' ? 'SlotTabClicked' : 'CaptureClicked', {
+        screen_name: 'PreMainScreen',
+        app_name: APP_NAME,
+        user_type: this.userInfo.user_type,
+      });
       this.selectedType = param;
       if(param == 'slot' && this.isDateSelected == false) {
         this.$router.push(`/assessment/mains/slot`);
@@ -138,6 +146,11 @@ export default {
     },
     slotMain() {
       return moment(this.mainsSetup.slot, 'YYYY-MM-DDTHH:mm:sssZ').format('Do MMM, YY hh:mm a');
+    },
+
+    async getUserInfo() {
+      const response = await LogedInUserInfo.getUserInfo();
+      this.userInfo = response.data.user;
     },
     async getMainsSetup() {
       let response = await AssessmentController.getSetupMainsAssessment();
@@ -178,6 +191,7 @@ export default {
   },
   created() {
     this.getMainsSetup();
+    this.getUserInfo();
   },
 };
 </script>

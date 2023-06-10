@@ -122,6 +122,7 @@ import "../styles.css";
 import LogedInUserInfo from "@/controllers/LogedInUserInfo";
 import navBar from "@/components/navBar.vue";
 import AssessmentController from "../controllers/AssessmentController";
+import { APP_NAME } from '@/constant';
 
 var video, startBtn, stopBtn, stream, recorder;
 
@@ -150,6 +151,11 @@ export default {
     async getUserInfo() {
       const response = await LogedInUserInfo.getUserInfo();
       this.userInfo = response.data.user;
+      this.$mixpanel.track("DemoVideoLoaded", {
+          app_name: APP_NAME,
+          user_type: this.userInfo.user_type,
+          screen_name: "DemoVideoScreen"
+    });
     },
     onResize() {
       this.windowHeight = window.innerHeight;
@@ -191,6 +197,11 @@ export default {
       this.startTimer();
       recorder.start();
       stopBtn.style.display = "block";
+      this.$mixpanel.track("StartVideoClicked", {
+          app_name: APP_NAME,
+          user_type: this.userInfo.user_type,
+          screen_name: "DemoVideoScreen"
+    });
       // stopBtn.removeAttribute('disabled');
       // startBtn.disabled = true;
     },
@@ -200,6 +211,11 @@ export default {
       };
       recorder.stop();
       clearInterval(this.interval);
+      this.$mixpanel.track("StopVideoClicked", {
+          app_name: APP_NAME,
+          user_type: this.userInfo.user_type,
+          screen_name: "DemoVideoScreen"
+    });
       // startBtn.removeAttribute('disabled');
       // stopBtn.disabled = true;
     },
@@ -235,7 +251,11 @@ export default {
 
         let response = await AssessmentController.uploadS3Video(formData);
         console.log(response);
-
+        this.$mixpanel.track("SubmitVideoClicked", {
+          app_name: APP_NAME,
+          user_type: this.userInfo.user_type,
+          screen_name: "DemoVideoScreen"
+        });
         if (response.status == 200) {
           // this.$router.push(`/assessment/${assessmentId}/mains/setup`);
           let response2 = await AssessmentController.postSetupMainsAssessment({

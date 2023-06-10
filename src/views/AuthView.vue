@@ -32,6 +32,10 @@
                   vibgyouBool = true;
                   usingPhone = false;
                   reset()
+                  this.$mixpanel.track('VGOSTabClicked', {
+                    app_name: appName,
+                    screen_name: screenName,
+                  });
                 }" 
                 class="px-6 py-2 left-button" :class="vibgyouBool ? 'active-border' : 'non-active-border'">
                 VGOS
@@ -41,6 +45,10 @@
                   vibgyouBool = false;
                   usingPhone = false;
                   reset()
+                  this.$mixpanel.track('JobSeekerTabClicked', {
+                    app_name: appName,
+                    screen_name: screenName,
+                  });
                 }
               ">
                 Job Seeker
@@ -74,11 +82,11 @@
               <span height="40px">
                 <v-text-field v-if="vibgyouBool" label="Email address" suffix="@vgos.org"
                   :rules="vgosRules" class="rounded-xl" placeholder="Enter Email Id"
-                  v-model="email" solo outlined @focus="triggerEmailEvent">
+                  v-model="email" solo outlined>
                 </v-text-field>
                 <v-text-field v-else label="Email address"
                   :rules="emailRules" class="rounded-xl" placeholder="Enter Email Id"
-                  v-model="email" solo outlined @focus="triggerEmailEvent">
+                  v-model="email" solo outlined>
                 </v-text-field>
               </span>
             </v-form>
@@ -140,8 +148,8 @@
               </v-col>
             </v-row>
             <v-card-text class="text-center">
-              <v-btn  v-if="usingPhone" text class="primary--text pl-4" @click="generatePhoneOtp" :disabled="resendBool">RESEND OTP</v-btn>
-              <v-btn v-else text class="pl-4 primary--text"  @click="generateOtp" :disabled="resendBool">RESEND OTP</v-btn>
+              <v-btn  v-if="usingPhone" text class="primary--text pl-4" @click="resendPhoneOtp" :disabled="resendBool">RESEND OTP</v-btn>
+              <v-btn v-else text class="pl-4 primary--text"  @click="resendOtp" :disabled="resendBool">RESEND OTP</v-btn>
             </v-card-text>
             <v-card-title class="justify-center">
               <v-btn :disabled="otp.length < 6" color="primary" class="white--text" rounded-sm large width="90%" height="36" @click="validateOTP">
@@ -159,12 +167,15 @@
 <script>
 import "../styles.css";
 import AuthService from "../services/AuthService";
+import { APP_NAME } from "@/constant";
 
 export default {
   components: {},
   name: "AuthView",
   data() {
     return {
+      screenName: 'LoginScreen',
+      appName: APP_NAME,
       isGenerateOtpClicked: false,
       otp: "",
       usingPhone: true,
@@ -201,12 +212,15 @@ export default {
       this.$mixpanel.track("PhoneNumberFilled", {
         phone_number: this.phoneNumber,
         screen_name: "LoginScreen",
+        app_name: APP_NAME,
       });
     },
     triggerEmailEvent() {
       this.$mixpanel.track("EmailFilled", {
         email_address: this.email,
         screen_name: "LoginScreen",
+        app_name: APP_NAME,
+        user_type: this.vibgyouBool ? 'VGOS' : 'JOB_SEEKER',
       });
     },
     isNumber: function (evt) {
@@ -221,16 +235,38 @@ export default {
     selectCountry() {
       this.ctList = false;
     },
+
+    async resendOtp() {
+      this.time = 119;
+
+      await AuthService.generateOTP({
+        email: this.vibgyouBool ? this.email + "@vgos.org" : this.email,
+      });
+      this.$mixpanel.track("ResendOTPClicked", {
+        email_address: this.email,
+        user_type: this.vibgyouBool ? "VGOS" : "JOB_SEEKER",
+        screen_name: "EnterOTPScreen",
+        app_name: this.appName,
+      });
+      // console.log("opt send response", response)
+      this.isGenerateOtpClicked = true;
+      this.otpTimmer();
+    },
+
     async generateOtp() {
       this.time = 119;
 
       await AuthService.generateOTP({
         email: this.vibgyouBool ? this.email + "@vgos.org" : this.email,
       });
-      this.$mixpanel.track("GenerateOTPClicked", {
+      this.$mixpanel.track("OTPScreenLoaded", {
+        app_name: this.appName,
+      });
+      this.$mixpanel.track("SendOTPClicked", {
         email_address: this.email,
-        user_type: this.vibgyouBool ? "teacher" : "job_seeker",
+        user_type: this.vibgyouBool ? "VGOS" : "JOB_SEEKER",
         screen_name: "LoginScreen",
+        app_name: this.appName,
       });
       // console.log("opt send response", response)
       this.isGenerateOtpClicked = true;
@@ -241,16 +277,36 @@ export default {
       this.countryIso2 = iso2;
       this.dialCode = dialCode;
     },
+    async resendPhoneOtp() {
+      this.time = 119;
+      const status = await AuthService.generateOTP({
+        mobile: this.phoneNumber,
+      });
+      // console.log("otp generate res",response)
+      this.$mixpanel.track("ResendOTPClicked", {
+        phone_number: this.phoneNumber,
+        screen_name: "EnterOTPScreen",
+        app_name: this.appName,
+      });
+      // console.log("opt send response", response)
+      if (status) {
+        this.isGenerateOtpClicked = true;
+      }
+      this.otpTimmer();
+    },
     async generatePhoneOtp() {
       this.time = 119;
       const status = await AuthService.generateOTP({
         mobile: this.phoneNumber,
       });
       // console.log("otp generate res",response)
-      this.$mixpanel.track("GenerateOTPClicked", {
+      this.$mixpanel.track("OTPScreenLoaded", {
+        app_name: this.appName,
+      });
+      this.$mixpanel.track("SendOTPClicked", {
         phone_number: this.phoneNumber,
-        user_type: this.vibgyouBool ? "teacher" : "job_seeker",
         screen_name: "LoginScreen",
+        app_name: this.appName,
       });
       // console.log("opt send response", response)
       if (status) {
@@ -282,15 +338,23 @@ export default {
           });
           if (res.success) {
             this.$mixpanel.track("VerifyOTP", {
-              counter_secs_taken: 45,
+              email: this.email + "@vgos.org",
+              otp: this.otp,
+              counter_secs_taken: 119 - this.time,
               otp_status: "Verified",
               screen_name: "EnterOTPScreen",
+              app_name: this.appName,
+              user_type: this.vibgyouBool ? 'VGOS' : 'JOB_SEEKER'
             });
           } else {
             this.$mixpanel.track("VerifyOTP", {
-              counter_secs_taken: 45,
+              email: this.email + "@vgos.org",
+              otp: this.otp,
+              counter_secs_taken: 119 - this.time,
               otp_status: "Incorrect",
               screen_name: "EnterOTPScreen",
+              app_name: this.appName,
+              user_type: this.vibgyouBool ? 'VGOS' : 'JOB_SEEKER'
             });
           }
         } else {
@@ -300,18 +364,27 @@ export default {
             debug: false,
             method: 'email',
           });
-          console.log(res, "hjdsbdchj")
-          if (res.success) {
+          console.log(res);
+          if (res && res.success) {
             this.$mixpanel.track("VerifyOTP", {
-              counter_secs_taken: 45,
+              email: this.email,
+              otp: this.otp,
+              counter_secs_taken: 119 - this.time,
               otp_status: "Verified",
               screen_name: "EnterOTPScreen",
+              app_name: this.appName,
+              user_type: this.vibgyouBool ? 'VGOS' : 'JOB_SEEKER'
             });
           } else {
+            console.log("incorrect");
             this.$mixpanel.track("VerifyOTP", {
-              counter_secs_taken: 45,
+              email: this.email,
+              otp: this.otp,
+              counter_secs_taken: 119 - this.time,
               otp_status: "Incorrect",
               screen_name: "EnterOTPScreen",
+              app_name: this.appName,
+              user_type: this.vibgyouBool ? 'VGOS' : 'JOB_SEEKER'
             });
           }
         }
@@ -329,17 +402,25 @@ export default {
           debug: false,
           method: 'phone'
         });
-        if (res.success) {
+        if (res && res.success) {
           this.$mixpanel.track("VerifyOTP", {
-            counter_secs_taken: 45,
-            otp_status: "Verified",
-            screen_name: "EnterOTPScreen",
+            mobile: this.phoneNumber,
+          otp: this.otp,
+            counter_secs_taken: 119 - this.time,
+              otp_status: "Verified",
+              screen_name: "EnterOTPScreen",
+              app_name: this.appName,
+              user_type: this.vibgyouBool ? 'VGOS' : 'JOB_SEEKER'
           });
         } else {
           this.$mixpanel.track("VerifyOTP", {
-            counter_secs_taken: 45,
-            otp_status: "Incorrect",
-            screen_name: "EnterOTPScreen",
+            mobile: this.phoneNumber,
+            otp: this.otp,
+            counter_secs_taken: 119 - this.time,
+              otp_status: "Incorrect",
+              screen_name: "EnterOTPScreen",
+              app_name: this.appName,
+              user_type: this.vibgyouBool ? 'VGOS' : 'JOB_SEEKER'
           });
         }
         // console.log(res)
@@ -357,10 +438,12 @@ export default {
     if (AuthService.isAuthenticated()) {
       if (this.$route.path !== "/") this.$router.replace("/");
     }
+    else {
     this.$mixpanel.track("LoginScreenLoaded", {
-      app_name: "Smart Staff Selection",
+      app_name: APP_NAME,
       screen_name: "LoginScreen",
     });
+    }
   },
   beforeCreate(){
     this.$mixpanel.track("AppOpened", {

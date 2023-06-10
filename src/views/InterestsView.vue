@@ -293,11 +293,13 @@ import LevelController from "@/controllers/LevelController";
 import SubjectController from "@/controllers/SubjectController";
 import UserIntrestController from "@/controllers/UserIntrestController";
 import LogedInUserInfo from "@/controllers/LogedInUserInfo";
+import { APP_NAME } from '@/constant';
 
 export default {
   name: "InterestsView",
   data() {
     return {
+      appName: APP_NAME,
       showAIScreen: false,
       SetUpPreferencesClicked: false,
       userInfo: {},
@@ -358,6 +360,17 @@ export default {
         case 1:
           if (this.userIntrestData.school_ids.length != 0) {       
             this.e1 = 2;
+            this.$mixpanel.track("LevelPreferncesLoaded", {
+      user_type: this.userInfo.user_type,
+      app_name: this.appName,
+      screen_name: 'PreferenceScreen'
+      });
+      this.$mixpanel.track("schoolPreferncesSelected", {
+      user_type: this.userInfo.user_type,
+      app_name: this.appName,
+      screen_name: 'PreferenceScreen',
+      selected_schools: this.schools.filter((school) => this.userIntrestData.school_ids.includes(school.id)).map((item) => item.name),
+      });
           }
           else {
             alert('Please Select at least one school')
@@ -367,7 +380,18 @@ export default {
         case 2:
           // if (this.$refs.step1.validate())
           if (this.userIntrestData.level_ids.length != 0) {
-            this.e1 = 3;         
+            this.e1 = 3;
+            this.$mixpanel.track("LevelPreferncesSelected", {
+      user_type: this.userInfo.user_type,
+      app_name: this.appName,
+      screen_name: 'PreferenceScreen',
+      selected_levels: this.levels.filter((level) => this.userIntrestData.level_ids.includes(level.id)).map((item) => item.name),
+      });
+            this.$mixpanel.track("BoardPreferncesLoaded", {
+      user_type: this.userInfo.user_type,
+      app_name: this.appName,
+      screen_name: 'PreferenceScreen'
+      });         
           }
           else {
             alert('Please Select at least one level')
@@ -376,13 +400,18 @@ export default {
           break;
         case 3:
         if (this.userIntrestData.board_ids.length != 0) {    
-          
-          
-
-          // if(this.userIntrestData.board_ids.length > 3){
-          //   alert("Maxi")
-          // }
           this.e1 = 4;
+          this.$mixpanel.track("BoardPreferncesSelected", {
+      user_type: this.userInfo.user_type,
+      app_name: this.appName,
+      screen_name: 'PreferenceScreen',
+      selected_boards: this.boards.filter((board) => this.userIntrestData.board_ids.includes(board.id)).map((item) => item.name),
+      });
+          this.$mixpanel.track("SubjectPreferncesLoaded", {
+      user_type: this.userInfo.user_type,
+      app_name: this.appName,
+      screen_name: 'PreferenceScreen'
+      });
         }
         else {
           alert('Please Select at least one one board')
@@ -392,8 +421,19 @@ export default {
           if( this.userIntrestData.subject_ids.length != 0){
             const res = await this.createUserIntrest();
             if(res.data.success) {
+              this.$mixpanel.track("SubjectPreferncesSelected", {
+      user_type: this.userInfo.user_type,
+      app_name: this.appName,
+      screen_name: 'PreferenceScreen',
+      selected_subjects: this.subjects.filter((subject) => this.userIntrestData.subject_ids.includes(subject.id)).map((item) => item.name),
+      });
               this.showAIScreen = true;
               this.SetUpPreferencesClicked = false;
+              this.$mixpanel.track("AIScreenLoaded", {
+      user_type: this.userInfo.user_type,
+      app_name: this.appName,
+      screen_name: 'PreferenceScreen'
+      });
               setTimeout(() => {
                 this.$router.replace("/");
                 console.log("navigating to homescreen")
@@ -450,14 +490,25 @@ export default {
       if(this.userInfo.is_interest_captured){
         this.$router.replace('/');
       }
-      this.$mixpanel.track("PersonalInformationStepLoaded", {
+      this.$mixpanel.track("WelcomePageLoaded", {
       user_type: this.userInfo.user_type,
-      screen_name: "PersonalProfileInformationScreen",
+      app_name: this.appName
     });
     },
 
     clickSetUpPreference () {
       this.SetUpPreferencesClicked = true;
+      this.$mixpanel.track("setUpPreferenceClicked", {
+      user_type: this.userInfo.user_type,
+      app_name: this.appName,
+      screen_name: 'WelcomePageScreen'
+      });
+
+      this.$mixpanel.track("schoolPreferncesLoaded", {
+      user_type: this.userInfo.user_type,
+      app_name: this.appName,
+      screen_name: 'PreferenceScreen'
+      });
       setTimeout(() => {
       document.getElementById('schoolBox').click();
     }, 1000);

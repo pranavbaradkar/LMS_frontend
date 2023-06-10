@@ -152,6 +152,7 @@ import {
   BarElement,
 } from "chart.js";
 import NavBar from '@/components/navBar.vue';
+import { APP_NAME } from '@/constant';
 ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale, LinearScale, BarElement);
 export default {
   name: "ResultView",
@@ -238,8 +239,28 @@ export default {
     },
     setupMains() {
       this.$router.push(`/assessment/mains/setup`);
+      this.$mixpanel.track("SetUpMainsClicked", {
+        user_type: this.userInfo.user_type,
+        app_name: APP_NAME,
+        assessment_id: this.assessmentData.id,
+        assessment_name: this.assessmentData.name,
+        screen_name: "ResultScreen",
+        assessment_level: this.assessmentData.tests[0].level.name,
+        assessment_type: this.assessmentData.tests[0].assessment_type,
+        status: this.assessmentData.screening_status
+      });
     },
     startDemoVideo(id) {
+      this.$mixpanel.track("StartDemoClicked", {
+        user_type: this.userInfo.user_type,
+        app_name: APP_NAME,
+        assessment_id: this.assessmentData.id,
+        assessment_name: this.assessmentData.name,
+        screen_name: "ResultScreen",
+        assessment_level: this.assessmentData.tests[0].level.name,
+        assessment_type: this.assessmentData.tests[0].assessment_type,
+        status: this.assessmentData.mains_status
+      });
       this.$router.push(`/assessment/${id}/mains/demo`);
     },
     formatTime(seconds) {
@@ -266,6 +287,8 @@ export default {
       this.$mixpanel.track("UserLoggedOut", {
         session_timeout: false,
         screen_name: "ThankyouScreen",
+        user_type: this.userInfo.user_type,
+        app_name: APP_NAME,
       });
       this.$mixpanel.reset();
       this.$router.push("/login");
@@ -283,6 +306,16 @@ export default {
         console.log(this.assessmentData);
       }
 
+      this.$mixpanel.track("ResultScreenLoaded", {
+        user_type: this.userInfo.user_type,
+        app_name: APP_NAME,
+        assessment_id: this.assessmentData.id,
+        assessment_name: this.assessmentData.name,
+        screen_name: "ResultScreen",
+        assessment_level: this.assessmentData.tests[0].level.name,
+        assessment_type: this.assessmentData.tests[0].assessment_type,
+        status: this.assessmentData.screening_status ? this.assessmentData.screening_status : this.assessmentData.mains_status
+      });
 
       let setupMains = await AssessmentController.getSetupMainsAssessment();
       if(setupMains.status == 200 && setupMains.data && setupMains.data.data && setupMains.data.data.demo_link) {
