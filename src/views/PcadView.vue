@@ -26,7 +26,7 @@
                       <v-icon @click="$router.go(-1)">mdi-arrow-left</v-icon>
                     </div>
                     <div style="font-size: 39px" class="font-weight-bold ml-8">
-                      Cature
+                      Capture
                     </div>
                     <div
                       style="font-size: 14px; color: #000; width: 80%"
@@ -154,7 +154,7 @@ export default {
       stopBtn.style.display = 'block';
       // stopBtn.removeAttribute('disabled');
       // startBtn.disabled = true;
-      this.$mixpanel.track("startRecording", {
+      this.$mixpanel.track("StartVideoClicked", {
       app_name: APP_NAME,
       user_type: this.userInfo.user_type,
     });
@@ -167,7 +167,7 @@ export default {
       clearInterval(this.interval);
       // startBtn.removeAttribute('disabled');
       // stopBtn.disabled = true;
-      this.$mixpanel.track("stopRecording", {
+      this.$mixpanel.track("StopVideoClicked", {
       app_name: APP_NAME,
       user_type: this.userInfo.user_type,
     });

@@ -1458,13 +1458,12 @@ export default {
           this.personalInfo
         );
         if (response.data.success) {
-          this.$mixpanel.track("AcademicsPageLoaded", {
-            user_type: this.userInfo.user_type,
-            screen_name: "AcademicsScreen",
-          });
           this.isCreatingUser = false;
           this.successDialog = true;
           this.expandedPanelIndex = 0;
+          this.$mixpanel.people.set({
+        $personal_info: this.personalInfo,
+      });
         } else {
           this.isCreatingUser = false;
           alert(response.data.error);
@@ -1483,17 +1482,12 @@ export default {
         );
         console.log(response);
         if (response.data.success) {
-          this.$mixpanel.track("NextButtonClicked", {
-            academics_info: this.academicQualifications,
-            screen_name: "AcademicProfileInformationScreen",
-          });
-          this.$mixpanel.track("ProfessionInfoStepLoaded", {
-            user_type: this.userInfo.user_type,
-            screen_name: "ProfessionInfoScreen",
-          });
           this.isCreatingUser = false;
           this.successDialog = true;
           this.expandedPanelIndex = 0;
+          this.$mixpanel.people.set({
+        $academic_info: this.academicQualifications,
+      });
         } else {
           this.isCreatingUser = false;
           alert(response.data.error);
@@ -1530,6 +1524,9 @@ export default {
         if (response.data.success) {
           this.isCreatingUser = false;
           this.successDialog = true;
+          this.$mixpanel.people.set({
+        $professional_info: this.professionalInfos,
+      });
         } else {
           alert(response.data.error);
           this.isCreatingUser = false;

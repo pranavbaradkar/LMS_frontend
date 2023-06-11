@@ -90,17 +90,14 @@
             <v-checkbox  :input-value="active" class="mt-2 mb-0"></v-checkbox>
             <v-row>
                 <v-col class="d-flex justify-center pa-0 mb-6 mt-1" color="primary">
-                    <div style="height: 48px; width: 48px; background-color: black;"></div>
+                    <div style="height: 48px; width: 48px;">
+                      <v-img :src="level.icon"></v-img>
+                    </div>
                 </v-col>
             </v-row>
             <v-row>
                 <v-col class="d-flex justify-center pa-0 mb-2" style="font-size: 14px; font-weight: 400;">
                     {{ level.name }}
-                </v-col>
-            </v-row>
-            <v-row>
-                <v-col class="d-flex justify-center pt-0" style="color: rgba(0, 0, 0, 0.6); font-size: 12px;">
-                    {{ level.subtext}}
                 </v-col>
             </v-row>
                         </v-col>
@@ -360,12 +357,12 @@ export default {
         case 1:
           if (this.userIntrestData.school_ids.length != 0) {       
             this.e1 = 2;
-            this.$mixpanel.track("LevelPreferncesLoaded", {
+            this.$mixpanel.track("LevelPreferencesLoaded", {
       user_type: this.userInfo.user_type,
       app_name: this.appName,
       screen_name: 'PreferenceScreen'
       });
-      this.$mixpanel.track("schoolPreferncesSelected", {
+      this.$mixpanel.track("SchoolPreferencesSelected", {
       user_type: this.userInfo.user_type,
       app_name: this.appName,
       screen_name: 'PreferenceScreen',
@@ -381,13 +378,13 @@ export default {
           // if (this.$refs.step1.validate())
           if (this.userIntrestData.level_ids.length != 0) {
             this.e1 = 3;
-            this.$mixpanel.track("LevelPreferncesSelected", {
+            this.$mixpanel.track("LevelPreferencesSelected", {
       user_type: this.userInfo.user_type,
       app_name: this.appName,
       screen_name: 'PreferenceScreen',
       selected_levels: this.levels.filter((level) => this.userIntrestData.level_ids.includes(level.id)).map((item) => item.name),
       });
-            this.$mixpanel.track("BoardPreferncesLoaded", {
+            this.$mixpanel.track("BoardPreferencesLoaded", {
       user_type: this.userInfo.user_type,
       app_name: this.appName,
       screen_name: 'PreferenceScreen'
@@ -401,13 +398,13 @@ export default {
         case 3:
         if (this.userIntrestData.board_ids.length != 0) {    
           this.e1 = 4;
-          this.$mixpanel.track("BoardPreferncesSelected", {
+          this.$mixpanel.track("BoardPreferencesSelected", {
       user_type: this.userInfo.user_type,
       app_name: this.appName,
       screen_name: 'PreferenceScreen',
       selected_boards: this.boards.filter((board) => this.userIntrestData.board_ids.includes(board.id)).map((item) => item.name),
       });
-          this.$mixpanel.track("SubjectPreferncesLoaded", {
+          this.$mixpanel.track("SubjectPreferencesLoaded", {
       user_type: this.userInfo.user_type,
       app_name: this.appName,
       screen_name: 'PreferenceScreen'
@@ -421,7 +418,7 @@ export default {
           if( this.userIntrestData.subject_ids.length != 0){
             const res = await this.createUserIntrest();
             if(res.data.success) {
-              this.$mixpanel.track("SubjectPreferncesSelected", {
+              this.$mixpanel.track("SubjectPreferencesSelected", {
       user_type: this.userInfo.user_type,
       app_name: this.appName,
       screen_name: 'PreferenceScreen',
@@ -498,13 +495,13 @@ export default {
 
     clickSetUpPreference () {
       this.SetUpPreferencesClicked = true;
-      this.$mixpanel.track("setUpPreferenceClicked", {
+      this.$mixpanel.track("SetUpPreferencesClicked", {
       user_type: this.userInfo.user_type,
       app_name: this.appName,
       screen_name: 'WelcomePageScreen'
       });
 
-      this.$mixpanel.track("schoolPreferncesLoaded", {
+      this.$mixpanel.track("SchoolPreferencesLoaded", {
       user_type: this.userInfo.user_type,
       app_name: this.appName,
       screen_name: 'PreferenceScreen'

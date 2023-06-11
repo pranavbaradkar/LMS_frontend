@@ -89,7 +89,7 @@
   color: rgba(0, 0, 0, 0.6);
 }
 
-.v-slide-group__prev {
+/* .v-slide-group__prev {
   align-items: center;
   display: flex;
   flex: 0 1 5px;
@@ -109,7 +109,7 @@
   position: absolute;
     right: -30px;
     top: 50%;
-}
+} */
 
 .vertical-steps-demo-video .v-stepper--vertical .v-stepper__step {
   padding: 0px 31px 0px;

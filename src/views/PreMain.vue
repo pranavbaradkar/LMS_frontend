@@ -151,6 +151,13 @@ export default {
     async getUserInfo() {
       const response = await LogedInUserInfo.getUserInfo();
       this.userInfo = response.data.user;
+
+      this.$mixpanel.track('SetUpMainsScreenLoaded', {
+        screen_name: 'PreMainScreen',
+        app_name: APP_NAME,
+        user_type: this.userInfo.user_type,
+      });
+
     },
     async getMainsSetup() {
       let response = await AssessmentController.getSetupMainsAssessment();

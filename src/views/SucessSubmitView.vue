@@ -171,7 +171,7 @@
               </div>
             </v-card-text>
           </v-card>
-          <v-card class="mx-auto mt-3" elevation="0">
+          <!-- <v-card class="mx-auto mt-3" elevation="0">
             <v-card-text
               class="thank-you-card pa-2 justify-space-between align-center"
             >
@@ -196,7 +196,7 @@
                 </div>
               </div>
             </v-card-text>
-          </v-card>
+          </v-card> -->
           <div class="d-flex justify-end w-100">
             <v-btn
               color="#277BC0"

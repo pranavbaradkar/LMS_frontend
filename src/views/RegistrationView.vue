@@ -914,7 +914,7 @@
                                             class="mr-6"
                                             :value="index"
                                           >
-                                            {{ index === 0 ? 'Fresher' : index === 1 ? 'upto 1' : exp.min + '-' + exp.max + ' years' }}
+                                            {{ index === 0 ? 'Fresher' : index === 1 ? 'upto 1' : index === 5 ? '10+ years' : exp.min + '-' + exp.max + ' years' }}
                                           </v-chip>
                                         </v-chip-group>
                                       </v-row>
@@ -1405,6 +1405,14 @@ export default {
           min: 3,
           max: 5
         },
+        {
+          min: 5,
+          max: 10
+        },
+        {
+          min: 10,
+          max: 100,
+        },
       ],
       professionalInfos: [
         {
@@ -1551,12 +1559,12 @@ export default {
         console.log(response);
         if (response.data.success) {
           this.$mixpanel.track('NextButtonClicked', {
-          personalInfo: this.personalInfo,
+          ...this.personalInfo,
           screen_name: 'PersonalInfoScreen',
           app_name: this.appName,
           user_type: this.userInfo.user_type,
           });
-          this.$mixpanel.track("AcademicsPageLoaded", {
+          this.$mixpanel.track("AcademicsInfoStepLoaded", {
             user_type: this.userInfo.user_type,
             screen_name: "AcademicInfoScreen",
             app_name: this.appName,
@@ -1585,14 +1593,14 @@ export default {
         console.log(response);
         if (response.data.success) {
           this.$mixpanel.track("NextButtonClicked", {
-            academics_info: this.academicQualifications,
+            ...this.academicQualifications,
             screen_name: "AcademicInfoScreen",
             app_name: this.appName,
             user_type: this.userInfo.user_type,
           });
-          this.$mixpanel.track("ProfessionInfoStepLoaded", {
+          this.$mixpanel.track("ProfessionalInfoStepLoaded", {
             user_type: this.userInfo.user_type,
-            screen_name: "ProfessionInfoScreen",
+            screen_name: "ProfessionalInfoScreen",
             app_name: this.appName,
           });
           this.isCreatingUser = false;
@@ -1632,7 +1640,7 @@ export default {
           );
         if (response.data.success) {
           this.$mixpanel.track("SubmitButtonClicked", {
-            professional_info: this.professionalInfo,
+            ...this.professionalInfos,
             screen_name: "ProfessionalInfoScreen",
             app_name: this.appName,
             user_type: this.userInfo.user_type,
@@ -1731,7 +1739,7 @@ export default {
       this.userInfo = response.data.user;
       //console.log("User: Registration", this.userInfo);
       if (this.userInfo.is_personal_info_captured) {
-        this.$mixpanel.track("AcademicsPageLoaded", {
+        this.$mixpanel.track("AcademicsInfoStepLoaded", {
             user_type: this.userInfo.user_type,
             screen_name: "AcademicInfoScreen",
             app_name: this.appName,

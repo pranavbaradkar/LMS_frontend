@@ -39,7 +39,9 @@
               {{ recommendedAssessment && recommendedAssessment.instructions }}
             </p>
             <!-- show setup mains button if screen test passed -->
-            <v-btn height="48px" :color="`${this.isExistPadv || !this.isPadvStart ? '#DADADA' : '#277BC0'}`"
+            <v-btn height="48px"
+              :disabled="this.isExistPadv || !this.isPadvStart"
+              :color="`${this.isExistPadv || !this.isPadvStart ? '#DADADA' : '#277BC0'}`"
               :class="`${this.isExistPadv || !this.isPadvStart ? 'gray--text' : 'white--text'}`" class="mt-4 me-2"
               elevation="0" large @click="redirect">
               Identify
@@ -47,8 +49,8 @@
                 'mdi-account-remove' }}</v-icon>
             </v-btn>
             <v-btn height="48px" :color="`${!this.isExistPadv ? '#DADADA' : '#277BC0'}`"
+              :disabled="!this.isExistPadv || !isVerify"
               :class="`${!this.isExistPadv ? 'gray--text' : 'white--text'}`" class="gray--text mt-4" elevation="0" large>
-              <!--  :disabled="!this.isExistPadv || !isVerify" -->
               Start Mains Test
             </v-btn>
           </div>
@@ -364,7 +366,7 @@ export default {
     async getUserInfo() {
       const response = await LogedInUserInfo.getUserInfo();
       this.userInfo = response.data.user;
-      this.$mixpanel.track("MainsIntoScreenLoaded", {
+      this.$mixpanel.track("MainsIntroScreenLoaded", {
           app_name: APP_NAME,
           user_type: this.userInfo.user_type,
     });

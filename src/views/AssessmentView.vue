@@ -1921,6 +1921,8 @@ export default {
         this.bookmarked.push(question);
         this.$mixpanel.track("QuestionBookmarked", {
           question_id: this.selectedQuestion.id,
+          user_type: this.userInfo.user_type,
+          app_name: APP_NAME,
           screen_name: "AssessmentScreen",
         });
         if (this.skipped.includes(question)) {
@@ -1932,6 +1934,8 @@ export default {
         this.bookmarked.splice(index, 1);
         this.$mixpanel.track("BookmarkRemoved", {
           question_id: this.selectedQuestion.id,
+          user_type: this.userInfo.user_type,
+          app_name: APP_NAME,
           screen_name: "AssessmentScreen",
         });
       }
@@ -2395,7 +2399,7 @@ export default {
         .filter((item) => this.bookmarked.includes(item))
         .forEach((question) => {
           console.log(question);
-          this.$mixpanel.track("Bookmark", {
+          this.$mixpanel.track("Bookmarked", {
             ...this.assessmentMixPanel,
             question_id: question.id,
             option_selected: question.myAnswer,
