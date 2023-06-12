@@ -20,7 +20,7 @@ Vue.use(
   }
 );
 
-Mixpanel.init('a2d7ee7e8dbf83885f9cd9f1b85bdb22', {
+Mixpanel.init(process.env.VUE_APP_MIX_PANEL, {
   debug: true
 });
 
