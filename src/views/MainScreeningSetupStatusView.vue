@@ -26,7 +26,7 @@
         </v-card-text>
       </v-card>
       <div class="text-h6 pb-0 mt-7">My Test</div>
-      <v-img width="100%" height="331px" src="../assets/home_banner.png" cover class="mt-4">
+      <v-img width="100%"  src="../assets/home_banner.png" cover class="mt-4 background-home">
         <v-card class="pa-10 d-flex align-center" elevation="0" width="100%" height="100%" variant="outlined"
           color="transparent">
           <div class="white--text text-container">
@@ -50,7 +50,9 @@
             </v-btn>
             <v-btn height="48px" :color="`${!this.isExistPadv ? '#DADADA' : '#277BC0'}`"
               :disabled="!this.isExistPadv || !isVerify"
-              :class="`${!this.isExistPadv ? 'gray--text' : 'white--text'}`" class="gray--text mt-4" elevation="0" large>
+              :class="`${!this.isExistPadv ? 'gray--text' : 'white--text'}`" class="gray--text mt-4" elevation="0" large
+              @click="redirectRecommended()"
+              >
               Start Mains Test
             </v-btn>
           </div>
@@ -268,6 +270,9 @@ export default {
       if (!this.isExistPadv) {
         this.$router.push(`/assessment/mains/padv`);
       }
+    },
+    redirectRecommended() {
+     window.location.href = `/#/assessment?id=${this.recommendedAssessment.id}&test=mains`;
     },
     startPADV() {
       this.isPadvStart = false;
