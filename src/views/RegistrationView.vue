@@ -1667,9 +1667,9 @@ export default {
         this.$mixpanel.track("SaveProfileDetailsClicked", mixpanelData);
         this.$mixpanel.identify(this.userInfo.id);
         this.$mixpanel.people.set({
-        $personal_info: this.personalInfo,
-        $academic_info: this.academicQualifications,
-        $professional_info: this.professionalInfos,
+        personal_info: this.personalInfo,
+        academic_info: this.academicQualifications,
+        professional_info: this.professionalInfos,
       });
       }
     },
