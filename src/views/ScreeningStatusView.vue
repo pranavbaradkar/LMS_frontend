@@ -3,7 +3,7 @@
     <nav-bar></nav-bar>
     <v-container class="white-background pb-5">
       <div class="text-h6 pb-0 mt-7">My Test</div>
-      <v-img width="100%" height="331px" src="../assets/home_banner.png" cover class="mt-4">
+      <v-img width="100%" height="auto" style="min-height: 331px" src="../assets/home_banner.png" cover class="mt-4">
         <v-card class="pa-10 d-flex align-center" elevation="0" width="100%" height="100%" variant="outlined"
           color="transparent">
           <div class="white--text text-container">
