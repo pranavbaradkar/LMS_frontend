@@ -867,7 +867,7 @@ export default {
     },
     async getRecommendedAssessment() {
 
-      var setupMains = await AssessmentController.getSetupMainsAssessment();
+      // var setupMains = await AssessmentController.getSetupMainsAssessment();
 
       const response =
         await RecommendedAssessmentController.getRecommendedAssessment("", {type: 'SCREENING'});
@@ -907,21 +907,11 @@ export default {
         });
       } else if ( this.recommendedAssessment && (this.recommendedAssessment.screening_status == "FAILED" ||
         this.recommendedAssessment.screening_status == "PASSED")) {
-          if(setupMains.status == 200) {
-            if(setupMains.data.data && (response.data.data.slot == null || response.data.data.video_link == null)) {
-              this.$router.push(`/assessment/mains/setup`);
-            } else {
-              this.$router.push({
-                path: `/assessment/${this.recommendedAssessment.id}/screening/status`,
-                query: {},
-              });
-            }
-          }  else {
+
             this.$router.push({
               path: `/assessment/${this.recommendedAssessment.id}/screening/status`,
               query: {},
             });
-          }
       }
       
       else {

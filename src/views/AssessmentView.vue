@@ -524,7 +524,7 @@
                         </v-card>
                       </v-radio-group>
 
-                      <div v-else>
+                      <div v-else class="w-100 radioGroup">
                       <v-card
                         elevation="0"
                         height="auto"
