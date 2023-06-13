@@ -1697,7 +1697,8 @@ export default {
         return;
       }
       const academinInfo = response.data.data;
-      this.academicQualifications = academinInfo.map((item) => {
+      this.academicQualifications = academinInfo.map((item, index) => {
+        this.selectedFile[index] = {name: item.certificate_url.split('certificate/')[1]}
         return {
           institution: item.institution,
         programme: item.programme,

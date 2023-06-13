@@ -272,7 +272,17 @@ export default {
       }
     },
     redirectRecommended() {
-     window.location.href = `/#/assessment?id=${this.recommendedAssessment.id}&test=mains`;
+      window.location.href = `/#/assessment?id=${this.recommendedAssessment.id}&test=mains`;
+      this.$mixpanel.track("StartMainsTestClicked", {
+          app_name: APP_NAME,
+          user_type: this.userInfo.user_type,
+          screen_name: "MainsIntroScreen",
+          assessment_id: this.recommendedAssessment.id,
+        assessment_name: this.recommendedAssessment.name,
+        assessment_type: this.recommendedAssessment.tests[0].assessment_type,
+        assessment_level: this.recommendedAssessment.tests[0].level.name,
+        time: new Date(this.startTime),
+    });
     },
     startPADV() {
       this.isPadvStart = false;

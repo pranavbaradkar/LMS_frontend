@@ -29,7 +29,7 @@
             </div>
           </v-card-title>
         </v-card>
-        <v-img width="100%" height="390" src="../assets/home_banner.svg" cover style="margin-top: 76px">
+        <v-img width="100%" height="auto" src="../assets/home_banner.svg" cover style="margin-top: 76px;min-height: 331px">
           <v-card class="pa-10 d-flex align-center" elevation="0" width="100%" height="100%" variant="outlined"
             color="transparent">
             <div class="white--text text-container">

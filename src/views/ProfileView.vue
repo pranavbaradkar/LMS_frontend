@@ -1349,7 +1349,9 @@ export default {
     onChange() {
       console.log(this.selectedFile[this.expandedPanelIndex]);
       console.log("selelcted file details", this.expandedPanelIndex);
+      if (this.selectedFile[this.expandedPanelIndex]) {
       this.getPreSignedUrl();
+      }
     },
     async getAllAssessment() {
       const response = await AssessmentController.getAllAssessment();
@@ -1568,7 +1570,8 @@ export default {
         return;
       }
       const academinInfo = response.data.data;
-      this.academicQualifications = academinInfo.map((item) => {
+      this.academicQualifications = academinInfo.map((item, index) => {
+        this.selectedFile[index] = {name: item.certificate_url.split('certificate/')[1]}
         return {
         institution: item.institution,
         programme: item.programme,
