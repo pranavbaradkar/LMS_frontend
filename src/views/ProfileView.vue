@@ -323,7 +323,7 @@
                       v-model="personalInfo.address"
                       label="Address*"
                       counter="100"
-                      maxLength="10"
+                      maxLength="100"
                       required
                       :rules="[(v) => !!v || 'Address is required']"
                       :readonly="isCurrentLocation ? true : false"
