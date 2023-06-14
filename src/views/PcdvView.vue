@@ -141,7 +141,10 @@ export default {
           startBtn.removeAttribute('disabled');
           startBtn.style.display = 'block';
           video.srcObject = stream;
-        }).catch(e => console.error(e));
+        }).catch(e => {
+          alert("Please enable your camera from browser reload browser again.")
+        });
+       
     },
     startRecording() {
       startBtn.style.display = 'none';
