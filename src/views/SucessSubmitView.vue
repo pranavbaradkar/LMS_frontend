@@ -356,7 +356,7 @@ export default {
       );
       if(response && response.data && response.data.data) {
         this.recommendedAssessment = response.data.data;
-        this.type = this.recommendedAssessment.screening_status === 'PASSED' ? 'MAINS' : 'SCREENING';
+        this.type = this.recommendedAssessment.screening_status ? 'SCREENING' : 'MAINS';
         this.assessmentConfigData = this.recommendedAssessment.tests.find(ele=> ele.assessment_type == this.type);
         console.log(this.recommendedAssessment);
       }

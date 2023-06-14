@@ -102,7 +102,7 @@
             </Doughnut>
             <div style="top: 50%; left: 50% ;position: absolute; transform: translate(-50%, -50%);"
               class="d-flex justify-center flex-column align-center">
-              <div style="font-size: 32px; line-height: 38px; font-weight: 500;">45 / 60</div>
+              <div style="font-size: 32px; line-height: 38px; font-weight: 500;">{{ assessmentResult.dataScore.scored }} / {{ assessmentResult.dataScore.total_score }}</div>
               <div style="font-size: 16px; line-height: 19px; font-weight: 500;">Test Score</div>
             </div>
           </v-card>

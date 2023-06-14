@@ -40,9 +40,9 @@
             </p>
             <!-- show setup mains button if screen test passed -->
             <v-btn height="48px"
-              :disabled="this.isExistPadv || !this.isPadvStart"
-              :color="`${this.isExistPadv || !this.isPadvStart ? '#DADADA' : '#277BC0'}`"
-              :class="`${this.isExistPadv || !this.isPadvStart ? 'gray--text' : 'white--text'}`" class="mt-4 me-2"
+              :disabled="!this.isPadvStart"
+              :color="`${!this.isPadvStart ? '#DADADA' : '#277BC0'}`"
+              :class="`${!this.isPadvStart ? 'gray--text' : 'white--text'}`" class="mt-4 me-2"
               elevation="0" large @click="redirect">
               Identify
               <v-icon small class="mx-2" :color="`${isVerify ? 'green' : 'red'}`">{{ isVerify ? 'mdi-account-check' :
@@ -151,14 +151,13 @@
                     font-size: 18px;
                     line-height: 21px;
                     letter-spacing: 0.02em;
-                  ">Vibgyor High</v-list-item-title>
+                  ">Exam address</v-list-item-title>
                 <p class="mb-0 caption" style="
                     font-size: 14px;
                     line-height: 16px;
                     letter-spacing: 0.02em;
                   ">
-                  Motilal Nagar - 1, Srirang Sabde Marg, Off Link Road, Goregaon
-                  West, Mumbai, Maharashtra 400104
+                  {{ address }}
                 </p>
                 <div class="ml-2 mt-2">
                   <v-list-item class="pa-0 pt-2 pb-2">
@@ -212,11 +211,11 @@ export default {
       isPadvStart: false,
       isVerify: false,
       items: [
-        { text: "Mode", value: "At School" },
+        { text: "Mode", value: "From Home" },
         { text: "Date", value: "18/05/2023" },
         { text: "Time", value: "12:00 - 01:00 PM" },
-        { text: "Room No.", value: "204" },
-        { text: "Computer No.", value: "20" },
+        // { text: "Room No.", value: "204" },
+        // { text: "Computer No.", value: "20"},
       ],
       startTime: '',
       lat: null,
@@ -342,11 +341,8 @@ export default {
       const response = await axios.get(url);
       if (response.status == 200) {
         const locationCord = response.data.results[0].geometry.location;
-        // console.log(response.data.results[0].geometry.location);
         this.lat = locationCord.lat;
         this.lng = locationCord.lng;
-
-        console.log(this.lat, this.lng);
       }
     },
     async getRecommendedAssessment() {
@@ -370,17 +366,18 @@ export default {
         this.noOfQuestions = this.assessmentConfigData && this.assessmentConfigData.total_no_of_questions ? this.assessmentConfigData.total_no_of_questions : 0;
       }
 
-      if (this.recommendedAssessment && this.recommendedAssessment.type === 'mains' && (this.recommendedAssessment.status == "FAILED" ||
-        this.recommendedAssessment.status == "PASSED")) {
-        this.$router.push({
-          path: `/assessment/${this.recommendedAssessment.id}/mains/status`,
-          query: {},
-        });
-      }
+      // if (this.recommendedAssessment && this.recommendedAssessment.mains_status && (this.recommendedAssessment.mains_status== "FAILED" ||
+      //   this.recommendedAssessment.mains_status == "PASSED")) {
+      //   this.$router.push({
+      //     path: `/assessment/${this.recommendedAssessment.id}/mains/status`,
+      //     query: {},
+      //   });
+      // }
     },
     async getUserInfo() {
       const response = await LogedInUserInfo.getUserInfo();
       this.userInfo = response.data.user;
+      this.address = this.userInfo.address;
       this.$mixpanel.track("MainsIntroScreenLoaded", {
           app_name: APP_NAME,
           user_type: this.userInfo.user_type,
