@@ -143,6 +143,7 @@ export default {
           startBtn.style.display = 'block';
           video.srcObject = stream;
         }).catch(e => {
+          console.log(e);
           alert("Please give the permission your camera from browser reload browser again.")
         });
 
