@@ -366,13 +366,13 @@ export default {
         this.noOfQuestions = this.assessmentConfigData && this.assessmentConfigData.total_no_of_questions ? this.assessmentConfigData.total_no_of_questions : 0;
       }
 
-      // if (this.recommendedAssessment && this.recommendedAssessment.mains_status && (this.recommendedAssessment.mains_status== "FAILED" ||
-      //   this.recommendedAssessment.mains_status == "PASSED")) {
-      //   this.$router.push({
-      //     path: `/assessment/${this.recommendedAssessment.id}/mains/status`,
-      //     query: {},
-      //   });
-      // }
+      if (this.recommendedAssessment && this.recommendedAssessment.mains_status && (this.recommendedAssessment.mains_status== "FAILED" ||
+        this.recommendedAssessment.mains_status == "PASSED")) {
+        this.$router.push({
+          path: `/assessment/${this.recommendedAssessment.id}/mains/status`,
+          query: {},
+        });
+      }
     },
     async getUserInfo() {
       const response = await LogedInUserInfo.getUserInfo();
