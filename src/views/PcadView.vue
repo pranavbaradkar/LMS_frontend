@@ -210,6 +210,7 @@ export default {
           screen_name: "CaptureScreen"
     });
         if(response.status == 200)  {
+          this.isLoading = false;
           // this.$router.push(`/assessment/${assessmentId}/mains/setup`);
           let response2 = await AssessmentController.postSetupMainsAssessment({
             video_link: response.data.data.url,
