@@ -284,7 +284,7 @@ export default {
     });
     },
     startPADV() {
-      this.isPadvStart = false;
+      this.isPadvStart = true;
       const refreshIntervalId = setInterval(() => {
         const currentTime = new Date();
         const startDate = new Date(new Date(this.startTime) - 15 * 60000);
