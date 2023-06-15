@@ -271,17 +271,38 @@ export default {
       }
     },
     redirectRecommended() {
-      window.location.href = `/#/assessment?id=${this.recommendedAssessment.id}&test=mains`;
+      let url = `/#/assessment?id=${this.recommendedAssessment.id}&test=mains`;
       this.$mixpanel.track("StartMainsTestClicked", {
-          app_name: APP_NAME,
-          user_type: this.userInfo.user_type,
-          screen_name: "MainsIntroScreen",
-          assessment_id: this.recommendedAssessment.id,
-        assessment_name: this.recommendedAssessment.name,
-        assessment_type: this.recommendedAssessment.tests[0].assessment_type,
-        assessment_level: this.recommendedAssessment.tests[0].level.name,
-        time: new Date(this.startTime),
-    });
+            app_name: APP_NAME,
+            user_type: this.userInfo.user_type,
+            screen_name: "MainsIntroScreen",
+            assessment_id: this.recommendedAssessment.id,
+          assessment_name: this.recommendedAssessment.name,
+          assessment_type: this.recommendedAssessment.tests[0].assessment_type,
+          assessment_level: this.recommendedAssessment.tests[0].level.name,
+          time: new Date(this.startTime),
+      });
+      window.location.href = url;
+      // this.Full_W_P(url);
+    },
+    Full_W_P(url) {
+      let params  = 'width='+screen.width;
+      params += ', height='+screen.height;
+      params += ', top=0, left=0'
+      params += ', fullscreen=yes';
+      params += ', minimizable=no';
+      params += ', directories=no';
+      params += ', location=no';
+      params += ', menubar=no';
+      params += ', resizable=no';
+      params += ', scrollbars=yes';
+      params += ', status=no';
+      params += ', toolbar=no';
+
+
+      let newwin = window.open(url,'FullWindowAll', params);
+      if (window.focus) {newwin.focus()}
+      return false;
     },
     startPADV() {
       this.isPadvStart = true;
