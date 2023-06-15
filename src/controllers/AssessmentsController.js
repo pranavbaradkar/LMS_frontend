@@ -28,9 +28,9 @@ export default {
             return error.response;
         }
     },
-    submitAssessment: async function (id,data) {
+    submitAssessment: async function (id, data, type = "screening") {
         try {
-            const response = await instance.post('assessments/' + id + '/screening/submit',data, {
+            const response = await instance.post('assessments/' + id + '/'+type+'/submit',data, {
                 headers: {
                     'Authorization': AuthService.getToken()
                 }

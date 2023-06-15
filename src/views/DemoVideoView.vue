@@ -187,7 +187,10 @@ export default {
           startBtn.style.display = "block";
           video.srcObject = stream;
         })
-        .catch((e) => console.error(e));
+        .catch(e => {
+          console.log(e);
+          alert("Please give the permission your camera from browser reload browser again.")
+        })
     },
     startRecording() {
       startBtn.style.display = "none";
@@ -269,7 +272,12 @@ export default {
             response2.data.data
           ) {
             if (response2.data.data.slot && response2.data.data.demo_link) {
-              this.$router.push(`/assessment/${this.assessment_id}/mains/demo/thanks`);
+              this.$router.push(
+                `/assessment/${this.assessment_id}/mains/demo/thanks`,
+                () => {
+                  this.$router.go(0);
+                }
+              );
             }
           } else {
             alert("Something went wrong please contact admin");

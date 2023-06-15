@@ -1507,6 +1507,7 @@ export default {
       bookmarkedProgress: 0,
       scrollId: "scrollId",
       counter: 0,
+      isSubmitAssessment: false,
       zoomOutBool: false,
       zoomOutImageUrl: "",
       mtfQuestions: {
@@ -1577,6 +1578,7 @@ export default {
         window.addEventListener(event, this.handleCopyPaste);
       });
     }
+    this.isSubmitAssessment = false;
     this.startTimer();
 
     this.$nextTick(() => {
@@ -1965,6 +1967,7 @@ export default {
       });
     },
     async submitAssessment() {
+      this.isSubmitAssessment = true;
       this.questions.forEach((question) => {
         if (question.myAnswer != null) {
           Vue.set(this.response, question.id, question.myAnswer);
@@ -1975,7 +1978,8 @@ export default {
         this.assessment.id,
         {
           response_json: this.response,
-        }
+        },
+        this.testType.toLocaleLowerCase()
       );
       this.$mixpanel.track("SubmitButtonClicked", {
         ...this.assessmentMixPanel,
@@ -2013,6 +2017,8 @@ export default {
             assessmentId: this.assessment.id,
             assessmentName: this.assessment.name,
           },
+        }, () => {
+          this.$router.go(0);
         });
       } else {
         this.$router.replace({
@@ -2022,6 +2028,8 @@ export default {
             assessmentName: this.assessment.name,
             response: this.response,
           },
+        }, () => {
+          this.$router.go(0);
         });
       }
     },
@@ -2502,13 +2510,15 @@ export default {
       this.onResize();
     },
     handleBeforeUnload(event) {
-      event.preventDefault();
-      event.returnValue = "";
-      const confirmationMessage =
-        "Are you sure you want to leave? Your unsaved changes will be lost.";
-      event.returnValue = confirmationMessage;
-      this.setLog();
-      return confirmationMessage;
+      if(!this.isSubmitAssessment) {
+        event.preventDefault();
+        event.returnValue = "";
+        const confirmationMessage =
+          "Are you sure you want to leave? Your unsaved changes will be lost.";
+        event.returnValue = confirmationMessage;
+        this.setLog();
+        return confirmationMessage;
+      }
     },
     async changeTestStatus() {
       this.assessmentMixPanel = {
