@@ -358,6 +358,20 @@ export default {
         this.recommendedAssessment = response.data.data;
         this.type = this.recommendedAssessment.screening_status ? 'SCREENING' : 'MAINS';
         this.assessmentConfigData = this.recommendedAssessment.tests.find(ele=> ele.assessment_type == this.type);
+
+      if(this.recommendedAssessment && (this.recommendedAssessment.mains_status == "FAILED" ||
+        this.recommendedAssessment.mains_status == "PASSED")) {
+          this.$router.push({
+          path: `/assessment/${this.recommendedAssessment.id}/mains/status`,
+          query: {},
+        });
+      } else if ( this.recommendedAssessment && (this.recommendedAssessment.screening_status == "FAILED" ||
+        this.recommendedAssessment.screening_status == "PASSED")) {
+            this.$router.push({
+              path: `/assessment/${this.recommendedAssessment.id}/screening/status`,
+              query: {},
+            });
+      }
         console.log(this.recommendedAssessment);
       }
     },

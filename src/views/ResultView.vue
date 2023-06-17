@@ -108,7 +108,12 @@
           </v-card>
 
           <v-card elevation="0" height="303" width="402" style="border: 1px solid #DADADA" class="pa-4">
-            <Bar v-if="chartDataSkills.datasets[0].data.length != 0" :options="chartOptions" :data="chartDataSkills" chart-id="bar-chart" width="100%" height="100%">
+            <Bar 
+            v-if="chartDataSkills.datasets[0].data.length != 0" 
+            :options="chartOptions" :data="chartDataSkills" 
+            chart-id="bar-chart" 
+            width="100%" 
+            height="100%">
             </Bar>
           </v-card>
         </div>
@@ -190,7 +195,7 @@ export default {
           legend: {
             display: false
           }
-        }
+        },
 
       },
       chartDataScore: {

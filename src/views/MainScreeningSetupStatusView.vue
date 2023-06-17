@@ -131,7 +131,7 @@
               </p>
             </div>
           </div>
-          <div>
+          <!-- <div>
             <p>Main Instructions</p>
             <div class="d-flex">
               <GmapMap v-if="lat && lng" :options="{
@@ -174,7 +174,7 @@
                 <div></div>
               </div>
             </div>
-          </div>
+          </div> -->
         </v-col>
       </v-row>
     </v-container>
@@ -266,7 +266,7 @@ export default {
           screen_name: "MainsIntroScreen",
           time: new Date(this.startTime),
     });
-      if (!this.isExistPadv) {
+      if (!this.isVerify) {
         this.$router.push(`/assessment/mains/padv`);
       }
     },
