@@ -56,9 +56,8 @@
 
 
               <div class="mb-1" style="font-size: 28px; line-height: 33px;">{{ assessmentData.name }}</div>
-              <p class="mt-1 font-weight-regular" style="font-size: 14px; color: #FAFAFA;">
 
-                {{ assessmentData.instructions }}
+              <p v-if="assessmentData.instructions" class="mt-1 font-weight-regular" v-html="assessmentData.instructions">
               </p>
               <div>
                 <!-- <v-btn
@@ -308,7 +307,10 @@ export default {
         this.assessmentData = {};
       } else {
         this.assessmentData = response.data.data;
-        console.log(this.assessmentData);
+
+        this.assessmentData.instructions = this.assessmentData.instructions.split('\n').join('</br>');
+        this.assessmentData.instructions = '<p>' + this.assessmentData.instructions + '</p>';
+        console.log("data",this.assessmentData);
       }
 
       this.$mixpanel.track("ResultScreenLoaded", {

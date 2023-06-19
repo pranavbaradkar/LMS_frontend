@@ -35,8 +35,7 @@
               class="orange--text font-weight-regular text-capitalize mb-3" rounded>Yet to Start Mains
             </v-btn>
             <div class="text-h6 mb-1">{{ recommendedAssessment && recommendedAssessment.name }}</div>
-            <p class="mt-1 font-weight-regular">
-              {{ recommendedAssessment && recommendedAssessment.instructions }}
+            <p v-if="recommendedAssessment.instructions" class="mt-1 font-weight-regular" v-html="recommendedAssessment.instructions">
             </p>
             <!-- show setup mains button if screen test passed -->
             <v-btn height="48px"
@@ -394,6 +393,18 @@ export default {
           query: {},
         });
       }
+      else if (this.recommendedAssessment && this.recommendedAssessment.mains_status && this.recommendedAssessment.mains_status == 'FINISHED') {
+        this.$router.replace({
+          path: "/success",
+          query: {
+            assessmentId: this.recommendedAssessment.id,
+            assessmentName: this.recommendedAssessment.name,
+          },
+        })
+      }
+      this.recommendedAssessment.instructions = this.recommendedAssessment.instructions.split('\n').join('</br>');
+      this.recommendedAssessment.instructions = '<p>' + this.recommendedAssessment.instructions + '</p>';
+      console.log(this.recommendedAssessment.instructions);
     },
     async getUserInfo() {
       const response = await LogedInUserInfo.getUserInfo();

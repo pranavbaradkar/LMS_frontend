@@ -27,8 +27,7 @@
             </v-btn>
 
             <div class="text-h6 mb-1">{{ assessmentData.name }}</div>
-            <p class="mt-1 font-weight-regular">
-              {{ assessmentData.instructions }}
+            <p v-if="assessmentData.instructions" class="mt-1 font-weight-regular" v-html="assessmentData.instructions">
             </p>
             <v-btn height="48px" color="#fff" class="blue--text mt-4 me-2" elevation="0" large
               @click="viewResult(assessmentData.id)">
@@ -130,6 +129,8 @@ export default {
         this.assessmentData = {};
       } else {
         this.assessmentData = response.data.data;
+        this.assessmentData.instructions = this.assessmentData.instructions.split('\n').join('</br>');
+        this.assessmentData.instructions = '<p>' + this.assessmentData.instructions + '</p>';
         console.log(this.assessmentData);
       }
       let setupMains = await AssessmentController.getSetupMainsAssessment();

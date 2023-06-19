@@ -63,8 +63,7 @@
               {{ type == 'SCREENING' ? 'Screening' : 'Mains'}} Test result awaited
             </v-btn>
             <div class="text-h6 mb-1">{{ recommendedAssessment.name }}</div>
-            <p class="mt-1 font-weight-regular">
-              {{ recommendedAssessment.instructions }}
+            <p v-if="recommendedAssessment.instructions" class="mt-1 font-weight-regular" v-html="recommendedAssessment.instructions">
             </p>
             <div class="mt-1" v-if="assessmentConfigData != null">
               <v-icon class="white--text">mdi-book</v-icon>
@@ -372,6 +371,8 @@ export default {
               query: {},
             });
       }
+      this.recommendedAssessment.instructions = this.recommendedAssessment.instructions.split('\n').join('</br>');
+      this.recommendedAssessment.instructions = '<p>' + this.recommendedAssessment.instructions + '</p>';
         console.log(this.recommendedAssessment);
       }
     },

@@ -259,9 +259,8 @@
                 >Screening Test
               </v-btn>
               <div class="text-h6 mb-1">{{ recommendedAssessment.name }}</div>
-              <p class="mt-1 font-weight-regular">
-                {{ recommendedAssessment.instructions }}
-              </p>
+              <p v-if="recommendedAssessment.instructions" class="mt-1 font-weight-regular" v-html="recommendedAssessment.instructions">
+            </p>
               <div class="mt-1" v-if="recommendedAssessment.tests != null">
                 <v-icon class="white--text">mdi-book</v-icon>
                 {{ recommendedAssessment && recommendedAssessment.tests[0].total_no_of_questions }}
@@ -939,6 +938,9 @@ export default {
           },
         })
       }
+
+      this.recommendedAssessment.instructions = this.recommendedAssessment.instructions.split('\n').join('</br>');
+      this.recommendedAssessment.instructions = '<p>' + this.recommendedAssessment.instructions + '</p>';
 
       this.selectedAssessment = this.recommendedAssessment;
 

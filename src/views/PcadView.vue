@@ -158,7 +158,7 @@ export default {
           video.srcObject = stream;
         }).catch(e => {
           console.log(e);
-          alert("Please give the permission your camera from browser reload browser again.")
+          alert("Please check your system has working camera and microphone")
         });
 
     },
