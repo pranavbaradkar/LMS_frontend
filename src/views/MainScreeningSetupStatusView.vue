@@ -282,8 +282,8 @@ export default {
           assessment_level: this.recommendedAssessment.tests[0].level.name,
           time: new Date(this.startTime),
       });
-      window.location.href = url;
-      // this.Full_W_P(url);
+      // window.location.href = url;
+      this.Full_W_P(url);
     },
     Full_W_P(url) {
       let params  = 'width='+screen.width;
