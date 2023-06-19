@@ -1701,7 +1701,9 @@ export default {
         })
         .then((stream) => {
           this.mediaStream = stream;
-          this.getVideoElement().srcObject = stream;
+          const localVideo = this.getVideoElement();
+          localVideo.srcObject = stream;
+          localVideo.muted = true;
           this.mediaRecorder = new MediaRecorder(stream, {
             mimeType: 'video/webm'
           });
