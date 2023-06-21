@@ -1528,11 +1528,11 @@ export default {
       response: {},
       notificationData: [],
       proctorPopUp:{
-        MultipleFaces: 0,
-        FaceVerificationFailed: 0,
-        UserMovement: 0,
-        Speaking: 0,
-        NonPermissibleObject: 0,
+        MultipleFaces: new Date(),
+        FaceVerificationFailed: new Date(),
+        UserMovement: new Date(),
+        Speaking: new Date(),
+        NonPermissibleObject: new Date(),
       },
       proctorPopUpsCategory: ['MultipleFaces', 'FaceVerificationFailed', 'UserMovement', 'Speaking', 'NonPermissibleObject'],
       proctorPopUpInfo: {
@@ -1631,6 +1631,10 @@ export default {
       this.lastAnswerTime = this.seconds;
       console.log(this.selectedQuestion);
     },
+
+    proctorPopUp(newQuestion, oldQuestion) {
+      console.log("popUps",newQuestion, oldQuestion);
+    }
   },
   mounted() {
     window.addEventListener("beforeunload", this.handleBeforeUnload);
@@ -1793,7 +1797,7 @@ export default {
             console.log("Camera Stream Stopped");
           }
         });
-        console.log("Acive stream ", this.mediaStream.getTracks());
+        // console.log("Acive stream ", this.mediaStream.getTracks());
       }
     },
     cameraMedia() {
@@ -1848,7 +1852,6 @@ export default {
         this.mediaRecorder.ondataavailable = (event) => {
           if (event.data && event.data.size > 0) {
             this.chunks.push(event.data);
-            console.log(this.chunks);
             this.uploadVideo(this.chunks);
           }
         };
@@ -2688,9 +2691,8 @@ export default {
 
     handlePopUp (title) {
       this.proctorPopUpDialog[title] = 0;
-      setInterval(() => {
-        this.proctorPopUp[title] = 0;
-      }, this.lagForDialog);
+      this.proctorPopUp[title] = new Date();
+      console.log("handlePopUp", title, this.proctorPopUp[title]);
     },
 
     socketestablish() {
@@ -2704,9 +2706,9 @@ export default {
       socket.on("dataEvent", (data) => {
         // console.log("Received data from server:", data);
         if (Object.keys(this.proctorPopUp).includes(data.title)) {
-          console.log("data title GGGG", data.title)
-          if (this.proctorPopUp[data.title] == 0) {
-          this.proctorPopUp[data.title] = 1;
+          console.log("data title GGGG", data.title, new Date().getTime() - this.proctorPopUp[data.title].getTime())
+          if (new Date().getTime() - this.proctorPopUp[data.title].getTime() > 60000) {
+          this.proctorPopUp[data.title] = new Date();
           this.proctorPopUpDialog[data.title] = 1;
           this.proctorPopUpInfo[data.title].title = data.title;
           this.proctorPopUpInfo[data.title].body = data.body;
@@ -2732,7 +2734,7 @@ export default {
           }
         }
         else if (this.startSendingAIEvents) {
-          console.log("data title", data.title);
+          // console.log("data title", data.title);
           const question = this.questions[this.selectedQuestion];
           this.notificationData.push(data);
           this.$mixpanel.track(data.title,{
@@ -2763,8 +2765,7 @@ export default {
           type: blob[0].type,
         });
         formData.append("video", videoFile);
-        let response = await AssessmentController.liveStreamVideoUpload(this.assessmentId, formData);
-        console.log(response)      
+        await AssessmentController.liveStreamVideoUpload(this.assessmentId, formData); 
       }
     },
   },
