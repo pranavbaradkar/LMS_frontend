@@ -186,6 +186,7 @@ export default {
           startBtn.removeAttribute("disabled");
           startBtn.style.display = "block";
           video.srcObject = stream;
+          video.muted = true;
         })
         .catch(e => {
           console.log(e);

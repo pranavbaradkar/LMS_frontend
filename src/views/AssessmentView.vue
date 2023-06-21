@@ -130,7 +130,6 @@
                 <!-- need to set height of this card for set  good scroll -->
                 <v-list-item-group
                   mandatory
-                  v-model="selectedQuestion"
                   class="d-flex flex-wrap justify-content-between"
                 >
                   <v-list-item
@@ -1444,6 +1443,34 @@
         </v-container>
       </v-card>
     </v-dialog>
+
+    <v-dialog v-for="item in proctorPopUpsCategory" :key="item" v-model="proctorPopUpDialog[item]" width="450px" persistent>
+      <v-card>
+        <v-container>
+          <v-card-text class="text-center">
+            <div class="d-flex justify-center w-100 mb-6">
+              <div style="height: 48px; width: 48px">
+                <v-img height="48px" width="48px" src="@/assets/warning.svg"></v-img>
+              </div>
+            </div>
+            <p class="text-h6 mb-0">{{ proctorPopUpInfo[item].body}}</p>
+            <div class="d-flex justify-center w-100">
+              <v-btn
+                color="#277BC0"
+                depressed
+                class="white--text mt-5 mb-5 me-2 w-50"
+                large
+                @click="handlePopUp(item)"
+                >Continue</v-btn
+              >
+            </div>
+          </v-card-text>
+        </v-container>
+      </v-card>
+    </v-dialog>
+
+
+
   </div>
 </template>
 
@@ -1500,6 +1527,46 @@ export default {
       option_selected: "",
       response: {},
       notificationData: [],
+      proctorPopUp:{
+        MultipleFaces: 0,
+        FaceVerificationFailed: 0,
+        UserMovement: 0,
+        Speaking: 0,
+        NonPermissibleObject: 0,
+      },
+      proctorPopUpsCategory: ['MultipleFaces', 'FaceVerificationFailed', 'UserMovement', 'Speaking', 'NonPermissibleObject'],
+      proctorPopUpInfo: {
+        MultipleFaces: {
+          title: "",
+          body: "",
+        },
+        FaceVerificationFailed: {
+          title: "",
+          body: "",
+        },
+        UserMovement: {
+          title: "",
+          body: "",
+        },
+        Speaking: {
+          title: "",
+          body: "",
+        },
+        NonPermissibleObject: {
+          title: "",
+          body: "",
+        },
+      },
+      proctorPopUpDialog:{
+        MultipleFaces: 0,
+        FaceVerificationFailed: 0,
+        UserMovement: 0,
+        Speaking: 0,
+        NonPermissibleObject: 0,
+      },
+      startSendingAIEvents: true,
+      lagForDialog: 60000,
+      lagForAIEvents: 10000,
       bookmarked: [],
       skipped: [],
       answeredProgress: 0,
@@ -1633,14 +1700,44 @@ export default {
         console.log();
         this.violations++;
         console.warn("User ", event.type, " on current Tab");
+        const question = this.questions[this.selectedQuestion];
         this.genericDialog = true;
+        this.$mixpanel.track('TabChanged',{
+            ...this.assessmentMixPanel,
+            question_id: question.id,
+            option_selected: question.myAnswer,
+            difficulty_level: question.difficulty_level,
+        complexity_level: question.complexity_level,
+        skill_id: question.skill_id,
+        Subject: question.subject,
+        strand_id: question.strand_id,
+        sub_strand_id: question.sub_strand_id,
+        topic_id: question.topic_id,
+        lo_ids: question.lo_ids,
+        bloom_taxonomy: question.blooms_taxonomy,
+          });
       }
     },
     handleCopyPaste(event) {
       this.violations++;
       this.genericDialog = true;
+      const question = this.questions[this.selectedQuestion];
       console.log("testet");
       event.preventDefault();
+      this.$mixpanel.track('CopyPasteDetected',{
+            ...this.assessmentMixPanel,
+            question_id: question.id,
+            option_selected: question.myAnswer,
+            difficulty_level: question.difficulty_level,
+        complexity_level: question.complexity_level,
+        skill_id: question.skill_id,
+        Subject: question.subject,
+        strand_id: question.strand_id,
+        sub_strand_id: question.sub_strand_id,
+        topic_id: question.topic_id,
+        lo_ids: question.lo_ids,
+        bloom_taxonomy: question.blooms_taxonomy,
+          });
     },
     handleKeyPress(event) {
       if (event.key === "Escape") {
@@ -1653,6 +1750,21 @@ export default {
         if (isNotCombinedKey) {
           this.violations++;
           this.genericDialog = true;
+          const question = this.questions[this.selectedQuestion];
+          this.$mixpanel.track('EscapeClicked',{
+            ...this.assessmentMixPanel,
+            question_id: question.id,
+            option_selected: question.myAnswer,
+            difficulty_level: question.difficulty_level,
+        complexity_level: question.complexity_level,
+        skill_id: question.skill_id,
+        Subject: question.subject,
+        strand_id: question.strand_id,
+        sub_strand_id: question.sub_strand_id,
+        topic_id: question.topic_id,
+        lo_ids: question.lo_ids,
+        bloom_taxonomy: question.blooms_taxonomy,
+          });
         }
       }
     },
@@ -2266,6 +2378,10 @@ export default {
         lo_ids: this.questions[this.selectedQuestion].lo_ids,
       });
       this.selectedQuestion = this.selectedQuestion + 1;
+      this.startSendingAIEvents = false;
+      setInterval(() => {
+        this.startSendingAIEvents = true;
+      }, this.lagForAIEvents);
       this.scrollMethod("scrollId" + this.selectedQuestion);
 
       await this.setLog();
@@ -2315,6 +2431,10 @@ export default {
       });
 
       this.selectedQuestion = this.selectedQuestion - 1;
+      this.startSendingAIEvents = false;
+      setInterval(() => {
+        this.startSendingAIEvents = true;
+      }, this.lagForAIEvents);
       this.scrollMethod("scrollId" + this.selectedQuestion);
       setTimeout(() => {
         this.onResize();
@@ -2322,11 +2442,12 @@ export default {
     },
     questionClicked(item) {
       this.cleanMTFOption();
-      if (this.isTimeUp) {
-        return false;
-      }
-      if (item.myAnswer || this.skipped.includes(item)) {
+      if (item.myAnswer || this.skipped.includes(item) || this.bookmarked.includes(item)) {
         this.selectedQuestion = this.questions.indexOf(item);
+        this.startSendingAIEvents = false;
+      setInterval(() => {
+        this.startSendingAIEvents = true;
+      }, this.lagForAIEvents);
         this.scrollMethod("scrollId" + this.selectedQuestion);
         this.$mixpanel.track("QuestionListClicked", {
           ...this.assessmentMixPanel,
@@ -2369,7 +2490,6 @@ export default {
             option_selected: question.myAnswer,
             is_answer_correct: correct_answer,
             difficulty_level: question.difficulty_level,
-            screen_name: "AssessmentScreen",
             time_taken_in_sec: question.timeTaken,
         complexity_level: question.complexity_level,
         skill_id: question.skill_id,
@@ -2391,7 +2511,6 @@ export default {
             question_id: question.id,
             option_selected: question.myAnswer,
             difficulty_level: question.difficulty_level,
-            screen_name: "AssessmentScreen",
             time_taken_in_sec: question.timeTaken,
         complexity_level: question.complexity_level,
         skill: question.skill_id,
@@ -2414,7 +2533,6 @@ export default {
             question_id: question.id,
             option_selected: question.myAnswer,
             difficulty_level: question.difficulty_level,
-            screen_name: "AssessmentScreen",
             time_taken_in_sec: question.timeTaken,
         complexity_level: question.complexity_level,
         skill: question.skill_id,
@@ -2567,6 +2685,14 @@ export default {
         this.socketestablish();
       }
     },
+
+    handlePopUp (title) {
+      this.proctorPopUpDialog[title] = 0;
+      setInterval(() => {
+        this.proctorPopUp[title] = 0;
+      }, this.lagForDialog);
+    },
+
     socketestablish() {
       const socket = AssessmentController.socketConnect(this.userInfo.id, this.assessmentId);
 
@@ -2576,9 +2702,56 @@ export default {
       });
 
       socket.on("dataEvent", (data) => {
-        console.log("Received data from server:", data);
-        this.notificationData.push(data);
-
+        // console.log("Received data from server:", data);
+        if (Object.keys(this.proctorPopUp).includes(data.title)) {
+          console.log("data title GGGG", data.title)
+          if (this.proctorPopUp[data.title] == 0) {
+          this.proctorPopUp[data.title] = 1;
+          this.proctorPopUpDialog[data.title] = 1;
+          this.proctorPopUpInfo[data.title].title = data.title;
+          this.proctorPopUpInfo[data.title].body = data.body;
+          console.log(this.proctorPopUpDialog)
+          this.notificationData.push(data);
+          const question = this.questions[this.selectedQuestion];
+          this.$mixpanel.track(data.title,{
+            body: data.body,
+            title: data.title,
+            ...this.assessmentMixPanel,
+            question_id: question.id,
+            option_selected: question.myAnswer,
+            difficulty_level: question.difficulty_level,
+        complexity_level: question.complexity_level,
+        skill_id: question.skill_id,
+        Subject: question.subject,
+        strand_id: question.strand_id,
+        sub_strand_id: question.sub_strand_id,
+        topic_id: question.topic_id,
+        lo_ids: question.lo_ids,
+        bloom_taxonomy: question.blooms_taxonomy,
+          });
+          }
+        }
+        else if (this.startSendingAIEvents) {
+          console.log("data title", data.title);
+          const question = this.questions[this.selectedQuestion];
+          this.notificationData.push(data);
+          this.$mixpanel.track(data.title,{
+            body: data.body,
+            title: data.title,
+            ...this.assessmentMixPanel,
+            question_id: question.id,
+            option_selected: question.myAnswer,
+            difficulty_level: question.difficulty_level,
+        complexity_level: question.complexity_level,
+        skill_id: question.skill_id,
+        Subject: question.subject,
+        strand_id: question.strand_id,
+        sub_strand_id: question.sub_strand_id,
+        topic_id: question.topic_id,
+        lo_ids: question.lo_ids,
+        bloom_taxonomy: question.blooms_taxonomy,
+          });
+        }
       });
     },
     async uploadVideo(chunks) {
