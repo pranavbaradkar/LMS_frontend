@@ -2705,6 +2705,7 @@ export default {
 
       socket.on("dataEvent", (data) => {
         // console.log("Received data from server:", data);
+        const randomNumber = Math.random() * 100;
         if (Object.keys(this.proctorPopUp).includes(data.title)) {
           console.log("data title GGGG", data.title, new Date().getTime() - this.proctorPopUp[data.title].getTime())
           if (new Date().getTime() - this.proctorPopUp[data.title].getTime() > 60000) {
@@ -2733,7 +2734,7 @@ export default {
           });
           }
         }
-        else if (this.startSendingAIEvents) {
+        else if (this.startSendingAIEvents && randomNumber < 20) {
           // console.log("data title", data.title);
           const question = this.questions[this.selectedQuestion];
           this.notificationData.push(data);

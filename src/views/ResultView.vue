@@ -118,7 +118,32 @@
         </div>
 
         <v-row class="pa-8">
-          <v-col v-for="(item, index) in chartDataSkills.labels" :key="index" cols="4">
+          <!-- <v-col cols="12">
+            <div
+              class="d-flex flex-row justify-space-between align-center py-1 rounded-xl">
+              <div class="d-flex align-center">
+                <div style="font-size: 16px; line-height: 19px; font-weight: 500;">Psychometry</div>
+              </div>
+              <div style="font-size: 20px; line-height: 38px; font-weight: 500;">
+                30
+              </div>
+            </div>
+            <v-progress-linear  
+      value="40"
+      height="24"
+      color="#F5C828"
+      rounded>
+      </v-progress-linear>
+            <div
+              class="d-flex flex-row justify-space-between align-center">
+              <div class="d-flex align-center">
+              </div>
+              <div style="font-size: 14px; line-height: 38px; font-weight: 500; color: #F5C828">
+                Average
+              </div>
+            </div>
+          </v-col> -->
+          <v-col v-for="(item, index) in chartDataSkills.labels" :key="index" cols="6">
             <div style="border: 1px solid #DADADA;"
               :style="{ 'background-color': chartDataSkills.datasets[0].dotBgColor[index] }"
               class="d-flex flex-row justify-space-between align-center pa-4 rounded-xl">
@@ -129,6 +154,19 @@
               </div>
               <div style="font-size: 32px; line-height: 38px; font-weight: 500;">
                 {{assessmentResult.data[index]}}/100
+              </div>
+            </div>
+          </v-col>
+          <v-col v-if="assessmentResult.Psychometry" cols="6">
+            <div style="border: 1px solid #DADADA;background-color: #F8FAFC;"
+              class="d-flex flex-column pa-4 rounded-xl">
+              <div class="d-flex flex-row align-center justify-space-between">
+                <div class="d-flex align-center">
+                  <div style="font-size: 16px; line-height: 19px; font-weight: 500;" class="ml-2">Psychometry</div>
+                </div>
+                <div style="font-size: 32px;line-height: 38px; font-weight: 500;">
+                  Low
+                </div>
               </div>
             </div>
           </v-col>
