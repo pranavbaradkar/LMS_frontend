@@ -795,7 +795,7 @@
                                             class="mr-6"
                                             :value="index"
                                           >
-                                            {{ index === 0 ? 'Fresher' : index === 1 ? 'upto 1' : exp.min + '-' + exp.max + ' years' }}
+                                          {{ index === 0 ? 'Fresher' : index === 1 ? 'upto 1 year' : index === 5 ? '10+ years' : exp.min + '-' + exp.max + ' years' }}
                                           </v-chip>
                                         </v-chip-group>
                                       </v-row>
@@ -1316,6 +1316,14 @@ export default {
         {
           min: 3,
           max: 5
+        },
+        {
+          min: 5,
+          max: 10
+        },
+        {
+          min: 10,
+          max: 100,
         },
       ],
       professionalInfos: [
