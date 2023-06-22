@@ -164,7 +164,7 @@
                 <div class="d-flex align-center">
                   <div style="font-size: 16px; line-height: 19px; font-weight: 500;" class="ml-2">Psychometry</div>
                 </div>
-                <div style="font-size: 32px;line-height: 38px; font-weight: 500;">
+                <div style="font-size: 22px;line-height: 38px; font-weight: 500;">
                   {{ assessmentResult.psychometric.grade }}
                 </div>
               </div>

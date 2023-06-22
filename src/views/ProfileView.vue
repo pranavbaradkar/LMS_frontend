@@ -1362,7 +1362,7 @@ export default {
         context: "user-profiles",
         file_name: this.selectedFile[this.expandedPanelIndex].name,
         mime_type: this.selectedFile[this.expandedPanelIndex].type,
-        file_type: "certifcate",
+        file_type: "certificate",
         business_type: "b2c",
         uuid: "123-456-7",
       });
