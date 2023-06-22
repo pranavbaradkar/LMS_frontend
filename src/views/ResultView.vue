@@ -157,7 +157,7 @@
               </div>
             </div>
           </v-col>
-          <v-col v-if="assessmentResult.Psychometry" cols="6">
+          <v-col v-if="assessmentResult.psychometric && assessmentResult.psychometric.grade" cols="6">
             <div style="border: 1px solid #DADADA;background-color: #F8FAFC;"
               class="d-flex flex-column pa-4 rounded-xl">
               <div class="d-flex flex-row align-center justify-space-between">
@@ -165,7 +165,7 @@
                   <div style="font-size: 16px; line-height: 19px; font-weight: 500;" class="ml-2">Psychometry</div>
                 </div>
                 <div style="font-size: 32px;line-height: 38px; font-weight: 500;">
-                  {{ assessmentResult.Psychometry }}
+                  {{ assessmentResult.psychometric.grade }}
                 </div>
               </div>
             </div>
@@ -359,7 +359,7 @@ export default {
         screen_name: "ResultScreen",
         assessment_level: this.assessmentData.tests[0].level.name,
         assessment_type: this.assessmentData.tests[0].assessment_type,
-        status: this.assessmentData.screening_status ? this.assessmentData.screening_status : this.assessmentData.mains_status
+        status: this.assessmentData.screening_status ? this.assessmentData.screening_status : this.assessmentData.mains_status,
       });
 
       let setupMains = await AssessmentController.getSetupMainsAssessment();
