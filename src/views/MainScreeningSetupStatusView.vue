@@ -35,14 +35,13 @@
               class="orange--text font-weight-regular text-capitalize mb-3" rounded>Yet to Start Mains
             </v-btn>
             <div class="text-h6 mb-1">{{ recommendedAssessment && recommendedAssessment.name }}</div>
-            <p class="mt-1 font-weight-regular">
-              {{ recommendedAssessment && recommendedAssessment.instructions }}
+            <p v-if="recommendedAssessment.instructions" class="mt-1 font-weight-regular" v-html="recommendedAssessment.instructions">
             </p>
             <!-- show setup mains button if screen test passed -->
             <v-btn height="48px"
-              :disabled="this.isExistPadv || !this.isPadvStart"
-              :color="`${this.isExistPadv || !this.isPadvStart ? '#DADADA' : '#277BC0'}`"
-              :class="`${this.isExistPadv || !this.isPadvStart ? 'gray--text' : 'white--text'}`" class="mt-4 me-2"
+              :disabled="!this.isPadvStart"
+              :color="`${!this.isPadvStart ? '#DADADA' : '#277BC0'}`"
+              :class="`${!this.isPadvStart ? 'gray--text' : 'white--text'}`" class="mt-4 me-2"
               elevation="0" large @click="redirect">
               Identify
               <v-icon small class="mx-2" :color="`${isVerify ? 'green' : 'red'}`">{{ isVerify ? 'mdi-account-check' :
@@ -131,7 +130,7 @@
               </p>
             </div>
           </div>
-          <div>
+          <!-- <div>
             <p>Main Instructions</p>
             <div class="d-flex">
               <GmapMap v-if="lat && lng" :options="{
@@ -151,14 +150,13 @@
                     font-size: 18px;
                     line-height: 21px;
                     letter-spacing: 0.02em;
-                  ">Vibgyor High</v-list-item-title>
+                  ">Exam address</v-list-item-title>
                 <p class="mb-0 caption" style="
                     font-size: 14px;
                     line-height: 16px;
                     letter-spacing: 0.02em;
                   ">
-                  Motilal Nagar - 1, Srirang Sabde Marg, Off Link Road, Goregaon
-                  West, Mumbai, Maharashtra 400104
+                  {{ address }}
                 </p>
                 <div class="ml-2 mt-2">
                   <v-list-item class="pa-0 pt-2 pb-2">
@@ -175,7 +173,7 @@
                 <div></div>
               </div>
             </div>
-          </div>
+          </div> -->
         </v-col>
       </v-row>
     </v-container>
@@ -212,11 +210,11 @@ export default {
       isPadvStart: false,
       isVerify: false,
       items: [
-        { text: "Mode", value: "At School" },
+        { text: "Mode", value: "From Home" },
         { text: "Date", value: "18/05/2023" },
         { text: "Time", value: "12:00 - 01:00 PM" },
-        { text: "Room No.", value: "204" },
-        { text: "Computer No.", value: "20" },
+        // { text: "Room No.", value: "204" },
+        // { text: "Computer No.", value: "20"},
       ],
       startTime: '',
       lat: null,
@@ -267,15 +265,46 @@ export default {
           screen_name: "MainsIntroScreen",
           time: new Date(this.startTime),
     });
-      if (!this.isExistPadv) {
+      if (!this.isVerify) {
         this.$router.push(`/assessment/mains/padv`);
       }
     },
     redirectRecommended() {
-     window.location.href = `/#/assessment?id=${this.recommendedAssessment.id}&test=mains`;
+      let url = `/#/assessment?id=${this.recommendedAssessment.id}&test=mains`;
+      this.$mixpanel.track("StartMainsTestClicked", {
+            app_name: APP_NAME,
+            user_type: this.userInfo.user_type,
+            screen_name: "MainsIntroScreen",
+            assessment_id: this.recommendedAssessment.id,
+          assessment_name: this.recommendedAssessment.name,
+          assessment_type: this.recommendedAssessment.tests[0].assessment_type,
+          assessment_level: this.recommendedAssessment.tests[0].level.name,
+          time: new Date(this.startTime),
+      });
+      // window.location.href = url;
+      this.Full_W_P(url);
+    },
+    Full_W_P(url) {
+      let params  = 'width='+screen.width;
+      params += ', height='+screen.height;
+      params += ', top=0, left=0'
+      params += ', fullscreen=yes';
+      params += ', minimizable=no';
+      params += ', directories=no';
+      params += ', location=no';
+      params += ', menubar=no';
+      params += ', resizable=no';
+      params += ', scrollbars=yes';
+      params += ', status=no';
+      params += ', toolbar=no';
+
+
+      let newwin = window.open(url,'FullWindowAll', params);
+      if (window.focus) {newwin.focus()}
+      return false;
     },
     startPADV() {
-      this.isPadvStart = false;
+      this.isPadvStart = true;
       const refreshIntervalId = setInterval(() => {
         const currentTime = new Date();
         const startDate = new Date(new Date(this.startTime) - 15 * 60000);
@@ -332,11 +361,8 @@ export default {
       const response = await axios.get(url);
       if (response.status == 200) {
         const locationCord = response.data.results[0].geometry.location;
-        // console.log(response.data.results[0].geometry.location);
         this.lat = locationCord.lat;
         this.lng = locationCord.lng;
-
-        console.log(this.lat, this.lng);
       }
     },
     async getRecommendedAssessment() {
@@ -360,17 +386,30 @@ export default {
         this.noOfQuestions = this.assessmentConfigData && this.assessmentConfigData.total_no_of_questions ? this.assessmentConfigData.total_no_of_questions : 0;
       }
 
-      if (this.recommendedAssessment && this.recommendedAssessment.type === 'mains' && (this.recommendedAssessment.status == "FAILED" ||
-        this.recommendedAssessment.status == "PASSED")) {
+      if (this.recommendedAssessment && this.recommendedAssessment.mains_status && (this.recommendedAssessment.mains_status== "FAILED" ||
+        this.recommendedAssessment.mains_status == "PASSED")) {
         this.$router.push({
           path: `/assessment/${this.recommendedAssessment.id}/mains/status`,
           query: {},
         });
       }
+      else if (this.recommendedAssessment && this.recommendedAssessment.mains_status && this.recommendedAssessment.mains_status == 'FINISHED') {
+        this.$router.replace({
+          path: "/success",
+          query: {
+            assessmentId: this.recommendedAssessment.id,
+            assessmentName: this.recommendedAssessment.name,
+          },
+        })
+      }
+      this.recommendedAssessment.instructions = this.recommendedAssessment.instructions.split('\n').join('</br>');
+      this.recommendedAssessment.instructions = '<p>' + this.recommendedAssessment.instructions + '</p>';
+      console.log(this.recommendedAssessment.instructions);
     },
     async getUserInfo() {
       const response = await LogedInUserInfo.getUserInfo();
       this.userInfo = response.data.user;
+      this.address = this.userInfo.address;
       this.$mixpanel.track("MainsIntroScreenLoaded", {
           app_name: APP_NAME,
           user_type: this.userInfo.user_type,

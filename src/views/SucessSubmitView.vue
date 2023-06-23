@@ -63,8 +63,7 @@
               {{ type == 'SCREENING' ? 'Screening' : 'Mains'}} Test result awaited
             </v-btn>
             <div class="text-h6 mb-1">{{ recommendedAssessment.name }}</div>
-            <p class="mt-1 font-weight-regular">
-              {{ recommendedAssessment.instructions }}
+            <p v-if="recommendedAssessment.instructions" class="mt-1 font-weight-regular" v-html="recommendedAssessment.instructions">
             </p>
             <div class="mt-1" v-if="assessmentConfigData != null">
               <v-icon class="white--text">mdi-book</v-icon>
@@ -356,8 +355,24 @@ export default {
       );
       if(response && response.data && response.data.data) {
         this.recommendedAssessment = response.data.data;
-        this.type = this.recommendedAssessment.screening_status === 'PASSED' ? 'MAINS' : 'SCREENING';
+        this.type = this.recommendedAssessment.screening_status ? 'SCREENING' : 'MAINS';
         this.assessmentConfigData = this.recommendedAssessment.tests.find(ele=> ele.assessment_type == this.type);
+
+      if(this.recommendedAssessment && (this.recommendedAssessment.mains_status == "FAILED" ||
+        this.recommendedAssessment.mains_status == "PASSED")) {
+          this.$router.push({
+          path: `/assessment/${this.recommendedAssessment.id}/mains/status`,
+          query: {},
+        });
+      } else if ( this.recommendedAssessment && (this.recommendedAssessment.screening_status == "FAILED" ||
+        this.recommendedAssessment.screening_status == "PASSED")) {
+            this.$router.push({
+              path: `/assessment/${this.recommendedAssessment.id}/screening/status`,
+              query: {},
+            });
+      }
+      this.recommendedAssessment.instructions = this.recommendedAssessment.instructions.split('\n').join('</br>');
+      this.recommendedAssessment.instructions = '<p>' + this.recommendedAssessment.instructions + '</p>';
         console.log(this.recommendedAssessment);
       }
     },

@@ -323,7 +323,7 @@
                       v-model="personalInfo.address"
                       label="Address*"
                       counter="100"
-                      maxLength="10"
+                      maxLength="100"
                       required
                       :rules="[(v) => !!v || 'Address is required']"
                       :readonly="isCurrentLocation ? true : false"
@@ -795,7 +795,7 @@
                                             class="mr-6"
                                             :value="index"
                                           >
-                                            {{ index === 0 ? 'Fresher' : index === 1 ? 'upto 1' : exp.min + '-' + exp.max + ' years' }}
+                                          {{ index === 0 ? 'Fresher' : index === 1 ? 'upto 1 year' : index === 5 ? '10+ years' : exp.min + '-' + exp.max + ' years' }}
                                           </v-chip>
                                         </v-chip-group>
                                       </v-row>
@@ -1317,6 +1317,14 @@ export default {
           min: 3,
           max: 5
         },
+        {
+          min: 5,
+          max: 10
+        },
+        {
+          min: 10,
+          max: 100,
+        },
       ],
       professionalInfos: [
         {
@@ -1349,7 +1357,9 @@ export default {
     onChange() {
       console.log(this.selectedFile[this.expandedPanelIndex]);
       console.log("selelcted file details", this.expandedPanelIndex);
+      if (this.selectedFile[this.expandedPanelIndex]) {
       this.getPreSignedUrl();
+      }
     },
     async getAllAssessment() {
       const response = await AssessmentController.getAllAssessment();
@@ -1360,7 +1370,7 @@ export default {
         context: "user-profiles",
         file_name: this.selectedFile[this.expandedPanelIndex].name,
         mime_type: this.selectedFile[this.expandedPanelIndex].type,
-        file_type: "certifcate",
+        file_type: "certificate",
         business_type: "b2c",
         uuid: "123-456-7",
       });
@@ -1568,7 +1578,8 @@ export default {
         return;
       }
       const academinInfo = response.data.data;
-      this.academicQualifications = academinInfo.map((item) => {
+      this.academicQualifications = academinInfo.map((item, index) => {
+        this.selectedFile[index] = {name: item.certificate_url.split('certificate/')[1]}
         return {
         institution: item.institution,
         programme: item.programme,

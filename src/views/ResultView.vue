@@ -29,7 +29,7 @@
             </div>
           </v-card-title>
         </v-card>
-        <v-img width="100%" height="390" src="../assets/home_banner.svg" cover style="margin-top: 76px">
+        <v-img width="100%" height="auto" src="../assets/home_banner.svg" cover style="margin-top: 76px;min-height: 331px">
           <v-card class="pa-10 d-flex align-center" elevation="0" width="100%" height="100%" variant="outlined"
             color="transparent">
             <div class="white--text text-container">
@@ -56,9 +56,8 @@
 
 
               <div class="mb-1" style="font-size: 28px; line-height: 33px;">{{ assessmentData.name }}</div>
-              <p class="mt-1 font-weight-regular" style="font-size: 14px; color: #FAFAFA;">
 
-                {{ assessmentData.instructions }}
+              <p v-if="assessmentData.instructions" class="mt-1 font-weight-regular" v-html="assessmentData.instructions">
               </p>
               <div>
                 <!-- <v-btn
@@ -102,19 +101,49 @@
             </Doughnut>
             <div style="top: 50%; left: 50% ;position: absolute; transform: translate(-50%, -50%);"
               class="d-flex justify-center flex-column align-center">
-              <div style="font-size: 32px; line-height: 38px; font-weight: 500;">45 / 60</div>
+              <div style="font-size: 32px; line-height: 38px; font-weight: 500;">{{ assessmentResult.dataScore.scored }} / {{ assessmentResult.dataScore.total_score }}</div>
               <div style="font-size: 16px; line-height: 19px; font-weight: 500;">Test Score</div>
             </div>
           </v-card>
 
           <v-card elevation="0" height="303" width="402" style="border: 1px solid #DADADA" class="pa-4">
-            <Bar v-if="chartDataSkills.datasets[0].data.length != 0" :options="chartOptions" :data="chartDataSkills" chart-id="bar-chart" width="100%" height="100%">
+            <Bar 
+            v-if="chartDataSkills.datasets[0].data.length != 0" 
+            :options="chartOptions" :data="chartDataSkills" 
+            chart-id="bar-chart" 
+            width="100%" 
+            height="100%">
             </Bar>
           </v-card>
         </div>
 
         <v-row class="pa-8">
-          <v-col v-for="(item, index) in chartDataSkills.labels" :key="index" cols="4">
+          <!-- <v-col cols="12">
+            <div
+              class="d-flex flex-row justify-space-between align-center py-1 rounded-xl">
+              <div class="d-flex align-center">
+                <div style="font-size: 16px; line-height: 19px; font-weight: 500;">Psychometry</div>
+              </div>
+              <div style="font-size: 20px; line-height: 38px; font-weight: 500;">
+                30
+              </div>
+            </div>
+            <v-progress-linear  
+      value="40"
+      height="24"
+      color="#F5C828"
+      rounded>
+      </v-progress-linear>
+            <div
+              class="d-flex flex-row justify-space-between align-center">
+              <div class="d-flex align-center">
+              </div>
+              <div style="font-size: 14px; line-height: 38px; font-weight: 500; color: #F5C828">
+                Average
+              </div>
+            </div>
+          </v-col> -->
+          <v-col v-for="(item, index) in chartDataSkills.labels" :key="index" cols="6">
             <div style="border: 1px solid #DADADA;"
               :style="{ 'background-color': chartDataSkills.datasets[0].dotBgColor[index] }"
               class="d-flex flex-row justify-space-between align-center pa-4 rounded-xl">
@@ -125,6 +154,19 @@
               </div>
               <div style="font-size: 32px; line-height: 38px; font-weight: 500;">
                 {{assessmentResult.data[index]}}/100
+              </div>
+            </div>
+          </v-col>
+          <v-col v-if="assessmentResult.psychometric && assessmentResult.psychometric.grade" cols="6">
+            <div style="border: 1px solid #DADADA;background-color: #F8FAFC;"
+              class="d-flex flex-column pa-4 rounded-xl">
+              <div class="d-flex flex-row align-center justify-space-between">
+                <div class="d-flex align-center">
+                  <div style="font-size: 16px; line-height: 19px; font-weight: 500;" class="ml-2">Psychometry</div>
+                </div>
+                <div style="font-size: 22px;line-height: 38px; font-weight: 500;">
+                  {{ assessmentResult.psychometric.grade }}
+                </div>
               </div>
             </div>
           </v-col>
@@ -190,7 +232,7 @@ export default {
           legend: {
             display: false
           }
-        }
+        },
 
       },
       chartDataScore: {
@@ -303,7 +345,10 @@ export default {
         this.assessmentData = {};
       } else {
         this.assessmentData = response.data.data;
-        console.log(this.assessmentData);
+
+        this.assessmentData.instructions = this.assessmentData.instructions.split('\n').join('</br>');
+        this.assessmentData.instructions = '<p>' + this.assessmentData.instructions + '</p>';
+        console.log("data",this.assessmentData);
       }
 
       this.$mixpanel.track("ResultScreenLoaded", {
@@ -314,7 +359,7 @@ export default {
         screen_name: "ResultScreen",
         assessment_level: this.assessmentData.tests[0].level.name,
         assessment_type: this.assessmentData.tests[0].assessment_type,
-        status: this.assessmentData.screening_status ? this.assessmentData.screening_status : this.assessmentData.mains_status
+        status: this.assessmentData.screening_status ? this.assessmentData.screening_status : this.assessmentData.mains_status,
       });
 
       let setupMains = await AssessmentController.getSetupMainsAssessment();

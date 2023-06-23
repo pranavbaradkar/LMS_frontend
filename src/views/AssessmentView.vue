@@ -130,7 +130,6 @@
                 <!-- need to set height of this card for set  good scroll -->
                 <v-list-item-group
                   mandatory
-                  v-model="selectedQuestion"
                   class="d-flex flex-wrap justify-content-between"
                 >
                   <v-list-item
@@ -524,7 +523,7 @@
                         </v-card>
                       </v-radio-group>
 
-                      <div v-else>
+                      <div v-else class="w-100 radioGroup">
                       <v-card
                         elevation="0"
                         height="auto"
@@ -1444,6 +1443,34 @@
         </v-container>
       </v-card>
     </v-dialog>
+
+    <v-dialog v-for="item in proctorPopUpsCategory" :key="item" v-model="proctorPopUpDialog[item]" width="450px" persistent>
+      <v-card>
+        <v-container>
+          <v-card-text class="text-center">
+            <div class="d-flex justify-center w-100 mb-6">
+              <div style="height: 48px; width: 48px">
+                <v-img height="48px" width="48px" src="@/assets/warning.svg"></v-img>
+              </div>
+            </div>
+            <p class="text-h6 mb-0">{{ proctorPopUpInfo[item].body}}</p>
+            <div class="d-flex justify-center w-100">
+              <v-btn
+                color="#277BC0"
+                depressed
+                class="white--text mt-5 mb-5 me-2 w-50"
+                large
+                @click="handlePopUp(item)"
+                >Continue</v-btn
+              >
+            </div>
+          </v-card-text>
+        </v-container>
+      </v-card>
+    </v-dialog>
+
+
+
   </div>
 </template>
 
@@ -1500,6 +1527,46 @@ export default {
       option_selected: "",
       response: {},
       notificationData: [],
+      proctorPopUp:{
+        MultipleFaces: new Date(),
+        FaceVerificationFailed: new Date(),
+        UserMovement: new Date(),
+        Speaking: new Date(),
+        NonPermissibleObject: new Date(),
+      },
+      proctorPopUpsCategory: ['MultipleFaces', 'FaceVerificationFailed', 'UserMovement', 'Speaking', 'NonPermissibleObject'],
+      proctorPopUpInfo: {
+        MultipleFaces: {
+          title: "",
+          body: "",
+        },
+        FaceVerificationFailed: {
+          title: "",
+          body: "",
+        },
+        UserMovement: {
+          title: "",
+          body: "",
+        },
+        Speaking: {
+          title: "",
+          body: "",
+        },
+        NonPermissibleObject: {
+          title: "",
+          body: "",
+        },
+      },
+      proctorPopUpDialog:{
+        MultipleFaces: 0,
+        FaceVerificationFailed: 0,
+        UserMovement: 0,
+        Speaking: 0,
+        NonPermissibleObject: 0,
+      },
+      startSendingAIEvents: true,
+      lagForDialog: 60000,
+      lagForAIEvents: 10000,
       bookmarked: [],
       skipped: [],
       answeredProgress: 0,
@@ -1507,6 +1574,7 @@ export default {
       bookmarkedProgress: 0,
       scrollId: "scrollId",
       counter: 0,
+      isSubmitAssessment: false,
       zoomOutBool: false,
       zoomOutImageUrl: "",
       mtfQuestions: {
@@ -1563,6 +1631,10 @@ export default {
       this.lastAnswerTime = this.seconds;
       console.log(this.selectedQuestion);
     },
+
+    proctorPopUp(newQuestion, oldQuestion) {
+      console.log("popUps",newQuestion, oldQuestion);
+    }
   },
   mounted() {
     window.addEventListener("beforeunload", this.handleBeforeUnload);
@@ -1577,6 +1649,7 @@ export default {
         window.addEventListener(event, this.handleCopyPaste);
       });
     }
+    this.isSubmitAssessment = false;
     this.startTimer();
 
     this.$nextTick(() => {
@@ -1631,14 +1704,44 @@ export default {
         console.log();
         this.violations++;
         console.warn("User ", event.type, " on current Tab");
+        const question = this.questions[this.selectedQuestion];
         this.genericDialog = true;
+        this.$mixpanel.track('TabChanged',{
+            ...this.assessmentMixPanel,
+            question_id: question.id,
+            option_selected: question.myAnswer,
+            difficulty_level: question.difficulty_level,
+        complexity_level: question.complexity_level,
+        skill_id: question.skill_id,
+        Subject: question.subject,
+        strand_id: question.strand_id,
+        sub_strand_id: question.sub_strand_id,
+        topic_id: question.topic_id,
+        lo_ids: question.lo_ids,
+        bloom_taxonomy: question.blooms_taxonomy,
+          });
       }
     },
     handleCopyPaste(event) {
       this.violations++;
       this.genericDialog = true;
+      const question = this.questions[this.selectedQuestion];
       console.log("testet");
       event.preventDefault();
+      this.$mixpanel.track('CopyPasteDetected',{
+            ...this.assessmentMixPanel,
+            question_id: question.id,
+            option_selected: question.myAnswer,
+            difficulty_level: question.difficulty_level,
+        complexity_level: question.complexity_level,
+        skill_id: question.skill_id,
+        Subject: question.subject,
+        strand_id: question.strand_id,
+        sub_strand_id: question.sub_strand_id,
+        topic_id: question.topic_id,
+        lo_ids: question.lo_ids,
+        bloom_taxonomy: question.blooms_taxonomy,
+          });
     },
     handleKeyPress(event) {
       if (event.key === "Escape") {
@@ -1651,6 +1754,21 @@ export default {
         if (isNotCombinedKey) {
           this.violations++;
           this.genericDialog = true;
+          const question = this.questions[this.selectedQuestion];
+          this.$mixpanel.track('EscapeClicked',{
+            ...this.assessmentMixPanel,
+            question_id: question.id,
+            option_selected: question.myAnswer,
+            difficulty_level: question.difficulty_level,
+        complexity_level: question.complexity_level,
+        skill_id: question.skill_id,
+        Subject: question.subject,
+        strand_id: question.strand_id,
+        sub_strand_id: question.sub_strand_id,
+        topic_id: question.topic_id,
+        lo_ids: question.lo_ids,
+        bloom_taxonomy: question.blooms_taxonomy,
+          });
         }
       }
     },
@@ -1679,7 +1797,7 @@ export default {
             console.log("Camera Stream Stopped");
           }
         });
-        console.log("Acive stream ", this.mediaStream.getTracks());
+        // console.log("Acive stream ", this.mediaStream.getTracks());
       }
     },
     cameraMedia() {
@@ -1699,7 +1817,9 @@ export default {
         })
         .then((stream) => {
           this.mediaStream = stream;
-          this.getVideoElement().srcObject = stream;
+          const localVideo = this.getVideoElement();
+          localVideo.srcObject = stream;
+          localVideo.muted = true;
           this.mediaRecorder = new MediaRecorder(stream, {
             mimeType: 'video/webm'
           });
@@ -1732,7 +1852,6 @@ export default {
         this.mediaRecorder.ondataavailable = (event) => {
           if (event.data && event.data.size > 0) {
             this.chunks.push(event.data);
-            console.log(this.chunks);
             this.uploadVideo(this.chunks);
           }
         };
@@ -1965,6 +2084,7 @@ export default {
       });
     },
     async submitAssessment() {
+      this.isSubmitAssessment = true;
       this.questions.forEach((question) => {
         if (question.myAnswer != null) {
           Vue.set(this.response, question.id, question.myAnswer);
@@ -1975,7 +2095,8 @@ export default {
         this.assessment.id,
         {
           response_json: this.response,
-        }
+        },
+        this.testType.toLocaleLowerCase()
       );
       this.$mixpanel.track("SubmitButtonClicked", {
         ...this.assessmentMixPanel,
@@ -2013,6 +2134,8 @@ export default {
             assessmentId: this.assessment.id,
             assessmentName: this.assessment.name,
           },
+        }, () => {
+          this.$router.go(0);
         });
       } else {
         this.$router.replace({
@@ -2022,6 +2145,8 @@ export default {
             assessmentName: this.assessment.name,
             response: this.response,
           },
+        }, () => {
+          this.$router.go(0);
         });
       }
     },
@@ -2256,6 +2381,10 @@ export default {
         lo_ids: this.questions[this.selectedQuestion].lo_ids,
       });
       this.selectedQuestion = this.selectedQuestion + 1;
+      this.startSendingAIEvents = false;
+      setInterval(() => {
+        this.startSendingAIEvents = true;
+      }, this.lagForAIEvents);
       this.scrollMethod("scrollId" + this.selectedQuestion);
 
       await this.setLog();
@@ -2305,6 +2434,10 @@ export default {
       });
 
       this.selectedQuestion = this.selectedQuestion - 1;
+      this.startSendingAIEvents = false;
+      setInterval(() => {
+        this.startSendingAIEvents = true;
+      }, this.lagForAIEvents);
       this.scrollMethod("scrollId" + this.selectedQuestion);
       setTimeout(() => {
         this.onResize();
@@ -2312,11 +2445,12 @@ export default {
     },
     questionClicked(item) {
       this.cleanMTFOption();
-      if (this.isTimeUp) {
-        return false;
-      }
-      if (item.myAnswer || this.skipped.includes(item)) {
+      if (item.myAnswer || this.skipped.includes(item) || this.bookmarked.includes(item)) {
         this.selectedQuestion = this.questions.indexOf(item);
+        this.startSendingAIEvents = false;
+      setInterval(() => {
+        this.startSendingAIEvents = true;
+      }, this.lagForAIEvents);
         this.scrollMethod("scrollId" + this.selectedQuestion);
         this.$mixpanel.track("QuestionListClicked", {
           ...this.assessmentMixPanel,
@@ -2359,7 +2493,6 @@ export default {
             option_selected: question.myAnswer,
             is_answer_correct: correct_answer,
             difficulty_level: question.difficulty_level,
-            screen_name: "AssessmentScreen",
             time_taken_in_sec: question.timeTaken,
         complexity_level: question.complexity_level,
         skill_id: question.skill_id,
@@ -2381,7 +2514,6 @@ export default {
             question_id: question.id,
             option_selected: question.myAnswer,
             difficulty_level: question.difficulty_level,
-            screen_name: "AssessmentScreen",
             time_taken_in_sec: question.timeTaken,
         complexity_level: question.complexity_level,
         skill: question.skill_id,
@@ -2404,7 +2536,6 @@ export default {
             question_id: question.id,
             option_selected: question.myAnswer,
             difficulty_level: question.difficulty_level,
-            screen_name: "AssessmentScreen",
             time_taken_in_sec: question.timeTaken,
         complexity_level: question.complexity_level,
         skill: question.skill_id,
@@ -2502,13 +2633,15 @@ export default {
       this.onResize();
     },
     handleBeforeUnload(event) {
-      event.preventDefault();
-      event.returnValue = "";
-      const confirmationMessage =
-        "Are you sure you want to leave? Your unsaved changes will be lost.";
-      event.returnValue = confirmationMessage;
-      this.setLog();
-      return confirmationMessage;
+      if(!this.isSubmitAssessment) {
+        event.preventDefault();
+        event.returnValue = "";
+        const confirmationMessage =
+          "Are you sure you want to leave? Your unsaved changes will be lost.";
+        event.returnValue = confirmationMessage;
+        this.setLog();
+        return confirmationMessage;
+      }
     },
     async changeTestStatus() {
       this.assessmentMixPanel = {
@@ -2555,6 +2688,13 @@ export default {
         this.socketestablish();
       }
     },
+
+    handlePopUp (title) {
+      this.proctorPopUpDialog[title] = 0;
+      this.proctorPopUp[title] = new Date();
+      console.log("handlePopUp", title, this.proctorPopUp[title]);
+    },
+
     socketestablish() {
       const socket = AssessmentController.socketConnect(this.userInfo.id, this.assessmentId);
 
@@ -2564,9 +2704,57 @@ export default {
       });
 
       socket.on("dataEvent", (data) => {
-        console.log("Received data from server:", data);
-        this.notificationData.push(data);
-
+        // console.log("Received data from server:", data);
+        const randomNumber = Math.random() * 100;
+        if (Object.keys(this.proctorPopUp).includes(data.title)) {
+          console.log("data title GGGG", data.title, new Date().getTime() - this.proctorPopUp[data.title].getTime())
+          if (new Date().getTime() - this.proctorPopUp[data.title].getTime() > 60000) {
+          this.proctorPopUp[data.title] = new Date();
+          this.proctorPopUpDialog[data.title] = 1;
+          this.proctorPopUpInfo[data.title].title = data.title;
+          this.proctorPopUpInfo[data.title].body = data.body;
+          console.log(this.proctorPopUpDialog)
+          this.notificationData.push(data);
+          const question = this.questions[this.selectedQuestion];
+          this.$mixpanel.track(data.title,{
+            body: data.body,
+            title: data.title,
+            ...this.assessmentMixPanel,
+            question_id: question.id,
+            option_selected: question.myAnswer,
+            difficulty_level: question.difficulty_level,
+        complexity_level: question.complexity_level,
+        skill_id: question.skill_id,
+        Subject: question.subject,
+        strand_id: question.strand_id,
+        sub_strand_id: question.sub_strand_id,
+        topic_id: question.topic_id,
+        lo_ids: question.lo_ids,
+        bloom_taxonomy: question.blooms_taxonomy,
+          });
+          }
+        }
+        else if (this.startSendingAIEvents && randomNumber < 20) {
+          // console.log("data title", data.title);
+          const question = this.questions[this.selectedQuestion];
+          this.notificationData.push(data);
+          this.$mixpanel.track(data.title,{
+            body: data.body,
+            title: data.title,
+            ...this.assessmentMixPanel,
+            question_id: question.id,
+            option_selected: question.myAnswer,
+            difficulty_level: question.difficulty_level,
+        complexity_level: question.complexity_level,
+        skill_id: question.skill_id,
+        Subject: question.subject,
+        strand_id: question.strand_id,
+        sub_strand_id: question.sub_strand_id,
+        topic_id: question.topic_id,
+        lo_ids: question.lo_ids,
+        bloom_taxonomy: question.blooms_taxonomy,
+          });
+        }
       });
     },
     async uploadVideo(chunks) {
@@ -2578,8 +2766,7 @@ export default {
           type: blob[0].type,
         });
         formData.append("video", videoFile);
-        let response = await AssessmentController.liveStreamVideoUpload(this.assessmentId, formData);
-        console.log(response)      
+        await AssessmentController.liveStreamVideoUpload(this.assessmentId, formData); 
       }
     },
   },

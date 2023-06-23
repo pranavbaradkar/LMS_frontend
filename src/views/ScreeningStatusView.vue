@@ -3,7 +3,7 @@
     <nav-bar></nav-bar>
     <v-container class="white-background pb-5">
       <div class="text-h6 pb-0 mt-7">My Test</div>
-      <v-img width="100%" height="331px" src="../assets/home_banner.png" cover class="mt-4">
+      <v-img width="100%" height="auto" style="min-height: 331px" src="../assets/home_banner.png" cover class="mt-4">
         <v-card class="pa-10 d-flex align-center" elevation="0" width="100%" height="100%" variant="outlined"
           color="transparent">
           <div class="white--text text-container">
@@ -27,8 +27,7 @@
             </v-btn>
 
             <div class="text-h6 mb-1">{{ assessmentData.name }}</div>
-            <p class="mt-1 font-weight-regular">
-              {{ assessmentData.instructions }}
+            <p v-if="assessmentData.instructions" class="mt-1 font-weight-regular" v-html="assessmentData.instructions">
             </p>
             <v-btn height="48px" color="#fff" class="blue--text mt-4 me-2" elevation="0" large
               @click="viewResult(assessmentData.id)">
@@ -130,6 +129,8 @@ export default {
         this.assessmentData = {};
       } else {
         this.assessmentData = response.data.data;
+        this.assessmentData.instructions = this.assessmentData.instructions.split('\n').join('</br>');
+        this.assessmentData.instructions = '<p>' + this.assessmentData.instructions + '</p>';
         console.log(this.assessmentData);
       }
       let setupMains = await AssessmentController.getSetupMainsAssessment();

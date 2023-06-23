@@ -914,7 +914,7 @@
                                             class="mr-6"
                                             :value="index"
                                           >
-                                            {{ index === 0 ? 'Fresher' : index === 1 ? 'upto 1' : index === 5 ? '10+ years' : exp.min + '-' + exp.max + ' years' }}
+                                            {{ index === 0 ? 'Fresher' : index === 1 ? 'upto 1 year' : index === 5 ? '10+ years' : exp.min + '-' + exp.max + ' years' }}
                                           </v-chip>
                                         </v-chip-group>
                                       </v-row>
@@ -1452,7 +1452,7 @@ export default {
         context: "user-profiles",
         file_name: this.selectedFile[this.expandedPanelIndex].name,
         mime_type: this.selectedFile[this.expandedPanelIndex].type,
-        file_type: "certifcate",
+        file_type: "certificate",
         business_type: "b2c",
         uuid: "123-456-7",
       });
@@ -1667,9 +1667,9 @@ export default {
         this.$mixpanel.track("SaveProfileDetailsClicked", mixpanelData);
         this.$mixpanel.identify(this.userInfo.id);
         this.$mixpanel.people.set({
-        $personal_info: this.personalInfo,
-        $academic_info: this.academicQualifications,
-        $professional_info: this.professionalInfos,
+        personal_info: this.personalInfo,
+        academic_info: this.academicQualifications,
+        professional_info: this.professionalInfos,
       });
       }
     },
@@ -1697,7 +1697,8 @@ export default {
         return;
       }
       const academinInfo = response.data.data;
-      this.academicQualifications = academinInfo.map((item) => {
+      this.academicQualifications = academinInfo.map((item, index) => {
+        this.selectedFile[index] = {name: item.certificate_url.split('certificate/')[1]}
         return {
           institution: item.institution,
         programme: item.programme,

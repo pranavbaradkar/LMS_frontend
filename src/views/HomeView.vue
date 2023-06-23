@@ -259,9 +259,8 @@
                 >Screening Test
               </v-btn>
               <div class="text-h6 mb-1">{{ recommendedAssessment.name }}</div>
-              <p class="mt-1 font-weight-regular">
-                {{ recommendedAssessment.instructions }}
-              </p>
+              <p v-if="recommendedAssessment.instructions" class="mt-1 font-weight-regular" v-html="recommendedAssessment.instructions">
+            </p>
               <div class="mt-1" v-if="recommendedAssessment.tests != null">
                 <v-icon class="white--text">mdi-book</v-icon>
                 {{ recommendedAssessment && recommendedAssessment.tests[0].total_no_of_questions }}
@@ -869,8 +868,11 @@ export default {
 
       var setupMains = await AssessmentController.getSetupMainsAssessment();
 
+      const type = this.userInfo.is_screening_test_taken && this.userInfo.is_mains_test_taken ? 'MAINS' : 'SCREENING';
+
+      console.log( "type",type);
       const response =
-        await RecommendedAssessmentController.getRecommendedAssessment("", {type: 'SCREENING'});
+        await RecommendedAssessmentController.getRecommendedAssessment("", {type: type});
       //console.log("response", response);
       if (response.status == 401) {
         AuthService.logout();
@@ -878,7 +880,7 @@ export default {
       if (response.status == 404) {
         const response2 =
           await RecommendedAssessmentController.getRecommendedAssessment(
-            "?debug=203", {type: 'SCREENING'}
+            "?debug=203", {type: type}
           );
         this.recommendedAssessment = response2.data ? response2.data.data : null;
         console.log(this.recommendedAssessment);
@@ -901,22 +903,25 @@ export default {
         this.e1 = 1;
       } else if(this.recommendedAssessment && (this.recommendedAssessment.mains_status == "FAILED" ||
         this.recommendedAssessment.mains_status == "PASSED")) {
+          console.log("demo link",setupMains.data.data.demo_link)
+          if (setupMains.data.success && setupMains.data.data.demo_link) {
+              this.$router.push(`/assessment/${this.recommendedAssessment.id}/mains/demo/thanks`);
+            }
+          else {
         this.$router.push({
           path: `/assessment/${this.recommendedAssessment.id}/mains/status`,
           query: {},
         });
+        }
       } else if ( this.recommendedAssessment && (this.recommendedAssessment.screening_status == "FAILED" ||
         this.recommendedAssessment.screening_status == "PASSED")) {
-          if(setupMains.status == 200) {
-            if(setupMains.data.data && (response.data.data.slot == null || response.data.data.video_link == null)) {
-              this.$router.push(`/assessment/mains/setup`);
-            } else {
-              this.$router.push({
-                path: `/assessment/${this.recommendedAssessment.id}/screening/status`,
-                query: {},
-              });
-            }
-          }  else {
+           if (setupMains.data.success && setupMains.data.data.video_link.length && setupMains.data.data.slot.length) {
+            this.$router.push({
+              path: `/pre/assessment/mains`,
+              query: {},
+            });
+           }
+           else {
             this.$router.push({
               path: `/assessment/${this.recommendedAssessment.id}/screening/status`,
               query: {},
@@ -933,6 +938,9 @@ export default {
           },
         })
       }
+
+      this.recommendedAssessment.instructions = this.recommendedAssessment.instructions.split('\n').join('</br>');
+      this.recommendedAssessment.instructions = '<p>' + this.recommendedAssessment.instructions + '</p>';
 
       this.selectedAssessment = this.recommendedAssessment;
 

@@ -42,8 +42,9 @@
                       depressed
                       outlined
                     >
-                      <p style="color: #7B7A7B;font-size:22px;line-height: 26px;">Hello, I am &lt;Name&gt; and the account is registered under my email address 
-                      &lt;email id&gt;, my date of birth&lt;DD/MM/YY&gt;</p>
+                      <p style="color: #7B7A7B;font-size:22px;line-height: 26px;">
+                        {{ script }}
+                      </p>
                     </v-card>
                   </v-col>
                 </v-row>
@@ -74,6 +75,7 @@
 import { validationMixin } from "vuelidate";
 import "../styles.css";
 import LogedInUserInfo from "@/controllers/LogedInUserInfo";
+import ScriptController from "@/controllers/ScriptContoller"
 import navBar from "@/components/navBar.vue"
 import AssessmentController from "../controllers/AssessmentController";
 import { APP_NAME } from '@/constant';
@@ -98,7 +100,8 @@ export default {
       secs: 0,
       seconds: 0,
       blob: null,
-      isLoading: false
+      isLoading: false,
+      script: '',
     };
   },
   methods: {
@@ -108,6 +111,17 @@ export default {
       this.$mixpanel.track("CaptureLoaded", {
       app_name: APP_NAME,
       user_type: this.userInfo.user_type,
+    });
+    },
+
+    async getScript() {
+      const response = await ScriptController.getPADCScript();
+      this.script = response.data && response.data.data.script;
+      this.$mixpanel.track("ScriptLoaded", {
+      app_name: APP_NAME,
+      user_type: this.userInfo.user_type,
+      script: this.script,
+      type: "CAPTURE",
     });
     },
     onResize() {
@@ -142,7 +156,12 @@ export default {
           startBtn.removeAttribute('disabled');
           startBtn.style.display = 'block';
           video.srcObject = stream;
-        }).catch(e => console.error(e));
+          video.muted = true;
+        }).catch(e => {
+          console.log(e);
+          alert("Please check your system has working camera and microphone")
+        });
+
     },
     startRecording() {
       startBtn.style.display = 'none';
@@ -210,6 +229,7 @@ export default {
           screen_name: "CaptureScreen"
     });
         if(response.status == 200)  {
+          this.isLoading = false;
           // this.$router.push(`/assessment/${assessmentId}/mains/setup`);
           let response2 = await AssessmentController.postSetupMainsAssessment({
             video_link: response.data.data.url,
@@ -261,6 +281,7 @@ export default {
   },
   created() {
     this.getUserInfo();
+    this.getScript();
   },
 };
 </script>

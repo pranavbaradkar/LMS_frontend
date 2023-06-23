@@ -74,6 +74,7 @@
 import { validationMixin } from "vuelidate";
 import "../styles.css";
 import LogedInUserInfo from "@/controllers/LogedInUserInfo";
+import ScriptController from "@/controllers/ScriptContoller"
 import navBar from "@/components/navBar.vue"
 import AssessmentController from "../controllers/AssessmentController";
 import { APP_NAME } from '@/constant';
@@ -97,7 +98,8 @@ export default {
       secs: 0,
       seconds: 0,
       blob: null,
-      isLoading: false
+      isLoading: false,
+      userInfo: {},
     };
   },
   methods: {
@@ -107,6 +109,16 @@ export default {
       this.$mixpanel.track("IdentifyLoaded", {
           app_name: APP_NAME,
           user_type: this.userInfo.user_type,
+    });
+    },
+    async getScript() {
+      const response = await ScriptController.getPADVScript();
+      this.script = response.data && response.data.data.script;
+      this.$mixpanel.track("ScriptLoaded", {
+      app_name: APP_NAME,
+      user_type: this.userInfo.user_type,
+      script: this.script,
+      type: "IDENTIFY",
     });
     },
     onResize() {
@@ -141,7 +153,12 @@ export default {
           startBtn.removeAttribute('disabled');
           startBtn.style.display = 'block';
           video.srcObject = stream;
-        }).catch(e => console.error(e));
+          video.muted = true;
+        }).catch(e => {
+          console.log(e);
+          alert("Please check your system has working camera and microphone")
+        });
+       
     },
     startRecording() {
       startBtn.style.display = 'none';
@@ -268,6 +285,7 @@ export default {
   },
   created() {
     this.getUserInfo();
+    this.getScript();
   },
 };
 </script>
