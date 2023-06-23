@@ -290,10 +290,11 @@ export default {
       params += ', top=0, left=0'
       params += ', fullscreen=yes';
       params += ', minimizable=no';
+      params += ', maximized=true';
       params += ', directories=no';
       params += ', location=no';
       params += ', menubar=no';
-      params += ', resizable=no';
+      params += ', resizable=yes';
       params += ', scrollbars=yes';
       params += ', status=no';
       params += ', toolbar=no';
