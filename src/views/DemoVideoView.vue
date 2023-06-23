@@ -35,6 +35,7 @@
                       Topic given below 👇
                     </div>
                     <v-card
+                      v-if="this.script"
                       :height="'400px'"
                       elevation="0"
                       style="overflow-x: none; margin-left: 30px"
@@ -43,39 +44,39 @@
                       outlined
                     >
                       <p class="mb-0">Topic</p>
-                      <p><strong>Demonstrating Newton's Laws of Motion</strong></p>
+                      <p><strong>{{ this.script.demo_topic}}</strong></p>
                       <hr class="border-hr" />
                       <p>Pointers to Cover</p>
-                      <v-stepper v-model="e6" vertical>
+                      <v-stepper v-if="this.script.demo_description" v-model="e6" vertical>
                         <v-stepper-step step="">
-                         <strong>Introduction</strong> (1-2 minutes)
+                         <strong>{{ this.script.demo_description[0][0] }}</strong> {{ this.script.demo_description[0][1] }}
                         </v-stepper-step>
 
                         <v-stepper-content step="1">
                         </v-stepper-content>
 
                         <v-stepper-step :complete="e6 > 2" step="">
-                          <strong>Newton's First Law: Law of Inertia</strong> (3-4 minutes)
+                          <strong>{{ this.script.demo_description[1][0] }}</strong> {{ this.script.demo_description[1][1] }}
                         </v-stepper-step>
 
                         <v-stepper-content step="2">
                         </v-stepper-content>
 
                         <v-stepper-step :complete="e6 > 3" step="">
-                          <strong>Newton's Second Law: Force and Acceleration</strong> (4-5 minutes)
+                          <strong>{{ this.script.demo_description[2][0] }}</strong> {{ this.script.demo_description[2][1] }}
                         </v-stepper-step>
 
                         <v-stepper-content step="3">
                         </v-stepper-content>
 
                         <v-stepper-step step="">
-                          <strong>Newton's Third Law: Action and Reaction</strong> (3-4 minutes)
+                          <strong>{{ this.script.demo_description[3][0] }}</strong> {{ this.script.demo_description[3][1] }}
                         </v-stepper-step>
                         <v-stepper-content step="4">
                         </v-stepper-content>
 
                         <v-stepper-step step="">
-                          <strong>Conclusion and Wrap-up</strong> (1-2 minutes)
+                          <strong>{{ this.script.demo_description[4][0] }}</strong> {{ this.script.demo_description[4][1] }}
                         </v-stepper-step>
                         <v-stepper-content step="4">
                         </v-stepper-content>
@@ -121,6 +122,7 @@ import { validationMixin } from "vuelidate";
 import "../styles.css";
 import LogedInUserInfo from "@/controllers/LogedInUserInfo";
 import navBar from "@/components/navBar.vue";
+import ScriptController from "@/controllers/ScriptContoller"
 import AssessmentController from "../controllers/AssessmentController";
 import { APP_NAME } from '@/constant';
 
@@ -144,7 +146,8 @@ export default {
       e6: null,
       blob: null,
       isLoading: false,
-      assessment_id: null
+      assessment_id: null,
+      script: {},
     };
   },
   methods: {
@@ -155,6 +158,18 @@ export default {
           app_name: APP_NAME,
           user_type: this.userInfo.user_type,
           screen_name: "DemoVideoScreen"
+    });
+    this.getScript();
+    },
+    async getScript() {
+      const response = await ScriptController.getDemoVideoScript(this.assessment_id);
+      this.script = response.data && response.data.data;
+      this.$mixpanel.track("ScriptLoaded", {
+      app_name: APP_NAME,
+      user_type: this.userInfo.user_type,
+      script: this.script,
+      type: "Demo Video",
+      screen_name: "DemoVideoScreen"
     });
     },
     onResize() {

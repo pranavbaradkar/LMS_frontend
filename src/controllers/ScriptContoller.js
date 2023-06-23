@@ -30,4 +30,17 @@ export default {
         }
     },
 
+    getDemoVideoScript: async function (id) {
+        try {
+            const response = await instance.get(`users/demo/${id}`, {
+                headers: {
+                    'Authorization': AuthService.getToken()
+                }
+            })
+            return response;
+        } catch (error) {
+            return error.response;
+        }
+    },
+
 }

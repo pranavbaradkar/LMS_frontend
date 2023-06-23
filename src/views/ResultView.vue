@@ -153,7 +153,7 @@
                 <div style="font-size: 16px; line-height: 19px; font-weight: 500;" class="ml-2">{{ item }}</div>
               </div>
               <div style="font-size: 32px; line-height: 38px; font-weight: 500;">
-                {{assessmentResult.data[index]}}/100
+                {{assessmentResult.data[index]}}/{{ assessmentResult.skill_total[index]}}
               </div>
             </div>
           </v-col>

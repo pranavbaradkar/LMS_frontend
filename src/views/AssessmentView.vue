@@ -1842,7 +1842,8 @@ export default {
           app_name: this.appName,
           user_type: this.userInfo.user_type,
       });
-      window.location.href="/";
+      window.close();
+      //window.location.href="/";
     },
     stopRecording() {
       // console.log("camera stop triggered");
@@ -2641,6 +2642,7 @@ export default {
         event.returnValue = confirmationMessage;
         this.setLog();
         return confirmationMessage;
+        
       }
     },
     async changeTestStatus() {
@@ -2706,9 +2708,10 @@ export default {
       socket.on("dataEvent", (data) => {
         // console.log("Received data from server:", data);
         const randomNumber = Math.random() * 100;
-        if (Object.keys(this.proctorPopUp).includes(data.title)) {
+        if (Object.keys(this.proctorPopUp).includes(data.title) && !Object.values(this.proctorPopUpDialog).includes(1)) {
           console.log("data title GGGG", data.title, new Date().getTime() - this.proctorPopUp[data.title].getTime())
           if (new Date().getTime() - this.proctorPopUp[data.title].getTime() > 60000) {
+          if ((data.title == this.proctorPopUpsCategory[1] && new Date().getTime() - this.proctorPopUp[this.proctorPopUpsCategory[2]].getTime() > 60000) || data.title != this.proctorPopUpsCategory[1]) {
           this.proctorPopUp[data.title] = new Date();
           this.proctorPopUpDialog[data.title] = 1;
           this.proctorPopUpInfo[data.title].title = data.title;
@@ -2731,7 +2734,7 @@ export default {
         topic_id: question.topic_id,
         lo_ids: question.lo_ids,
         bloom_taxonomy: question.blooms_taxonomy,
-          });
+          });}
           }
         }
         else if (this.startSendingAIEvents && randomNumber < 20) {

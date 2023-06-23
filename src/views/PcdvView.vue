@@ -109,6 +109,7 @@ export default {
       this.$mixpanel.track("IdentifyLoaded", {
           app_name: APP_NAME,
           user_type: this.userInfo.user_type,
+          screen_name: "IdentifyScreen",
     });
     },
     async getScript() {
@@ -119,6 +120,7 @@ export default {
       user_type: this.userInfo.user_type,
       script: this.script,
       type: "IDENTIFY",
+      screen_name: "IdentifyScreen",
     });
     },
     onResize() {
