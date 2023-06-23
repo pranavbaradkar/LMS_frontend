@@ -2711,6 +2711,7 @@ export default {
         if (Object.keys(this.proctorPopUp).includes(data.title)) {
           console.log("data title GGGG", data.title, new Date().getTime() - this.proctorPopUp[data.title].getTime())
           if (new Date().getTime() - this.proctorPopUp[data.title].getTime() > 60000) {
+          if ((data.title == this.proctorPopUpsCategory[1] && new Date().getTime() - this.proctorPopUp[this.proctorPopUpsCategory[2]].getTime() > 60000) || data.title != this.proctorPopUpsCategory[1]) {
           this.proctorPopUp[data.title] = new Date();
           this.proctorPopUpDialog[data.title] = 1;
           this.proctorPopUpInfo[data.title].title = data.title;
@@ -2733,7 +2734,7 @@ export default {
         topic_id: question.topic_id,
         lo_ids: question.lo_ids,
         bloom_taxonomy: question.blooms_taxonomy,
-          });
+          });}
           }
         }
         else if (this.startSendingAIEvents && randomNumber < 20) {
