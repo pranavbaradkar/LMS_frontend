@@ -1842,7 +1842,8 @@ export default {
           app_name: this.appName,
           user_type: this.userInfo.user_type,
       });
-      window.location.href="/";
+      window.close();
+      //window.location.href="/";
     },
     stopRecording() {
       // console.log("camera stop triggered");
@@ -2641,6 +2642,7 @@ export default {
         event.returnValue = confirmationMessage;
         this.setLog();
         return confirmationMessage;
+        
       }
     },
     async changeTestStatus() {
