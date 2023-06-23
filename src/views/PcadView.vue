@@ -111,6 +111,7 @@ export default {
       this.$mixpanel.track("CaptureLoaded", {
       app_name: APP_NAME,
       user_type: this.userInfo.user_type,
+      screen_name: "CaptureScreen"
     });
     },
 
@@ -122,6 +123,7 @@ export default {
       user_type: this.userInfo.user_type,
       script: this.script,
       type: "CAPTURE",
+      screen_name: "CaptureScreen"
     });
     },
     onResize() {
@@ -176,6 +178,7 @@ export default {
       this.$mixpanel.track("StartVideoClicked", {
       app_name: APP_NAME,
       user_type: this.userInfo.user_type,
+      screen_name: "CaptureScreen"
     });
     },
     stopRecording() {
@@ -189,6 +192,7 @@ export default {
       this.$mixpanel.track("StopVideoClicked", {
       app_name: APP_NAME,
       user_type: this.userInfo.user_type,
+      screen_name: "CaptureScreen"
     });
     },
     async sendUploadonS3(blob) {
