@@ -2708,6 +2708,7 @@ export default {
       socket.on("dataEvent", (data) => {
         // console.log("Received data from server:", data);
         const randomNumber = Math.random() * 100;
+        this.notificationData.push(data);
         if (Object.keys(this.proctorPopUp).includes(data.title) && !Object.values(this.proctorPopUpDialog).includes(1)) {
           console.log("data title GGGG", data.title, new Date().getTime() - this.proctorPopUp[data.title].getTime())
           if (new Date().getTime() - this.proctorPopUp[data.title].getTime() > 60000) {

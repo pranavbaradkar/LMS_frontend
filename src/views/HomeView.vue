@@ -282,6 +282,7 @@
                 class="white--text mt-4"
                 large
                 @click="() => {
+                  this.noOfQuestions = this.recommendedAssessment.tests[0].total_no_of_questions;
                   this.$mixpanel.track('StartTestClicked', {
         assessment_id: this.recommendedAssessment.id,
         assessment_name: this.recommendedAssessment.name,
@@ -705,9 +706,10 @@ export default {
       const response = await AssessmentController.getSingleAssessment(id);
       if (response.data.success) {
         this.selectedAssessment = response.data.data;
-        let selectedTest = this.selectedAssessment.tests.filter(ele => ele.assessment_type == 'SCREENING');
+        let selectedTest = this.selectedAssessment.tests.filter(ele => ele.assessment_type == 'SCREENING')[0];
 
         this.duration = selectedTest.duration_of_assessment;
+        console.log(selectedTest, selectedTest.total_no_of_questions);
         this.noOfQuestions =
           selectedTest.total_no_of_questions;
         this.dialog = true;
