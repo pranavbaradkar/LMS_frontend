@@ -91,42 +91,49 @@
             <div class="d-flex flex-row align-start mb-5">
               <v-icon size="6" class="me-2 mt-1">mdi-circle</v-icon>
               <p class="mb-0 font-weight-regular assesment-instruction">
-                This assessment consists a total of
-                {{ noOfQuestions }} questions
+                This test assesses you in 5 different areas viz. Core Skills, Digital Literacy, Communication Skills, Pedagogy and Psychometry
               </p>
             </div>
             <div class="d-flex flex-row align-start mb-5">
               <v-icon size="6" class="me-2 mt-1">mdi-circle</v-icon>
               <p class="mb-0 font-weight-regular assesment-instruction">
-                The test assesses you in 7 different areas as can be seen in the
-                progress-bar at the top
+                Total time duration of the test is 120 mins.
               </p>
             </div>
             <div class="d-flex flex-row align-start mb-5">
               <v-icon size="6" class="me-2 mt-1">mdi-circle</v-icon>
               <p class="mb-0 font-weight-regular assesment-instruction">
-                You get a maximum of 60s to answer a question in this test
+                There is no negative marking. Some questions may have multiple correct answers
               </p>
             </div>
             <div class="d-flex flex-row align-start mb-5">
               <v-icon size="6" class="me-2 mt-1">mdi-circle</v-icon>
               <p class="mb-0 font-weight-regular assesment-instruction">
-                A timer that keeps ticking at the top indicates how much time
-                you have to answer a question
+                Please keep a tab on the timer. You will not be able to answer any question once the time is over.
               </p>
             </div>
             <div class="d-flex flex-row align-start mb-5">
               <v-icon size="6" class="me-2 mt-1">mdi-circle</v-icon>
               <p class="mb-0 font-weight-regular assesment-instruction">
-                There is no negative marking, some questions may have more than
-                one correct answer
+                Before starting the Mains assessment, please ensure that you are accessing the website in desktop mode.
               </p>
             </div>
             <div class="d-flex flex-row align-start mb-5">
               <v-icon size="6" class="me-2 mt-1">mdi-circle</v-icon>
               <p class="mb-0 font-weight-regular assesment-instruction">
-                Upon the assessment completion, you will be notified with your
-                result.
+                Ensure that you have a stable internet connection throughout the assessment.
+              </p>
+            </div>
+            <div class="d-flex flex-row align-start mb-5">
+              <v-icon size="6" class="me-2 mt-1">mdi-circle</v-icon>
+              <p class="mb-0 font-weight-regular assesment-instruction">
+                Check that your device's video and audio systems are functioning properly.
+              </p>
+            </div>
+            <div class="d-flex flex-row align-start mb-5">
+              <v-icon size="6" class="me-2 mt-1">mdi-circle</v-icon>
+              <p class="mb-0 font-weight-regular assesment-instruction">
+                Please note that your assessment will be monitored, so make sure there are no disturbances in your surroundings.
               </p>
             </div>
           </div>
