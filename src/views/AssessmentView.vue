@@ -2710,9 +2710,29 @@ export default {
         const randomNumber = Math.random() * 100;
         this.notificationData.push(data);
         if (Object.keys(this.proctorPopUp).includes(data.title) && !Object.values(this.proctorPopUpDialog).includes(1)) {
-          console.log("data title GGGG", data.title, new Date().getTime() - this.proctorPopUp[data.title].getTime())
+          // console.log("data title GGGG", data.title, new Date().getTime() - this.proctorPopUp[data.title].getTime())
           if (new Date().getTime() - this.proctorPopUp[data.title].getTime() > 60000) {
-          if ((data.title == this.proctorPopUpsCategory[1] && new Date().getTime() - this.proctorPopUp[this.proctorPopUpsCategory[2]].getTime() > 60000) || data.title != this.proctorPopUpsCategory[1]) {
+          if (data.title == this.proctorPopUpsCategory[3]) {
+            this.proctorPopUp[data.title] = new Date();
+            const question = this.questions[this.selectedQuestion];
+          this.$mixpanel.track(data.title,{
+            body: data.body,
+            title: data.title,
+            ...this.assessmentMixPanel,
+            question_id: question.id,
+            option_selected: question.myAnswer,
+            difficulty_level: question.difficulty_level,
+        complexity_level: question.complexity_level,
+        skill_id: question.skill_id,
+        Subject: question.subject,
+        strand_id: question.strand_id,
+        sub_strand_id: question.sub_strand_id,
+        topic_id: question.topic_id,
+        lo_ids: question.lo_ids,
+        bloom_taxonomy: question.blooms_taxonomy,
+          })
+          }
+          else if ((data.title == this.proctorPopUpsCategory[1] && new Date().getTime() - this.proctorPopUp[this.proctorPopUpsCategory[2]].getTime() > 60000) || data.title != this.proctorPopUpsCategory[1]) {
           this.proctorPopUp[data.title] = new Date();
           this.proctorPopUpDialog[data.title] = 1;
           this.proctorPopUpInfo[data.title].title = data.title;
