@@ -267,6 +267,7 @@ export default {
         formData.append("business_type", "b2c");
         formData.append("post_type", "demo_video");
         formData.append("file_type", "videos");
+        formData.append("assessment_id", this.assessment_id);
 
         let response = await AssessmentController.uploadS3Video(formData);
         console.log(response);
