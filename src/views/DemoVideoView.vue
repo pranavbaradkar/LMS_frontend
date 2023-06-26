@@ -287,6 +287,7 @@ export default {
           let jsonResponse = await AssessmentController.uploadS3Video(formDatad);
           console.log(jsonResponse);
         }
+       
         this.$mixpanel.track("SubmitVideoClicked", {
           app_name: APP_NAME,
           user_type: this.userInfo.user_type,
