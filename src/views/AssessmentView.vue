@@ -963,31 +963,33 @@
               <v-tabs-items class="" :height="getRightHeight"  :style="`max-height: ${getRightHeight};overflow:scroll`" >
                 <div v-if="tabs === 'mobile-tabs-5-2'"><Calculator></Calculator></div>
                 <div v-if="tabs === 'mobile-tabs-5-1' && testType=='mains'">
-                  <div
-                    v-for="itemValue, i in reverseNotificationItems"
-                    :key="i"
-                  >
-                    <v-card flat style="max-height: 250px; overflow: scroll; margin-top:10px">
-                      <div class="mx-1 pa-2">
-                        <div class="align-start mt-1 mb-3">
-                          <img src="../assets/in-icon.png" />
-                          <p class="mb-2">{{ itemValue.title }}</p>
-                          <p
-                            class="mb-0 font-weight-regular"
-                            style="font-size: 16px;line-height: 19px;"
-                          >
-                            {{ itemValue.body }}
-                          </p>
-                          <p
-                            class="mb-0 font-weight-regular"
-                            style="font-size: 10px;ine-height: 12px;text-align: right;color: #7B7A7B;"
-                          >
-                            14:20 pm
-                          </p>
+                  <div v-if="hostname != 'smartstaff.hubblehox.ai'">
+                    <div
+                      v-for="itemValue, i in reverseNotificationItems"
+                      :key="i"
+                    >
+                      <v-card flat style="max-height: 250px; overflow: scroll; margin-top:10px">
+                        <div class="mx-1 pa-2">
+                          <div class="align-start mt-1 mb-3">
+                            <img src="../assets/in-icon.png" />
+                            <p class="mb-2">{{ itemValue.title }}</p>
+                            <p
+                              class="mb-0 font-weight-regular"
+                              style="font-size: 16px;line-height: 19px;"
+                            >
+                              {{ itemValue.body }}
+                            </p>
+                            <p
+                              class="mb-0 font-weight-regular"
+                              style="font-size: 10px;ine-height: 12px;text-align: right;color: #7B7A7B;"
+                            >
+                              14:20 pm
+                            </p>
+                          </div>
+                          <v-divider></v-divider>
                         </div>
-                        <v-divider></v-divider>
-                      </div>
-                    </v-card>
+                      </v-card>
+                    </div>
                   </div>
                 </div>
               </v-tabs-items>
@@ -1490,6 +1492,7 @@ export default {
   },
   data() {
     return {
+      hostname:null,
       assessmentMixPanel: {},
       appName: APP_NAME,
       assetType: "",
@@ -2709,6 +2712,7 @@ export default {
         // console.log("Received data from server:", data);
         const randomNumber = Math.random() * 100;
         this.notificationData.push(data);
+        console.log("Notificaiton ", data);
         if (Object.keys(this.proctorPopUp).includes(data.title) && !Object.values(this.proctorPopUpDialog).includes(1)) {
           // console.log("data title GGGG", data.title, new Date().getTime() - this.proctorPopUp[data.title].getTime())
           if (new Date().getTime() - this.proctorPopUp[data.title].getTime() > 60000) {
@@ -2799,8 +2803,8 @@ export default {
     this.assessmentId = this.$route.query.id;
     this.testType = this.$route.query.test;
     // console.log(this.assessmentId);
-
-   
+    this.hostname = window.location.hostname;
+    console.log(window.location.hostname)
 
     this.getAssessmentInfo();
     this.getUserInfo();

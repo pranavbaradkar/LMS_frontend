@@ -118,6 +118,8 @@ export default {
       isLoading: false,
       assessment_id: null,
       script: {},
+      subject:null,
+      grade:null
     };
   },
   methods: {
@@ -237,9 +239,25 @@ export default {
         formData.append("business_type", "b2c");
         formData.append("post_type", "demo_video");
         formData.append("file_type", "videos");
+        formData.append("assessment_id", this.assessment_id);
 
         let response = await AssessmentController.uploadS3Video(formData);
-        console.log(response);
+        console.log(this.script);
+        if(this.script.subject && this.script.subject.name && this.script.grade && this.script.grade.name) {
+          let jsonData = {subject: this.script.subject.name, grade: this.script.grade.name};
+          const formDatad = new FormData();
+          formDatad.append("context", "user-profiles");
+          formDatad.append("business_type", "b2c");
+          formDatad.append("post_type", "demo_video");
+          formDatad.append("assessment_id", this.assessment_id);
+          formDatad.append("file_type", "json");
+          formDatad.append("file_name", "grade_subject.json");
+          formDatad.append("json_data", JSON.stringify(jsonData));
+          console.log(formDatad);
+          let jsonResponse = await AssessmentController.uploadS3Video(formDatad);
+          console.log(jsonResponse);
+        }
+       
         this.$mixpanel.track("SubmitVideoClicked", {
           app_name: APP_NAME,
           user_type: this.userInfo.user_type,
@@ -249,6 +267,7 @@ export default {
           // this.$router.push(`/assessment/${assessmentId}/mains/setup`);
           let response2 = await AssessmentController.postSetupMainsAssessment({
             demo_link: response.data.data.url,
+            assessment_id: this.assessment_id,
             demo_video_status: 'SUBMITTED'
           });
 
