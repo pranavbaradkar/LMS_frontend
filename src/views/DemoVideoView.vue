@@ -36,7 +36,7 @@
                     </div>
                     <v-card
                       v-if="this.script"
-                      :height="auto"
+                      height="auto"
                       elevation="0"
                       style="overflow-x: none; margin-left: 30px"
                       class="pa-5 mt-2 vertical-steps-demo-video"
@@ -166,7 +166,7 @@ export default {
       navigator.mediaDevices
         .getUserMedia({
           video: true,
-          audio: true,
+          // audio: true,
         })
         .then((stm) => {
           stream = stm;
