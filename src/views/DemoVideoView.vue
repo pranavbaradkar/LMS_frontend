@@ -36,7 +36,7 @@
                     </div>
                     <v-card
                       v-if="this.script"
-                      :height="'400px'"
+                      :height="auto"
                       elevation="0"
                       style="overflow-x: none; margin-left: 30px"
                       class="pa-5 mt-2 vertical-steps-demo-video"
@@ -48,39 +48,9 @@
                       <hr class="border-hr" />
                       <p>Pointers to Cover</p>
                       <v-stepper v-if="this.script.demo_description" v-model="e6" vertical>
-                        <v-stepper-step step="">
-                         <strong>{{ this.script.demo_description[0][0] }}</strong> {{ this.script.demo_description[0][1] }}
+                        <v-stepper-step v-for="(item, index) in  this.script.demo_description" :key="index" :complete="e6 > 2" step="" class="mb-4">
+                          <strong>{{ item[0] }}</strong> {{ item[1] }}
                         </v-stepper-step>
-
-                        <v-stepper-content step="1">
-                        </v-stepper-content>
-
-                        <v-stepper-step :complete="e6 > 2" step="">
-                          <strong>{{ this.script.demo_description[1][0] }}</strong> {{ this.script.demo_description[1][1] }}
-                        </v-stepper-step>
-
-                        <v-stepper-content step="2">
-                        </v-stepper-content>
-
-                        <v-stepper-step :complete="e6 > 3" step="">
-                          <strong>{{ this.script.demo_description[2][0] }}</strong> {{ this.script.demo_description[2][1] }}
-                        </v-stepper-step>
-
-                        <v-stepper-content step="3">
-                        </v-stepper-content>
-
-                        <v-stepper-step step="">
-                          <strong>{{ this.script.demo_description[3][0] }}</strong> {{ this.script.demo_description[3][1] }}
-                        </v-stepper-step>
-                        <v-stepper-content step="4">
-                        </v-stepper-content>
-
-                        <v-stepper-step step="">
-                          <strong>{{ this.script.demo_description[4][0] }}</strong> {{ this.script.demo_description[4][1] }}
-                        </v-stepper-step>
-                        <v-stepper-content step="4">
-                        </v-stepper-content>
-
                       </v-stepper>
                     </v-card>
                   </v-col>

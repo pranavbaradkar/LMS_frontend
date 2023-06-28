@@ -424,7 +424,7 @@ export default {
           });
         }
         // console.log(res)
-        if (res.is_profile_created) {
+        if (res.is_profile_created || (!res.is_profile_created && res.is_interest_captured)) {
           this.$router.push("/");
         } else {
           this.$router.push("/register");
