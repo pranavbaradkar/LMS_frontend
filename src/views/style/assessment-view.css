@@ -46,6 +46,11 @@
   bottom: 20px;
 }
 
+.v-btn.submit-btn.video-submit {
+  min-width: 580px !important;
+}
+
+
 .right-container {
   position: relative;
 }

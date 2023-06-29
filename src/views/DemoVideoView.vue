@@ -75,7 +75,7 @@
                 elevation="0"
                 block
                 height="48px"
-                class="w-100 submit-btn white--text confirm"
+                class="w-100 submit-btn white--text confirm video-submit"
                 @click="submitLink"
                 :disabled="isLoading || blob==null"
                 >Submit</v-btn
@@ -263,6 +263,7 @@ export default {
           user_type: this.userInfo.user_type,
           screen_name: "DemoVideoScreen"
         });
+        
         if (response.status == 200) {
           // this.$router.push(`/assessment/${assessmentId}/mains/setup`);
           let response2 = await AssessmentController.postSetupMainsAssessment({
@@ -317,6 +318,9 @@ export default {
 
   beforeDestroy() {
     window.removeEventListener("resize", this.onResize);
+    if(video) {
+      video.srcObject.getTracks().forEach((track) => track.stop());
+    }
   },
   created() {
     this.assessment_id = this.$route.params.id;
