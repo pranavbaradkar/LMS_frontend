@@ -166,7 +166,7 @@ export default {
       navigator.mediaDevices
         .getUserMedia({
           video: true,
-          // audio: true,
+          audio: true,
         })
         .then((stm) => {
           stream = stm;
