@@ -1845,8 +1845,13 @@ export default {
           app_name: this.appName,
           user_type: this.userInfo.user_type,
       });
-      window.close();
-      //window.location.href="/";
+      if(this.testType == 'mains') { 
+        window.close();
+        window.opener.location.reload();
+      } else {
+        window.location.href="/";
+      }
+      
     },
     stopRecording() {
       // console.log("camera stop triggered");
@@ -2130,28 +2135,39 @@ export default {
       this.sendSkippedEvent();
       //console.log(response);
       if (response.data.success) {
-        // this.successDialog = true;
-        this.$store.state.assessmentId = this.assessment.id;
-        this.$router.replace({
-          path: "/success",
-          query: {
-            assessmentId: this.assessment.id,
-            assessmentName: this.assessment.name,
-          },
-        }, () => {
-          this.$router.go(0);
-        });
+        if(this.testType == "mains") {
+          window.opener.location.reload();
+          window.close();
+        } else {
+          // this.successDialog = true;
+          this.$store.state.assessmentId = this.assessment.id;
+          this.$router.replace({
+            path: "/success",
+            query: {
+              assessmentId: this.assessment.id,
+              assessmentName: this.assessment.name,
+            },
+          }, () => {
+            this.$router.go(0);
+          });
+        }
       } else {
-        this.$router.replace({
-          path: "/failed",
-          query: {
-            assessmentId: this.assessment.id,
-            assessmentName: this.assessment.name,
-            response: this.response,
-          },
-        }, () => {
-          this.$router.go(0);
-        });
+
+        if(this.testType == "mains") {
+          window.opener.location.reload();
+          window.close();
+        } else {
+          this.$router.replace({
+            path: "/failed",
+            query: {
+              assessmentId: this.assessment.id,
+              assessmentName: this.assessment.name,
+              response: this.response,
+            },
+          }, () => {
+            this.$router.go(0);
+          });
+        }        
       }
     },
 

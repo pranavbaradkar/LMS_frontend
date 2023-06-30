@@ -80,7 +80,7 @@
                   </div>
                   
                 </v-card>
-                <v-btn :disabled="isLoading"  variant="tonal" elevation="0" block height="48px" class="w-100 submit-btn white--text confirm" @click="confirmSlot">Confirm</v-btn>
+                <v-btn :disabled="isLoading"  variant="tonal" elevation="0" block height="48px" class="w-100 submit-btn white--text confirm video-submit" @click="confirmSlot">Confirm</v-btn>
               </div>
              
             </v-col>
@@ -155,7 +155,7 @@ export default {
       this.isLoading = true;
       if(this.dateRange[this.dateRangeIndex].day && this.dateRange[this.dateRangeIndex].timeing[this.timeSlotIndex]) {
         let date = this.dateRange[this.dateRangeIndex].day+" "+this.dateRange[this.dateRangeIndex].timeing[this.timeSlotIndex];
-        let datefinal = moment(date, "Do MMM, YY hh:mm a").format("YYYY-MM-DD hh:mm:ss");
+        let datefinal = moment(date, "Do MMM, YY hh:mm a").format("YYYY-MM-DD HH:mm:ss");
         console.log("date",date);
         console.log("date",datefinal);
         console.log(new Date(datefinal));
@@ -240,6 +240,7 @@ export default {
   width: 100%;
   left: 0px;
 }
+
 .position-relative{
    position: relative;
 }

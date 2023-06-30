@@ -62,7 +62,7 @@
                   <span class="timer">{{ mins }} : {{  secs }}</span>
                 </button>
               </div>
-              <v-btn :disabled="isLoading || blob==null"  variant="tonal" elevation="0" block height="48px" class="w-100 submit-btn white--text confirm" @click="submitLink">Submit</v-btn>
+              <v-btn :disabled="isLoading || blob==null"  variant="tonal" elevation="0" block height="48px" class="w-100 submit-btn white--text confirm video-submit" @click="submitLink">Submit</v-btn>
             </v-col>
           </v-row>
         </v-col>
