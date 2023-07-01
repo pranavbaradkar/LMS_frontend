@@ -152,6 +152,10 @@ export default {
         })
         .then(stm => {
           stream = stm;
+          console.log(stream.getAudioTracks()[0].muted)
+          if (stream.getAudioTracks()[0].muted) {
+            alert('Your system microphone is muted');
+          }
           startBtn.removeAttribute('disabled');
           startBtn.style.display = 'block';
           video.srcObject = stream;
