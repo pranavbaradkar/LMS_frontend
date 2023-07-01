@@ -1820,6 +1820,10 @@ export default {
         })
         .then((stream) => {
           this.mediaStream = stream;
+          if (this.mediaStream.getAudioTracks()[0].muted) {
+            alert('Your system microphone is muted');
+          }
+          else {
           const localVideo = this.getVideoElement();
           localVideo.srcObject = stream;
           localVideo.muted = true;
@@ -1827,6 +1831,7 @@ export default {
             mimeType: 'video/webm'
           });
           this.mediaRecorder.start();
+        }
         })
         .catch((error) => {
           console.log("Error accessing the camera:", error);

@@ -156,10 +156,12 @@ export default {
           if (stream.getAudioTracks()[0].muted) {
             alert('Your system microphone is muted');
           }
+          else {
           startBtn.removeAttribute('disabled');
           startBtn.style.display = 'block';
           video.srcObject = stream;
           video.muted = true;
+          }
         }).catch(e => {
           console.log(e);
           alert("Please check your system has working camera and microphone")
