@@ -249,7 +249,7 @@ export default {
         let response = await AssessmentController.uploadS3Video(formData);
         console.log(this.script);
         if(this.script.subject && this.script.subject.name && this.script.grade && this.script.grade.name) {
-          let jsonData = {subject: this.script.subject.name, grade: this.script.grade.name};
+          let jsonData = {subject: this.script.subject.name, grade: this.script.grade.name, chapter: this.script.demo_topic};
           const formDatad = new FormData();
           formDatad.append("context", "user-profiles");
           formDatad.append("business_type", "b2c");
