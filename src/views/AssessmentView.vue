@@ -319,7 +319,7 @@
                         disablePictureInPicture
                       >
                         <source
-                          :src="questions[selectedQuestion].s3_asset_urls"
+                          :src="questions[selectedQuestion].s3url"
                           :type="questions[selectedQuestion].mime_type"
                         />
                         Your browser does not support the video tag.
@@ -335,7 +335,7 @@
                         controlsList="nodownload nofullscreen"
                       >
                         <source
-                          :src="questions[selectedQuestion].s3_asset_urls"
+                          :src="questions[selectedQuestion].s3url"
                           :type="questions[selectedQuestion].mime_type"
                         />
                         Your browser does not support the audio tag.
@@ -348,7 +348,7 @@
                             'image'
                           )
                         "
-                        :src="questions[selectedQuestion].s3_asset_urls"
+                        :src="questions[selectedQuestion].s3url"
                         alt="Girl in a jacket"
                         width="300"
                         height="200"
@@ -358,7 +358,7 @@
                           rounded
                           @click="
                             zoomOutFun(
-                              questions[selectedQuestion].s3_asset_urls
+                              questions[selectedQuestion].s3url
                             )
                           "
                           class="zoom-out rounded-xl"
