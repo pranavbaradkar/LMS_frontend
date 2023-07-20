@@ -62,7 +62,7 @@
                   <span class="timer">{{ mins }} : {{  secs }}</span>
                 </button>
               </div>
-              <v-btn :disabled="isLoading || blob==null"  variant="tonal" elevation="0" block height="48px" class="w-100 submit-btn white--text confirm video-submit" @click="submitLink">Submit</v-btn>
+              <v-btn :disabled="isLoading || blob==null"  variant="tonal" elevation="0" block height="48px" class="submit-btn white--text confirm video-submit" style="width: 520px;" @click="submitLink">Submit</v-btn>
             </v-col>
           </v-row>
         </v-col>
@@ -238,8 +238,7 @@ export default {
           // this.$router.push(`/assessment/${assessmentId}/mains/setup`);
           let response2 = await AssessmentController.postSetupMainsAssessment({
             padv_video_link: response.data.data.url,
-          });
-          
+          });        
           if(response2.status == 200 && response2.data && response2.data.data)  {
             this.authorizeUser(response2.data.data);
           } else {
@@ -247,8 +246,6 @@ export default {
             this.isLoading = false;
             this.error = true
           }
-
-          this.isLoading = false;
         } else {
           alert("Something went wrong please contact admin");
           this.isLoading = false;
@@ -263,6 +260,7 @@ export default {
         "s3key_padv" : payloadData.padv_video_link.substr(payloadData.padv_video_link.indexOf('/', 8) + 1),
       }
       let response = await AssessmentController.authorizeUser(payload);
+      this.isLoading = false;
       console.log(response);
       this.$router.push(`/pre/assessment/mains`);
     }

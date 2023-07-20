@@ -75,7 +75,8 @@
                 elevation="0"
                 block
                 height="48px"
-                class="w-100 submit-btn white--text confirm video-submit"
+                style="width: 580px"
+                class="submit-btn white--text confirm video-submit"
                 @click="submitLink"
                 :disabled="isLoading || blob==null"
                 >Submit</v-btn
@@ -283,6 +284,7 @@ export default {
             response2.data.data
           ) {
             if (response2.data.data.slot && response2.data.data.demo_link) {
+              this.isLoading = false;
               this.$router.push(
                 `/assessment/${this.assessment_id}/mains/demo/thanks`,
                 () => {
@@ -295,8 +297,6 @@ export default {
             this.isLoading = false;
             this.error = true;
           }
-
-          this.isLoading = false;
         } else {
           alert("Something went wrong please contact admin");
           this.isLoading = false;

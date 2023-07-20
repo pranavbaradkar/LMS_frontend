@@ -63,7 +63,7 @@
                   <span class="timer">{{ mins }} : {{  secs }}</span>
                 </button>
               </div>
-              <v-btn :disabled="isLoading || blob==null"  variant="tonal" elevation="0" block height="48px" class="w-100 submit-btn white--text confirm video-submit" @click="submitLink">Submit</v-btn>
+              <v-btn :disabled="isLoading || blob==null"  variant="tonal" elevation="0" block height="48px" class="submit-btn white--text confirm video-submit" style="width: 580px;" @click="submitLink">Submit</v-btn>
             </v-col>
           </v-row>
         </v-col>
@@ -238,13 +238,13 @@ export default {
           screen_name: "CaptureScreen"
     });
         if(response.status == 200)  {
-          this.isLoading = false;
           // this.$router.push(`/assessment/${assessmentId}/mains/setup`);
           let response2 = await AssessmentController.postSetupMainsAssessment({
             video_link: response.data.data.url,
           });
           
           if(response2.status == 200 && response2.data && response2.data.data)  {
+              this.isLoading = false;
               if(response2.data.data.slot && response2.data.data.video_link) {
                 this.$router.push(`/pre/assessment/mains`);
               } else {
@@ -255,8 +255,6 @@ export default {
             this.isLoading = false;
             this.error = true
           }
-
-          this.isLoading = false;
         } else {
           alert("Something went wrong please contact admin");
           this.isLoading = false;
