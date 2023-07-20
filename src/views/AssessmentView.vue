@@ -688,8 +688,7 @@
                             :key="index"
                             class="mb-2 d-flex justify-center pa-2 border-with-color"
                           >
-                            <div style="font-size: 16px">
-                              {{ option.option_value }}
+                            <div style="font-size: 16px;max-height: 32px;" v-html="option.option_value">
                             </div>
                           </v-card>
                         </v-col>
@@ -715,8 +714,7 @@
                             :key="index"
                             class="mb-2 d-flex justify-center pa-2 border-with-color"
                           >
-                            <div style="font-size: 16px">
-                              {{ answer.answer_value }}
+                            <div style="font-size: 16px;max-height: 32px;" v-html="answer.answer_value">
                             </div>
                           </v-card>
                         </v-col>
